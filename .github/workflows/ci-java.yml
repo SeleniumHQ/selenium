@@ -28,8 +28,7 @@ jobs:
       rerun-with-debug: true
       remote-cache: true
       run: >
-./scripts/github-actions/bazel-test-if-targets.sh
-        --test_env=SELENIUM_TRACE_DIR=/tmp/selenium-test-traces
+        ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
         --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
         //java/...

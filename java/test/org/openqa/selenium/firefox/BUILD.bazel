@@ -7,6 +7,7 @@ LARGE_TESTS = [
     "FirefoxDriverBuilderTest.java",
     "FirefoxDriverPreferenceTest.java",
     "FirefoxDriverConcurrentTest.java",
+    "FirefoxRecordingTest.java",
     "TakesFullPageScreenshotTest.java",
 ]
 
@@ -62,6 +63,7 @@ java_selenium_test_suite(
     deps = [
         ":assumptions",
         "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium:helpers",

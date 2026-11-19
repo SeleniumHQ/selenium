@@ -21,14 +21,12 @@ use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
 use selenium_manager::TTL_SEC;
-use selenium_manager::archiver;
 use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey};
 use selenium_manager::grid::GridManager;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
-use selenium_manager::pipe::{PipeConfig, PipeMode, WebDriverProcess};
-use selenium_manager::recorder::Recorder;
+use selenium_manager::pipe::{self, PipeOptions};
 use selenium_manager::rules::write_rules_file;
 use selenium_manager::skills::write_skills_file;
 use selenium_manager::{
@@ -37,31 +35,9 @@ use selenium_manager::{
 };
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::exit;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::Receiver;
-use std::sync::{Arc, Mutex};
-
-static SHUTDOWN: AtomicBool = AtomicBool::new(false);
-
-unsafe extern "C" {
-    fn signal(sig: i32, handler: usize) -> usize;
-}
-
-const SIGINT: i32 = 2;
-const SIGTERM: i32 = 15;
-
-extern "C" fn handle_signal(_sig: i32) {
-    SHUTDOWN.store(true, Ordering::SeqCst);
-}
-
-fn install_signal_handlers() {
-    unsafe {
-        signal(SIGINT, handle_signal as *const () as usize);
-        signal(SIGTERM, handle_signal as *const () as usize);
-    }
-}
 
 const LICENSE: &str = include_str!("../LICENSE");
 const NOTICE: &str = include_str!("../NOTICE");
@@ -205,13 +181,18 @@ struct Cli {
     #[clap(long, value_name = "FILE_NAME", num_args = 0..=1, default_missing_value = "")]
     init_rules: Option<String>,
 
-    /// Start HTTP proxy for WebDriver forwarding (pipe mode). Implied by --record.
+    /// Keep running after resolving the driver: start it and expose a local HTTP proxy in front
+    /// of it, printing {"proxy_url": ...} to stdout. Ends when the session is deleted
     #[clap(long)]
     pipe: bool,
 
-    /// Path to save trace recording (implies --pipe).
-    #[clap(long, value_parser)]
-    record: Option<String>,
+    /// Record the session into a Playwright-compatible trace archive at the given path (implies --pipe)
+    #[clap(long, value_name = "TRACE_ZIP")]
+    record: Option<PathBuf>,
+
+    /// Driver to start in pipe mode, skipping driver management (requires --pipe or --record)
+    #[clap(long, value_name = "DRIVER_PATH")]
+    driver_path: Option<PathBuf>,
 }
 
 fn main() {
@@ -334,77 +315,31 @@ fn main() {
     }
     prune_old_cache_entries(selenium_manager.get_logger(), &cache_path, CACHE_TTL_DAYS);
 
+    let pipe_mode = cli.pipe || cli.record.is_some();
+    if cli.driver_path.is_some() && !pipe_mode {
+        selenium_manager
+            .get_logger()
+            .warn("--driver-path is only used in pipe mode (--pipe or --record); ignoring it");
+    }
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
         .and_then(|_| selenium_manager.set_insecure(cli.insecure))
         .and_then(|_| selenium_manager.stats())
-        .and_then(|_| selenium_manager.setup())
+        .and_then(|_| match cli.driver_path.clone().filter(|_| pipe_mode) {
+            Some(driver_path) => Ok(driver_path),
+            None => selenium_manager.setup(),
+        })
         .and_then(|driver_path| {
-            if !cli.pipe && cli.record.is_none() {
-                // Normal mode: return driver_path for the existing flow
-                return Ok(driver_path);
+            if pipe_mode {
+                let options = PipeOptions {
+                    driver_path: driver_path.clone(),
+                    browser_name: selenium_manager.get_browser_name().to_string(),
+                    language_binding: selenium_manager.get_language_binding().to_string(),
+                    record_path: cli.record.clone(),
+                };
+                pipe::run(options, selenium_manager.get_logger())?;
             }
-
-            // Pipe mode: start WebDriver, proxy, and optionally recording
-            let log = selenium_manager.get_logger();
-            let driver_str = driver_path.to_string_lossy();
-
-            log.debug(format!("Starting WebDriver: {}", driver_str));
-            let wd = WebDriverProcess::start(&driver_str)?;
-            log.debug(format!("WebDriver ready at {}", wd.base_url));
-
-            let mut recorder: Option<Arc<Mutex<Recorder>>> = None;
-            if let Some(record_path) = cli.record {
-                let path = Path::new(&record_path).to_path_buf();
-                let mut rec = Recorder::new(path);
-                let platform = std::env::consts::OS;
-                rec.set_metadata("chrome", platform, "Selenium Trace Recording");
-                recorder = Some(Arc::new(Mutex::new(rec)));
-                log.debug(format!("Recording to {}", record_path));
-            }
-
-            let config = PipeConfig {
-                webdriver_url: wd.base_url.clone(),
-                webdriver_ws_url: wd.ws_url.clone(),
-                record_path: None,
-                recorder,
-            };
-            let mut pipe = PipeMode::new(config);
-            let proxy_port = pipe.start()?;
-            log.info(format!("Proxy listening on port {}", proxy_port));
-
-            // Print JSON to stdout for the binding to read
-            let output = format!(
-                r#"{{"proxy_url":"http://localhost:{}","session_port":{}}}"#,
-                proxy_port, wd.port
-            );
-            // Direct print to stdout (bypasses the JSON logger which buffers)
-            println!("{}", output);
-            install_signal_handlers();
-            log.debug("Pipe mode running, waiting for shutdown signal");
-            while !SHUTDOWN.load(Ordering::SeqCst) {
-                std::thread::sleep(std::time::Duration::from_millis(500));
-            }
-            log.debug("Shutdown signal received, stopping pipe mode");
-
-            // Package recording if enabled
-            if let Some(ref rec_arc) = pipe.config().recorder {
-                if let Ok(rec) = rec_arc.lock() {
-                    if rec.has_actions() {
-                        log.info("Packaging trace recording...");
-                        archiver::package(&rec.recording)?;
-                        log.info(format!("Trace saved to {}", rec.recording.path.display()));
-                    } else {
-                        log.info("No actions recorded, skipping package");
-                    }
-                }
-            }
-
-            // Stop WebDriver
-            let mut wd = wd;
-            wd.stop()?;
-            log.debug("WebDriver stopped");
             Ok(driver_path)
         })
         .map(|driver_path| {

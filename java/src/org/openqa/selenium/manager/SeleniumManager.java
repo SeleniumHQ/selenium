@@ -108,20 +108,10 @@ public class SeleniumManager {
     int code;
     try {
       ExternalProcess.Builder processBuilder =
-          ExternalProcess.builder()
-              // keep all output of the process to avoid JSON syntax errors while parsing
-              .bufferSize(-1);
-
-      Properties properties = System.getProperties();
-      for (String name : properties.stringPropertyNames()) {
-        if (name.startsWith(SE_ENV_PREFIX)) {
-          // read property with 'default' value due to concurrency
-          String value = properties.getProperty(name, "");
-          if (!value.isEmpty()) {
-            processBuilder.environment(name, value);
-          }
-        }
-      }
+          withSeleniumProperties(
+              ExternalProcess.builder()
+                  // keep all output of the process to avoid JSON syntax errors while parsing
+                  .bufferSize(-1));
       ExternalProcess process =
           processBuilder.command(binary.toAbsolutePath().toString(), arguments).start();
 
@@ -168,6 +158,21 @@ public class SeleniumManager {
           failedToParse);
     }
     return jsonOutput.getResult();
+  }
+
+  /** Propagates {@code SE_*} system properties as environment variables of Selenium Manager. */
+  private static ExternalProcess.Builder withSeleniumProperties(ExternalProcess.Builder builder) {
+    Properties properties = System.getProperties();
+    for (String name : properties.stringPropertyNames()) {
+      if (name.startsWith(SE_ENV_PREFIX)) {
+        // read property with 'default' value due to concurrency
+        String value = properties.getProperty(name, "");
+        if (!value.isEmpty()) {
+          builder.environment(name, value);
+        }
+      }
+    }
+    return builder;
   }
 
   /**
@@ -240,15 +245,6 @@ public class SeleniumManager {
   }
 
   /**
-   * Returns the path to the Selenium Manager binary.
-   *
-   * @return the path to the Selenium Manager binary.
-   */
-  public Path getBinaryPath() {
-    return getBinary();
-  }
-
-  /**
    * Executes Selenium Manager to get the locations of the requested assets
    *
    * @param arguments List of command line arguments to send to Selenium Manager binary
@@ -267,6 +263,40 @@ public class SeleniumManager {
     }
 
     return runCommand(getBinary(), args);
+  }
+
+  /**
+   * Starts Selenium Manager in pipe mode ({@code --pipe} or {@code --record}). Unlike {@link
+   * #getBinaryPaths(List)}, the process keeps running: it starts the driver behind a local HTTP
+   * proxy, prints a JSON line with the {@code proxy_url} to its output, and exits once the
+   * WebDriver session is deleted.
+   *
+   * @param arguments List of command line arguments to send to Selenium Manager binary
+   * @return the running Selenium Manager process; the caller is responsible for shutting it down
+   */
+  @Beta
+  public ExternalProcess startPipe(List<String> arguments) {
+    List<String> args = new ArrayList<>(arguments.size() + 3);
+    args.addAll(arguments);
+    args.add("--language-binding");
+    args.add("java");
+    if (getLogLevel().intValue() <= Level.FINE.intValue()) {
+      args.add("--debug");
+    }
+
+    Path binary = getBinary();
+    LOG.fine(String.format("Starting Selenium Manager in pipe mode: %s", args));
+    try {
+      return withSeleniumProperties(ExternalProcess.builder())
+          .command(binary.toAbsolutePath().toString(), args)
+          .start();
+    } catch (Exception e) {
+      throw new WebDriverException(
+          String.format(
+              "Failed to start \"%s\" in pipe mode with arguments %s",
+              binary.toAbsolutePath(), args),
+          e);
+    }
   }
 
   private Level getLogLevel() {

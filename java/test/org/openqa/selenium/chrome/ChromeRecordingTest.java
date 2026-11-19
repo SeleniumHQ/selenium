@@ -1,70 +1,190 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.chrome;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Files;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
+import org.openqa.selenium.testing.drivers.Browser;
 
-class ChromeRecordingTest {
+class ChromeRecordingTest extends JupiterTestBase {
+
+  @TempDir Path tempDir;
 
   @Test
-public void canRecordTraceSession() throws Exception {
-    String traceDirEnv = System.getenv("SELENIUM_TRACE_DIR");
-    Path traceDir = traceDirEnv != null ? Paths.get(traceDirEnv) : Files.createTempDirectory("selenium-traces-");
-    Files.createDirectories(traceDir);
+  @NoDriverBeforeTest
+  void recordsCommandsScreenshotsAndBiDiEvents() throws IOException {
+    Path trace = traceFile("bidi-trace.zip");
+    ChromeOptions options = (ChromeOptions) Browser.CHROME.getCapabilities();
+    // The test environment enables BiDi for the binding; leave it to the recording proxy instead.
+    options.setCapability("webSocketUrl", (Object) null);
+    options.setRecord(trace.toString());
+    localDriver = new ChromeDriver(options);
 
-    String testName = "canRecordTraceSession";
-    String timestamp = Instant.now().toString().replace(":", "-").replace("T", "_").split("\\.")[0];
-    Path tracePath = traceDir.resolve(testName + "_" + timestamp + ".zip");
-    Files.deleteIfExists(tracePath);
+    // The recording proxy owns the BiDi connection, so the binding must not try to use it.
+    assertThat(((HasCapabilities) localDriver).getCapabilities().getCapability("webSocketUrl"))
+        .isNull();
 
-    ChromeOptions options = new ChromeOptions();
-    options.setRecord(tracePath.toAbsolutePath().toString());
-    options.addArguments("--headless");
+    localDriver.get(pages.formPage);
+    localDriver.findElement(By.id("working")).sendKeys("Selenium");
+    localDriver.findElement(By.id("checky")).click();
+    localDriver.get(appServer.whereIs("login.html"));
+    localDriver.findElement(By.id("password-field")).sendKeys("top-secret");
+    localDriver.get(appServer.whereIs("bidi/logEntryAdded.html"));
+    localDriver.findElement(By.id("consoleLog")).click();
+    localDriver.findElement(By.id("consoleError")).click();
+    quit();
 
-    ChromeDriver driver = new ChromeDriver(options);
+    try (ZipFile zip = new ZipFile(trace.toFile())) {
+      List<Map<String, Object>> events = readNdjson(zip, "trace.trace");
 
-    try {
-      // 1. Navigate to Web form and fill it
-      driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
-      assertThat(driver.getCurrentUrl()).contains("web-form");
-      driver.findElement(By.id("my-text-id")).sendKeys("Selenium 5");
-      driver.findElement(By.name("my-password")).sendKeys("secret");
-      driver.findElement(By.name("my-textarea")).sendKeys("Trace recording demo");
-      new Select(driver.findElement(By.name("my-select"))).selectByVisibleText("Three");
-      driver.executeScript(
-          "arguments[0].click();", driver.findElement(By.id("my-check-1")));
+      Map<String, Object> context = events.get(0);
+      assertThat(context).containsEntry("type", "context-options");
+      assertThat(((Number) context.get("version")).intValue()).isEqualTo(8);
+      assertThat(context)
+          .containsEntry("browserName", "chrome")
+          .containsEntry("sdkLanguage", "java");
 
-      // 2. Navigate to login form
-      driver.get("https://bonigarcia.dev/selenium-webdriver-java/login-form.html");
-      assertThat(driver.getCurrentUrl()).contains("login-form");
-      driver.findElement(By.id("username")).sendKeys("user");
-      driver.findElement(By.id("password")).sendKeys("pass");
-      driver.findElement(By.tagName("button")).click();
+      assertThat(titlesOf(events))
+          .contains("New session", "Type \"Selenium\"", "Click", "Quit")
+          .anyMatch(title -> title.startsWith("Navigate to") && title.contains("formPage.html"));
+      assertScreenshotsArePackaged(zip, events);
+      assertThat(titlesOf(events)).contains("Type \"********\"");
+      assertThat(readEntry(zip, "trace.trace")).doesNotContain("top-secret");
 
-      // 3. Navigate to console logs page
-      driver.get("https://bonigarcia.dev/selenium-webdriver-java/console-logs.html");
-      assertThat(driver.getCurrentUrl()).contains("console-logs");
+      assertThat(eventsOfType(events, "console"))
+          .extracting(event -> event.get("text"))
+          .contains("Hello, world!", "I am console error");
 
-    } finally {
-      driver.quit();
+      assertThat(readNdjson(zip, "trace.network"))
+          .extracting(entry -> requestUrlOf(entry))
+          .anyMatch(url -> url.endsWith("logEntryAdded.html"));
     }
+  }
 
-    System.out.println("Trace saved to: " + tracePath.toAbsolutePath());
+  @Test
+  @NoDriverBeforeTest
+  void fallsBackToClassicWebDriverWhenTheBindingUsesBiDi() throws IOException {
+    Path trace = traceFile("classic-trace.zip");
+    ChromeOptions options = (ChromeOptions) Browser.CHROME.getCapabilities();
+    options.enableBiDi();
+    options.setRecord(trace.toString());
+    localDriver = new ChromeDriver(options);
 
-    assertThat(tracePath).exists();
-    assertThat(tracePath.toFile().length()).isGreaterThan(0);
-    try (ZipFile zf = new ZipFile(tracePath.toFile())) {
-      assertThat(zf.getEntry("trace.trace")).isNotNull();
-      assertThat(zf.getEntry("trace.network")).isNotNull();
+    assertThat(((HasCapabilities) localDriver).getCapabilities().getCapability("webSocketUrl"))
+        .isNotNull();
+
+    localDriver.get(pages.formPage);
+    localDriver.findElement(By.id("checky")).click();
+    new WebDriverWait(localDriver, Duration.ofSeconds(5))
+        .until(ExpectedConditions.elementToBeSelected(By.id("checky")));
+    quit();
+
+    try (ZipFile zip = new ZipFile(trace.toFile())) {
+      List<Map<String, Object>> events = readNdjson(zip, "trace.trace");
+      assertThat(titlesOf(events)).contains("Click", "Quit");
+      assertScreenshotsArePackaged(zip, events);
     }
+  }
+
+  private Path traceFile(String name) {
+    String traceDir = System.getenv("SELENIUM_TRACE_DIR");
+    Path dir = traceDir == null || traceDir.isEmpty() ? tempDir : Path.of(traceDir);
+    return dir.resolve(getClass().getSimpleName() + "-" + name).toAbsolutePath();
+  }
+
+  /** Quits explicitly: the trace is only complete once the session is closed. */
+  private void quit() {
+    localDriver.quit();
+    localDriver = null;
+  }
+
+  private static void assertScreenshotsArePackaged(ZipFile zip, List<Map<String, Object>> events) {
+    List<Map<String, Object>> frames = eventsOfType(events, "screencast-frame");
+    assertThat(frames).isNotEmpty();
+    for (Map<String, Object> frame : frames) {
+      ZipEntry resource = zip.getEntry("resources/" + frame.get("sha1"));
+      assertThat(resource).as("screenshot %s", frame.get("sha1")).isNotNull();
+      assertThat(resource.getSize()).isPositive();
+    }
+  }
+
+  private static List<String> titlesOf(List<Map<String, Object>> events) {
+    List<String> titles = new ArrayList<>();
+    for (Map<String, Object> event : eventsOfType(events, "before")) {
+      titles.add((String) event.get("title"));
+    }
+    return titles;
+  }
+
+  private static List<Map<String, Object>> eventsOfType(
+      List<Map<String, Object>> events, String type) {
+    List<Map<String, Object>> matching = new ArrayList<>();
+    for (Map<String, Object> event : events) {
+      if (type.equals(event.get("type"))) {
+        matching.add(event);
+      }
+    }
+    return matching;
+  }
+
+  @SuppressWarnings("unchecked")
+  private static String requestUrlOf(Map<String, Object> networkEntry) {
+    Map<String, Object> snapshot = (Map<String, Object>) networkEntry.get("snapshot");
+    Map<String, Object> request = (Map<String, Object>) snapshot.get("request");
+    return (String) request.get("url");
+  }
+
+  private static String readEntry(ZipFile zip, String name) throws IOException {
+    ZipEntry entry = zip.getEntry(name);
+    assertThat(entry).as(name).isNotNull();
+    try (InputStream in = zip.getInputStream(entry)) {
+      return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+    }
+  }
+
+  private static List<Map<String, Object>> readNdjson(ZipFile zip, String name) throws IOException {
+    String content = readEntry(zip, name);
+    Json json = new Json();
+    List<Map<String, Object>> lines = new ArrayList<>();
+    for (String line : content.split("\n")) {
+      if (!line.isBlank()) {
+        lines.add(json.toType(line, Json.MAP_TYPE));
+      }
+    }
+    return lines;
   }
 }

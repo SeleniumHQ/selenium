@@ -56,6 +56,7 @@ use walkdir::{DirEntry, WalkDir};
 use which::which;
 
 pub mod archiver;
+pub mod bidi;
 pub mod chrome;
 pub mod config;
 pub mod downloads;
