@@ -14,28 +14,30 @@ on:
         required: false
         type: boolean
         default: false
-      target:
-        description: Bazel test target pattern
+      cache_write:
+        description: Write the EngFlow remote cache (diagnostic branch only)
         required: false
-        type: string
-        default: //rb/spec/unit:unit
+        type: boolean
+        default: false
 
 permissions:
   contents: read
   packages: read
 
 jobs:
-  windows-diag:
-    name: windows-diag-${{ matrix.attempt }}
+  windows-smoke:
+    name: windows-smoke-${{ inputs.cache_write && 'write' || 'read' }}
     uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        attempt: [a, b]
     with:
-      name: windows-diag-${{ matrix.attempt }}
+      name: windows-smoke-${{ inputs.cache_write && 'write' || 'read' }}
       os: windows
+      needs-display: true
       remote-cache: true
-      artifact-name: ruby-windows-diag-${{ matrix.attempt }}
+      artifact-name: ruby-windows-smoke-${{ inputs.cache_write && 'write' || 'read' }}
       artifact-path: build/diag/
-      run: ./scripts/github-actions/ruby-windows-cache-diag.sh ${{ inputs.target || '//rb/spec/unit:unit' }}
+      run: >
+        ./scripts/github-actions/ruby-windows-cache-diag.sh
+        --config=gh-browser
+        --test_env=SKIP_PENDING=true
+        --test_tag_filters=unit,os-sensitive,se-manager,skip-rbe
+        //rb/...

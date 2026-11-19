@@ -56,12 +56,14 @@ single_version_override(
 # Carries bazel-contrib/rules_ruby#409 (rb_gem_push omits the interpreter from runfiles); drop in the next release
 # Carries bazel-contrib/rules_ruby#421 (generated_srcs, so a version bump leaves Ruby tests cached); drop in the release that includes it
 # If rules_ruby#421 is rejected or the patch stops applying, remove it by reverting #18164 and setting rb/lib/selenium/webdriver/version.rb to the version.bzl value
+# Keeps per-install MSYS2 files out of the Windows toolchain inputs so Ruby actions can hit the remote cache; not yet upstream
 single_version_override(
     module_name = "rules_ruby",
     patch_strip = 1,
     patches = [
         "//third_party/bazel:rules_ruby_gem_push_runfiles.patch",
         "//third_party/bazel:rules_ruby_lazy_bundle_srcs.patch",
+        "//third_party/bazel:rules_ruby_windows_stable_toolchain_files.patch",
     ],
 )
 

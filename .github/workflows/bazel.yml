@@ -157,7 +157,7 @@ jobs:
           bazelisk-cache: true
           bazelrc: |
             common --color=yes
-            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && (github.event_name == 'push' && 'build --config=remote-cache-write' || 'build --config=remote-cache') || '' }}
+            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && ((github.event_name == 'push' || (github.ref_name == 'rb-windows-cache-diag' && github.event.inputs.cache_write == 'true')) && 'build --config=remote-cache-write' || 'build --config=remote-cache') || '' }}
             ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && (github.event_name == 'schedule' || (inputs.needs-display && github.head_ref == 'pinned-browser-updates')) && 'test --nocache_test_results' || '' }}
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
