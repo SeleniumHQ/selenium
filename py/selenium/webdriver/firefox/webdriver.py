@@ -57,10 +57,10 @@ class WebDriver(LocalWebDriver):
             self.options.browser_version = None
 
         self.service.path = self.service.env_path() or finder.get_driver_path()
-        self.service.start()
+        server_addr = self._start_driver("firefox", self.service, self.options)
 
         executor = FirefoxRemoteConnection(
-            remote_server_addr=self.service.service_url,
+            remote_server_addr=server_addr,
             keep_alive=keep_alive,
             ignore_proxy=self.options._ignore_local_proxy,
         )

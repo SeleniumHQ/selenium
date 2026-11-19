@@ -63,3 +63,11 @@ def test_start_raises_when_process_exits_cleanly_before_connecting(monkeypatch):
             service.start()
     finally:
         service.stop()
+
+
+def test_stop_does_nothing_when_never_started(tmp_path):
+    # A recorded session starts the driver through Selenium Manager, so its service is never started.
+    log_file = tmp_path / "driver.log"
+    service = _UnreachableService(executable_path=sys.executable, log_output=str(log_file))
+    service.stop()
+    assert service.log_output.closed

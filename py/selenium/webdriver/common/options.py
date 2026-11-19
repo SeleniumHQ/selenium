@@ -15,9 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
 import warnings
 from abc import ABCMeta, abstractmethod
 from enum import Enum
+from pathlib import Path
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
@@ -339,10 +341,46 @@ class BaseOptions(metaclass=ABCMeta):
         self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
         self.mobile_options: dict[str, str] | None = None
         self._ignore_local_proxy = False
+        self._record: Path | None = None
 
     @property
     def capabilities(self):
         return self._caps
+
+    @property
+    def record(self) -> Path | None:
+        """Gets and sets the trace archive the session is recorded into.
+
+        The trace uses the Playwright trace format and opens in the Playwright trace
+        viewer and the Vibium record player. It contains the WebDriver commands, a
+        screenshot after each action, and console and network activity when the
+        driver supports WebDriver BiDi. It is written when the driver is quit.
+
+        Recording is done by Selenium Manager and is currently supported when
+        starting Chrome, Edge or Firefox locally; the setting is not sent to the
+        browser or to a remote end. This is a beta feature and may change.
+
+        Usage:
+            - Get: `self.record`
+            - Set: `self.record = "trace.zip"`
+            - Stop recording: `self.record = None`
+
+        Args:
+            value: Path of the trace archive; an existing file is overwritten.
+
+        Returns:
+            The trace archive path as a `pathlib.Path`, or None if the session is
+            not recorded.
+        """
+        return self._record
+
+    @record.setter
+    def record(self, value: str | os.PathLike[str] | None) -> None:
+        if value is not None and not isinstance(value, (str, os.PathLike)):
+            raise TypeError(f"record must be a path, got {type(value).__name__}")
+        if value is not None and not os.fspath(value):
+            raise ValueError("record must not be an empty path")
+        self._record = None if value is None else Path(value)
 
     def set_capability(self, name: str, value: object) -> None:
         """Sets a capability."""

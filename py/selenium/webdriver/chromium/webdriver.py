@@ -52,10 +52,10 @@ class ChromiumDriver(LocalWebDriver):
             self.options.browser_version = None
 
         self.service.path = self.service.env_path() or finder.get_driver_path()
-        self.service.start()
+        server_addr = self._start_driver(browser_name, self.service, self.options)
 
         executor = ChromiumRemoteConnection(
-            remote_server_addr=self.service.service_url,
+            remote_server_addr=server_addr,
             browser_name=browser_name,
             vendor_prefix=vendor_prefix,
             keep_alive=keep_alive,
