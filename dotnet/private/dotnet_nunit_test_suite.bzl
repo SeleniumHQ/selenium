@@ -107,6 +107,8 @@ _BROWSERS = {
         ],
         "data": [
             "//:grid",
+            "//dotnet/test/testing.nunit:java-location",
+            "@bazel_tools//tools/jdk:current_java_runtime",
         ],
         "tags": ["skip-rbe"],
     },
