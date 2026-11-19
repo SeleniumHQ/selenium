@@ -30,3 +30,27 @@ def test_command_line_args():
             break
 
     assert found, "Provided arguments do not exist in array"
+
+
+def test_lets_firefox_choose_the_websocket_port():
+    args = Service().command_line_args()
+
+    assert args[args.index("--websocket-port") + 1] == "0"
+
+
+def test_keeps_user_supplied_websocket_port():
+    service = Service(service_args=["--websocket-port", "1234"])
+
+    assert service.service_args == ["--websocket-port", "1234"]
+
+
+def test_keeps_user_supplied_websocket_port_with_equals():
+    service = Service(service_args=["--websocket-port=1234"])
+
+    assert service.service_args == ["--websocket-port=1234"]
+
+
+def test_omits_websocket_port_when_connecting_to_existing_firefox():
+    service = Service(service_args=["--connect-existing"])
+
+    assert service.service_args == ["--connect-existing"]
