@@ -7,8 +7,11 @@ LARGE_TESTS = [
     "FirefoxDriverBuilderTest.java",
     "FirefoxDriverPreferenceTest.java",
     "FirefoxDriverConcurrentTest.java",
-    "FirefoxRecordingTest.java",
     "TakesFullPageScreenshotTest.java",
+]
+
+RECORDING_TESTS = [
+    "FirefoxRecordingTest.java",
 ]
 
 REMOTE_TESTS = [
@@ -20,7 +23,7 @@ java_test_suite(
     size = "small",
     srcs = glob(
         ["*.java"],
-        exclude = LARGE_TESTS + REMOTE_TESTS,
+        exclude = LARGE_TESTS + RECORDING_TESTS + REMOTE_TESTS,
     ),
     deps = [
         "//java/src/org/openqa/selenium/firefox",
@@ -63,7 +66,6 @@ java_selenium_test_suite(
     deps = [
         ":assumptions",
         "//java/src/org/openqa/selenium/firefox",
-        "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium:helpers",
@@ -107,5 +109,30 @@ java_selenium_test_suite(
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
         artifact("org.jspecify:jspecify"),
+    ] + JUNIT5_DEPS,
+)
+
+# Trace recording runs through Selenium Manager's pipe mode, so these tests need a real
+# Selenium Manager (se-manager) and only apply when the binding starts the driver itself.
+java_selenium_test_suite(
+    name = "recording-tests",
+    size = "large",
+    srcs = RECORDING_TESTS,
+    browsers = [
+        "firefox",
+    ],
+    tags = [
+        "se-manager",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
     ] + JUNIT5_DEPS,
 )
