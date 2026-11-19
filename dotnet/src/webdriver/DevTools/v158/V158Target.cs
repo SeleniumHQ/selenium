@@ -1,4 +1,4 @@
-// <copyright file="V155Target.cs" company="Selenium Committers">
+// <copyright file="V158Target.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -18,23 +18,23 @@
 // </copyright>
 
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.DevTools.V155.Target;
+using OpenQA.Selenium.DevTools.V158.Target;
 
-namespace OpenQA.Selenium.DevTools.V155;
+namespace OpenQA.Selenium.DevTools.V158;
 
 /// <summary>
-/// Class providing functionality for manipulating targets for version 155 of the DevTools Protocol
+/// Class providing functionality for manipulating targets for version 158 of the DevTools Protocol
 /// </summary>
-public class V155Target : DevTools.Target
+public class V158Target : DevTools.Target
 {
     private readonly TargetAdapter adapter;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="V155Target"/> class.
+    /// Initializes a new instance of the <see cref="V158Target"/> class.
     /// </summary>
     /// <param name="adapter">The adapter for the Target domain.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="adapter"/> is <see langword="null"/>.</exception>
-    public V155Target(TargetAdapter adapter)
+    public V158Target(TargetAdapter adapter)
     {
         ArgumentNullException.ThrowIfNull(adapter);
         this.adapter = adapter;

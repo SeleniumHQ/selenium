@@ -126,7 +126,7 @@ compile_pip_requirements(
 SE_VERSION = VERSIONS["python"]
 
 BROWSER_VERSIONS = [
-    "v155",
+    "v158",
     "v156",
     "v157",
 ]
