@@ -104,8 +104,6 @@ _BROWSERS = {
         "args": [
             "--test-parameter",
             "ActiveDriverConfig=Remote",
-            "--test-parameter",
-            "JavaLocation=$(rootpath //dotnet/test/testing.nunit:java-location)",
         ],
         "data": [
             "//:grid",

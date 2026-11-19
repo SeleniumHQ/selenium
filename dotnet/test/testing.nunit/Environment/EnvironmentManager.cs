@@ -131,7 +131,7 @@ public class EnvironmentManager
             autoStartRemoteServer = driverConfig.AutoStartRemoteServer;
         }
 
-        RemoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer, ResolveBazelJava(env.JavaLocation));
+        RemoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer, ResolveBazelJava(runfiles));
     }
 
     ~EnvironmentManager()
@@ -202,9 +202,9 @@ public class EnvironmentManager
         return Path.GetFullPath(Path.Combine(srcdir, "_main", path));
     }
 
-    private static string ResolveBazelJava(string javaLocation)
+    private static string ResolveBazelJava(Runfiles runfiles)
     {
-        string locationFile = ResolveRunfilesPath(javaLocation);
+        string locationFile = runfiles?.Rlocation("_main/dotnet/test/testing.nunit/java-location.txt");
         if (string.IsNullOrEmpty(locationFile) || !File.Exists(locationFile))
         {
             return "java";
@@ -214,7 +214,7 @@ public class EnvironmentManager
         const string externalPrefix = "external/";
         string execPath = File.ReadAllText(locationFile).Trim();
         string runfilesPath = execPath.StartsWith(externalPrefix) ? execPath.Substring(externalPrefix.Length) : execPath;
-        string java = Runfiles.Create().Rlocation(runfilesPath);
+        string java = runfiles.Rlocation(runfilesPath);
         if (string.IsNullOrEmpty(java) || !File.Exists(java))
         {
             return "java";
