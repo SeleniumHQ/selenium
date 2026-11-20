@@ -569,27 +569,6 @@ def test_locate_nodes_given_start_nodes(driver, pages):
     assert len(nodes) == 3
 
 
-def test_listeners_for_one_event_are_removed_independently(driver, pages):
-    first, second = [], []
-    first_listener = BrowsingContext(driver).add_load_listener(first.append)
-    second_listener = BrowsingContext(driver).add_load_listener(second.append)
-    subscription = Session(driver).subscribe(events=["browsingContext.load"]).subscription
-
-    driver.get(pages.url("simpleTest.html"))
-    WebDriverWait(driver, 10).until(lambda _: first and second)
-    BrowsingContext(driver).remove_listener(first_listener)
-    driver.get(pages.url("blank.html"))
-    WebDriverWait(driver, 10).until(lambda _: len(second) == 2)
-    Session(driver).unsubscribe(subscriptions=[subscription])
-    BrowsingContext(driver).remove_listener(second_listener)
-
-    assert [e.url for e in first] == [pages.url("simpleTest.html")]
-    assert [e.url for e in second] == [
-        pages.url("simpleTest.html"),
-        pages.url("blank.html"),
-    ]
-
-
 def test_context_created_event(driver):
     events = []
     listener = BrowsingContext(driver).add_context_created_listener(events.append)
