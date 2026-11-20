@@ -124,6 +124,7 @@ module Selenium
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 120,
+            env: safari_diagnose_env,
             args: %w[--enable-managed-downloads true --detect-drivers false] + driver_configuration
           )
         end
@@ -363,10 +364,15 @@ module Selenium
           WebDriver::Driver.for(:safari, service: service || safari_service, **)
         end
 
-        # rules_ruby points HOME at TEST_TMPDIR, and safaridriver writes no --diagnose logs without the real HOME
         def safari_service
-          env = {'HOME' => Dir.home(ENV.fetch('USER'))} if ENV.key?('SE_DEBUG')
-          WebDriver::Service.safari(env: env)
+          WebDriver::Service.safari(env: safari_diagnose_env)
+        end
+
+        # rules_ruby points HOME at TEST_TMPDIR, and safaridriver writes no --diagnose logs without the real HOME
+        def safari_diagnose_env
+          return unless ENV.key?('SE_DEBUG') && browser.to_s.start_with?('safari')
+
+          {'HOME' => Dir.home(ENV.fetch('USER'))}
         end
 
         def chrome_options(args: [], **opts)

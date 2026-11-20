@@ -63,6 +63,18 @@ module Selenium
         expect(mock_process).not_to have_received(:wait)
       end
 
+      it 'passes environment variables to the server process' do
+        described_class.new(jar, port: port, env: {'FOO' => 'bar'}).start
+
+        expect(mock_process).to have_received(:env=).with({'FOO' => 'bar'})
+      end
+
+      it 'keeps the inherited environment by default' do
+        described_class.new(jar, port: port).start
+
+        expect(mock_process).not_to have_received(:env=)
+      end
+
       it 'adds additional args' do
         server = described_class.new(jar, port: port)
         server << %w[foo bar]
