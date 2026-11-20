@@ -141,11 +141,7 @@ class Service(ABC):
         Returns:
             True if the service is ready to accept new sessions, False otherwise.
         """
-        # The status check bypasses proxies, so it can use the IPv4 loopback address directly.
-        # On Windows, connecting to "localhost" tries ::1 first, and when the driver listens on
-        # 127.0.0.1 only (geckodriver does), that attempt takes a full second to fail.
-        host = utils.find_connectable_ip("localhost") or "localhost"
-        return utils.is_url_connectable(self.port, host=host)
+        return utils.is_url_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
         """Dispatch an HTTP request to the shutdown endpoint to stop the service."""

@@ -18,7 +18,10 @@
 import subprocess
 import sys
 
+import pytest
+
 from selenium.webdriver.common import service as common_service
+from selenium.webdriver.common import utils
 from selenium.webdriver.firefox.service import Service
 
 
@@ -46,3 +49,23 @@ def test_stop_does_not_send_shutdown_request(monkeypatch):
 
     assert requested == []
     assert service.process.poll() is not None
+
+
+def _checked_hosts(monkeypatch, service):
+    checked = []
+    monkeypatch.setattr(utils, "is_url_connectable", lambda port, host="localhost": checked.append((host, port)))
+    service.is_connectable()
+    return checked
+
+
+def test_is_connectable_checks_ipv4_loopback(monkeypatch):
+    service = Service(executable_path=sys.executable, port=4444)
+
+    assert _checked_hosts(monkeypatch, service) == [("127.0.0.1", 4444)]
+
+
+@pytest.mark.parametrize("host_args", [["--host", "::1"], ["--host=::1"]])
+def test_is_connectable_keeps_localhost_when_host_is_set(monkeypatch, host_args):
+    service = Service(executable_path=sys.executable, port=4444, service_args=host_args)
+
+    assert _checked_hosts(monkeypatch, service) == [("localhost", 4444)]

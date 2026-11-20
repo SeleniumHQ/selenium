@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import socket
 import sys
 
 import pytest
@@ -64,20 +63,3 @@ def test_start_raises_when_process_exits_cleanly_before_connecting(monkeypatch):
             service.start()
     finally:
         service.stop()
-
-
-def test_is_connectable_checks_ipv4_loopback_when_localhost_resolves_to_ipv6_first(monkeypatch):
-    def getaddrinfo(host, *args, **kwargs):
-        assert host == "localhost"
-        return [
-            (socket.AF_INET6, socket.SOCK_STREAM, 6, "", ("::1", 0, 0, 0)),
-            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.0.1", 0)),
-        ]
-
-    checked = []
-    monkeypatch.setattr(utils.socket, "getaddrinfo", getaddrinfo)
-    monkeypatch.setattr(utils, "is_url_connectable", lambda port, host="localhost": checked.append((host, port)))
-
-    _UnreachableService(executable_path=sys.executable, port=4444).is_connectable()
-
-    assert checked == [("127.0.0.1", 4444)]
