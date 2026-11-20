@@ -17,6 +17,10 @@ BIDI_TESTS = [
     "RemoteWebDriverBiDiTest.java",
 ]
 
+RECORDING_TESTS = [
+    "RemoteRecordingTest.java",
+]
+
 SMALL_TESTS = [
     "DirectForwardingListenerTest.java",
 ]
@@ -152,7 +156,7 @@ java_test_suite(
     size = "medium",
     srcs = glob(
         ["*Test.java"],
-        exclude = LARGE_TESTS + BIDI_TESTS + STRESS_TESTS + SMALL_TESTS,
+        exclude = LARGE_TESTS + BIDI_TESTS + STRESS_TESTS + SMALL_TESTS + RECORDING_TESTS,
     ),
     deps = [
         ":support",
@@ -178,5 +182,32 @@ java_test_suite(
         artifact("org.assertj:assertj-core"),
         artifact("org.zeromq:jeromq"),
         artifact("org.jspecify:jspecify"),
+    ] + JUNIT5_DEPS,
+)
+
+# Recording runs through Selenium Manager's pipe mode in front of the Grid, so it needs a real
+# Selenium Manager (se-manager).
+java_selenium_test_suite(
+    name = "recording-tests",
+    size = "large",
+    srcs = RECORDING_TESTS,
+    browsers = [
+        "chrome",
+        "firefox",
+    ],
+    tags = [
+        "se-manager",
+    ],
+    deps = [
+        ":support",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
     ] + JUNIT5_DEPS,
 )

@@ -113,7 +113,7 @@ java_selenium_test_suite(
 )
 
 # Trace recording runs through Selenium Manager's pipe mode, so these tests need a real
-# Selenium Manager (se-manager) and only apply when the binding starts the driver itself.
+# Selenium Manager (se-manager).
 java_selenium_test_suite(
     name = "recording-tests",
     size = "large",
@@ -125,6 +125,8 @@ java_selenium_test_suite(
         "se-manager",
     ],
     deps = [
+        "//java/src/org/openqa/selenium/bidi/log",
+        "//java/src/org/openqa/selenium/bidi/module",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",

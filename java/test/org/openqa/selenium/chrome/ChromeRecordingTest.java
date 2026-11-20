@@ -23,19 +23,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -97,26 +97,41 @@ class ChromeRecordingTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  void fallsBackToClassicWebDriverWhenTheBindingUsesBiDi() throws IOException {
-    Path trace = traceFile("classic-trace.zip");
+  void sharesBiDiWithTheBinding() throws Exception {
+    Path trace = traceFile("shared-bidi-trace.zip");
     ChromeOptions options = (ChromeOptions) Browser.CHROME.getCapabilities();
     options.enableBiDi();
     options.setRecord(trace.toString());
     localDriver = new ChromeDriver(options);
 
-    assertThat(((HasCapabilities) localDriver).getCapabilities().getCapability("webSocketUrl"))
-        .isNotNull();
+    // The binding talks BiDi to the recording proxy, which shares the browser's connection.
+    assertThat(
+            (String) ((HasCapabilities) localDriver).getCapabilities().getCapability("webSocketUrl"))
+        .startsWith("ws://127.0.0.1:");
 
-    localDriver.get(pages.formPage);
-    localDriver.findElement(By.id("checky")).click();
-    new WebDriverWait(localDriver, Duration.ofSeconds(5))
-        .until(ExpectedConditions.elementToBeSelected(By.id("checky")));
+    CompletableFuture<String> logged = new CompletableFuture<>();
+    try (LogInspector logInspector = new LogInspector(localDriver)) {
+      logInspector.onConsoleEntry(entry -> logged.complete(entry.getText()));
+      localDriver.get(appServer.whereIs("bidi/logEntryAdded.html"));
+      localDriver.findElement(By.id("consoleLog")).click();
+      assertThat(logged.get(5, TimeUnit.SECONDS)).isEqualTo("Hello, world!");
+    }
+    // Closing the inspector unsubscribes the binding; the proxy must keep recording.
+    localDriver.findElement(By.id("consoleError")).click();
     quit();
 
     try (ZipFile zip = new ZipFile(trace.toFile())) {
       List<Map<String, Object>> events = readNdjson(zip, "trace.trace");
       assertThat(titlesOf(events)).contains("Click", "Quit");
       assertScreenshotsArePackaged(zip, events);
+
+      assertThat(eventsOfType(events, "console"))
+          .extracting(event -> event.get("text"))
+          .contains("Hello, world!", "I am console error");
+
+      assertThat(readNdjson(zip, "trace.network"))
+          .extracting(entry -> requestUrlOf(entry))
+          .anyMatch(url -> url.endsWith("logEntryAdded.html"));
     }
   }
 
