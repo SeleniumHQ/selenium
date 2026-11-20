@@ -59,7 +59,7 @@ class Transport:
         value = reply["result"]
         return result.from_json(value) if result is not None else value
 
-    def add_listener(self, event: str, payload_type: type | None, listener: Callable[[Any], Any]) -> str:
+    def add_listener(self, event: str, payload_type: Any, listener: Callable[[Any], Any]) -> str:
         """Add ``listener`` for the ``payload_type`` payloads of ``event`` to the connection's dispatcher."""
         return self._dispatcher().add_listener(event, payload_type, listener)
 

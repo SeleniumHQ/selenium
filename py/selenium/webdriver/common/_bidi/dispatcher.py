@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 class _Listener:
     """Invoked with each payload on a thread of its own, without waiting for earlier invocations."""
 
-    def __init__(self, name: str, event: str, payload_type: type | None, listener: Callable[[Any], Any]):
+    def __init__(self, name: str, event: str, payload_type: Any, listener: Callable[[Any], Any]):
         self.name = name
         self.event = event
         self.payload_type = payload_type
@@ -82,7 +82,7 @@ class EventDispatcher:
         self._lock = threading.Lock()
         self._closed = False
 
-    def add_listener(self, event: str, payload_type: type | None, listener: Callable[[Any], Any]) -> str:
+    def add_listener(self, event: str, payload_type: Any, listener: Callable[[Any], Any]) -> str:
         if not callable(listener):
             raise TypeError("a callable is required to listen for an event")
         with self._lock:
