@@ -19,8 +19,16 @@ package org.openqa.selenium.remote.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.remote.http.ClientConfig;
 
 @Tag("UnitTests")
 class TraceRecordingCommandExecutorTest {
@@ -57,5 +65,48 @@ class TraceRecordingCommandExecutorTest {
     String output = "{\"proxy_url\":\"http://127.0.0.1:43341\"}\n[INFO] Trace saved to t.zip\n";
 
     assertThat(TraceRecordingCommandExecutor.findTraceError(output)).isNull();
+  }
+
+  @Test
+  void upstreamArgumentHasNoUserInfo() throws MalformedURLException {
+    URL remote = new URL("https://me%40corp.com:s3cret@hub.example.com:443/wd/hub");
+
+    assertThat(TraceRecordingCommandExecutor.withoutUserInfo(remote))
+        .isEqualTo("https://hub.example.com:443/wd/hub");
+  }
+
+  @Test
+  void upstreamAuthorizationComesFromUserInfo() throws MalformedURLException {
+    URL remote = new URL("https://me%40corp.com:s3cret@hub.example.com/wd/hub");
+
+    assertThat(TraceRecordingCommandExecutor.basicAuthorization(remote, ClientConfig.defaultConfig()))
+        .isEqualTo(basic("me@corp.com:s3cret"));
+  }
+
+  @Test
+  void upstreamAuthorizationComesFromClientCredentials() throws MalformedURLException {
+    URL remote = new URL("https://hub.example.com/wd/hub");
+    ClientConfig config =
+        ClientConfig.defaultConfig().authenticateAs(new UsernameAndPassword("u", "p"));
+
+    assertThat(TraceRecordingCommandExecutor.basicAuthorization(remote, config))
+        .isEqualTo("Basic dTpw");
+    assertThat(
+            TraceRecordingCommandExecutor.basicAuthorization(remote, ClientConfig.defaultConfig()))
+        .isNull();
+  }
+
+  @Test
+  void proxyArgumentComesFromClientConfig() {
+    Proxy proxy = new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved("proxy.corp", 3128));
+
+    assertThat(TraceRecordingCommandExecutor.proxyArgument(ClientConfig.defaultConfig().proxy(proxy)))
+        .isEqualTo("http://proxy.corp:3128");
+    assertThat(TraceRecordingCommandExecutor.proxyArgument(ClientConfig.defaultConfig())).isNull();
+  }
+
+  private static String basic(String userAndPassword) {
+    return "Basic "
+        + Base64.getEncoder().encodeToString(userAndPassword.getBytes(StandardCharsets.UTF_8));
   }
 }

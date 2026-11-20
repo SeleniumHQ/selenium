@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -276,6 +277,20 @@ public class SeleniumManager {
    */
   @Beta
   public ExternalProcess startPipe(List<String> arguments) {
+    return startPipe(arguments, Map.of());
+  }
+
+  /**
+   * Like {@link #startPipe(List)}, with extra environment variables for the process. Secrets
+   * (e.g. credentials of a remote end) go here rather than in the arguments, which are logged and
+   * visible in process listings.
+   *
+   * @param arguments List of command line arguments to send to Selenium Manager binary
+   * @param environment environment variables to add to the process
+   * @return the running Selenium Manager process; the caller is responsible for shutting it down
+   */
+  @Beta
+  public ExternalProcess startPipe(List<String> arguments, Map<String, String> environment) {
     List<String> args = new ArrayList<>(arguments.size() + 3);
     args.addAll(arguments);
     args.add("--language-binding");
@@ -287,9 +302,11 @@ public class SeleniumManager {
     Path binary = getBinary();
     LOG.fine(String.format("Starting Selenium Manager in pipe mode: %s", args));
     try {
-      return withSeleniumProperties(ExternalProcess.builder())
-          .command(binary.toAbsolutePath().toString(), args)
-          .start();
+      ExternalProcess.Builder builder =
+          withSeleniumProperties(ExternalProcess.builder())
+              .command(binary.toAbsolutePath().toString(), args);
+      environment.forEach(builder::environment);
+      return builder.start();
     } catch (Exception e) {
       throw new WebDriverException(
           String.format(

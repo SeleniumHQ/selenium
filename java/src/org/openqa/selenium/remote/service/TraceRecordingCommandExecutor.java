@@ -18,12 +18,17 @@
 package org.openqa.selenium.remote.service;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -31,6 +36,7 @@ import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -103,6 +109,7 @@ public class TraceRecordingCommandExecutor extends HttpCommandExecutor {
             driverPath,
             "--record",
             tracePath.toAbsolutePath().toString()),
+        Map.of(),
         tracePath,
         additionalCommands,
         clientConfig);
@@ -124,29 +131,42 @@ public class TraceRecordingCommandExecutor extends HttpCommandExecutor {
     Require.nonNull("Remote address", remoteAddress);
     Require.nonNull("Driver options", options);
     Require.nonNull("Trace path", tracePath);
-    return launch(
-        List.of(
-            "--browser",
-            options.getBrowserName(),
-            "--upstream",
-            remoteAddress.toString(),
-            "--record",
-            tracePath.toAbsolutePath().toString()),
-        tracePath,
-        Map.of(),
-        clientConfig);
+    Require.nonNull("Client config", clientConfig);
+    List<String> arguments =
+        new ArrayList<>(
+            List.of(
+                "--browser",
+                options.getBrowserName(),
+                "--upstream",
+                withoutUserInfo(remoteAddress),
+                "--record",
+                tracePath.toAbsolutePath().toString()));
+    String proxy = proxyArgument(clientConfig);
+    if (proxy != null) {
+      arguments.add("--proxy");
+      arguments.add(proxy);
+    }
+    // Credentials stay out of the arguments, which are logged and visible in process listings.
+    String authorization = basicAuthorization(remoteAddress, clientConfig);
+    Map<String, String> environment =
+        authorization == null ? Map.of() : Map.of("SE_UPSTREAM_AUTHORIZATION", authorization);
+    return launch(arguments, environment, tracePath, Map.of(), clientConfig);
   }
 
   private static TraceRecordingCommandExecutor launch(
       List<String> arguments,
+      Map<String, String> environment,
       Path tracePath,
       Map<String, CommandInfo> additionalCommands,
       ClientConfig clientConfig) {
-    ExternalProcess pipe = SeleniumManager.getInstance().startPipe(arguments);
+    ExternalProcess pipe = SeleniumManager.getInstance().startPipe(arguments, environment);
     try {
       URL proxyUrl = awaitProxyUrl(pipe);
       LOG.fine(String.format("Recording session to %s through %s", tracePath, proxyUrl));
-      return new TraceRecordingCommandExecutor(additionalCommands, proxyUrl, clientConfig, pipe);
+      // Selenium Manager runs on this machine: an HTTP proxy only applies beyond it.
+      ClientConfig local =
+          clientConfig.proxy() == null ? clientConfig : clientConfig.proxy(Proxy.NO_PROXY);
+      return new TraceRecordingCommandExecutor(additionalCommands, proxyUrl, local, pipe);
     } catch (RuntimeException e) {
       pipe.shutdown();
       throw e;
@@ -222,6 +242,58 @@ public class TraceRecordingCommandExecutor extends HttpCommandExecutor {
         String.format(
             "Selenium Manager did not start the recording proxy within %d seconds:%n%s",
             STARTUP_TIMEOUT.toSeconds(), pipe.getOutput(StandardCharsets.UTF_8)));
+  }
+
+  /** The remote address as given to Selenium Manager: credentials go in its environment. */
+  static String withoutUserInfo(URL remoteAddress) {
+    try {
+      URI uri = remoteAddress.toURI();
+      return new URI(
+              uri.getScheme(),
+              null,
+              uri.getHost(),
+              uri.getPort(),
+              uri.getPath(),
+              uri.getQuery(),
+              uri.getFragment())
+          .toString();
+    } catch (URISyntaxException e) {
+      throw new WebDriverException("Invalid remote address: " + remoteAddress.getHost(), e);
+    }
+  }
+
+  /**
+   * Basic authentication for the remote end, from the user info of its address or from the
+   * credentials of the client configuration. Selenium Manager uses it for requests of its own and
+   * for requests of the binding that carry no credentials, since the binding only sends them when
+   * challenged and challenges do not reach it through the proxy.
+   */
+  static @Nullable String basicAuthorization(URL remoteAddress, ClientConfig clientConfig) {
+    String userAndPassword = null;
+    try {
+      userAndPassword = remoteAddress.toURI().getUserInfo();
+    } catch (URISyntaxException e) {
+      LOG.log(Level.FINE, "Ignoring user info of an invalid remote address", e);
+    }
+    if (userAndPassword == null && clientConfig.credentials() instanceof UsernameAndPassword) {
+      UsernameAndPassword credentials = (UsernameAndPassword) clientConfig.credentials();
+      userAndPassword = credentials.username() + ":" + credentials.password();
+    }
+    if (userAndPassword == null) {
+      return null;
+    }
+    return "Basic "
+        + Base64.getEncoder().encodeToString(userAndPassword.getBytes(StandardCharsets.UTF_8));
+  }
+
+  /** The HTTP proxy of the client configuration, for Selenium Manager's {@code --proxy}. */
+  static @Nullable String proxyArgument(ClientConfig clientConfig) {
+    Proxy proxy = clientConfig.proxy();
+    if (proxy == null || proxy.type() != Proxy.Type.HTTP) {
+      return null;
+    }
+    InetSocketAddress address = (InetSocketAddress) proxy.address();
+    return String.format("http://%s:%d", address.getHostString(), address.getPort());
   }
 
   /** The proxy URL is announced as a single JSON line among the regular log lines. */

@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.router;
 
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.json.Json;
@@ -61,15 +63,7 @@ class RemoteRecordingTest extends JupiterTestBase {
   @NoDriverBeforeTest
   void recordsARemoteSession() throws IOException {
     Browser browser = requireNonNull(Browser.detect());
-    deployment =
-        DeploymentTypes.STANDALONE.start(
-            browser.getCapabilities(),
-            new TomlConfig(
-                new StringReader(
-                    "[node]\n"
-                        + "selenium-manager = false\n"
-                        + "driver-implementation = "
-                        + String.format("\"%s\"", browser.displayName()))));
+    deployment = DeploymentTypes.STANDALONE.start(browser.getCapabilities(), nodeConfig(browser));
 
     Path trace = traceFile("remote-trace.zip");
     AbstractDriverOptions<?> options = (AbstractDriverOptions<?>) browser.getCapabilities();
@@ -89,6 +83,32 @@ class RemoteRecordingTest extends JupiterTestBase {
           .extracting(event -> event.get("text"))
           .contains("Hello, world!");
     }
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void stopsSeleniumManagerWhenTheSessionCannotStart() {
+    Browser browser = requireNonNull(Browser.detect());
+    deployment = DeploymentTypes.STANDALONE.start(browser.getCapabilities(), nodeConfig(browser));
+
+    Path trace = traceFile("failed-session-trace.zip");
+    AbstractDriverOptions<?> options = (AbstractDriverOptions<?>) browser.getCapabilities();
+    options.setCapability("browserVersion", "1.0");
+    options.setRecord(trace.toString());
+
+    assertThatThrownBy(() -> new RemoteWebDriver(deployment.getServer().getUrl(), options))
+        .isInstanceOf(WebDriverException.class);
+    // Selenium Manager only writes the trace once it is told to stop.
+    assertThat(trace).exists();
+  }
+
+  private static TomlConfig nodeConfig(Browser browser) {
+    return new TomlConfig(
+        new StringReader(
+            "[node]\n"
+                + "selenium-manager = false\n"
+                + "driver-implementation = "
+                + String.format("\"%s\"", browser.displayName())));
   }
 
   private Path traceFile(String name) {

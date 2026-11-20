@@ -16,7 +16,9 @@ java_test_suite(
     deps = [
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/manager",
+        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
@@ -44,7 +46,6 @@ java_selenium_test_suite(
         "se-manager",
     ],
     deps = [
-        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/edge",
         "//java/src/org/openqa/selenium/firefox",

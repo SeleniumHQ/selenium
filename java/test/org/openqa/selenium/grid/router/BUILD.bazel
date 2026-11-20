@@ -200,6 +200,7 @@ java_selenium_test_suite(
     ],
     deps = [
         ":support",
+        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/grid",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/json",
