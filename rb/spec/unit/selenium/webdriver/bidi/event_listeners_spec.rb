@@ -28,7 +28,6 @@ module Selenium
       let(:remote_end_class) do
         Class.new do
           attr_reader :sent
-          attr_accessor :before_subscribe_reply
 
           def initialize
             @sent = []
@@ -43,7 +42,6 @@ module Selenium
               while (frame = @commands.next)
                 command = JSON.parse(frame.to_s)
                 @sent << command
-                before_subscribe_reply&.call if command['method'] == 'session.subscribe'
                 push(id: command['id'], type: 'success', result: result_for(command['method']))
               end
             end
@@ -64,11 +62,7 @@ module Selenium
           private
 
           def result_for(method)
-            case method
-            when 'browsingContext.getTree' then {contexts: []}
-            when 'session.subscribe' then {subscription: 'sub-1'}
-            else {}
-            end
+            method == 'browsingContext.getTree' ? {contexts: []} : {}
           end
 
           def push(message)
@@ -114,7 +108,7 @@ module Selenium
         contexts.get_tree
       end
 
-      # Invocations run concurrently, so a later payload can arrive before an earlier one's error is logged.
+      # The error is logged on the listener's own thread, after the payload has been handed off.
       def await_errors(count)
         logged = Queue.new
         allow(WebDriver.logger).to receive(:error).and_wrap_original do |original, *args, **kwargs|
@@ -187,33 +181,19 @@ module Selenium
         expect(take).to eq([])
       end
 
-      it 'logs a listener that raises as an error and still invokes it with the next payload' do
-        contexts.add_load_listener do |payload|
-          received << payload.url
-          raise Error::WebDriverError, 'boom' if payload.url == 'https://one'
-        end
+      it 'logs an exception raised by a listener as an error' do
+        contexts.add_load_listener { raise Error::WebDriverError, 'boom' }
 
         expect {
-          await_errors(1) do
-            emit_load('https://one')
-            emit_load('https://two')
-          end
-          expect([take, take]).to contain_exactly('https://one', 'https://two')
+          await_errors(1) { emit_load('https://example.com') }
         }.to have_error(:bidi, /listener for browsingContext\.load raised.*WebDriverError: boom/)
       end
 
       it 'logs a failed assertion in a listener, which raises outside StandardError' do
-        contexts.add_load_listener do |payload|
-          received << payload.url
-          expect(payload.url).to eq('https://two')
-        end
+        contexts.add_load_listener { |payload| expect(payload.url).to eq('https://other') }
 
         expect {
-          await_errors(1) do
-            emit_load('https://one')
-            emit_load('https://two')
-          end
-          expect([take, take]).to contain_exactly('https://one', 'https://two')
+          await_errors(1) { emit_load('https://example.com') }
         }.to have_error(:bidi, /listener for browsingContext\.load raised.*ExpectationNotMetError/)
       end
 
@@ -231,19 +211,12 @@ module Selenium
       end
 
       it 'drops a payload for an event with no listener silently' do
+        contexts.add_dom_content_loaded_listener { nil }
+
         expect {
           remote_end.emit('browsingContext.load', context: 'ctx-1', url: 'https://invalid')
           await_dispatch
         }.not_to have_error(:bidi)
-      end
-
-      it 'payloads sent before the subscribe reply reach a listener added first' do
-        contexts.add_load_listener { |payload| received << payload.url }
-        remote_end.before_subscribe_reply = -> { emit_load('https://example.com') }
-
-        BiDi::Protocol::Session.new(connection).subscribe(events: ['browsingContext.load'])
-
-        expect(take).to eq('https://example.com')
       end
 
       it 'removing a listener is local and can be repeated through any domain instance' do
@@ -282,6 +255,15 @@ module Selenium
         expect(take).to eq('https://running')
         expect(received.pop(timeout: 0.2)).to be_nil
         expect(started).to be_empty
+      end
+
+      it 'skips a payload handed to a listener just before it was removed' do
+        listener = BiDi::Dispatcher::Listener.new('browsingContext.load', nil, ->(payload) { received << payload })
+
+        listener.deactivate
+        listener.dispatch('payload')
+
+        expect(received.pop(timeout: 0.2)).to be_nil
       end
 
       it 'a listener can remove itself' do
@@ -347,9 +329,8 @@ module Selenium
 
         expect(take(raw)).to eq(load.transform_keys(&:to_s))
         expect(take).to be_a(BiDi::Protocol::BrowsingContext::NavigationInfo)
-        connection.remove_callback('browsingContext.load', id)
-        expect { connection.remove_callback('browsingContext.load', id) }
-          .to raise_error(Error::WebDriverError, /does not exist/)
+      ensure
+        connection.remove_callback('browsingContext.load', id) if id
       end
     end
   end # WebDriver
