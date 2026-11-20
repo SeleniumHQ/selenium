@@ -62,8 +62,22 @@ const BIDI_EVENTS: &[&str] = &[
     "browsingContext.contextCreated",
     "browsingContext.contextDestroyed",
 ];
-const PASSWORD_FOCUSED_SCRIPT: &str =
-    "return !!document.activeElement && document.activeElement.type === 'password'";
+// Follows focus into shadow roots and frames. A frame whose document cannot be read (another
+// origin, e.g. an embedded login or payment form) counts as a password field.
+const PASSWORD_FOCUSED_SCRIPT: &str = "let e = document.activeElement;
+while (e) {
+  if (e.shadowRoot && e.shadowRoot.activeElement) { e = e.shadowRoot.activeElement; continue; }
+  if (e.tagName === 'IFRAME' || e.tagName === 'FRAME') {
+    let doc = null;
+    try { doc = e.contentDocument; } catch (err) { return true; }
+    if (!doc) { return true; }
+    if (!doc.activeElement || doc.activeElement === doc.body) { return false; }
+    e = doc.activeElement;
+    continue;
+  }
+  break;
+}
+return !!e && e.type === 'password';";
 
 static SHUTDOWN_REQUESTED: AtomicBool = AtomicBool::new(false);
 
@@ -188,6 +202,9 @@ struct ProxyState {
     client: Client,
     /// Headers for the upstream BiDi handshake when the binding sends none (`--upstream` user info).
     upstream_headers: Vec<(String, String)>,
+    /// Credentials of the binding (`Authorization` of its new session request), for requests of
+    /// the proxy itself.
+    session_headers: Mutex<Vec<(String, String)>>,
     recording: Option<Arc<Mutex<Recording>>>,
     bidi: Mutex<Option<Arc<BiDiClient>>>,
     session_id: Mutex<Option<String>>,
@@ -205,6 +222,7 @@ impl ProxyState {
             proxy_addr,
             client: local_http_client(),
             upstream_headers: Vec::new(),
+            session_headers: Mutex::new(Vec::new()),
             recording: recording.map(|r| Arc::new(Mutex::new(r))),
             bidi: Mutex::new(None),
             session_id: Mutex::new(None),
@@ -264,15 +282,9 @@ impl ProxyState {
         {
             rec.lock().unwrap().redact_typed_text(index);
         }
-        if let (Some(index), Some(rec)) = (action, &self.recording)
-            && route.is_actions()
-            && self.password_field_focused().await
-        {
-            let mut rec = rec.lock().unwrap();
-            if let Some(recorded) = rec.actions[index].request_body.as_mut() {
-                redact_key_actions(recorded);
-            }
-        }
+        // Checked before and after the chain runs, since the chain itself may focus the field.
+        let types_keys = action.is_some() && route.is_actions() && has_key_actions(&body);
+        let mut hide_keys = types_keys && self.password_field_focused().await;
 
         let (status, content_type, mut response_body) = match self
             .forward(&request.method, &request.path, &request.headers, body)
@@ -297,14 +309,20 @@ impl ProxyState {
                 .filter(|(name, _)| name.eq_ignore_ascii_case("authorization"))
                 .cloned()
                 .collect::<Vec<_>>();
+            *self.session_headers.lock().unwrap() = authorization.clone();
             response_body = self
                 .on_session_created(response_body, binding_wants_bidi, &authorization)
                 .await;
         }
+        if types_keys && !hide_keys {
+            hide_keys = self.password_field_focused().await;
+        }
         if let (Some(rec), Some(index)) = (&self.recording, action) {
-            rec.lock()
-                .unwrap()
-                .end_action(index, status, &response_body);
+            let mut rec = rec.lock().unwrap();
+            if hide_keys && let Some(recorded) = rec.actions[index].request_body.as_mut() {
+                redact_key_actions(recorded);
+            }
+            rec.end_action(index, status, &response_body);
         }
         if route.is_delete_session() {
             // The trace must be on disk before the binding sees the session as closed,
@@ -527,15 +545,13 @@ impl ProxyState {
             .recording
             .as_ref()
             .and_then(|rec| rec.lock().unwrap().start_bidi_action(&method, &params));
-        if let (Some(index), Some(rec)) = (action, &self.recording)
+        // Checked before and after the chain runs, since the chain itself may focus the field.
+        let types_keys = action.is_some()
             && method == "input.performActions"
-            && self.password_field_focused().await
-        {
-            let mut rec = rec.lock().unwrap();
-            if let Some(recorded) = rec.actions[index].request_body.as_mut() {
-                redact_key_actions(recorded);
-            }
-        }
+            && params["actions"]
+                .as_array()
+                .is_some_and(|sources| sources.iter().any(|s| s["type"] == "key"));
+        let hidden_before = types_keys && self.password_field_focused().await;
 
         let response = match bidi.forward(conn, message.clone()) {
             Ok(response) => response,
@@ -553,9 +569,13 @@ impl ProxyState {
             let Ok(response) = response.await else {
                 return;
             };
+            let hide_keys = hidden_before || (types_keys && self.password_field_focused().await);
             let mut visual = false;
             if let (Some(index), Some(rec)) = (action, &self.recording) {
                 let mut rec = rec.lock().unwrap();
+                if hide_keys && let Some(recorded) = rec.actions[index].request_body.as_mut() {
+                    redact_key_actions(recorded);
+                }
                 rec.end_bidi_action(index, &response.message);
                 visual = rec.actions[index].info.visual && response.message["type"] == "success";
             }
@@ -572,31 +592,33 @@ impl ProxyState {
         }))
     }
 
-    /// Whether the focused element is a password field, so typed keys must not be recorded.
+    /// Whether the focused element is (or may be) a password field, so typed keys must not be
+    /// recorded. Traces are meant to be shared, so a check that cannot be made counts as yes.
     async fn password_field_focused(&self) -> bool {
         let Some(session_id) = self.session_id.lock().unwrap().clone() else {
             return false;
         };
         let url = format!("{}/session/{}/execute/sync", self.webdriver_url, session_id);
         let body = json!({"script": PASSWORD_FOCUSED_SCRIPT, "args": []});
-        let response = self
+        let request = self
             .client
             .post(&url)
             .header(reqwest::header::CONTENT_TYPE, "application/json")
-            .body(body.to_string())
-            .send()
-            .await;
-        let Ok(response) = response else {
-            return false;
-        };
-        let value = response
-            .bytes()
-            .await
-            .ok()
-            .and_then(|b| serde_json::from_slice::<Value>(&b).ok());
-        value.is_some_and(|v| v["value"] == true)
+            .body(body.to_string());
+        match self.authorized(request).send().await {
+            Ok(response) if response.status().is_success() => {
+                let value = response
+                    .bytes()
+                    .await
+                    .ok()
+                    .and_then(|b| serde_json::from_slice::<Value>(&b).ok());
+                value.is_none_or(|v| v["value"] != false)
+            }
+            _ => true,
+        }
     }
 
+    /// Same fail-closed rule as `password_field_focused`.
     async fn is_password_field(&self, element_id: &str) -> bool {
         let Some(session_id) = self.session_id.lock().unwrap().clone() else {
             return false;
@@ -605,10 +627,22 @@ impl ProxyState {
             "{}/session/{}/element/{}/property/type",
             self.webdriver_url, session_id, element_id
         );
-        self.get_value(&url).await.is_some_and(|v| {
+        self.get_value(&url).await.is_none_or(|v| {
             v.as_str()
                 .is_some_and(|t| t.eq_ignore_ascii_case("password"))
         })
+    }
+
+    /// Requests of the proxy itself carry the binding's credentials (e.g. for a Grid or a cloud
+    /// provider authenticated by header).
+    fn authorized(&self, request: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
+        self.session_headers
+            .lock()
+            .unwrap()
+            .iter()
+            .fold(request, |request, (name, value)| {
+                request.header(name, value)
+            })
     }
 
     fn has_bidi(&self) -> bool {
@@ -678,13 +712,12 @@ impl ProxyState {
             return;
         };
         let url = format!("{}/session/{}/se/log", self.webdriver_url, session_id);
-        let response = self
+        let request = self
             .client
             .post(&url)
             .header(reqwest::header::CONTENT_TYPE, "application/json")
-            .body(json!({"type": "browser"}).to_string())
-            .send()
-            .await;
+            .body(json!({"type": "browser"}).to_string());
+        let response = self.authorized(request).send().await;
         let Ok(response) = response else {
             return;
         };
@@ -707,7 +740,7 @@ impl ProxyState {
     }
 
     async fn get_value(&self, url: &str) -> Option<Value> {
-        let response = self.client.get(url).send().await.ok()?;
+        let response = self.authorized(self.client.get(url)).send().await.ok()?;
         if !response.status().is_success() {
             return None;
         }
@@ -741,8 +774,11 @@ impl ProxyState {
         let session_id = self.session_id.lock().unwrap().take();
         if let Some(session_id) = session_id {
             let url = format!("{}/session/{}", self.webdriver_url, session_id);
-            let _ =
-                tokio::time::timeout(Duration::from_secs(10), self.client.delete(url).send()).await;
+            let _ = tokio::time::timeout(
+                Duration::from_secs(10),
+                self.authorized(self.client.delete(url)).send(),
+            )
+            .await;
         }
     }
 
@@ -895,6 +931,15 @@ fn upstream_authorization(url: &str) -> Option<String> {
     let authority = &authority[..authority.find(['/', '?', '#']).unwrap_or(authority.len())];
     let user_info = &authority[..authority.rfind('@')?];
     Some(format!("Basic {}", BASE64.encode(user_info)))
+}
+
+/// Whether an `actions` body has a key source, i.e. may type text.
+fn has_key_actions(body: &[u8]) -> bool {
+    serde_json::from_slice::<Value>(body).is_ok_and(|payload| {
+        payload["actions"]
+            .as_array()
+            .is_some_and(|sources| sources.iter().any(|s| s["type"] == "key"))
+    })
 }
 
 fn trace_error_line(message: &str) -> String {
@@ -1250,11 +1295,23 @@ mod tests {
     }
 
     async fn send(state: &ProxyState, method: &str, path: &str, body: &str) -> Value {
+        send_with(state, method, path, body, "").await
+    }
+
+    /// Sends a request with extra raw header lines (each ending in `\r\n`).
+    async fn send_with(
+        state: &ProxyState,
+        method: &str,
+        path: &str,
+        body: &str,
+        headers: &str,
+    ) -> Value {
         let (mut client, mut server) = duplex(1024 * 1024);
         let raw = format!(
-            "{} {} HTTP/1.1\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n{}",
+            "{} {} HTTP/1.1\r\nContent-Type: application/json\r\n{}Content-Length: {}\r\n\r\n{}",
             method,
             path,
+            headers,
             body.len(),
             body
         );
@@ -1395,23 +1452,44 @@ mod tests {
         url
     }
 
-    /// Fake driver offering BiDi; its active element is a password field.
     async fn fake_bidi_driver() -> String {
+        fake_bidi_driver_with(vec![true], None).await
+    }
+
+    /// Fake driver offering BiDi. `focus` answers the proxy's password-focus checks in order
+    /// (the last answer repeats); with `auth`, those checks need that `Authorization` header.
+    async fn fake_bidi_driver_with(focus: Vec<bool>, auth: Option<&'static str>) -> String {
         let ws_url = fake_bidi_endpoint().await;
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let url = format!("http://{}", listener.local_addr().unwrap());
+        let checks = Arc::new(std::sync::atomic::AtomicUsize::new(0));
         tokio::spawn(async move {
             loop {
                 let (mut stream, _) = listener.accept().await.unwrap();
-                let ws_url = ws_url.clone();
+                let (ws_url, focus, checks) = (ws_url.clone(), focus.clone(), checks.clone());
                 tokio::spawn(async move {
                     let request = read_request(&mut stream).await.unwrap().unwrap();
+                    let authorized = auth.is_none_or(|expected| {
+                        request.headers.iter().any(|(name, value)| {
+                            name.eq_ignore_ascii_case("authorization") && value == expected
+                        })
+                    });
                     let value = match (request.method.as_str(), request.path.as_str()) {
                         ("POST", "/session") => json!({"sessionId": "s1", "capabilities": {
                             "browserName": "chrome", "webSocketUrl": ws_url}}),
                         ("GET", "/session/s1/window") => json!("top"),
                         ("GET", "/session/s1/screenshot") => json!(PNG),
-                        ("POST", "/session/s1/execute/sync") => json!(true),
+                        ("POST", "/session/s1/execute/sync") if !authorized => {
+                            let body = json!({"value": {"error": "unauthorized"}}).to_string();
+                            write_response(&mut stream, 401, "application/json", body.as_bytes())
+                                .await
+                                .unwrap();
+                            return;
+                        }
+                        ("POST", "/session/s1/execute/sync") => {
+                            let n = checks.fetch_add(1, Ordering::SeqCst);
+                            json!(focus[n.min(focus.len() - 1)])
+                        }
                         _ => Value::Null,
                     };
                     let body = json!({"value": value}).to_string();
@@ -1666,6 +1744,67 @@ mod tests {
             diagnostics
                 .iter()
                 .any(|(warning, message)| *warning && message.contains("lost"))
+        );
+    }
+
+    const KEY_ACTIONS: &str =
+        r#"{"actions":[{"type":"key","id":"k","actions":[{"type":"keyDown","value":"hunter2"}]}]}"#;
+
+    async fn recorded_bodies(state: &ProxyState) -> Vec<String> {
+        let rec = state.recording.as_ref().unwrap().lock().unwrap();
+        rec.actions
+            .iter()
+            .filter_map(|a| a.request_body.as_ref().map(Value::to_string))
+            .collect()
+    }
+
+    async fn proxy_for(driver: String) -> ProxyState {
+        let dir = tempfile::tempdir().unwrap();
+        let recording = Recording::new(dir.path().join("t.zip"), "chrome", "java");
+        ProxyState::new(driver, Some(recording), TEST_ADDR.parse().unwrap())
+    }
+
+    #[tokio::test]
+    async fn redacts_keys_when_the_chain_focuses_the_password_field() {
+        // Before the chain runs the field is not focused yet; the chain's click focuses it.
+        let state = proxy_for(fake_bidi_driver_with(vec![false, true], None).await).await;
+        send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
+        send(&state, "POST", "/session/s1/actions", KEY_ACTIONS).await;
+        assert!(
+            recorded_bodies(&state)
+                .await
+                .iter()
+                .all(|b| !b.contains("hunter2"))
+        );
+    }
+
+    #[tokio::test]
+    async fn internal_requests_carry_the_binding_authorization() {
+        let driver = fake_bidi_driver_with(vec![false], Some("Basic dTpw")).await;
+        let state = proxy_for(driver).await;
+        let auth = "Authorization: Basic dTpw\r\n";
+        send_with(&state, "POST", "/session", r#"{"capabilities":{}}"#, auth).await;
+        send_with(&state, "POST", "/session/s1/actions", KEY_ACTIONS, auth).await;
+        // The focus check was authorized and said "not a password field".
+        assert!(
+            recorded_bodies(&state)
+                .await
+                .iter()
+                .any(|b| b.contains("hunter2"))
+        );
+    }
+
+    #[tokio::test]
+    async fn failed_password_checks_redact() {
+        let driver = fake_bidi_driver_with(vec![false], Some("Basic dTpw")).await;
+        let state = proxy_for(driver).await;
+        send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
+        send(&state, "POST", "/session/s1/actions", KEY_ACTIONS).await;
+        assert!(
+            recorded_bodies(&state)
+                .await
+                .iter()
+                .all(|b| !b.contains("hunter2"))
         );
     }
 }
