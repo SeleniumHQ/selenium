@@ -57,6 +57,7 @@ use which::which;
 
 pub mod archiver;
 pub mod bidi;
+pub mod bidi_router;
 pub mod chrome;
 pub mod config;
 pub mod downloads;
