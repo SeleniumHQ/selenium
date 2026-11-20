@@ -97,7 +97,8 @@ impl Recording {
 
     /// Registers a command right before it is forwarded; returns its index for `end_action`.
     pub fn start_action(&mut self, http_method: &str, command_path: &str, body: &[u8]) -> usize {
-        let request_body = serde_json::from_slice::<Value>(body).ok();
+        let mut request_body = serde_json::from_slice::<Value>(body).ok();
+        request_body.iter_mut().for_each(redact_secrets);
         let info = classify_command(http_method, command_path, request_body.as_ref());
         self.actions.push(RecordedAction {
             http_method: http_method.to_string(),
@@ -135,6 +136,42 @@ impl Recording {
             action.response_value = serde_json::from_slice::<Value>(response_body)
                 .ok()
                 .map(|v| v["value"].clone());
+            action.response_value.iter_mut().for_each(redact_secrets);
+        }
+    }
+
+    /// Registers a BiDi command sent by the binding; `None` when it is not recorded (queries).
+    pub fn start_bidi_action(&mut self, method: &str, params: &Value) -> Option<usize> {
+        let info = classify_bidi_command(method, params)?;
+        let mut request_body = params.clone();
+        redact_secrets(&mut request_body);
+        self.actions.push(RecordedAction {
+            http_method: "BIDI".to_string(),
+            command_path: method.to_string(),
+            request_body: Some(request_body),
+            status: 0,
+            response_value: None,
+            start_time: now_millis(),
+            end_time: 0,
+            info,
+            screenshot: None,
+        });
+        Some(self.actions.len() - 1)
+    }
+
+    /// Completes a BiDi action with the remote end's message (`type` `success` or `error`).
+    pub fn end_bidi_action(&mut self, index: usize, message: &Value) {
+        if let Some(action) = self.actions.get_mut(index) {
+            let failed = message["type"] == "error";
+            action.status = if failed { 500 } else { 200 };
+            action.end_time = now_millis();
+            let mut value = if failed {
+                message.clone()
+            } else {
+                message["result"].clone()
+            };
+            redact_secrets(&mut value);
+            action.response_value = Some(value);
         }
     }
 
@@ -309,6 +346,109 @@ pub fn classify_command(http_method: &str, path: &str, body: Option<&Value>) -> 
     ActionInfo::new("WebDriver", "command", title, false)
 }
 
+/// How a BiDi command sent by the binding is shown, or `None` for queries, which are left out
+/// of the trace like classic `GET` commands.
+pub fn classify_bidi_command(method: &str, params: &Value) -> Option<ActionInfo> {
+    let info = match method {
+        "browsingContext.navigate" => {
+            let url = truncate(
+                params["url"].as_str().unwrap_or_default(),
+                MAX_TITLE_VALUE_LEN,
+            );
+            ActionInfo::new("Frame", "goto", format!("Navigate to \"{}\"", url), true)
+        }
+        "browsingContext.reload" => ActionInfo::new("Page", "reload", "Reload".into(), true),
+        "browsingContext.traverseHistory" => {
+            ActionInfo::new("Page", "traverseHistory", method.into(), true)
+        }
+        "browsingContext.setViewport" => {
+            ActionInfo::new("Page", "setViewportSize", method.into(), true)
+        }
+        "input.performActions" => {
+            ActionInfo::new("Page", "performActions", "Perform actions".into(), true)
+        }
+        "script.evaluate" | "script.callFunction" => {
+            ActionInfo::new("Frame", "evaluateExpression", method.into(), true)
+        }
+        "browsingContext.getTree"
+        | "storage.getCookies"
+        | "script.getRealms"
+        | "session.status"
+        | "session.subscribe"
+        | "session.unsubscribe" => return None,
+        _ => ActionInfo::new("BiDi", "command", method.into(), false),
+    };
+    Some(info)
+}
+
+/// Hides the keys typed by key action sources (classic `actions` and BiDi `input.performActions`).
+pub fn redact_key_actions(actions: &mut Value) {
+    let Some(sources) = actions["actions"].as_array_mut() else {
+        return;
+    };
+    for source in sources.iter_mut().filter(|s| s["type"] == "key") {
+        if let Some(steps) = source["actions"].as_array_mut() {
+            for step in steps.iter_mut().filter(|s| s.get("value").is_some()) {
+                step["value"] = REDACTED.into();
+            }
+        }
+    }
+}
+
+/// Hides credentials recorded in commands: capability values named like secrets (cloud access
+/// keys, tokens) and the user info of URLs.
+pub fn redact_secrets(value: &mut Value) {
+    match value {
+        Value::Object(map) => {
+            for (key, item) in map.iter_mut() {
+                if item.is_string() && is_secret_name(key) {
+                    *item = REDACTED.into();
+                } else {
+                    redact_secrets(item);
+                }
+            }
+        }
+        Value::Array(items) => items.iter_mut().for_each(redact_secrets),
+        Value::String(text) => {
+            if let Some(stripped) = without_user_info(text) {
+                *text = stripped;
+            }
+        }
+        _ => {}
+    }
+}
+
+fn is_secret_name(name: &str) -> bool {
+    let name = name.to_ascii_lowercase();
+    ["key", "secret", "password", "token"]
+        .iter()
+        .any(|word| name.contains(word))
+}
+
+fn without_user_info(url: &str) -> Option<String> {
+    let authority_start = url.find("://")? + 3;
+    let authority_len = url[authority_start..]
+        .find(['/', '?', '#'])
+        .unwrap_or(url.len() - authority_start);
+    let at = url[authority_start..authority_start + authority_len].rfind('@')?;
+    Some(format!(
+        "{}{}",
+        &url[..authority_start],
+        &url[authority_start + at + 1..]
+    ))
+}
+
+fn is_sensitive_header(name: &str) -> bool {
+    [
+        "authorization",
+        "proxy-authorization",
+        "cookie",
+        "set-cookie",
+    ]
+    .iter()
+    .any(|header| name.eq_ignore_ascii_case(header))
+}
+
 fn console_from_bidi(params: &Value) -> ConsoleMessage {
     let message_type = if params["type"] == "console" {
         params["method"].as_str().unwrap_or("log")
@@ -370,7 +510,11 @@ fn bidi_headers(headers: &Value) -> Vec<(String, String)> {
             list.iter()
                 .filter_map(|h| {
                     let name = h["name"].as_str()?;
-                    let value = h["value"]["value"].as_str().unwrap_or_default();
+                    let value = if is_sensitive_header(name) {
+                        REDACTED
+                    } else {
+                        h["value"]["value"].as_str().unwrap_or_default()
+                    };
                     Some((name.to_string(), value.to_string()))
                 })
                 .collect()
@@ -561,5 +705,62 @@ mod tests {
         assert_eq!(playwright_sdk_language("dotnet"), Some("csharp"));
         assert_eq!(playwright_sdk_language("ruby"), None);
         assert_eq!(playwright_platform("macos"), "darwin");
+    }
+
+    #[test]
+    fn classifies_bidi_commands() {
+        let navigate = classify_bidi_command(
+            "browsingContext.navigate",
+            &json!({"context": "top", "url": "https://example.com"}),
+        )
+        .unwrap();
+        assert_eq!(navigate.title, "Navigate to \"https://example.com\"");
+        assert!(navigate.visual);
+        assert!(classify_bidi_command("browsingContext.getTree", &json!({})).is_none());
+    }
+
+    #[test]
+    fn redacts_key_action_values() {
+        let mut actions = json!({"actions": [
+            {"type": "key", "id": "k", "actions": [
+                {"type": "keyDown", "value": "x"}, {"type": "keyUp", "value": "x"}]},
+            {"type": "pointer", "id": "p", "actions": [{"type": "pointerDown", "button": 0}]}
+        ]});
+        redact_key_actions(&mut actions);
+        assert_eq!(actions["actions"][0]["actions"][0]["value"], REDACTED);
+        assert_eq!(actions["actions"][0]["actions"][1]["value"], REDACTED);
+        assert_eq!(
+            actions["actions"][1]["actions"][0],
+            json!({"type": "pointerDown", "button": 0})
+        );
+    }
+
+    #[test]
+    fn redacts_sensitive_headers() {
+        let headers = bidi_headers(&json!([
+            {"name": "Authorization", "value": {"type": "string", "value": "Basic dTpw"}},
+            {"name": "cookie", "value": {"type": "string", "value": "sid=1"}},
+            {"name": "Content-Type", "value": {"type": "string", "value": "text/html"}}
+        ]));
+        assert_eq!(
+            headers,
+            [
+                ("Authorization".to_string(), REDACTED.to_string()),
+                ("cookie".to_string(), REDACTED.to_string()),
+                ("Content-Type".to_string(), "text/html".to_string()),
+            ]
+        );
+    }
+
+    #[test]
+    fn redacts_secrets_in_capabilities_and_urls() {
+        let mut value = json!({
+            "sauce:options": {"accessKey": "abc", "name": "demo"},
+            "url": "https://u:p@host/wd"
+        });
+        redact_secrets(&mut value);
+        assert_eq!(value["sauce:options"]["accessKey"], REDACTED);
+        assert_eq!(value["sauce:options"]["name"], "demo");
+        assert_eq!(value["url"], "https://host/wd");
     }
 }
