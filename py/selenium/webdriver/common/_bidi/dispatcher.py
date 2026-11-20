@@ -38,6 +38,7 @@ from collections.abc import Callable
 from typing import Any
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common._bidi.serialization import BiDiSerializationError
 
 logger = logging.getLogger(__name__)
 
@@ -53,10 +54,7 @@ class _Listener:
         self._active = True
 
     def dispatch(self, payload: Any) -> None:
-        try:
-            threading.Thread(target=self._invoke, args=(payload,), name=self.name, daemon=True).start()
-        except RuntimeError:
-            logger.exception("Dropped a %s payload, no thread for its listener", self.event)
+        threading.Thread(target=self._invoke, args=(payload,), name=self.name, daemon=True).start()
 
     def deactivate(self) -> None:
         # Not joined: the caller may be this listener itself, removing itself or quitting the driver.
@@ -138,8 +136,8 @@ class EventDispatcher:
         payload_type = listeners[0].payload_type
         try:
             payload = params if payload_type is None else payload_type.from_json(params)
-        except Exception:
-            logger.exception("Dropped a %s payload that failed validation", method)
+        except BiDiSerializationError as e:
+            logger.error("Dropped a %s payload that failed validation: %s", method, e)
             return
         for listener in listeners:
             listener.dispatch(payload)

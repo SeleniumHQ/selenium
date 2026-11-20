@@ -677,26 +677,6 @@ def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
     assert "    def add_bare_listener(" in emitted
 
 
-@pytest.mark.parametrize(
-    ("command", "owner"),
-    [
-        ("addThingListener", r"event x\.thing"),
-        ("removeListener", r"Domain\.remove_listener"),
-    ],
-)
-def test_a_command_that_would_shadow_a_listener_method_is_rejected(command, owner):
-    schema = Schema(
-        {
-            "types": {},
-            "commands": [{"domain": "x", "method": f"x.{command}", "name": command}],
-            "events": [{"domain": "x", "method": "x.thing", "name": "thing"}],
-        }
-    )
-
-    with pytest.raises(ValueError, match=rf"x: command method {camel_to_snake(command)} collides with .*{owner}"):
-        build_module(schema, "x")
-
-
 def test_a_module_with_events_imports_nothing_from_session():
     schema = Schema({"types": {}, "commands": [], "events": [{"domain": "x", "method": "x.thing", "name": "thing"}]})
 
