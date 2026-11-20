@@ -19,32 +19,51 @@
 //! Bindings send their regular WebDriver traffic to the proxy, which can record the session
 //! (commands, screenshots, console and network activity) into a trace archive.
 //!
-//! When recording, the proxy asks the driver for a WebDriver BiDi connection (`webSocketUrl`)
-//! unless the binding already requested one itself. BiDi provides standard screenshots,
-//! console messages and network events; without it the proxy falls back to classic WebDriver.
+//! When recording, the proxy asks the driver for a WebDriver BiDi connection (`webSocketUrl`).
+//! BiDi provides standard screenshots, console messages and network events; without it the
+//! proxy falls back to classic WebDriver. The proxy owns that connection and, if the binding
+//! asked for BiDi too, serves its own WebSocket endpoint and multiplexes the binding over it.
 
 use crate::archiver;
-use crate::bidi::{BiDiClient, EventHandler};
+use crate::bidi::{BiDiClient, EventHandler, Outgoing};
 use crate::logger::Logger;
-use crate::recorder::Recording;
+use crate::recorder::{Recording, redact_key_actions};
 use anyhow::{Error, anyhow};
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD as BASE64;
+use futures_util::stream::FuturesUnordered;
+use futures_util::{SinkExt, StreamExt};
 use reqwest::Client;
 use serde_json::{Value, json};
+use std::future::Future;
 use std::io::Write;
+use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
+use std::pin::Pin;
 use std::process::{Child, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 use tokio::net::TcpListener;
+use tokio::sync::{mpsc, oneshot};
+use tokio_tungstenite::WebSocketStream;
+use tokio_tungstenite::tungstenite::Message;
+use tokio_tungstenite::tungstenite::handshake::derive_accept_key;
+use tokio_tungstenite::tungstenite::protocol::Role;
 
 const DRIVER_STARTUP_TIMEOUT: Duration = Duration::from_secs(30);
 const POLL_INTERVAL: Duration = Duration::from_millis(100);
 const MAX_HEADER_BYTES: usize = 64 * 1024;
-const BIDI_EVENTS: &[&str] = &["log.entryAdded", "network.responseCompleted"];
+// Browsing context events let the proxy tell which events belong to a binding's subscriptions.
+const BIDI_EVENTS: &[&str] = &[
+    "log.entryAdded",
+    "network.responseCompleted",
+    "browsingContext.contextCreated",
+    "browsingContext.contextDestroyed",
+];
+const PASSWORD_FOCUSED_SCRIPT: &str =
+    "return !!document.activeElement && document.activeElement.type === 'password'";
 
 static SHUTDOWN_REQUESTED: AtomicBool = AtomicBool::new(false);
 
@@ -80,9 +99,14 @@ async fn run_async(options: PipeOptions, log: &Logger) -> Result<(), Error> {
             &options.language_binding,
         )
     });
-    let state = Arc::new(ProxyState::new(driver.base_url.clone(), recording));
     let listener = TcpListener::bind("127.0.0.1:0").await?;
-    let proxy_url = format!("http://{}", listener.local_addr()?);
+    let proxy_addr = listener.local_addr()?;
+    let state = Arc::new(ProxyState::new(
+        driver.base_url.clone(),
+        recording,
+        proxy_addr,
+    ));
+    let proxy_url = format!("http://{}", proxy_addr);
     tokio::spawn(accept_loop(listener, state.clone()));
 
     // A single JSON line lets bindings discover the proxy while this process keeps running.
@@ -131,6 +155,7 @@ async fn accept_loop(listener: TcpListener, state: Arc<ProxyState>) {
 
 struct ProxyState {
     webdriver_url: String,
+    proxy_addr: SocketAddr,
     client: Client,
     recording: Option<Arc<Mutex<Recording>>>,
     bidi: Mutex<Option<Arc<BiDiClient>>>,
@@ -143,9 +168,10 @@ struct ProxyState {
 }
 
 impl ProxyState {
-    fn new(webdriver_url: String, recording: Option<Recording>) -> Self {
+    fn new(webdriver_url: String, recording: Option<Recording>, proxy_addr: SocketAddr) -> Self {
         ProxyState {
             webdriver_url,
+            proxy_addr,
             client: local_http_client(),
             recording: recording.map(|r| Arc::new(Mutex::new(r))),
             bidi: Mutex::new(None),
@@ -164,20 +190,19 @@ impl ProxyState {
         let Some(request) = read_request(stream).await? else {
             return Ok(());
         };
-        let _guard = self.command_lock.lock().await;
         let route = Route::parse(&request.method, &request.path);
+        if let Some(session_id) = route.bidi_session() {
+            // WebSocket connections live as long as the session; they must not hold the lock.
+            return self.serve_bidi(stream, &request, session_id).await;
+        }
+        let _guard = self.command_lock.lock().await;
 
         let mut body = request.body;
-        let mut owns_bidi = false;
+        let mut binding_wants_bidi = false;
         if route.is_new_session() && self.recording.is_some() {
-            let (patched, injected) = request_bidi(&body);
+            let (patched, wanted) = request_bidi(&body);
             body = patched;
-            owns_bidi = injected;
-            if !injected {
-                self.diagnostic(
-                    "The binding requested webSocketUrl itself; recording with classic WebDriver",
-                );
-            }
+            binding_wants_bidi = wanted;
         }
         if route.is_delete_session() {
             self.collect_classic_logs().await;
@@ -195,6 +220,15 @@ impl ProxyState {
             && let Some(rec) = &self.recording
         {
             rec.lock().unwrap().redact_typed_text(index);
+        }
+        if let (Some(index), Some(rec)) = (action, &self.recording)
+            && route.is_actions()
+            && self.password_field_focused().await
+        {
+            let mut rec = rec.lock().unwrap();
+            if let Some(recorded) = rec.actions[index].request_body.as_mut() {
+                redact_key_actions(recorded);
+            }
         }
 
         let (status, content_type, mut response_body) = match self
@@ -214,7 +248,15 @@ impl ProxyState {
         };
 
         if route.is_new_session() && status == 200 {
-            response_body = self.on_session_created(response_body, owns_bidi).await;
+            let authorization = request
+                .headers
+                .iter()
+                .filter(|(name, _)| name.eq_ignore_ascii_case("authorization"))
+                .cloned()
+                .collect::<Vec<_>>();
+            response_body = self
+                .on_session_created(response_body, binding_wants_bidi, &authorization)
+                .await;
         }
         if let (Some(rec), Some(index)) = (&self.recording, action) {
             rec.lock()
@@ -274,42 +316,55 @@ impl ProxyState {
         Ok((status, content_type, response.bytes().await?.to_vec()))
     }
 
-    async fn on_session_created(&self, response_body: Vec<u8>, owns_bidi: bool) -> Vec<u8> {
+    async fn on_session_created(
+        &self,
+        response_body: Vec<u8>,
+        binding_wants_bidi: bool,
+        headers: &[(String, String)],
+    ) -> Vec<u8> {
         let Ok(mut response) = serde_json::from_slice::<Value>(&response_body) else {
             return response_body;
         };
         let session_id = response["value"]["sessionId"].as_str().map(str::to_string);
         *self.session_id.lock().unwrap() = session_id.clone();
         if let Some(rec) = &self.recording {
-            rec.lock().unwrap().session_id = session_id;
+            rec.lock().unwrap().session_id = session_id.clone();
         }
-        if !owns_bidi {
+        if self.recording.is_none() {
             return response_body;
         }
 
-        // The BiDi connection belongs to the proxy, so the binding must not see it.
+        // Connected before replying, since the binding may open its BiDi connection right away.
         let capabilities = &mut response["value"]["capabilities"];
-        let ws_url = capabilities["webSocketUrl"].as_str().map(str::to_string);
-        if let Some(caps) = capabilities.as_object_mut() {
+        let connected = match capabilities["webSocketUrl"].as_str().map(str::to_string) {
+            Some(url) => self.connect_bidi(&url, headers).await,
+            None => {
+                self.diagnostic("Driver did not return webSocketUrl; using classic WebDriver");
+                false
+            }
+        };
+        if binding_wants_bidi && connected {
+            let session_id = session_id.unwrap_or_default();
+            capabilities["webSocketUrl"] = json!(format!(
+                "ws://{}/session/{}/se/bidi",
+                self.proxy_addr, session_id
+            ));
+        } else if !binding_wants_bidi && let Some(caps) = capabilities.as_object_mut() {
             caps.remove("webSocketUrl");
-        }
-        match ws_url {
-            Some(url) => self.connect_bidi(&url).await,
-            None => self.diagnostic("Driver did not return webSocketUrl; using classic WebDriver"),
         }
         serde_json::to_vec(&response).unwrap_or(response_body)
     }
 
-    async fn connect_bidi(&self, url: &str) {
+    async fn connect_bidi(&self, url: &str, headers: &[(String, String)]) -> bool {
         let Some(rec) = self.recording.clone() else {
-            return;
+            return false;
         };
         let handler_rec = rec.clone();
         let handler: EventHandler = Arc::new(move |method, params| {
             handler_rec.lock().unwrap().add_bidi_event(method, params);
         });
         let connected = async {
-            let client = BiDiClient::connect(url, &[], handler).await?;
+            let client = BiDiClient::connect(url, headers, handler).await?;
             client.subscribe(BIDI_EVENTS).await?;
             Ok::<BiDiClient, Error>(client)
         }
@@ -319,12 +374,179 @@ impl ProxyState {
                 *self.bidi.lock().unwrap() = Some(Arc::new(client));
                 rec.lock().unwrap().bidi = true;
                 self.diagnostic(format!("Recording through WebDriver BiDi at {}", url));
+                true
             }
-            Err(err) => self.diagnostic(format!(
-                "BiDi connection failed ({}); using classic WebDriver",
-                err
-            )),
+            Err(err) => {
+                self.diagnostic(format!(
+                    "BiDi connection failed ({}); using classic WebDriver",
+                    err
+                ));
+                false
+            }
         }
+    }
+
+    /// Serves the binding's BiDi connection for the session, multiplexed over the proxy's own.
+    async fn serve_bidi<S>(
+        &self,
+        stream: &mut S,
+        request: &HttpRequest,
+        session_id: &str,
+    ) -> Result<(), Error>
+    where
+        S: AsyncRead + AsyncWrite + Unpin,
+    {
+        let current = self.session_id.lock().unwrap().clone();
+        let bidi = self.bidi.lock().unwrap().clone();
+        let key = request
+            .headers
+            .iter()
+            .find(|(name, _)| name.eq_ignore_ascii_case("sec-websocket-key"))
+            .map(|(_, value)| value.clone());
+        let (Some(bidi), Some(key), true) = (bidi, key, current.as_deref() == Some(session_id))
+        else {
+            let error = json!({"value": {"error": "unknown command",
+                "message": "No BiDi connection for this session"}});
+            write_response(
+                stream,
+                404,
+                "application/json",
+                error.to_string().as_bytes(),
+            )
+            .await?;
+            return Ok(stream.flush().await?);
+        };
+        let handshake = format!(
+            "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: {}\r\n\r\n",
+            derive_accept_key(key.as_bytes())
+        );
+        stream.write_all(handshake.as_bytes()).await?;
+        stream.flush().await?;
+
+        let socket = WebSocketStream::from_raw_socket(stream, Role::Server, None).await;
+        let (mut sink, mut source) = socket.split();
+        let (out, mut queue) = mpsc::unbounded_channel();
+        let conn = bidi.attach(out.clone());
+
+        let writer = async {
+            while let Some(slot) = queue.recv().await {
+                if let Ok(Some(text)) = slot.await
+                    && sink.send(Message::text(text)).await.is_err()
+                {
+                    break;
+                }
+            }
+            let _ = sink.close().await;
+        };
+        let reader = async {
+            let mut in_flight: FuturesUnordered<Pin<Box<dyn Future<Output = ()> + Send + '_>>> =
+                FuturesUnordered::new();
+            loop {
+                tokio::select! {
+                    incoming = source.next() => match incoming {
+                        Some(Ok(Message::Text(text))) => {
+                            if let Some(pending) = self.downstream_command(&bidi, conn, &out, text.as_str()).await {
+                                in_flight.push(pending);
+                            }
+                        }
+                        Some(Ok(_)) => {}
+                        _ => break,
+                    },
+                    Some(()) = in_flight.next(), if !in_flight.is_empty() => {}
+                }
+            }
+            // Responses still in flight are not written; closing the queue ends the writer.
+            bidi.detach(conn);
+            drop(out);
+        };
+        tokio::join!(writer, reader);
+        Ok(())
+    }
+
+    /// Records a BiDi command of the binding and forwards it. The returned future completes the
+    /// recorded action (and its screenshot) before the response is written to the binding.
+    async fn downstream_command<'a>(
+        &'a self,
+        bidi: &Arc<BiDiClient>,
+        conn: u64,
+        out: &Outgoing,
+        text: &str,
+    ) -> Option<Pin<Box<dyn Future<Output = ()> + Send + 'a>>> {
+        let message = serde_json::from_str::<Value>(text).unwrap_or(Value::Null);
+        let method = message["method"].as_str().unwrap_or_default().to_string();
+        let params = message["params"].clone();
+        let action = self
+            .recording
+            .as_ref()
+            .and_then(|rec| rec.lock().unwrap().start_bidi_action(&method, &params));
+        if let (Some(index), Some(rec)) = (action, &self.recording)
+            && method == "input.performActions"
+            && self.password_field_focused().await
+        {
+            let mut rec = rec.lock().unwrap();
+            if let Some(recorded) = rec.actions[index].request_body.as_mut() {
+                redact_key_actions(recorded);
+            }
+        }
+
+        let response = match bidi.forward(conn, message.clone()) {
+            Ok(response) => response,
+            Err(err) => {
+                let error = json!({"type": "error", "id": message.get("id"),
+                    "error": "invalid argument", "message": err.to_string()});
+                let (slot, filled) = oneshot::channel();
+                let _ = slot.send(Some(error.to_string()));
+                let _ = out.send(filled);
+                return None;
+            }
+        };
+        let bidi = bidi.clone();
+        Some(Box::pin(async move {
+            let Ok(response) = response.await else {
+                return;
+            };
+            let mut visual = false;
+            if let (Some(index), Some(rec)) = (action, &self.recording) {
+                let mut rec = rec.lock().unwrap();
+                rec.end_bidi_action(index, &response.message);
+                visual = rec.actions[index].info.visual && response.message["type"] == "success";
+            }
+            if visual && let Some(index) = action {
+                self.capture_screenshot(index).await;
+            }
+            if bidi.take_legacy_unsubscribe() {
+                match bidi.subscribe(BIDI_EVENTS).await {
+                    Ok(_) => self.diagnostic("Subscribed again after the binding unsubscribed"),
+                    Err(err) => self.diagnostic(format!("Unable to subscribe again: {}", err)),
+                }
+            }
+            response.deliver();
+        }))
+    }
+
+    /// Whether the focused element is a password field, so typed keys must not be recorded.
+    async fn password_field_focused(&self) -> bool {
+        let Some(session_id) = self.session_id.lock().unwrap().clone() else {
+            return false;
+        };
+        let url = format!("{}/session/{}/execute/sync", self.webdriver_url, session_id);
+        let body = json!({"script": PASSWORD_FOCUSED_SCRIPT, "args": []});
+        let response = self
+            .client
+            .post(&url)
+            .header(reqwest::header::CONTENT_TYPE, "application/json")
+            .body(body.to_string())
+            .send()
+            .await;
+        let Ok(response) = response else {
+            return false;
+        };
+        let value = response
+            .bytes()
+            .await
+            .ok()
+            .and_then(|b| serde_json::from_slice::<Value>(&b).ok());
+        value.is_some_and(|v| v["value"] == true)
     }
 
     async fn is_password_field(&self, element_id: &str) -> bool {
@@ -478,18 +700,21 @@ struct Route {
     is_session_endpoint: bool,
     /// Path after `/session/{id}`; empty for the session itself.
     command_path: String,
+    session_id: Option<String>,
 }
 
 impl Route {
     fn parse(method: &str, path: &str) -> Self {
         let path = path.split('?').next().unwrap_or_default();
         let mut command_path = String::new();
+        let mut session_id = None;
         let mut is_session_endpoint = false;
         if let Some(rest) = path.strip_prefix("/session") {
             if rest.is_empty() || rest == "/" {
                 is_session_endpoint = true;
             } else if let Some(after_slash) = rest.strip_prefix('/') {
                 is_session_endpoint = true;
+                session_id = after_slash.split('/').next().map(str::to_string);
                 command_path = after_slash
                     .find('/')
                     .map(|i| after_slash[i..].trim_end_matches('/').to_string())
@@ -504,7 +729,19 @@ impl Route {
             method: method.to_string(),
             is_session_endpoint,
             command_path,
+            session_id,
         }
+    }
+
+    /// Session whose BiDi connection is requested (WebSocket upgrade of `/session/{id}/se/bidi`).
+    fn bidi_session(&self) -> Option<&str> {
+        (self.method == "GET" && self.command_path == "/se/bidi")
+            .then_some(self.session_id.as_deref())
+            .flatten()
+    }
+
+    fn is_actions(&self) -> bool {
+        self.is_session_endpoint && self.method == "POST" && self.command_path == "/actions"
     }
 
     fn is_new_session(&self) -> bool {
@@ -530,29 +767,32 @@ impl Route {
     }
 }
 
-/// Adds `webSocketUrl: true` to a new session request unless the binding asked for it.
-/// Returns the (possibly) patched body and whether the proxy now owns the BiDi connection.
+/// Adds `webSocketUrl: true` to a new session request, so the proxy always gets BiDi.
+/// Returns the patched body and whether the binding asked for BiDi itself.
 fn request_bidi(body: &[u8]) -> (Vec<u8>, bool) {
     let Ok(mut payload) = serde_json::from_slice::<Value>(body) else {
         return (body.to_vec(), false);
     };
-    let capabilities = &payload["capabilities"];
-    let requested_by_client = capabilities["alwaysMatch"].get("webSocketUrl").is_some()
-        || capabilities["firstMatch"]
-            .as_array()
-            .is_some_and(|all| all.iter().any(|c| c.get("webSocketUrl").is_some()));
-    if requested_by_client || !payload.is_object() {
+    if !payload.is_object() {
         return (body.to_vec(), false);
     }
     if !payload["capabilities"].is_object() {
         payload["capabilities"] = json!({});
     }
-    if !payload["capabilities"]["alwaysMatch"].is_object() {
-        payload["capabilities"]["alwaysMatch"] = json!({});
+    let capabilities = &mut payload["capabilities"];
+    let mut wanted = capabilities["alwaysMatch"]["webSocketUrl"] == true;
+    // A capability may not be in both alwaysMatch and firstMatch, so it moves to alwaysMatch.
+    if let Some(all) = capabilities["firstMatch"].as_array_mut() {
+        for first in all.iter_mut().filter_map(Value::as_object_mut) {
+            wanted |= first.remove("webSocketUrl") == Some(json!(true));
+        }
     }
-    payload["capabilities"]["alwaysMatch"]["webSocketUrl"] = json!(true);
+    if !capabilities["alwaysMatch"].is_object() {
+        capabilities["alwaysMatch"] = json!({});
+    }
+    capabilities["alwaysMatch"]["webSocketUrl"] = json!(true);
     match serde_json::to_vec(&payload) {
-        Ok(patched) => (patched, true),
+        Ok(patched) => (patched, wanted),
         Err(_) => (body.to_vec(), false),
     }
 }
@@ -783,7 +1023,9 @@ fn install_signal_handlers() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use futures_util::{SinkExt, StreamExt};
     use tokio::io::duplex;
+    use tokio_tungstenite::tungstenite::Message;
 
     async fn parse(raw: &[u8]) -> HttpRequest {
         let (mut client, mut server) = duplex(64 * 1024);
@@ -840,22 +1082,38 @@ mod tests {
     }
 
     #[test]
-    fn requests_bidi_unless_binding_did() {
-        let (patched, injected) =
-            request_bidi(br#"{"capabilities":{"firstMatch":[{"browserName":"chrome"}]}}"#);
-        assert!(injected);
-        let payload: Value = serde_json::from_slice(&patched).unwrap();
+    fn requests_bidi_and_reports_whether_the_binding_did() {
+        let parse = |body: &[u8]| -> (Value, bool) {
+            let (patched, wanted) = request_bidi(body);
+            (serde_json::from_slice(&patched).unwrap(), wanted)
+        };
+        let (payload, wanted) =
+            parse(br#"{"capabilities":{"firstMatch":[{"browserName":"chrome"}]}}"#);
+        assert!(!wanted);
         assert_eq!(payload["capabilities"]["alwaysMatch"]["webSocketUrl"], true);
         assert_eq!(
             payload["capabilities"]["firstMatch"][0]["browserName"],
             "chrome"
         );
 
-        let own = br#"{"capabilities":{"alwaysMatch":{"webSocketUrl":true}}}"#;
-        assert_eq!(request_bidi(own), (own.to_vec(), false));
-        let first = br#"{"capabilities":{"firstMatch":[{"webSocketUrl":true}]}}"#;
-        assert!(!request_bidi(first).1);
-        assert!(!request_bidi(b"not json").1);
+        let (payload, wanted) = parse(br#"{"capabilities":{"alwaysMatch":{"webSocketUrl":true}}}"#);
+        assert!(wanted);
+        assert_eq!(payload["capabilities"]["alwaysMatch"]["webSocketUrl"], true);
+
+        // A capability may not be in both alwaysMatch and firstMatch.
+        let (payload, wanted) =
+            parse(br#"{"capabilities":{"firstMatch":[{"webSocketUrl":true}]}}"#);
+        assert!(wanted);
+        assert_eq!(payload["capabilities"]["alwaysMatch"]["webSocketUrl"], true);
+        assert!(
+            payload["capabilities"]["firstMatch"][0]
+                .get("webSocketUrl")
+                .is_none()
+        );
+
+        let (_, wanted) = parse(br#"{"capabilities":{"alwaysMatch":{"webSocketUrl":false}}}"#);
+        assert!(!wanted);
+        assert_eq!(request_bidi(b"not json"), (b"not json".to_vec(), false));
     }
 
     /// Fake classic WebDriver endpoint (no BiDi) for end-to-end proxy tests.
@@ -911,7 +1169,11 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let trace = dir.path().join("trace.zip");
         let recording = Recording::new(trace.clone(), "chrome", "java");
-        let state = ProxyState::new(fake_driver().await, Some(recording));
+        let state = ProxyState::new(
+            fake_driver().await,
+            Some(recording),
+            TEST_ADDR.parse().unwrap(),
+        );
 
         let created = send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
         assert_eq!(created["value"]["sessionId"], "s1");
@@ -961,11 +1223,266 @@ mod tests {
 
     #[tokio::test]
     async fn plain_pipe_mode_forwards_without_recording() {
-        let state = ProxyState::new(fake_driver().await, None);
+        let state = ProxyState::new(fake_driver().await, None, TEST_ADDR.parse().unwrap());
         let created = send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
         assert_eq!(created["value"]["sessionId"], "s1");
         send(&state, "DELETE", "/session/s1", "").await;
         assert!(state.session_ended.load(Ordering::SeqCst));
         assert_eq!(state.saved_trace(), None);
+    }
+
+    const TEST_ADDR: &str = "127.0.0.1:4444";
+    const PNG: &str = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+
+    /// Fake BiDi endpoint with legacy subscription semantics: subscriptions are by event name
+    /// for the whole session, and `session.unsubscribe` by names removes them for everyone.
+    /// Each navigation emits a console event if `log.entryAdded` is subscribed.
+    async fn fake_bidi_endpoint() -> String {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let url = format!("ws://{}/session/s1", listener.local_addr().unwrap());
+        tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let mut socket = tokio_tungstenite::accept_async(stream).await.unwrap();
+            let mut subscribed: Vec<String> = Vec::new();
+            let mut counter = 0;
+            while let Some(Ok(Message::Text(text))) = socket.next().await {
+                let command: Value = serde_json::from_str(text.as_str()).unwrap();
+                let method = command["method"].as_str().unwrap_or_default().to_string();
+                let names = |key: &str| -> Vec<String> {
+                    command["params"][key]
+                        .as_array()
+                        .map(|a| {
+                            a.iter()
+                                .filter_map(|e| e.as_str().map(str::to_string))
+                                .collect()
+                        })
+                        .unwrap_or_default()
+                };
+                let result = match method.as_str() {
+                    "session.subscribe" => {
+                        subscribed.extend(names("events"));
+                        counter += 1;
+                        json!({"subscription": format!("sub-{}", counter)})
+                    }
+                    "session.unsubscribe" => {
+                        let removed = names("events");
+                        subscribed.retain(|e| !removed.contains(e));
+                        json!({})
+                    }
+                    "browsingContext.captureScreenshot" => json!({"data": PNG}),
+                    _ => json!({}),
+                };
+                let reply = json!({"type": "success", "id": command["id"], "result": result});
+                socket.send(Message::text(reply.to_string())).await.unwrap();
+                let console = subscribed
+                    .iter()
+                    .any(|e| e == "log" || e == "log.entryAdded");
+                if method == "browsingContext.navigate" && console {
+                    let event = json!({"type": "event", "method": "log.entryAdded", "params": {
+                        "type": "console", "method": "log", "text": "hello",
+                        "source": {"context": "top"}, "timestamp": 1}});
+                    socket.send(Message::text(event.to_string())).await.unwrap();
+                }
+            }
+        });
+        url
+    }
+
+    /// Fake driver offering BiDi; its active element is a password field.
+    async fn fake_bidi_driver() -> String {
+        let ws_url = fake_bidi_endpoint().await;
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let url = format!("http://{}", listener.local_addr().unwrap());
+        tokio::spawn(async move {
+            loop {
+                let (mut stream, _) = listener.accept().await.unwrap();
+                let ws_url = ws_url.clone();
+                tokio::spawn(async move {
+                    let request = read_request(&mut stream).await.unwrap().unwrap();
+                    let value = match (request.method.as_str(), request.path.as_str()) {
+                        ("POST", "/session") => json!({"sessionId": "s1", "capabilities": {
+                            "browserName": "chrome", "webSocketUrl": ws_url}}),
+                        ("GET", "/session/s1/window") => json!("top"),
+                        ("GET", "/session/s1/screenshot") => json!(PNG),
+                        ("POST", "/session/s1/execute/sync") => json!(true),
+                        _ => Value::Null,
+                    };
+                    let body = json!({"value": value}).to_string();
+                    write_response(&mut stream, 200, "application/json", body.as_bytes())
+                        .await
+                        .unwrap();
+                });
+            }
+        });
+        url
+    }
+
+    /// A recording proxy listening for real, so bindings can open WebSocket connections to it.
+    async fn listening_proxy(trace: PathBuf) -> Arc<ProxyState> {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = listener.local_addr().unwrap();
+        let recording = Recording::new(trace, "chrome", "java");
+        let state = Arc::new(ProxyState::new(
+            fake_bidi_driver().await,
+            Some(recording),
+            addr,
+        ));
+        tokio::spawn(accept_loop(listener, state.clone()));
+        state
+    }
+
+    type Binding = tokio_tungstenite::WebSocketStream<
+        tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>,
+    >;
+
+    async fn binding_bidi(created: &Value) -> Binding {
+        let url = created["value"]["capabilities"]["webSocketUrl"]
+            .as_str()
+            .unwrap();
+        tokio_tungstenite::connect_async(url).await.unwrap().0
+    }
+
+    async fn call(binding: &mut Binding, command: Value) -> Value {
+        binding
+            .send(Message::text(command.to_string()))
+            .await
+            .unwrap();
+        next_message(binding, Duration::from_secs(5)).await.unwrap()
+    }
+
+    async fn next_message(binding: &mut Binding, wait: Duration) -> Option<Value> {
+        match tokio::time::timeout(wait, binding.next()).await {
+            Ok(Some(Ok(Message::Text(text)))) => serde_json::from_str(text.as_str()).ok(),
+            _ => None,
+        }
+    }
+
+    const ASK_BIDI: &str = r#"{"capabilities":{"alwaysMatch":{"webSocketUrl":true}}}"#;
+
+    #[tokio::test]
+    async fn rewrites_web_socket_url_when_the_binding_asked_for_bidi() {
+        let dir = tempfile::tempdir().unwrap();
+        let recording = Recording::new(dir.path().join("t.zip"), "chrome", "java");
+        let addr = "127.0.0.1:4444".parse().unwrap();
+        let state = ProxyState::new(fake_bidi_driver().await, Some(recording), addr);
+        let created = send(&state, "POST", "/session", ASK_BIDI).await;
+        assert_eq!(
+            created["value"]["capabilities"]["webSocketUrl"],
+            "ws://127.0.0.1:4444/session/s1/se/bidi"
+        );
+    }
+
+    #[tokio::test]
+    async fn removes_web_socket_url_when_the_binding_did_not_ask() {
+        let dir = tempfile::tempdir().unwrap();
+        let recording = Recording::new(dir.path().join("t.zip"), "chrome", "java");
+        let addr = "127.0.0.1:4444".parse().unwrap();
+        let state = ProxyState::new(fake_bidi_driver().await, Some(recording), addr);
+        let created = send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
+        assert!(
+            created["value"]["capabilities"]
+                .get("webSocketUrl")
+                .is_none()
+        );
+        assert!(state.has_bidi());
+    }
+
+    #[tokio::test]
+    async fn upstream_is_ready_before_new_session_reply() {
+        let dir = tempfile::tempdir().unwrap();
+        let state = listening_proxy(dir.path().join("t.zip")).await;
+        let created = send(&state, "POST", "/session", ASK_BIDI).await;
+        let mut binding = binding_bidi(&created).await;
+        let reply = call(
+            &mut binding,
+            json!({"id": 5, "method": "session.status", "params": {}}),
+        )
+        .await;
+        assert_eq!(reply["id"], 5);
+        assert_eq!(reply["type"], "success");
+    }
+
+    #[tokio::test]
+    async fn upgrade_to_unknown_session_is_404() {
+        let dir = tempfile::tempdir().unwrap();
+        let state = listening_proxy(dir.path().join("t.zip")).await;
+        let created = send(&state, "POST", "/session", ASK_BIDI).await;
+        let url = created["value"]["capabilities"]["webSocketUrl"]
+            .as_str()
+            .unwrap()
+            .replace("/s1/", "/other/");
+        match tokio_tungstenite::connect_async(url).await {
+            Err(tokio_tungstenite::tungstenite::Error::Http(response)) => {
+                assert_eq!(response.status(), 404)
+            }
+            other => panic!("unexpected handshake result: {:?}", other.map(|_| ())),
+        }
+    }
+
+    #[tokio::test]
+    async fn records_binding_bidi_commands_with_screenshot() {
+        let dir = tempfile::tempdir().unwrap();
+        let state = listening_proxy(dir.path().join("t.zip")).await;
+        let created = send(&state, "POST", "/session", ASK_BIDI).await;
+        let mut binding = binding_bidi(&created).await;
+        let navigate = json!({"id": 1, "method": "browsingContext.navigate",
+            "params": {"context": "top", "url": "https://example.com"}});
+        assert_eq!(call(&mut binding, navigate).await["id"], 1);
+        send(&state, "DELETE", "/session/s1", "").await;
+
+        let rec = state.recording.as_ref().unwrap().lock().unwrap();
+        let navigation = rec
+            .actions
+            .iter()
+            .find(|a| a.info.title == "Navigate to \"https://example.com\"")
+            .unwrap();
+        assert!(navigation.screenshot.is_some());
+        assert_eq!(rec.console[0].text, "hello");
+    }
+
+    #[tokio::test]
+    async fn keeps_recording_after_legacy_unsubscribe() {
+        let dir = tempfile::tempdir().unwrap();
+        let state = listening_proxy(dir.path().join("t.zip")).await;
+        let created = send(&state, "POST", "/session", ASK_BIDI).await;
+        let mut binding = binding_bidi(&created).await;
+        let subscribe = json!({"id": 1, "method": "session.subscribe",
+            "params": {"events": ["log.entryAdded"]}});
+        call(&mut binding, subscribe).await;
+        let unsubscribe = json!({"id": 2, "method": "session.unsubscribe",
+            "params": {"events": ["log.entryAdded"]}});
+        assert_eq!(call(&mut binding, unsubscribe).await["id"], 2);
+        let navigate = json!({"id": 3, "method": "browsingContext.navigate",
+            "params": {"context": "top", "url": "https://example.com"}});
+        assert_eq!(call(&mut binding, navigate).await["id"], 3);
+        assert!(
+            next_message(&mut binding, Duration::from_millis(300))
+                .await
+                .is_none()
+        );
+        send(&state, "DELETE", "/session/s1", "").await;
+
+        let rec = state.recording.as_ref().unwrap().lock().unwrap();
+        assert_eq!(rec.console.len(), 1);
+    }
+
+    #[tokio::test]
+    async fn redacts_actions_into_password_fields() {
+        let dir = tempfile::tempdir().unwrap();
+        let recording = Recording::new(dir.path().join("t.zip"), "chrome", "java");
+        let addr = "127.0.0.1:4444".parse().unwrap();
+        let state = ProxyState::new(fake_bidi_driver().await, Some(recording), addr);
+        send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
+        let actions = r#"{"actions":[{"type":"key","id":"k","actions":[{"type":"keyDown","value":"hunter2"}]}]}"#;
+        send(&state, "POST", "/session/s1/actions", actions).await;
+        send(&state, "DELETE", "/session/s1", "").await;
+
+        let rec = state.recording.as_ref().unwrap().lock().unwrap();
+        let recorded: Vec<String> = rec
+            .actions
+            .iter()
+            .filter_map(|a| a.request_body.as_ref().map(Value::to_string))
+            .collect();
+        assert!(recorded.iter().all(|body| !body.contains("hunter2")));
     }
 }
