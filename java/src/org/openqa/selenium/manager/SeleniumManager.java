@@ -281,9 +281,9 @@ public class SeleniumManager {
   }
 
   /**
-   * Like {@link #startPipe(List)}, with extra environment variables for the process. Secrets
-   * (e.g. credentials of a remote end) go here rather than in the arguments, which are logged and
-   * visible in process listings.
+   * Like {@link #startPipe(List)}, with extra environment variables for the process. Secrets (e.g.
+   * credentials of a remote end) go here rather than in the arguments, which are logged and visible
+   * in process listings.
    *
    * @param arguments List of command line arguments to send to Selenium Manager binary
    * @param environment environment variables to add to the process

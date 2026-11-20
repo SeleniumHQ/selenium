@@ -79,7 +79,8 @@ class TraceRecordingCommandExecutorTest {
   void upstreamAuthorizationComesFromUserInfo() throws MalformedURLException {
     URL remote = new URL("https://me%40corp.com:s3cret@hub.example.com/wd/hub");
 
-    assertThat(TraceRecordingCommandExecutor.basicAuthorization(remote, ClientConfig.defaultConfig()))
+    assertThat(
+            TraceRecordingCommandExecutor.basicAuthorization(remote, ClientConfig.defaultConfig()))
         .isEqualTo(basic("me@corp.com:s3cret"));
   }
 
@@ -98,9 +99,11 @@ class TraceRecordingCommandExecutorTest {
 
   @Test
   void proxyArgumentComesFromClientConfig() {
-    Proxy proxy = new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved("proxy.corp", 3128));
+    Proxy proxy =
+        new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved("proxy.corp", 3128));
 
-    assertThat(TraceRecordingCommandExecutor.proxyArgument(ClientConfig.defaultConfig().proxy(proxy)))
+    assertThat(
+            TraceRecordingCommandExecutor.proxyArgument(ClientConfig.defaultConfig().proxy(proxy)))
         .isEqualTo("http://proxy.corp:3128");
     assertThat(TraceRecordingCommandExecutor.proxyArgument(ClientConfig.defaultConfig())).isNull();
   }

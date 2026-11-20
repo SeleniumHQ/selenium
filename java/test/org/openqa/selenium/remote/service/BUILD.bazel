@@ -14,9 +14,9 @@ java_test_suite(
         exclude = LARGE_TESTS,
     ),
     deps = [
+        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/manager",
-        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/remote/http",
         "//java/test/org/openqa/selenium/testing:annotations",
