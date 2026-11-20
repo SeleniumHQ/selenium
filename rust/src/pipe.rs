@@ -139,6 +139,7 @@ async fn run_async(options: PipeOptions, log: &Logger) -> Result<(), Error> {
 
     while !state.session_ended.load(Ordering::SeqCst) && !SHUTDOWN_REQUESTED.load(Ordering::SeqCst)
     {
+        state.watch_bidi();
         state.drain_diagnostics(log);
         tokio::time::sleep(POLL_INTERVAL).await;
     }
@@ -448,6 +449,7 @@ impl ProxyState {
             .iter()
             .find(|(name, _)| name.eq_ignore_ascii_case("sec-websocket-key"))
             .map(|(_, value)| value.clone());
+        let bidi = bidi.filter(|bidi| !bidi.is_closed());
         let (Some(bidi), Some(key), true) = (bidi, key, current.as_deref() == Some(session_id))
         else {
             let error = json!({"value": {"error": "unknown command",
@@ -498,6 +500,7 @@ impl ProxyState {
                         _ => break,
                     },
                     Some(()) = in_flight.next(), if !in_flight.is_empty() => {}
+                    () = bidi.closed() => break,
                 }
             }
             // Responses still in flight are not written; closing the queue ends the writer.
@@ -609,7 +612,25 @@ impl ProxyState {
     }
 
     fn has_bidi(&self) -> bool {
-        self.bidi.lock().unwrap().is_some()
+        self.bidi
+            .lock()
+            .unwrap()
+            .as_ref()
+            .is_some_and(|bidi| !bidi.is_closed())
+    }
+
+    /// Reports once that the upstream BiDi connection was lost during the session; the rest of
+    /// the session is recorded with classic WebDriver.
+    fn watch_bidi(&self) {
+        let mut bidi = self.bidi.lock().unwrap();
+        if bidi.as_ref().is_some_and(|bidi| bidi.is_closed()) {
+            *bidi = None;
+            drop(bidi);
+            self.warning(
+                "WebDriver BiDi connection lost; recording the rest of the session with classic \
+                 WebDriver (no console or network data)",
+            );
+        }
     }
 
     async fn capture_screenshot(&self, index: usize) {
@@ -1331,6 +1352,9 @@ mod tests {
             while let Some(Ok(Message::Text(text))) = socket.next().await {
                 let command: Value = serde_json::from_str(text.as_str()).unwrap();
                 let method = command["method"].as_str().unwrap_or_default().to_string();
+                if method == "test.close" {
+                    break;
+                }
                 let names = |key: &str| -> Vec<String> {
                     command["params"][key]
                         .as_array()
@@ -1610,5 +1634,38 @@ mod tests {
             Some("Basic dTpw".to_string())
         );
         assert_eq!(upstream_authorization("http://grid:4444"), None);
+    }
+
+    #[tokio::test]
+    async fn losing_upstream_bidi_closes_the_binding_connection_and_warns() {
+        let dir = tempfile::tempdir().unwrap();
+        let state = listening_proxy(dir.path().join("t.zip")).await;
+        let created = send(&state, "POST", "/session", ASK_BIDI).await;
+        let mut binding = binding_bidi(&created).await;
+        let close = json!({"id": 1, "method": "test.close", "params": {}});
+        binding
+            .send(Message::text(close.to_string()))
+            .await
+            .unwrap();
+
+        let ended = tokio::time::timeout(Duration::from_secs(5), async {
+            loop {
+                match binding.next().await {
+                    None | Some(Err(_)) | Some(Ok(Message::Close(_))) => break,
+                    Some(Ok(_)) => {}
+                }
+            }
+        })
+        .await;
+        assert!(ended.is_ok(), "the binding connection stayed open");
+
+        state.watch_bidi();
+        assert!(!state.has_bidi());
+        let diagnostics = state.diagnostics.lock().unwrap();
+        assert!(
+            diagnostics
+                .iter()
+                .any(|(warning, message)| *warning && message.contains("lost"))
+        );
     }
 }

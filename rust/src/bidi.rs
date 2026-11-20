@@ -27,7 +27,7 @@ use std::collections::HashMap;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use tokio::sync::{mpsc, oneshot};
+use tokio::sync::{mpsc, oneshot, watch};
 use tokio_tungstenite::connect_async;
 use tokio_tungstenite::tungstenite::Message;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
@@ -71,6 +71,29 @@ struct Downstream {
     subscriptions: Subscriptions,
 }
 
+struct ClosedSignal(watch::Sender<bool>);
+
+impl Default for ClosedSignal {
+    fn default() -> Self {
+        ClosedSignal(watch::Sender::new(false))
+    }
+}
+
+impl ClosedSignal {
+    fn set(&self) {
+        self.0.send_replace(true);
+    }
+
+    fn is_set(&self) -> bool {
+        *self.0.borrow()
+    }
+
+    async fn wait(&self) {
+        let mut closed = self.0.subscribe();
+        let _ = closed.wait_for(|closed| *closed).await;
+    }
+}
+
 #[derive(Default)]
 struct Router {
     pending: Mutex<HashMap<u64, Origin>>,
@@ -78,6 +101,8 @@ struct Router {
     tree: Mutex<ContextTree>,
     own_events: Mutex<Vec<String>>,
     legacy_unsubscribe: AtomicBool,
+    /// Set once the upstream connection is gone; nothing can be sent or forwarded after that.
+    closed: ClosedSignal,
 }
 
 pub struct BiDiClient {
@@ -121,11 +146,14 @@ impl BiDiClient {
                     reader.dispatch(text.as_str(), &on_event);
                 }
             }
-            for (_, origin) in reader.pending.lock().unwrap().drain() {
+            let mut pending = reader.pending.lock().unwrap();
+            reader.closed.set();
+            for (_, origin) in pending.drain() {
                 if let Origin::Internal(waiter) = origin {
                     let _ = waiter.send(Err(anyhow!("BiDi connection closed")));
                 }
             }
+            drop(pending);
             // Dropping the senders closes the downstream connections.
             reader.downstream.lock().unwrap().clear();
         });
@@ -153,7 +181,13 @@ impl BiDiClient {
 
     fn send(&self, origin: Origin, method: &str, params: Value) -> Result<u64, Error> {
         let id = self.next_id.fetch_add(1, Ordering::SeqCst);
-        self.router.pending.lock().unwrap().insert(id, origin);
+        {
+            let mut pending = self.router.pending.lock().unwrap();
+            if self.router.closed.is_set() {
+                return Err(anyhow!("BiDi connection closed"));
+            }
+            pending.insert(id, origin);
+        }
         let command = json!({"id": id, "method": method, "params": params});
         if self
             .outgoing
@@ -242,6 +276,15 @@ impl BiDiClient {
     /// Whether a downstream `session.unsubscribe` by event names (the legacy form) covered
     /// events the proxy subscribed to since the last call; the remote end may have dropped the
     /// proxy's subscription too.
+    pub fn is_closed(&self) -> bool {
+        self.router.closed.is_set()
+    }
+
+    /// Completes once the upstream connection is gone.
+    pub async fn closed(&self) {
+        self.router.closed.wait().await
+    }
+
     pub fn take_legacy_unsubscribe(&self) -> bool {
         self.router.legacy_unsubscribe.swap(false, Ordering::SeqCst)
     }
@@ -611,5 +654,27 @@ mod tests {
         let client = BiDiClient::connect(&url, &headers, handler).await.unwrap();
         client.subscribe(&["log.entryAdded"]).await.unwrap();
         assert_eq!(authorization.lock().unwrap().as_deref(), Some("Basic dTpw"));
+    }
+
+    #[tokio::test]
+    async fn commands_fail_fast_once_upstream_is_closed() {
+        let (url, _) = fake_upstream().await;
+        let (handler, _events) = recorded_events();
+        let client = BiDiClient::connect(&url, &[], handler).await.unwrap();
+        let _ = client.send_command("test.close", json!({})).await;
+        tokio::time::timeout(WAIT, client.closed()).await.unwrap();
+        assert!(client.is_closed());
+        let started = std::time::Instant::now();
+        assert!(
+            client
+                .send_command("session.status", json!({}))
+                .await
+                .is_err()
+        );
+        assert!(started.elapsed() < Duration::from_secs(1));
+        let (out, _queue) = mpsc::unbounded_channel();
+        let conn = client.attach(out);
+        let command = json!({"id": 1, "method": "session.status", "params": {}});
+        assert!(client.forward(conn, command).is_err());
     }
 }
