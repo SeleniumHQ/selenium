@@ -373,6 +373,8 @@ ruby.bundle_fetch(
     gemfile_lock = "//:rb/Gemfile.lock",
     generated_srcs = ["//rb/lib/selenium/webdriver:version.rb"],
     jar_checksums = {
+        "com.dylibso.chicory:compiler:1.7.5": "1a54cc0b3a79aa914f7f2fa5e7b7ed902702f3ce7aa155ec0cfc74b386a97377",
+        "com.dylibso.chicory:wasi:1.7.5": "52f68c155b1dc4ff6df9a6b9eb84201029886561e87bc77a858bd14333c1cfbc",
         "org.snakeyaml:snakeyaml-engine:2.10": "c99d9fd66c7c251d881a9cd95089b7c8044c29a1b02983d7036981bd4354ec37",
     },
 )
