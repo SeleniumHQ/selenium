@@ -24,6 +24,7 @@ module Selenium
       # Continue to use functionality from existing `driver.navigate` method
       #
       # @api private
+      # @deprecated Use BiDi::Protocol::BrowsingContext.new(driver) instead.
       #
       class BrowsingContext
         READINESS_STATE = {
@@ -34,6 +35,10 @@ module Selenium
 
         # TODO: store current window handle in bridge object instead of always calling it
         def initialize(bridge)
+          WebDriver.logger.deprecate('BiDi::BrowsingContext',
+                                     'BiDi::Protocol::BrowsingContext.new(driver)',
+                                     id: :bidi_browsing_context,
+                                     reference: 'https://www.selenium.dev/documentation/warnings/bidi-implementation/')
           @bridge = bridge
           @bidi = @bridge.bidi
           page_load_strategy = bridge.capabilities[:page_load_strategy]

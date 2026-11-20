@@ -25,9 +25,11 @@ module Selenium
 
       attr_reader callbacks: Hash[Integer, Hash[String, String]]
 
-      attr_reader network: BiDi::Network
+      def initialize: (Remote::Bridge bridge) -> void
 
-      alias bidi network
+      def network: () -> BiDi::Network
+
+      def bidi: () -> BiDi::Network
 
       # Delegated methods from BiDi::Network
       def continue_with_auth: (*untyped) -> untyped
@@ -35,8 +37,6 @@ module Selenium
       def continue_with_request: (*untyped) -> untyped
 
       def continue_with_response: (*untyped) -> untyped
-
-      def initialize: (Remote::Bridge bridge) -> void
 
       def remove_handler: (Integer id) -> void
 
@@ -49,6 +49,8 @@ module Selenium
       def add_response_handler: (*String filter, ?pattern_type: Symbol?) ?{ (untyped) -> untyped } -> Integer
 
       private
+
+      def deprecate_network_accessor: (String old) -> BiDi::Network
 
       def add_handler: (Symbol event_type, String phase, untyped intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> Integer
     end

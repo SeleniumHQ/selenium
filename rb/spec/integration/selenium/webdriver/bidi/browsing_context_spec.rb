@@ -25,47 +25,51 @@ module Selenium
     class BiDi
       describe BrowsingContext, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
         after do
-          browsing_context = described_class.new(bridge)
           (driver.window_handles - [driver.window_handle]).each { |handle| browsing_context.close(context_id: handle) }
         end
 
-        let(:bridge) { driver.instance_variable_get(:@bridge) }
+        def browsing_context
+          return @browsing_context if @browsing_context
+
+          bridge = driver.instance_variable_get(:@bridge)
+          expect { @browsing_context = described_class.new(bridge) }.to have_deprecated(:bidi_browsing_context)
+          @browsing_context
+        end
 
         describe '#create' do
           it 'without arguments' do
-            id = described_class.new(bridge).create
+            id = browsing_context.create
 
             expect(driver.window_handles).to include(id)
           end
 
           it 'accepts a tab type' do
-            id = described_class.new(bridge).create(type: :tab)
+            id = browsing_context.create(type: :tab)
 
             expect(driver.window_handles).to include(id)
           end
 
           it 'accepts a window type' do
-            id = described_class.new(bridge).create(type: :window)
+            id = browsing_context.create(type: :window)
 
             expect(driver.window_handles).to include(id)
           end
 
           it 'errors on unknown type' do
             expect {
-              described_class.new(bridge).create(type: :unknown)
+              browsing_context.create(type: :unknown)
             }.to raise_error(Error::WebDriverError, /\Ainvalid argument: /)
           end
 
           it 'accepts a reference context' do
             id = driver.window_handle
-            result = described_class.new(bridge).create(context_id: id)
+            result = browsing_context.create(context_id: id)
 
             expect(driver.window_handles).to include(id, result)
           end
         end
 
         it 'closes a window' do
-          browsing_context = described_class.new(bridge)
           window1 = browsing_context.create
           window2 = browsing_context.create
 
@@ -77,7 +81,6 @@ module Selenium
         end
 
         it 'sets the viewport' do
-          browsing_context = described_class.new(bridge)
           browsing_context.set_viewport(width: 800, height: 600, device_pixel_ratio: 2.0)
           expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
         ensure
@@ -90,8 +93,6 @@ module Selenium
           let(:driver) { local_driver(unhandled_prompt_behavior: :ignore) }
 
           it 'accepts users prompts without text' do
-            browsing_context = described_class.new(bridge)
-
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click
             wait_for_alert
@@ -103,7 +104,6 @@ module Selenium
           end
 
           it 'accepts users prompts with text' do
-            browsing_context = described_class.new(bridge)
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'prompt').click
             wait_for_alert
@@ -115,7 +115,6 @@ module Selenium
           end
 
           it 'rejects users prompts' do
-            browsing_context = described_class.new(bridge)
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click
             wait_for_alert
@@ -130,7 +129,6 @@ module Selenium
 
         it 'activates a browser context',
            pending_if: {browser_family: :safari, reason: 'Safari does not focus the activated context'} do
-          browsing_context = described_class.new(bridge)
           browsing_context.create(type: :tab)
 
           expect(driver.execute_script('return document.hasFocus();')).to be_falsey
