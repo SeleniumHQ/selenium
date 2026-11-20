@@ -425,7 +425,7 @@ fn is_secret_name(name: &str) -> bool {
         .any(|word| name.contains(word))
 }
 
-fn without_user_info(url: &str) -> Option<String> {
+pub fn without_user_info(url: &str) -> Option<String> {
     let authority_start = url.find("://")? + 3;
     let authority_len = url[authority_start..]
         .find(['/', '?', '#'])

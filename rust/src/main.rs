@@ -26,7 +26,7 @@ use selenium_manager::grid::GridManager;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
-use selenium_manager::pipe::{self, PipeOptions};
+use selenium_manager::pipe::{self, PipeOptions, PipeTarget};
 use selenium_manager::rules::write_rules_file;
 use selenium_manager::skills::write_skills_file;
 use selenium_manager::{
@@ -193,6 +193,11 @@ struct Cli {
     /// Driver to start in pipe mode, skipping driver management (requires --pipe or --record)
     #[clap(long, value_name = "DRIVER_PATH")]
     driver_path: Option<PathBuf>,
+
+    /// Forward pipe mode to an existing WebDriver endpoint (e.g. Selenium Grid) instead of
+    /// starting a driver; no driver or browser is managed (implies --pipe)
+    #[clap(long, value_name = "URL", conflicts_with = "driver_path")]
+    upstream: Option<String>,
 }
 
 fn main() {
@@ -315,6 +320,30 @@ fn main() {
     }
     prune_old_cache_entries(selenium_manager.get_logger(), &cache_path, CACHE_TTL_DAYS);
 
+    if let Some(upstream) = cli.upstream.clone() {
+        // Nothing to resolve: the remote end has its own drivers and browsers.
+        let options = PipeOptions {
+            target: PipeTarget::Upstream(upstream),
+            browser_name: selenium_manager.get_browser_name().to_string(),
+            language_binding: selenium_manager.get_language_binding().to_string(),
+            record_path: cli.record.clone(),
+        };
+        let result = selenium_manager
+            .set_timeout(cli.timeout)
+            .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+            .and_then(|_| selenium_manager.set_insecure(cli.insecure))
+            .and_then(|_| selenium_manager.stats())
+            .and_then(|_| pipe::run(options, selenium_manager.get_logger()));
+        let log = selenium_manager.get_logger();
+        match result {
+            Ok(()) => flush_and_exit(OK, log, None),
+            Err(err) => {
+                log.error(format_error(&err));
+                flush_and_exit(DATAERR, log, Some(err));
+            }
+        }
+    }
+
     let pipe_mode = cli.pipe || cli.record.is_some();
     if cli.driver_path.is_some() && !pipe_mode {
         selenium_manager
@@ -333,7 +362,7 @@ fn main() {
         .and_then(|driver_path| {
             if pipe_mode {
                 let options = PipeOptions {
-                    driver_path: driver_path.clone(),
+                    target: PipeTarget::Driver(driver_path.clone()),
                     browser_name: selenium_manager.get_browser_name().to_string(),
                     language_binding: selenium_manager.get_language_binding().to_string(),
                     record_path: cli.record.clone(),
@@ -422,4 +451,17 @@ fn flush_and_exit(code: i32, log: &Logger, err: Option<Error>) -> ! {
     log.flush();
     clear_lock_if_required();
     exit(code);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn cli_rejects_upstream_with_driver_path() {
+        let both = ["sm", "--upstream", "http://h", "--driver-path", "d"];
+        assert!(Cli::try_parse_from(both).is_err());
+        let upstream = Cli::try_parse_from(["sm", "--upstream", "http://h"]).unwrap();
+        assert_eq!(upstream.upstream.as_deref(), Some("http://h"));
+    }
 }

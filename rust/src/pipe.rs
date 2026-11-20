@@ -27,7 +27,7 @@
 use crate::archiver;
 use crate::bidi::{BiDiClient, EventHandler, Outgoing};
 use crate::logger::Logger;
-use crate::recorder::{Recording, redact_key_actions};
+use crate::recorder::{Recording, redact_key_actions, without_user_info};
 use anyhow::{Error, anyhow};
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD as BASE64;
@@ -67,8 +67,16 @@ const PASSWORD_FOCUSED_SCRIPT: &str =
 
 static SHUTDOWN_REQUESTED: AtomicBool = AtomicBool::new(false);
 
+/// What the proxy forwards to.
+pub enum PipeTarget {
+    /// A driver executable that pipe mode starts.
+    Driver(PathBuf),
+    /// An existing WebDriver endpoint (e.g. Selenium Grid or a cloud provider).
+    Upstream(String),
+}
+
 pub struct PipeOptions {
-    pub driver_path: PathBuf,
+    pub target: PipeTarget,
     pub browser_name: String,
     pub language_binding: String,
     pub record_path: Option<PathBuf>,
@@ -84,12 +92,24 @@ pub fn run(options: PipeOptions, log: &Logger) -> Result<(), Error> {
 }
 
 async fn run_async(options: PipeOptions, log: &Logger) -> Result<(), Error> {
-    log.debug(format!(
-        "Starting driver in pipe mode: {}",
-        options.driver_path.display()
-    ));
-    let mut driver = DriverProcess::start(&options.driver_path).await?;
-    log.debug(format!("Driver ready at {}", driver.base_url));
+    let (mut driver, webdriver_url, ready) = match &options.target {
+        PipeTarget::Driver(driver_path) => {
+            log.debug(format!(
+                "Starting driver in pipe mode: {}",
+                driver_path.display()
+            ));
+            let driver = DriverProcess::start(driver_path).await?;
+            log.debug(format!("Driver ready at {}", driver.base_url));
+            let url = driver.base_url.clone();
+            (Some(driver), url, json!({"driver_path": driver_path}))
+        }
+        PipeTarget::Upstream(upstream) => {
+            let url = upstream_base_url(upstream)?;
+            let shown = without_user_info(&url).unwrap_or_else(|| url.clone());
+            log.debug(format!("Forwarding pipe mode to {}", shown));
+            (None, url, json!({"upstream": shown}))
+        }
+    };
 
     let recording = options.record_path.as_ref().map(|path| {
         log.debug(format!("Recording session to {}", path.display()));
@@ -101,16 +121,17 @@ async fn run_async(options: PipeOptions, log: &Logger) -> Result<(), Error> {
     });
     let listener = TcpListener::bind("127.0.0.1:0").await?;
     let proxy_addr = listener.local_addr()?;
-    let state = Arc::new(ProxyState::new(
-        driver.base_url.clone(),
-        recording,
-        proxy_addr,
-    ));
+    let mut state = ProxyState::new(webdriver_url.clone(), recording, proxy_addr);
+    if driver.is_none() {
+        state = state.for_upstream(&webdriver_url);
+    }
+    let state = Arc::new(state);
     let proxy_url = format!("http://{}", proxy_addr);
     tokio::spawn(accept_loop(listener, state.clone()));
 
     // A single JSON line lets bindings discover the proxy while this process keeps running.
-    let ready = json!({"proxy_url": proxy_url, "driver_path": options.driver_path});
+    let mut ready = ready;
+    ready["proxy_url"] = json!(proxy_url);
     let mut stdout = std::io::stdout();
     writeln!(stdout, "{}", ready)?;
     stdout.flush()?;
@@ -137,7 +158,9 @@ async fn run_async(options: PipeOptions, log: &Logger) -> Result<(), Error> {
         }
         None => {}
     }
-    driver.stop();
+    if let Some(driver) = driver.as_mut() {
+        driver.stop();
+    }
     Ok(())
 }
 
@@ -162,6 +185,8 @@ struct ProxyState {
     webdriver_url: String,
     proxy_addr: SocketAddr,
     client: Client,
+    /// Headers for the upstream BiDi handshake when the binding sends none (`--upstream` user info).
+    upstream_headers: Vec<(String, String)>,
     recording: Option<Arc<Mutex<Recording>>>,
     bidi: Mutex<Option<Arc<BiDiClient>>>,
     session_id: Mutex<Option<String>>,
@@ -178,6 +203,7 @@ impl ProxyState {
             webdriver_url,
             proxy_addr,
             client: local_http_client(),
+            upstream_headers: Vec::new(),
             recording: recording.map(|r| Arc::new(Mutex::new(r))),
             bidi: Mutex::new(None),
             session_id: Mutex::new(None),
@@ -186,6 +212,17 @@ impl ProxyState {
             trace_result: Mutex::new(None),
             diagnostics: Mutex::new(Vec::new()),
         }
+    }
+
+    /// A remote end is not on localhost, so the user's HTTP proxy settings apply to it.
+    fn for_upstream(mut self, url: &str) -> Self {
+        self.client = Client::builder()
+            .build()
+            .unwrap_or_else(|_| local_http_client());
+        self.upstream_headers = upstream_authorization(url)
+            .map(|value| vec![("Authorization".to_string(), value)])
+            .unwrap_or_default();
+        self
     }
 
     async fn handle_connection<S>(&self, stream: &mut S) -> Result<(), Error>
@@ -342,6 +379,9 @@ impl ProxyState {
         // Connected before replying, since the binding may open its BiDi connection right away.
         let capabilities = &mut response["value"]["capabilities"];
         let connected = match capabilities["webSocketUrl"].as_str().map(str::to_string) {
+            Some(url) if headers.is_empty() => {
+                self.connect_bidi(&url, &self.upstream_headers).await
+            }
             Some(url) => self.connect_bidi(&url, headers).await,
             None => {
                 self.warning("Driver did not return webSocketUrl; recording with classic WebDriver (no console or network data)");
@@ -817,6 +857,23 @@ fn request_bidi(body: &[u8]) -> (Vec<u8>, bool) {
         Ok(patched) => (patched, wanted),
         Err(_) => (body.to_vec(), false),
     }
+}
+
+/// Base URL of a remote end given with `--upstream`, without a trailing slash.
+pub fn upstream_base_url(url: &str) -> Result<String, Error> {
+    if !(url.starts_with("http://") || url.starts_with("https://")) {
+        return Err(anyhow!("--upstream must be an http(s) URL: {}", url));
+    }
+    Ok(url.trim_end_matches('/').to_string())
+}
+
+/// Basic authentication from the user info of an upstream URL, for the BiDi handshake.
+fn upstream_authorization(url: &str) -> Option<String> {
+    let start = url.find("://")? + 3;
+    let authority = &url[start..];
+    let authority = &authority[..authority.find(['/', '?', '#']).unwrap_or(authority.len())];
+    let user_info = &authority[..authority.rfind('@')?];
+    Some(format!("Basic {}", BASE64.encode(user_info)))
 }
 
 fn trace_error_line(message: &str) -> String {
@@ -1534,5 +1591,24 @@ mod tests {
     fn trace_error_line_is_json() {
         let line: Value = serde_json::from_str(&trace_error_line("disk full")).unwrap();
         assert_eq!(line["trace_error"], "disk full");
+    }
+
+    #[test]
+    fn upstream_base_url_normalizes() {
+        assert_eq!(
+            upstream_base_url("http://grid:4444/wd/hub/").unwrap(),
+            "http://grid:4444/wd/hub"
+        );
+        assert!(upstream_base_url("ftp://grid").is_err());
+        assert!(upstream_base_url("grid:4444").is_err());
+    }
+
+    #[test]
+    fn upstream_user_info_becomes_basic_auth() {
+        assert_eq!(
+            upstream_authorization("https://u:p@hub.example.com/wd/hub"),
+            Some("Basic dTpw".to_string())
+        );
+        assert_eq!(upstream_authorization("http://grid:4444"), None);
     }
 }
