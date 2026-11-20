@@ -20,6 +20,8 @@
 const assert = require('node:assert')
 const { suite, Pages } = require('../../../lib/test')
 const { Browser } = require('selenium-webdriver')
+const error = require('selenium-webdriver/lib/error')
+const { errorType } = require('selenium-webdriver/bidi/error')
 
 const { Script } = require('selenium-webdriver/bidi/generated/script')
 
@@ -206,6 +208,13 @@ suite(
         assert.ok(result.realms.every((r) => r.type === 'window'))
       })
 
+      it('rejects evaluating in an unknown context with NoSuchFrameError', async function () {
+        await assert.rejects(
+          script.evaluate({ expression: '1', target: { context: 'no-such-context' }, awaitPromise: false }),
+          error.NoSuchFrameError,
+        )
+      })
+
       it('can use a realm target for evaluate', async function () {
         const contextId = await driver.getWindowHandle()
         const realmsResult = await script.getRealms({ context: contextId })
@@ -232,6 +241,10 @@ suite(
         assert.strictEqual(typeof result.script, 'string')
 
         await script.removePreloadScript({ script: result.script })
+      })
+
+      it('rejects removing an unknown preload script with the BiDi-only error type', async function () {
+        await assert.rejects(script.removePreloadScript({ script: 'no-such-script' }), errorType('no such script'))
       })
 
       it('preload script runs on new page navigation', async function () {

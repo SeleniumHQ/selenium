@@ -20,6 +20,7 @@
 const assert = require('node:assert')
 const { suite, ignore, Pages } = require('../../../lib/test')
 const { Browser, until } = require('selenium-webdriver')
+const error = require('selenium-webdriver/lib/error')
 
 // Generated BrowsingContext domain class produced by generate_bidi.mjs.
 const { BrowsingContext } = require('selenium-webdriver/bidi/generated/browsing_context')
@@ -55,6 +56,10 @@ suite(
         assert.strictEqual(typeof result.context, 'string')
 
         await browsingContext.close({ context: result.context })
+      })
+
+      it('rejects closing an unknown context with NoSuchFrameError', async function () {
+        await assert.rejects(browsingContext.close({ context: 'no-such-context' }), error.NoSuchFrameError)
       })
 
       it('can get browsing context tree', async function () {
