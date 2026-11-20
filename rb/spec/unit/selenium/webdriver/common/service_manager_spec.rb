@@ -52,6 +52,15 @@ module Selenium
           expect { manager.start }.to raise_error(Error::WebDriverError, /ECONNREFUSED/)
           expect(manager.instance_variable_get(:@process)).not_to be_alive
         end
+
+        it 'keeps polling when connecting to the driver fails with EADDRINUSE' do
+          stub_const('Selenium::WebDriver::ServiceManager::START_TIMEOUT', 1)
+          allow(Net::HTTP).to receive(:start).and_raise(Errno::EADDRINUSE)
+          manager = manager_for('exec sleep 30')
+
+          expect { manager.start }.to raise_error(Error::WebDriverError, /EADDRINUSE/)
+          expect(Net::HTTP).to have_received(:start).at_least(2).times
+        end
       end
     end
   end

@@ -167,7 +167,7 @@ module Selenium
         ready = status['ready'] || status.dig('value', 'ready')
         "driver not ready: #{response.body}" unless ready
       rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EPIPE, Errno::ETIMEDOUT,
-             Errno::EADDRNOTAVAIL, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
+             Errno::EADDRINUSE, Errno::EADDRNOTAVAIL, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
              EOFError, SocketError, Net::HTTPBadResponse, JSON::ParserError => e
         "#{e.class}: #{e.message}"
       end
