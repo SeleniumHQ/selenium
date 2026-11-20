@@ -287,11 +287,7 @@ class WebSocketConnection:
             for callback in self.callbacks.get(message["method"], []):
                 Thread(target=callback, args=(params,), daemon=True).start()
             if self._event_receiver is not None:
-                # An exception escaping here would reach the websocket's error handler, which closes the socket.
-                try:
-                    self._event_receiver.receive(message["method"], params)
-                except Exception:
-                    logger.exception("Event receiver failed for %s", message["method"])
+                self._event_receiver.receive(message["method"], params)
 
     def _release_pending(self):
         # Once the socket is gone no reply can arrive, so wake waiters instead of letting them run out the timeout

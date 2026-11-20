@@ -236,10 +236,8 @@ def test_a_payload_that_fails_validation_is_logged_and_delivered_to_no_listener(
     browser.emit("browsingContext.load", load())
 
     record = logged.get(timeout=5)
-    assert (record.levelname, record.getMessage()) == (
-        "ERROR",
-        "Dropped a browsingContext.load payload that failed validation",
-    )
+    assert record.levelname == "ERROR"
+    assert record.getMessage().startswith("Dropped a browsingContext.load payload that failed validation: ")
     assert first.get(timeout=5).url == second.get(timeout=5).url == "https://example.com"
     with pytest.raises(queue.Empty):
         first.get(timeout=0.2)

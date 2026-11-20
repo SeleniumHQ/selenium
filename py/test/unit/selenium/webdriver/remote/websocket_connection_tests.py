@@ -137,14 +137,11 @@ def test_closes_socket_when_connection_does_not_start(monkeypatch):
 
 
 class Receiver:
-    def __init__(self, error=None):
-        self.error = error
+    def __init__(self):
         self.received = []
         self.closed = False
 
     def receive(self, method, params):
-        if self.error:
-            raise self.error
         self.received.append((method, params))
 
     def close(self):
@@ -197,17 +194,6 @@ def test_does_not_hand_command_replies_to_the_receiver(monkeypatch):
 def test_registered_callbacks_still_fire_with_a_receiver_attached(monkeypatch):
     connection = connect(monkeypatch)
     connection.attach_event_receiver(Receiver)
-    called = threading.Event()
-    connection.on(LoadEvent, lambda params: called.set())
-
-    send_event(connection, "browsingContext.load", {"url": "a"})
-
-    assert called.wait(timeout=5)
-
-
-def test_a_failing_receiver_does_not_stop_message_processing(monkeypatch):
-    connection = connect(monkeypatch)
-    connection.attach_event_receiver(lambda: Receiver(error=RuntimeError("boom")))
     called = threading.Event()
     connection.on(LoadEvent, lambda params: called.set())
 

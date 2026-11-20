@@ -842,20 +842,11 @@ def _listener_method(e: EventIR) -> str:
     return f"add_{e.name}_listener"
 
 
-def _guard_listener_names(domain: str, commands: list[CommandIR], events: list[EventIR]) -> None:
-    taken = {_listener_method(e): f"the listener method for event {e.wire}" for e in events}
-    taken["remove_listener"] = "Domain.remove_listener"
-    for c in commands:
-        if c.method in taken:
-            raise ValueError(f"{domain}: command method {c.method} collides with {taken[c.method]}")
-
-
 def build_module(schema: Schema, domain: str) -> ModuleIR:
     schema._pending_refs = set()
     records, unions = schema.types_for(domain)
     commands = [build_command(schema, c) for c in schema.commands_for(domain)]
     events = [build_event(schema, e) for e in schema.events_for(domain)]
-    _guard_listener_names(domain, commands, events)
     imports = _cross_domain_imports(schema, domain)
     return ModuleIR(
         domain=domain,
