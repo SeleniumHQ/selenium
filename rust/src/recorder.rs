@@ -142,9 +142,9 @@ impl Recording {
 
     /// Registers a BiDi command sent by the binding; `None` when it is not recorded (queries).
     pub fn start_bidi_action(&mut self, method: &str, params: &Value) -> Option<usize> {
-        let info = classify_bidi_command(method, params)?;
         let mut request_body = params.clone();
         redact_secrets(&mut request_body);
+        let info = classify_bidi_command(method, &request_body)?;
         self.actions.push(RecordedAction {
             http_method: "BIDI".to_string(),
             command_path: method.to_string(),
@@ -403,6 +403,8 @@ pub fn redact_secrets(value: &mut Value) {
             for (key, item) in map.iter_mut() {
                 if item.is_string() && is_secret_name(key) {
                     *item = REDACTED.into();
+                } else if key == "cookie" && item.is_object() {
+                    redact_cookie_value(item);
                 } else {
                     redact_secrets(item);
                 }
@@ -413,6 +415,18 @@ pub fn redact_secrets(value: &mut Value) {
             if let Some(stripped) = without_user_info(text) {
                 *text = stripped;
             }
+        }
+        _ => {}
+    }
+}
+
+/// Cookie values are often session tokens (tests add them to skip logging in). Classic cookies
+/// carry a string; BiDi ones a `{"type": "string", "value": ...}` bytes value.
+fn redact_cookie_value(cookie: &mut Value) {
+    match &mut cookie["value"] {
+        Value::String(text) => *text = REDACTED.into(),
+        Value::Object(bytes) => {
+            bytes.insert("value".into(), REDACTED.into());
         }
         _ => {}
     }
@@ -762,5 +776,44 @@ mod tests {
         assert_eq!(value["sauce:options"]["accessKey"], REDACTED);
         assert_eq!(value["sauce:options"]["name"], "demo");
         assert_eq!(value["url"], "https://host/wd");
+    }
+
+    #[test]
+    fn bidi_navigation_titles_hide_user_info() {
+        let mut rec = Recording::new(PathBuf::from("t.zip"), "chrome", "java");
+        let params = json!({"context": "top", "url": "https://admin:pw@site/"});
+        let index = rec
+            .start_bidi_action("browsingContext.navigate", &params)
+            .unwrap();
+        assert_eq!(
+            rec.actions[index].info.title,
+            "Navigate to \"https://site/\""
+        );
+    }
+
+    #[test]
+    fn redacts_cookie_values() {
+        let mut rec = Recording::new(PathBuf::from("t.zip"), "chrome", "java");
+        let classic = rec.start_action(
+            "POST",
+            "/cookie",
+            br#"{"cookie":{"name":"sid","value":"token-123"}}"#,
+        );
+        let bidi = rec
+            .start_bidi_action(
+                "storage.setCookie",
+                &json!({"cookie": {"name": "sid", "domain": "site",
+                    "value": {"type": "string", "value": "token-123"}}}),
+            )
+            .unwrap();
+        for index in [classic, bidi] {
+            let body = rec.actions[index]
+                .request_body
+                .as_ref()
+                .unwrap()
+                .to_string();
+            assert!(!body.contains("token-123"), "{}", body);
+            assert!(body.contains("sid"));
+        }
     }
 }
