@@ -355,8 +355,18 @@ module Selenium
           WebDriver::Driver.for(:edge, service: service, **)
         end
 
-        def safari_preview_driver(**)
-          WebDriver::Driver.for(:safari, **)
+        def safari_driver(service: nil, **)
+          WebDriver::Driver.for(:safari, service: service || safari_service, **)
+        end
+
+        def safari_preview_driver(service: nil, **)
+          WebDriver::Driver.for(:safari, service: service || safari_service, **)
+        end
+
+        # rules_ruby points HOME at TEST_TMPDIR, and safaridriver writes no --diagnose logs without the real HOME
+        def safari_service
+          env = {'HOME' => Dir.home(ENV.fetch('USER'))} if ENV.key?('SE_DEBUG')
+          WebDriver::Service.safari(env: env)
         end
 
         def chrome_options(args: [], **opts)
