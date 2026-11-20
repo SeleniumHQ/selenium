@@ -143,6 +143,17 @@ pub fn subscription_from(params: &Value, result: &Value) -> Option<Subscription>
     })
 }
 
+/// Like `subscription_from`, but remote ends that predate subscription ids still get the
+/// subscription recorded; with an empty id only a legacy unsubscribe by event names removes it.
+pub fn subscription_for(params: &Value, result: &Value) -> Subscription {
+    subscription_from(params, result).unwrap_or_else(|| {
+        let mut sub = subscription_from(params, &serde_json::json!({"subscription": ""}))
+            .expect("a subscription with an id");
+        sub.id = String::new();
+        sub
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -217,5 +228,18 @@ mod tests {
         assert_eq!(parsed.events, ["log.entryAdded"]);
         assert_eq!(parsed.contexts, Some(vec!["top".to_string()]));
         assert!(subscription_from(&params, &json!({})).is_none());
+    }
+
+    #[test]
+    fn subscriptions_without_id_are_kept_until_a_legacy_unsubscribe() {
+        let params = json!({"events": ["log.entryAdded"]});
+        let mut subscriptions = Subscriptions::new();
+        subscriptions.add(subscription_for(&params, &json!({})));
+        let tree = ContextTree::new();
+        assert!(subscriptions.delivers("log.entryAdded", &json!({}), &tree));
+        subscriptions.remove_ids(&["sub-1".to_string()]);
+        assert!(subscriptions.delivers("log.entryAdded", &json!({}), &tree));
+        subscriptions.remove_events(&["log.entryAdded".to_string()]);
+        assert!(!subscriptions.delivers("log.entryAdded", &json!({}), &tree));
     }
 }

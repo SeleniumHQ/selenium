@@ -19,7 +19,7 @@
 //! the proxy sends its own commands (screenshots, subscriptions) through it, and the binding's
 //! connections to the proxy are multiplexed over it, so both can use BiDi at the same time.
 
-use crate::bidi_router::{ContextTree, Subscriptions, subscription_from};
+use crate::bidi_router::{ContextTree, Subscriptions, subscription_for};
 use anyhow::{Error, anyhow};
 use futures_util::{SinkExt, StreamExt};
 use serde_json::{Value, json};
@@ -318,11 +318,7 @@ impl Router {
         result: &Value,
     ) {
         match method {
-            "session.subscribe" => {
-                if let Some(sub) = subscription_from(params, result) {
-                    target.subscriptions.add(sub);
-                }
-            }
+            "session.subscribe" => target.subscriptions.add(subscription_for(params, result)),
             "session.unsubscribe" => {
                 let strings = |value: &Value| -> Vec<String> {
                     value
