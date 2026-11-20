@@ -38,9 +38,9 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.ReferenceCountUtil;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -58,10 +58,10 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-    LOG.log(Debug.getDebugLogLevel(), "Incoming message: {0}", msg);
+    LOG.log(Level.FINE, "Incoming message: {0}", msg);
 
     if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
-      LOG.log(Debug.getDebugLogLevel(), "Start of http request: {0}", msg);
+      LOG.log(Level.FINE, "Start of http request: {0}", msg);
 
       io.netty.handler.codec.http.HttpRequest nettyRequest =
           (io.netty.handler.codec.http.HttpRequest) msg;
@@ -112,7 +112,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       }
 
       if (msg instanceof LastHttpContent) {
-        LOG.log(Debug.getDebugLogLevel(), "End of http request: {0}", msg);
+        LOG.log(Level.FINE, "End of http request: {0}", msg);
 
         if (buffer != null) {
           request.setContent(
@@ -128,7 +128,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    LOG.log(Debug.getDebugLogLevel(), "Channel became inactive.");
+    LOG.log(Level.FINE, "Channel became inactive.");
     super.channelInactive(ctx);
   }
 
@@ -172,8 +172,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     } catch (Exception ignore) {
       ctx.writeAndFlush(
           new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
-      LOG.log(
-          Debug.getDebugLogLevel(), "Not possible to decode parameters. {0}", nettyRequest.uri());
+      LOG.log(Level.FINE, "Not possible to decode parameters. {0}", nettyRequest.uri());
       return null;
     }
   }

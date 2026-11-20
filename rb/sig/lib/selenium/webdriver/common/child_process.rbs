@@ -43,6 +43,8 @@ module Selenium
 
       attr_accessor env: Hash[String, String?]?
 
+      attr_reader status: untyped
+
       attr_writer io: untyped
 
       def self.build: (*untyped command) -> untyped

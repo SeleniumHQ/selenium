@@ -17,6 +17,10 @@ BIDI_TESTS = [
     "RemoteWebDriverBiDiTest.java",
 ]
 
+SE_MANAGER_TESTS = [
+    "SeleniumManagerNodeTest.java",
+]
+
 SMALL_TESTS = [
     "DirectForwardingListenerTest.java",
 ]
@@ -132,6 +136,34 @@ java_selenium_test_suite(
     ] + CDP_DEPS + JUNIT5_DEPS,
 )
 
+java_selenium_test_suite(
+    name = "se-manager-tests",
+    size = "large",
+    srcs = SE_MANAGER_TESTS,
+    browsers = [
+        "chrome",
+        "edge",
+        "firefox",
+    ],
+    javacopts = [
+        "--release",
+        TOOLS_JAVA_VERSION,
+    ],
+    tags = [
+        "se-manager",
+    ],
+    deps = [
+        ":support",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)
+
 java_test_suite(
     name = "small-tests",
     size = "small",
@@ -152,7 +184,7 @@ java_test_suite(
     size = "medium",
     srcs = glob(
         ["*Test.java"],
-        exclude = LARGE_TESTS + BIDI_TESTS + STRESS_TESTS + SMALL_TESTS,
+        exclude = LARGE_TESTS + BIDI_TESTS + STRESS_TESTS + SMALL_TESTS + SE_MANAGER_TESTS,
     ),
     deps = [
         ":support",

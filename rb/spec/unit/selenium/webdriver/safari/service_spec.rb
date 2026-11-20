@@ -25,6 +25,7 @@ module Selenium
       describe Service do
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+          let(:debug_args) { ENV.key?('SE_DEBUG') ? ['--diagnose'] : [] }
 
           before do
             allow(Platform).to receive(:assert_executable)
@@ -58,7 +59,7 @@ module Selenium
           it 'does not create args by default' do
             service = described_class.new
 
-            expect(service.extra_args).to be_empty
+            expect(service.extra_args).to eq debug_args
           end
 
           it 'does not allow log=' do
@@ -71,13 +72,42 @@ module Selenium
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
-            expect(service.extra_args).to eq ['--foo', '--bar']
+            expect(service.extra_args).to eq(['--foo', '--bar'] + debug_args)
           end
 
           it 'uses provided environment variables' do
             service = described_class.new(env: {'FOO' => 'bar', 'BAZ' => 'qux'})
 
             expect(service.env).to eq({'FOO' => 'bar', 'BAZ' => 'qux'})
+          end
+
+          context 'when SE_DEBUG is set' do
+            around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
+              ENV['SE_DEBUG'] = '1'
+              example.run
+            ensure
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
+            end
+
+            it 'adds --diagnose flag' do
+              service = described_class.new(args: ['--foo'])
+
+              expect(service.extra_args).to eq ['--foo', '--diagnose']
+            end
+
+            it 'does not duplicate --diagnose when provided' do
+              service = described_class.new(args: ['--diagnose'])
+
+              expect(service.extra_args).to eq ['--diagnose']
+            end
+
+            it 'does not modify provided args' do
+              args = ['--foo']
+              described_class.new(args: args)
+
+              expect(args).to eq ['--foo']
+            end
           end
         end
 

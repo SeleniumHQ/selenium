@@ -1,4 +1,5 @@
 load("@rules_dotnet//dotnet:defs.bzl", "csharp_test")
+load("//common:browser_versions.bzl", "CHROME_MAJOR_VERSION", "EDGE_MAJOR_VERSION", "FIREFOX_MAJOR_VERSION")
 load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
@@ -116,6 +117,15 @@ _BROWSERS = {
             "//dotnet/test/testing.nunit:java-location",
             "@bazel_tools//tools/jdk:current_java_runtime",
         ],
+        # Grid ignores pinned browsers and always uses Selenium Manager
+        "env": select({
+            "@selenium//common:use_pinned_browser": {
+                "SE_CHROME_VERSION": CHROME_MAJOR_VERSION,
+                "SE_FIREFOX_VERSION": FIREFOX_MAJOR_VERSION,
+                "SE_MICROSOFTEDGE_VERSION": EDGE_MAJOR_VERSION,
+            },
+            "//conditions:default": {},
+        }),
         "tags": ["skip-rbe"],
     },
 }

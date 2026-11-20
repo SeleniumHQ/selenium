@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.events.EventBus;
@@ -49,7 +50,6 @@ import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.server.EventBusOptions;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
@@ -101,7 +101,7 @@ public class LocalGridModel extends GridModel {
             && next.getExternalUri().equals(node.getExternalUri())) {
           iterator.remove();
 
-          LOG.log(Debug.getDebugLogLevel(), "Refreshing node with id {0}", node.getNodeId());
+          LOG.log(Level.FINE, "Refreshing node with id {0}", node.getNodeId());
           NodeStatus refreshed = rewrite(node, next.getAvailability());
           nodes.add(refreshed);
           nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());
@@ -140,7 +140,7 @@ public class LocalGridModel extends GridModel {
 
       // Nodes are initially added in the "down" state until something changes their availability
       LOG.log(
-          Debug.getDebugLogLevel(),
+          Level.FINE,
           "Adding node with id {0} and URI {1}",
           new Object[] {node.getNodeId(), node.getExternalUri()});
       NodeStatus refreshed = rewrite(node, DOWN);
