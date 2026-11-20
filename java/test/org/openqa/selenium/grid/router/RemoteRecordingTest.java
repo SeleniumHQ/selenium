@@ -116,8 +116,7 @@ class RemoteRecordingTest extends JupiterTestBase {
     return matching;
   }
 
-  private static List<Map<String, Object>> readNdjson(ZipFile zip, String name)
-      throws IOException {
+  private static List<Map<String, Object>> readNdjson(ZipFile zip, String name) throws IOException {
     ZipEntry entry = zip.getEntry(name);
     assertThat(entry).as(name).isNotNull();
     String content;

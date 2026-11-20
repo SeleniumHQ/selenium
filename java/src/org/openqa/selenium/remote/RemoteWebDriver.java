@@ -210,7 +210,8 @@ public class RemoteWebDriver
       return TraceRecordingCommandExecutor.startRemote(
           clientConfig.baseUrl(), capabilities, Path.of(recordPath), clientConfig);
     }
-    return new HttpCommandExecutor(clientFactory.createClient(clientConfig), clientConfig.baseUrl());
+    return new HttpCommandExecutor(
+        clientFactory.createClient(clientConfig), clientConfig.baseUrl());
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {

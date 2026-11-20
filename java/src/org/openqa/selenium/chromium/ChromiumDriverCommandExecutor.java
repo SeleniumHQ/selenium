@@ -51,9 +51,8 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
   }
 
   /**
-   * Adds the commands every Chromium-based driver supports (network conditions, permissions,
-   * launch app) to browser-specific ones, for executors other than this one that talk to the same
-   * driver.
+   * Adds the commands every Chromium-based driver supports (network conditions, permissions, launch
+   * app) to browser-specific ones, for executors other than this one that talk to the same driver.
    *
    * @param commands browser-specific commands
    * @return the given commands plus the Chromium ones

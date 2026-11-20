@@ -106,7 +106,8 @@ class ChromeRecordingTest extends JupiterTestBase {
 
     // The binding talks BiDi to the recording proxy, which shares the browser's connection.
     assertThat(
-            (String) ((HasCapabilities) localDriver).getCapabilities().getCapability("webSocketUrl"))
+            (String)
+                ((HasCapabilities) localDriver).getCapabilities().getCapability("webSocketUrl"))
         .startsWith("ws://127.0.0.1:");
 
     CompletableFuture<String> logged = new CompletableFuture<>();
