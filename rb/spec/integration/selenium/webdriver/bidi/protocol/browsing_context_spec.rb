@@ -95,9 +95,7 @@ module Selenium
             end
 
             it 'limits the screenshot to the requested image size',
-               pending_if: [{browser: :edge,
-                             reason: 'Edge 157 ignores the captureScreenshot imageSize parameter'},
-                            {browser_family: :safari,
+               pending_if: [{browser_family: :safari,
                              reason: 'Safari ignores the captureScreenshot imageSize parameter'}] do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
 
@@ -384,11 +382,7 @@ module Selenium
           end
 
           describe '#set_bypass_csp',
-                   pending_if: [{browser: :edge,
-                                 exception: {class: Error::UnsupportedOperationError,
-                                             message: /browsingContext\.setBypassCSP/},
-                                 reason: 'Edge 157 returns unsupported operation for browsingContext.setBypassCSP'},
-                                {browser: :firefox,
+                   pending_if: [{browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox returns unknown command for browsingContext.setBypassCSP'},
                                 {browser_family: :safari,
