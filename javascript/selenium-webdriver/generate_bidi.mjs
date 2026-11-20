@@ -1073,6 +1073,7 @@ function generateDomainFile({ domain, className, types, commands, events, vendor
         if (owner) (owner.enumConstants ??= []).push(constant)
         else enumConstants.push(constant)
       }
+      parts.push(INTERNAL_TYPE_DOC)
       parts.push(declared.ts)
       parts.push('')
     }
@@ -1082,6 +1083,7 @@ function generateDomainFile({ domain, className, types, commands, events, vendor
     parts.push(`// --- Enum constants ---`)
     parts.push('')
     for (const { propertyName, values } of enumConstants) {
+      parts.push(INTERNAL_TYPE_DOC)
       parts.push(`export const ${propertyName} = ${generateEnumConstantLiteral(values)}`)
     }
     parts.push('')
@@ -1121,14 +1123,23 @@ function generateDomainFile({ domain, className, types, commands, events, vendor
   return parts.join('\n') + '\n'
 }
 
-// Disclaimer attached to every generated class — matches Java's BiDiGenerator.
+// The BiDi implementation is internal, and each binding marks it so by its own convention. `@internal`
+// is the TypeScript one, as Java uses @ApiStatus.Internal and Ruby @api private; all three link the
+// same page.
+const INTERNAL_API_DOC_URL = 'https://www.selenium.dev/documentation/warnings/bidi-implementation/'
+
 const INTERNAL_API_DOC = [
   '/**',
   ' * This is an unsupported API. No compatibility guarantees are provided.',
   ' * It tracks the W3C WebDriver BiDi specification directly. As the specification',
   ' * evolves, this API will change or be removed without prior notice.',
+  ' *',
+  ` * @see ${INTERNAL_API_DOC_URL}`,
+  ' * @internal',
   ' */',
 ].join('\n')
+
+const INTERNAL_TYPE_DOC = `/** Unsupported BiDi implementation type, see ${INTERNAL_API_DOC_URL} @internal */`
 
 // camelCase -> SCREAMING_SNAKE_CASE, for event descriptor constant names
 // ("beforeRequestSent" -> "BEFORE_REQUEST_SENT") and enum constant keys
