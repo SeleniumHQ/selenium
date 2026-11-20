@@ -328,6 +328,8 @@ fn main() {
             language_binding: selenium_manager.get_language_binding().to_string(),
             record_path: cli.record.clone(),
             http_proxy: cli.proxy.clone().filter(|proxy| !proxy.is_empty()),
+            // Credentials come from the environment so they never show up in process listings.
+            upstream_authorization: std::env::var("SE_UPSTREAM_AUTHORIZATION").ok(),
         };
         let result = selenium_manager
             .set_timeout(cli.timeout)
@@ -368,6 +370,7 @@ fn main() {
                     language_binding: selenium_manager.get_language_binding().to_string(),
                     record_path: cli.record.clone(),
                     http_proxy: None,
+                    upstream_authorization: None,
                 };
                 pipe::run(options, selenium_manager.get_logger())?;
             }

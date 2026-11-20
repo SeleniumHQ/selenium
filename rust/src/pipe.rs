@@ -96,6 +96,8 @@ pub struct PipeOptions {
     pub record_path: Option<PathBuf>,
     /// HTTP proxy for traffic to an upstream remote end (`--proxy`).
     pub http_proxy: Option<String>,
+    /// `Authorization` for the upstream remote end, from `SE_UPSTREAM_AUTHORIZATION`.
+    pub upstream_authorization: Option<String>,
 }
 
 /// Runs pipe mode until the session is deleted or the process receives SIGINT/SIGTERM.
@@ -139,7 +141,11 @@ async fn run_async(options: PipeOptions, log: &Logger) -> Result<(), Error> {
     let proxy_addr = listener.local_addr()?;
     let mut state = ProxyState::new(webdriver_url.clone(), recording, proxy_addr);
     if driver.is_none() {
-        state = state.for_upstream(&webdriver_url, options.http_proxy.as_deref());
+        state = state.for_upstream(
+            &webdriver_url,
+            options.http_proxy.as_deref(),
+            options.upstream_authorization.as_deref(),
+        );
     }
     let state = Arc::new(state);
     let proxy_url = format!("http://{}", proxy_addr);
@@ -237,13 +243,17 @@ impl ProxyState {
 
     /// A remote end is not on localhost, so the user's HTTP proxy settings apply to it: the given
     /// proxy (Selenium Manager's `--proxy`), otherwise the system ones.
-    fn for_upstream(mut self, url: &str, proxy: Option<&str>) -> Self {
+    /// `authorization` (from the binding, kept out of the command line) takes precedence over the
+    /// user info of the URL; either is used when the binding sends no credentials itself.
+    fn for_upstream(mut self, url: &str, proxy: Option<&str>, authorization: Option<&str>) -> Self {
         let builder = match proxy.map(reqwest::Proxy::all) {
             Some(Ok(proxy)) => Client::builder().proxy(proxy),
             _ => Client::builder(),
         };
         self.client = builder.build().unwrap_or_else(|_| local_http_client());
-        self.upstream_headers = upstream_authorization(url)
+        self.upstream_headers = authorization
+            .map(str::to_string)
+            .or_else(|| upstream_authorization(url))
             .map(|value| vec![("Authorization".to_string(), value)])
             .unwrap_or_default();
         self
@@ -366,8 +376,16 @@ impl ProxyState {
         let mut request = self
             .client
             .request(method, format!("{}{}", self.webdriver_url, path));
+        let has_authorization = headers
+            .iter()
+            .any(|(name, _)| name.eq_ignore_ascii_case("authorization"));
         for (name, value) in headers {
             if !is_hop_by_hop(name) {
+                request = request.header(name, value);
+            }
+        }
+        if !has_authorization {
+            for (name, value) in &self.upstream_headers {
                 request = request.header(name, value);
             }
         }
@@ -641,13 +659,15 @@ impl ProxyState {
     /// Requests of the proxy itself carry the binding's credentials (e.g. for a Grid or a cloud
     /// provider authenticated by header).
     fn authorized(&self, request: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
-        self.session_headers
-            .lock()
-            .unwrap()
-            .iter()
-            .fold(request, |request, (name, value)| {
-                request.header(name, value)
-            })
+        let session = self.session_headers.lock().unwrap().clone();
+        let headers = if session.is_empty() {
+            self.upstream_headers.clone()
+        } else {
+            session
+        };
+        headers.iter().fold(request, |request, (name, value)| {
+            request.header(name, value)
+        })
     }
 
     fn has_bidi(&self) -> bool {
@@ -1829,7 +1849,33 @@ mod tests {
         });
         let upstream = "http://grid.invalid:4444";
         let state = ProxyState::new(upstream.to_string(), None, TEST_ADDR.parse().unwrap())
-            .for_upstream(upstream, Some(&proxy));
+            .for_upstream(upstream, Some(&proxy), None);
+        let created = send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
+        assert_eq!(created["value"]["sessionId"], "s1");
+    }
+
+    #[tokio::test]
+    async fn upstream_credentials_are_used_when_the_binding_sends_none() {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let upstream = format!("http://{}", listener.local_addr().unwrap());
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            let request = read_request(&mut stream).await.unwrap().unwrap();
+            let authorized = request.headers.iter().any(|(name, value)| {
+                name.eq_ignore_ascii_case("authorization") && value == "Basic dTpw"
+            });
+            let (status, value) = if authorized {
+                (200, json!({"sessionId": "s1", "capabilities": {}}))
+            } else {
+                (401, json!({"error": "unauthorized"}))
+            };
+            let body = json!({ "value": value }).to_string();
+            write_response(&mut stream, status, "application/json", body.as_bytes())
+                .await
+                .unwrap();
+        });
+        let state = ProxyState::new(upstream.clone(), None, TEST_ADDR.parse().unwrap())
+            .for_upstream(&upstream, None, Some("Basic dTpw"));
         let created = send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
         assert_eq!(created["value"]["sessionId"], "s1");
     }
