@@ -480,9 +480,7 @@ module Selenium
             end
           end
 
-          describe '#traverse_history',
-                   skip_if: {browser_family: :safari,
-                             reason: 'Times out: browsingContext.traverseHistory hangs on Safari'} do
+          describe '#traverse_history' do
             it 'moves backward and forward in the context history' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
               browsing_context.navigate(
