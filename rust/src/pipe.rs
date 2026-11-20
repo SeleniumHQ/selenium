@@ -129,7 +129,12 @@ async fn run_async(options: PipeOptions, log: &Logger) -> Result<(), Error> {
     state.drain_diagnostics(log);
     match state.saved_trace() {
         Some(Ok(path)) => log.info(format!("Trace saved to {}", path.display())),
-        Some(Err(err)) => log.warn(format!("Unable to save trace: {}", err)),
+        Some(Err(err)) => {
+            log.warn(format!("Unable to save trace: {}", err));
+            // Bindings read this line to tell their users, since quitting itself succeeded.
+            writeln!(stdout, "{}", trace_error_line(&err))?;
+            stdout.flush()?;
+        }
         None => {}
     }
     driver.stop();
@@ -164,7 +169,7 @@ struct ProxyState {
     command_lock: tokio::sync::Mutex<()>,
     session_ended: AtomicBool,
     trace_result: Mutex<Option<Result<PathBuf, String>>>,
-    diagnostics: Mutex<Vec<String>>,
+    diagnostics: Mutex<Vec<(bool, String)>>,
 }
 
 impl ProxyState {
@@ -339,7 +344,7 @@ impl ProxyState {
         let connected = match capabilities["webSocketUrl"].as_str().map(str::to_string) {
             Some(url) => self.connect_bidi(&url, headers).await,
             None => {
-                self.diagnostic("Driver did not return webSocketUrl; using classic WebDriver");
+                self.warning("Driver did not return webSocketUrl; recording with classic WebDriver (no console or network data)");
                 false
             }
         };
@@ -377,8 +382,8 @@ impl ProxyState {
                 true
             }
             Err(err) => {
-                self.diagnostic(format!(
-                    "BiDi connection failed ({}); using classic WebDriver",
+                self.warning(format!(
+                    "BiDi connection failed ({}); recording with classic WebDriver (no console or network data)",
                     err
                 ));
                 false
@@ -685,12 +690,29 @@ impl ProxyState {
     }
 
     fn diagnostic<T: Into<String>>(&self, message: T) {
-        self.diagnostics.lock().unwrap().push(message.into());
+        self.diagnostics
+            .lock()
+            .unwrap()
+            .push((false, message.into()));
+    }
+
+    /// Something users should know about, e.g. the trace will be missing console and network.
+    fn warning<T: Into<String>>(&self, message: T) {
+        self.diagnostics
+            .lock()
+            .unwrap()
+            .push((true, message.into()));
     }
 
     fn drain_diagnostics(&self, log: &Logger) {
-        let messages: Vec<String> = self.diagnostics.lock().unwrap().drain(..).collect();
-        messages.into_iter().for_each(|m| log.debug(m));
+        let messages: Vec<(bool, String)> = self.diagnostics.lock().unwrap().drain(..).collect();
+        for (warning, message) in messages {
+            if warning {
+                log.warn(message);
+            } else {
+                log.debug(message);
+            }
+        }
     }
 }
 
@@ -795,6 +817,10 @@ fn request_bidi(body: &[u8]) -> (Vec<u8>, bool) {
         Ok(patched) => (patched, wanted),
         Err(_) => (body.to_vec(), false),
     }
+}
+
+fn trace_error_line(message: &str) -> String {
+    json!({ "trace_error": message }).to_string()
 }
 
 fn is_hop_by_hop(header: &str) -> bool {
@@ -1484,5 +1510,29 @@ mod tests {
             .filter_map(|a| a.request_body.as_ref().map(Value::to_string))
             .collect();
         assert!(recorded.iter().all(|body| !body.contains("hunter2")));
+    }
+
+    #[tokio::test]
+    async fn bidi_loss_is_a_warning() {
+        let dir = tempfile::tempdir().unwrap();
+        let recording = Recording::new(dir.path().join("t.zip"), "chrome", "java");
+        let state = ProxyState::new(
+            fake_driver().await,
+            Some(recording),
+            TEST_ADDR.parse().unwrap(),
+        );
+        send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
+        let diagnostics = state.diagnostics.lock().unwrap();
+        assert!(
+            diagnostics
+                .iter()
+                .any(|(warning, message)| *warning && message.contains("classic WebDriver"))
+        );
+    }
+
+    #[test]
+    fn trace_error_line_is_json() {
+        let line: Value = serde_json::from_str(&trace_error_line("disk full")).unwrap();
+        assert_eq!(line["trace_error"], "disk full");
     }
 }
