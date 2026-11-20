@@ -22,7 +22,7 @@ command into a wire frame and back, and the `Domain` base every generated module
 subclasses. The websocket is stood in by `DrivingConnection`, which drives the
 command coroutine with the exact next()/send() protocol `WebSocketConnection`
 uses, so the seam is tested against the real contract rather than a mock of it.
-Event listeners are covered in bidi_dispatcher_tests, against a real socket.
+Event listeners are covered in bidi_dispatcher_tests, over a real connection.
 """
 
 from dataclasses import dataclass, field

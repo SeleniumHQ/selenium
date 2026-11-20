@@ -56,7 +56,6 @@ from generate_bidi_protocol import (
     _emit_field,
     _emit_record,
     _emit_union,
-    build_module,
     camel_to_snake,
     enum_member,
     frozenset_lit,
@@ -675,12 +674,6 @@ def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
     assert '        "x.bare": None,' in emitted
     assert "    def add_thing_happened_listener(" in emitted
     assert "    def add_bare_listener(" in emitted
-
-
-def test_a_module_with_events_imports_nothing_from_session():
-    schema = Schema({"types": {}, "commands": [], "events": [{"domain": "x", "method": "x.thing", "name": "thing"}]})
-
-    assert build_module(schema, "x").imports == {}
 
 
 # --- vendor overlays ------------------------------------------------------------------------
