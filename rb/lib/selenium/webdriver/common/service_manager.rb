@@ -57,6 +57,9 @@ module Selenium
           find_free_port
           start_process
           connect_until_stable
+        rescue StandardError
+          stop_process
+          raise
         end
       end
 
@@ -139,6 +142,11 @@ module Selenium
         deadline = current_time + START_TIMEOUT
 
         loop do
+          if process_exited?
+            raise Error::WebDriverError,
+                  "#{cannot_connect_error_text}: process exited (#{@process.status || 'status unknown'})"
+          end
+
           error = check_connection_error
           return unless error
 
