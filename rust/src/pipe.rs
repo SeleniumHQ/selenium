@@ -309,7 +309,7 @@ impl ProxyState {
             handler_rec.lock().unwrap().add_bidi_event(method, params);
         });
         let connected = async {
-            let client = BiDiClient::connect(url, handler).await?;
+            let client = BiDiClient::connect(url, &[], handler).await?;
             client.subscribe(BIDI_EVENTS).await?;
             Ok::<BiDiClient, Error>(client)
         }
