@@ -117,10 +117,6 @@ module Selenium
         end
 
         def remote_server
-          args = driver_path ? %w[--detect-drivers false] : %w[--selenium-manager true]
-          args += %w[--enable-managed-downloads true]
-          args += driver_configuration if driver_path
-
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
             java: bazel_java,
@@ -128,13 +124,14 @@ module Selenium
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 120,
-            args: args
+            args: %w[--enable-managed-downloads true --detect-drivers false] + driver_configuration
           )
         end
 
         def driver_configuration
-          stereotype = {browserName: w3c_browser_name}
-          stereotype[options_key] = {binary: browser_path} if browser_path
+          options = build_options
+          stereotype = {browserName: options.browser_name}
+          stereotype[options.class::KEY] = {binary: browser_path} if browser_path
 
           config = ['--driver-configuration',
                     "display-name=#{browser} #{browser_version}",
@@ -151,14 +148,6 @@ module Selenium
 
         def browser_path
           runfiles_path("#{browser.to_s.upcase}_BINARY")
-        end
-
-        def options_key
-          {chrome: 'goog:chromeOptions', edge: 'ms:edgeOptions', firefox: 'moz:firefoxOptions'}[browser]
-        end
-
-        def w3c_browser_name
-          browser == :edge ? 'MicrosoftEdge' : browser.to_s
         end
 
         def bazel_java
