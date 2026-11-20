@@ -48,7 +48,7 @@ module Selenium
             driver.delete_network_conditions
 
             # Need to reset because https://bugs.chromium.org/p/chromedriver/issues/detail?id=4790
-            reset_driver!
+            quit_driver
           end
 
           it 'sets download path' do
@@ -70,14 +70,9 @@ module Selenium
           end
 
           describe '#logs' do
-            before do
-              reset_driver!(logging_prefs: {browser: 'ALL',
-                                            driver: 'ALL',
-                                            performance: 'ALL'})
-              driver.navigate.to url_for('errors.html')
-            end
+            let(:driver) { local_driver(logging_prefs: {browser: 'ALL', driver: 'ALL', performance: 'ALL'}) }
 
-            after(:all) { reset_driver! }
+            before { driver.navigate.to url_for('errors.html') }
 
             it 'can fetch available log types' do
               expect(driver.logs.available_types).to include(:performance, :browser, :driver)
