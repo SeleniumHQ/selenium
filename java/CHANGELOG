@@ -1,7 +1,7 @@
 v4.54.0
 ======
 * Log remaining diagnostics at a fixed FINE level (#18295)
-* Remove deprecated Debug.getDebugLogLevel() (#17835)
+* Remove deprecated Debug.getDebugLogLevel() (#18363)
 
 v4.53.0
 ======
