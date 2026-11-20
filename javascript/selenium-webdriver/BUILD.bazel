@@ -208,6 +208,7 @@ pkg_tar(
 )
 
 SMALL_TESTS = [
+    "test/bidi/domain_error_test.js",
     "test/bidi/domain_test.js",
     "test/bidi/index_test.js",
     "test/bidi/map_record_test.js",
