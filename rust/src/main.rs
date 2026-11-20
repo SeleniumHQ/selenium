@@ -327,6 +327,7 @@ fn main() {
             browser_name: selenium_manager.get_browser_name().to_string(),
             language_binding: selenium_manager.get_language_binding().to_string(),
             record_path: cli.record.clone(),
+            http_proxy: cli.proxy.clone().filter(|proxy| !proxy.is_empty()),
         };
         let result = selenium_manager
             .set_timeout(cli.timeout)
@@ -366,6 +367,7 @@ fn main() {
                     browser_name: selenium_manager.get_browser_name().to_string(),
                     language_binding: selenium_manager.get_language_binding().to_string(),
                     record_path: cli.record.clone(),
+                    http_proxy: None,
                 };
                 pipe::run(options, selenium_manager.get_logger())?;
             }

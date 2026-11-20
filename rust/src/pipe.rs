@@ -94,6 +94,8 @@ pub struct PipeOptions {
     pub browser_name: String,
     pub language_binding: String,
     pub record_path: Option<PathBuf>,
+    /// HTTP proxy for traffic to an upstream remote end (`--proxy`).
+    pub http_proxy: Option<String>,
 }
 
 /// Runs pipe mode until the session is deleted or the process receives SIGINT/SIGTERM.
@@ -137,7 +139,7 @@ async fn run_async(options: PipeOptions, log: &Logger) -> Result<(), Error> {
     let proxy_addr = listener.local_addr()?;
     let mut state = ProxyState::new(webdriver_url.clone(), recording, proxy_addr);
     if driver.is_none() {
-        state = state.for_upstream(&webdriver_url);
+        state = state.for_upstream(&webdriver_url, options.http_proxy.as_deref());
     }
     let state = Arc::new(state);
     let proxy_url = format!("http://{}", proxy_addr);
@@ -233,11 +235,14 @@ impl ProxyState {
         }
     }
 
-    /// A remote end is not on localhost, so the user's HTTP proxy settings apply to it.
-    fn for_upstream(mut self, url: &str) -> Self {
-        self.client = Client::builder()
-            .build()
-            .unwrap_or_else(|_| local_http_client());
+    /// A remote end is not on localhost, so the user's HTTP proxy settings apply to it: the given
+    /// proxy (Selenium Manager's `--proxy`), otherwise the system ones.
+    fn for_upstream(mut self, url: &str, proxy: Option<&str>) -> Self {
+        let builder = match proxy.map(reqwest::Proxy::all) {
+            Some(Ok(proxy)) => Client::builder().proxy(proxy),
+            _ => Client::builder(),
+        };
+        self.client = builder.build().unwrap_or_else(|_| local_http_client());
         self.upstream_headers = upstream_authorization(url)
             .map(|value| vec![("Authorization".to_string(), value)])
             .unwrap_or_default();
@@ -1806,5 +1811,26 @@ mod tests {
                 .iter()
                 .all(|b| !b.contains("hunter2"))
         );
+    }
+
+    #[tokio::test]
+    async fn upstream_traffic_goes_through_the_given_proxy() {
+        // An HTTP proxy that answers every request itself, so the upstream host need not exist.
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let proxy = format!("http://{}", listener.local_addr().unwrap());
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            let request = read_request(&mut stream).await.unwrap().unwrap();
+            assert_eq!(request.path, "http://grid.invalid:4444/session");
+            let body = json!({"value": {"sessionId": "s1", "capabilities": {}}}).to_string();
+            write_response(&mut stream, 200, "application/json", body.as_bytes())
+                .await
+                .unwrap();
+        });
+        let upstream = "http://grid.invalid:4444";
+        let state = ProxyState::new(upstream.to_string(), None, TEST_ADDR.parse().unwrap())
+            .for_upstream(upstream, Some(&proxy));
+        let created = send(&state, "POST", "/session", r#"{"capabilities":{}}"#).await;
+        assert_eq!(created["value"]["sessionId"], "s1");
     }
 }
