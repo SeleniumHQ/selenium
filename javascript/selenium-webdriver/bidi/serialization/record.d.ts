@@ -26,6 +26,8 @@ export interface TypeNode {
   // literalPrimitive() recognizes a boolean-literal choice the same way.
   enum?: (string | number | boolean)[]
   list?: TypeNode
+  // Not consumed by validateValue yet; declared so embedding a real schema node type-checks.
+  tuple?: TypeNode[]
   map?: TypeNode
   union?: TypeNode[]
   // An inline (unnamed) record — project_bidi_schema.mjs's projectEntry() emits this

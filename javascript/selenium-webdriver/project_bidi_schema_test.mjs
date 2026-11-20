@@ -174,6 +174,34 @@ describe('projectType (list / union / alias defs)', () => {
       'a missing element type must trip the unknown-primitive guard',
     )
   })
+  describe('a fixed-length array (a map entry `[*[(x.Item / text), x.Item]]`)', () => {
+    const member = (type, occ = { n: 1, m: 1 }) => ({ Name: '', Occurrence: occ, Type: type, Comments: [] })
+    const mapping = (second) => [
+      {
+        Type: 'array',
+        Name: 'x.Mapping',
+        Values: [
+          member({ Type: 'array', Name: '', Values: [member([ref('x.Item'), 'text']), second] }, { n: 0, m: null }),
+        ],
+      },
+      group('x.Item', [field('a', ['text'])]),
+    ]
+
+    it('carries each position as a tuple, keeping list for bindings that ignore it', () => {
+      const s = projectSchema(mapping(member([ref('x.Item')])), {})
+      assert.deepEqual(s.types['x.Mapping'].type.list, {
+        list: { union: [{ ref: 'x.Item' }, { primitive: 'string' }], scalar: 'string' },
+        tuple: [{ union: [{ ref: 'x.Item' }, { primitive: 'string' }], scalar: 'string' }, { ref: 'x.Item' }],
+      })
+      assert.deepEqual(checkSchema(s), [])
+    })
+
+    it('fails closed when a position may repeat, since its arity is not fixed', () => {
+      const s = projectSchema(mapping(member([ref('x.Item')], { n: 0, m: null })), {})
+      assert.ok(checkSchema(s).some((e) => /x\.Mapping: .*unknown primitive/.test(e)))
+    })
+  })
+
   it('projects a multi-member choice group as a union with a structural selector', () => {
     assert.deepEqual(schema.types['x.Choice'], {
       kind: 'union',

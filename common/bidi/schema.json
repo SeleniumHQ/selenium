@@ -10282,7 +10282,23 @@
               }
             ],
             "scalar": "string"
-          }
+          },
+          "tuple": [
+            {
+              "union": [
+                {
+                  "ref": "script.LocalValue"
+                },
+                {
+                  "primitive": "string"
+                }
+              ],
+              "scalar": "string"
+            },
+            {
+              "ref": "script.LocalValue"
+            }
+          ]
         }
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptmappinglocalvalue"
@@ -11234,7 +11250,23 @@
               }
             ],
             "scalar": "string"
-          }
+          },
+          "tuple": [
+            {
+              "union": [
+                {
+                  "ref": "script.RemoteValue"
+                },
+                {
+                  "primitive": "string"
+                }
+              ],
+              "scalar": "string"
+            },
+            {
+              "ref": "script.RemoteValue"
+            }
+          ]
         }
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptmappingremotevalue"
