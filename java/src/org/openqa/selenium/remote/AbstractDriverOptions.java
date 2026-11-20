@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Proxy;
@@ -108,6 +109,36 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
   public DO setEnableDownloads(boolean enableDownloads) {
     setCapability(ENABLE_DOWNLOADS, enableDownloads);
     return self();
+  }
+
+  private @Nullable String recordPath;
+
+  /**
+   * Records the session into a trace archive (Playwright trace format), which can be opened with
+   * the Playwright trace viewer or the Vibium record player. The trace contains the WebDriver
+   * commands, a screenshot after each action, and console and network activity when the driver
+   * supports WebDriver BiDi. It is written when the driver is quit.
+   *
+   * <p>Recording is done by Selenium Manager and is currently supported when starting Chrome, Edge
+   * or Firefox locally; the setting is not sent to the browser or to a remote end.
+   *
+   * @param path path of the trace archive (for example {@code trace.zip}); an existing file is
+   *     overwritten
+   * @return this instance for chaining
+   */
+  @Beta
+  public DO setRecord(String path) {
+    this.recordPath = Require.nonNull("Trace path", path);
+    return self();
+  }
+
+  /**
+   * @return the trace archive path set by {@link #setRecord(String)}, or {@code null} if the
+   *     session is not recorded
+   */
+  @Beta
+  public @Nullable String getRecordPath() {
+    return recordPath;
   }
 
   @SuppressWarnings("unchecked")

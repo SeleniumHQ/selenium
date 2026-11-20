@@ -33,6 +33,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -41,6 +42,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.service.TraceRecordingCommandExecutor;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -110,7 +112,7 @@ public class FirefoxDriver extends RemoteWebDriver
     this(generateExecutor(service, options, clientConfig), options, clientConfig);
   }
 
-  private static FirefoxDriverCommandExecutor generateExecutor(
+  private static CommandExecutor generateExecutor(
       FirefoxDriverService service, FirefoxOptions options, ClientConfig clientConfig) {
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
@@ -121,11 +123,20 @@ public class FirefoxDriver extends RemoteWebDriver
       options.setBinary(finder.getBrowserPath());
       options.setCapability("browserVersion", (Object) null);
     }
+    String recordPath = options.getRecordPath();
+    if (recordPath != null) {
+      return TraceRecordingCommandExecutor.start(
+          service,
+          options,
+          Path.of(recordPath),
+          FirefoxDriverCommandExecutor.getExtraCommands(),
+          clientConfig);
+    }
     return new FirefoxDriverCommandExecutor(service, clientConfig);
   }
 
   private FirefoxDriver(
-      FirefoxDriverCommandExecutor executor, FirefoxOptions options, ClientConfig clientConfig) {
+      CommandExecutor executor, FirefoxOptions options, ClientConfig clientConfig) {
     super(executor, checkCapabilitiesAndProxy(options), clientConfig);
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot =

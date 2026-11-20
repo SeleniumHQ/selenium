@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.chrome;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,12 +27,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.service.TraceRecordingCommandExecutor;
 
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
@@ -98,7 +101,7 @@ public class ChromeDriver extends ChromiumDriver {
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
-  private static ChromeDriverCommandExecutor generateExecutor(
+  private static CommandExecutor generateExecutor(
       ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) {
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
@@ -108,6 +111,15 @@ public class ChromeDriver extends ChromiumDriver {
     if (finder.hasBrowserPath()) {
       options.setBinary(finder.getBrowserPath());
       options.setCapability("browserVersion", (Object) null);
+    }
+    String recordPath = options.getRecordPath();
+    if (recordPath != null) {
+      return TraceRecordingCommandExecutor.start(
+          service,
+          options,
+          Path.of(recordPath),
+          ChromeDriverCommandExecutor.getExtraCommands(),
+          clientConfig);
     }
     return new ChromeDriverCommandExecutor(service, clientConfig);
   }

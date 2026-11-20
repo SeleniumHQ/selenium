@@ -55,6 +55,8 @@ use std::{env, fs, io, thread};
 use walkdir::{DirEntry, WalkDir};
 use which::which;
 
+pub mod archiver;
+pub mod bidi;
 pub mod chrome;
 pub mod config;
 pub mod downloads;
@@ -68,6 +70,8 @@ pub mod lock;
 pub mod logger;
 pub mod metadata;
 pub mod mirror;
+pub mod pipe;
+pub mod recorder;
 pub mod rules;
 pub mod safari;
 pub mod safaritp;

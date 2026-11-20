@@ -26,6 +26,7 @@ use selenium_manager::grid::GridManager;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
+use selenium_manager::pipe::{self, PipeOptions};
 use selenium_manager::rules::write_rules_file;
 use selenium_manager::skills::write_skills_file;
 use selenium_manager::{
@@ -34,7 +35,7 @@ use selenium_manager::{
 };
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::exit;
 use std::sync::mpsc::Receiver;
 
@@ -179,6 +180,19 @@ struct Cli {
     /// Add a rules file with Selenium guidance for LLM coding assistants to the repository
     #[clap(long, value_name = "FILE_NAME", num_args = 0..=1, default_missing_value = "")]
     init_rules: Option<String>,
+
+    /// Keep running after resolving the driver: start it and expose a local HTTP proxy in front
+    /// of it, printing {"proxy_url": ...} to stdout. Ends when the session is deleted
+    #[clap(long)]
+    pipe: bool,
+
+    /// Record the session into a Playwright-compatible trace archive at the given path (implies --pipe)
+    #[clap(long, value_name = "TRACE_ZIP")]
+    record: Option<PathBuf>,
+
+    /// Driver to start in pipe mode, skipping driver management (requires --pipe or --record)
+    #[clap(long, value_name = "DRIVER_PATH")]
+    driver_path: Option<PathBuf>,
 }
 
 fn main() {
@@ -301,12 +315,33 @@ fn main() {
     }
     prune_old_cache_entries(selenium_manager.get_logger(), &cache_path, CACHE_TTL_DAYS);
 
+    let pipe_mode = cli.pipe || cli.record.is_some();
+    if cli.driver_path.is_some() && !pipe_mode {
+        selenium_manager
+            .get_logger()
+            .warn("--driver-path is only used in pipe mode (--pipe or --record); ignoring it");
+    }
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
         .and_then(|_| selenium_manager.set_insecure(cli.insecure))
         .and_then(|_| selenium_manager.stats())
-        .and_then(|_| selenium_manager.setup())
+        .and_then(|_| match cli.driver_path.clone().filter(|_| pipe_mode) {
+            Some(driver_path) => Ok(driver_path),
+            None => selenium_manager.setup(),
+        })
+        .and_then(|driver_path| {
+            if pipe_mode {
+                let options = PipeOptions {
+                    driver_path: driver_path.clone(),
+                    browser_name: selenium_manager.get_browser_name().to_string(),
+                    language_binding: selenium_manager.get_language_binding().to_string(),
+                    record_path: cli.record.clone(),
+                };
+                pipe::run(options, selenium_manager.get_logger())?;
+            }
+            Ok(driver_path)
+        })
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
             log_driver_and_browser_path(
