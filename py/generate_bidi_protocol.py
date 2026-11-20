@@ -197,6 +197,7 @@ class EventIR:
     wire: str
     name: str
     payload_class: str | None
+    spec_href: str | None = None
 
 
 @dataclass
@@ -826,6 +827,7 @@ def build_event(schema: Schema, event: dict) -> EventIR:
         wire=event["method"],
         name=safe_name(camel_to_snake(event["name"])),
         payload_class=type_class_name(payload) if payload else None,
+        spec_href=event.get("specHref"),
     )
 
 
@@ -833,6 +835,11 @@ def _guard_same_domain(domain: str, *type_names: str | None) -> None:
     for name in type_names:
         if name and "." in name and name.split(".", 1)[0] != domain:
             raise ValueError(f"{domain}: cross-domain type reference {name!r} not yet supported")
+
+
+def _listener_method(e: EventIR) -> str:
+    """The listener method name a domain class gets for an event."""
+    return f"add_{e.name}_listener"
 
 
 def build_module(schema: Schema, domain: str) -> ModuleIR:
@@ -1043,6 +1050,24 @@ def _emit_command(c: CommandIR) -> list[str]:
     return lines
 
 
+def _emit_event_listener(e: EventIR) -> list[str]:
+    payload = e.payload_class or "dict[str, Any]"
+    args = ["self", f"listener: Callable[[{payload}], Any]"]
+    lines = [wrap_call(f"    def {_listener_method(e)}(", args, ") -> str:", 4)]
+    lines.append(f'        """Invoke ``listener`` with each {e.wire} payload (internal, unsupported).')
+    lines.append("")
+    lines.append(f"        The listener gets a ``{payload}``; one that fails validation is logged and not delivered.")
+    lines.append("        Each payload is invoked on its own thread, without waiting for earlier ones. This sends")
+    lines.append("        nothing: payloads arrive once the caller subscribes with ``Session.subscribe``.")
+    lines.append("        Returns the id to pass to ``remove_listener``.")
+    if e.spec_href:
+        lines.append("")
+        lines.append(f"        See {e.spec_href}")
+    lines.append('        """')
+    lines.append(f"        return self._add_listener({lit(e.wire)}, listener)")
+    return lines
+
+
 def _emit_domain_class(mod: ModuleIR) -> str:
     doc = ['    """Internal, unsupported.', "", f"    See {BIDI_DOC_URL}"]
     if mod.spec_href:
@@ -1059,13 +1084,16 @@ def _emit_domain_class(mod: ModuleIR) -> str:
         lines.append("    }")
         lines.append("    EVENT_TYPES = {")
         for e in mod.events:
-            payload = lit(f"{mod.domain}.{e.payload_class}") if e.payload_class else "None"
+            payload = e.payload_class or "None"
             lines.append(f"        {lit(e.wire)}: {payload},")
         lines.append("    }")
     body = []
     for c in mod.commands:
         body.append("")
         body.extend(_emit_command(c))
+    for e in mod.events:
+        body.append("")
+        body.extend(_emit_event_listener(e))
     return "\n".join(lines + body)
 
 
@@ -1094,7 +1122,7 @@ def _imports(mod: ModuleIR) -> list[str]:
         [f.py_type for r in mod.records for f in r.fields]
         + [p.py_type for c in mod.commands for p in c.params]
         + [c.result_type for c in mod.commands]
-        + ["dict[str, Any]" if any(r.extensible for r in mod.records) else ""]
+        + ["dict[str, Any]" if any(r.extensible for r in mod.records) or mod.events else ""]
     )
     uses_any = "Any" in text_blob.split() or "Any]" in text_blob or "[Any" in text_blob
 
@@ -1117,6 +1145,8 @@ def _imports(mod: ModuleIR) -> list[str]:
         runtime.append("register")
 
     lines = ["from __future__ import annotations", ""]
+    if mod.events:
+        lines.append("from collections.abc import Callable")
     if has_records:
         lines.append("from dataclasses import dataclass, field")
     if mod.enums:

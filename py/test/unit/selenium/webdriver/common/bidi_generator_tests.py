@@ -41,14 +41,18 @@ from generate_bidi_protocol import (
     _NO_FIXED,
     CommandIR,
     EnumIR,
+    EventIR,
     FieldIR,
+    ModuleIR,
     ParamIR,
     RecordIR,
     Schema,
     UnionIR,
     VariantIR,
     _emit_command,
+    _emit_domain_class,
     _emit_enum,
+    _emit_event_listener,
     _emit_field,
     _emit_record,
     _emit_union,
@@ -629,6 +633,47 @@ def test_a_command_with_union_parameters_dispatches_through_build():
     )
 
     assert "        params = DoThingParameters.build(value=value)" in _emit_command(command)
+
+
+# --------------------------------------------------------------------------- #
+# Event emission
+# --------------------------------------------------------------------------- #
+
+
+def test_an_event_emits_a_listener_method_typed_by_its_payload_that_returns_an_id():
+    event = EventIR(wire="x.thingHappened", name="thing_happened", payload_class="ThingHappenedParameters")
+
+    lines = _emit_event_listener(event)
+
+    assert lines[0] == (
+        "    def add_thing_happened_listener(self, listener: Callable[[ThingHappenedParameters], Any]) -> str:"
+    )
+    assert lines[-1] == '        return self._add_listener("x.thingHappened", listener)'
+
+
+def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
+    module = ModuleIR(
+        domain="x",
+        class_name="X",
+        filename="x",
+        enums=[],
+        records=[],
+        unions=[],
+        commands=[],
+        events=[
+            EventIR(wire="x.thingHappened", name="thing_happened", payload_class="ThingHappenedParameters"),
+            EventIR(wire="x.bare", name="bare", payload_class=None),
+        ],
+        imports={},
+    )
+
+    emitted = _emit_domain_class(module)
+
+    assert '        "thing_happened": "x.thingHappened",' in emitted
+    assert '        "x.thingHappened": ThingHappenedParameters,' in emitted
+    assert '        "x.bare": None,' in emitted
+    assert "    def add_thing_happened_listener(" in emitted
+    assert "    def add_bare_listener(" in emitted
 
 
 # --- vendor overlays ------------------------------------------------------------------------

@@ -21,7 +21,7 @@ import base64
 
 import pytest
 
-from selenium.common.exceptions import NoSuchFrameException, TimeoutException
+from selenium.common.exceptions import NoSuchFrameException, TimeoutException, WebDriverException
 from selenium.webdriver.common._bidi.browser import Browser
 from selenium.webdriver.common._bidi.browsing_context import (
     BoxClipRectangle,
@@ -29,12 +29,15 @@ from selenium.webdriver.common._bidi.browsing_context import (
     CaptureScreenshotParametersOrigin,
     CreateType,
     CssLocator,
+    DownloadEndParamsCompleteParams,
     InnerTextLocator,
     ReadinessState,
+    UserPromptType,
     Viewport,
     XPathLocator,
 )
 from selenium.webdriver.common._bidi.script import SharedReference
+from selenium.webdriver.common._bidi.session import Session
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -568,3 +571,163 @@ def test_locate_nodes_given_start_nodes(driver, pages):
     ).nodes
     # The login form has 3 input elements (email, age, and submit button)
     assert len(nodes) == 3
+
+
+def test_context_created_event(driver):
+    events = []
+    listener = BrowsingContext(driver).add_context_created_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.contextCreated"]).subscription
+
+    context = BrowsingContext(driver).create(type=CreateType.TAB).context
+    # Subscribing also reports the contexts that already exist.
+    created = WebDriverWait(driver, 10).until(lambda _: next((e for e in events if e.context == context), None))
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+    BrowsingContext(driver).close(context=context)
+
+    assert created.url == "about:blank"
+
+
+def test_context_destroyed_event(driver):
+    context = BrowsingContext(driver).create(type=CreateType.TAB).context
+    events = []
+    listener = BrowsingContext(driver).add_context_destroyed_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.contextDestroyed"]).subscription
+
+    BrowsingContext(driver).close(context=context)
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+
+    assert events[0].context == context
+
+
+@pytest.mark.parametrize(
+    ("event", "wire"),
+    [
+        ("navigation_started", "browsingContext.navigationStarted"),
+        ("navigation_committed", "browsingContext.navigationCommitted"),
+        ("dom_content_loaded", "browsingContext.domContentLoaded"),
+        ("load", "browsingContext.load"),
+    ],
+)
+def test_navigation_events(driver, pages, event, wire):
+    url = pages.url("simpleTest.html")
+    events = []
+    listener = getattr(BrowsingContext(driver), f"add_{event}_listener")(events.append)
+    subscription = Session(driver).subscribe(events=[wire]).subscription
+
+    driver.get(url)
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+
+    navigation = events[0]
+    assert (navigation.context, navigation.url) == (driver.current_window_handle, url)
+
+
+def test_fragment_navigated_event(driver, pages):
+    url = pages.url("linked_image.html")
+    driver.get(url)
+    events = []
+    listener = BrowsingContext(driver).add_fragment_navigated_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.fragmentNavigated"]).subscription
+
+    driver.get(url + "#link")
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+
+    assert events[0].url == url + "#link"
+
+
+@pytest.mark.xfail_firefox
+def test_navigation_failed_event(driver):
+    url = "http://invalid-domain-that-does-not-exist.test/"
+    events = []
+    listener = BrowsingContext(driver).add_navigation_failed_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.navigationFailed"]).subscription
+
+    with pytest.raises(WebDriverException):
+        BrowsingContext(driver).navigate(context=driver.current_window_handle, url=url)
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+
+    assert events[0].url == url
+
+
+def test_history_updated_event(driver, pages):
+    driver.get(pages.url("simpleTest.html"))
+    events = []
+    listener = BrowsingContext(driver).add_history_updated_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.historyUpdated"]).subscription
+
+    driver.execute_script("history.pushState({}, '', '/new-path')")
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+
+    assert events[0].url.endswith("/new-path")
+
+
+def test_user_prompt_opened_event(driver, pages):
+    driver.get(pages.url("alerts.html"))
+    events = []
+    listener = BrowsingContext(driver).add_user_prompt_opened_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.userPromptOpened"]).subscription
+
+    driver.find_element(By.ID, "alert").click()
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+    BrowsingContext(driver).handle_user_prompt(context=driver.current_window_handle)
+
+    prompt = events[0]
+    assert (prompt.type, prompt.message) == (UserPromptType.ALERT, "cheese")
+
+
+def test_user_prompt_closed_event(driver, pages):
+    driver.get(pages.url("alerts.html"))
+    events = []
+    listener = BrowsingContext(driver).add_user_prompt_closed_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.userPromptClosed"]).subscription
+    driver.find_element(By.ID, "alert").click()
+    WebDriverWait(driver, 5).until(EC.alert_is_present())
+
+    BrowsingContext(driver).handle_user_prompt(context=driver.current_window_handle, accept=True)
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+
+    assert events[0].accepted is True
+
+
+def test_download_will_begin_event(driver, pages):
+    driver.get(pages.url("downloads/download.html"))
+    events = []
+    listener = BrowsingContext(driver).add_download_will_begin_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.downloadWillBegin"]).subscription
+
+    driver.find_element(By.ID, "file-1").click()
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+
+    assert "file_1" in events[0].suggested_filename
+
+
+def test_download_end_event(driver, pages):
+    driver.get(pages.url("downloads/download.html"))
+    events = []
+    listener = BrowsingContext(driver).add_download_end_listener(events.append)
+    subscription = Session(driver).subscribe(events=["browsingContext.downloadEnd"]).subscription
+
+    driver.find_element(By.ID, "file-1").click()
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    BrowsingContext(driver).remove_listener(listener)
+
+    download = events[0]
+    assert isinstance(download, DownloadEndParamsCompleteParams)
+    assert download.url == pages.url("downloads/file_1.txt")

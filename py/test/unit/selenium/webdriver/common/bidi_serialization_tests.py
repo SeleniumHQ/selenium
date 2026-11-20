@@ -750,6 +750,11 @@ def test_a_variant_outside_the_schema_raises_instead_of_passing_through():
         Animal.from_json({"kind": "fish"})
 
 
+def test_an_unhashable_discriminator_raises_rather_than_crashing():
+    with pytest.raises(BiDiSerializationError, match=r"not in this Selenium's BiDi schema"):
+        Animal.from_json({"kind": ["cat"]})
+
+
 # --- object-only unions: a non-object payload is a wire error, not a scalar arm ---
 
 

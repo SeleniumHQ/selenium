@@ -28,20 +28,28 @@ code that sits on top of it.
 import pytest
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common._bidi.bluetooth import Bluetooth
 from selenium.webdriver.common._bidi.browsing_context import (
     BrowsingContext,
     CreateResult,
     CreateType,
     CssLocator,
+    DownloadEndParamsCanceledParams,
     GetTreeResult,
     Info,
 )
 from selenium.webdriver.common._bidi.emulation import Emulation, GeolocationCoordinates
+from selenium.webdriver.common._bidi.input import Input
+from selenium.webdriver.common._bidi.log import Log
 from selenium.webdriver.common._bidi.network import Cookie, InterceptPhase, Network, ResponseData
+from selenium.webdriver.common._bidi.script import Script
 from selenium.webdriver.common._bidi.serialization import BiDiSerializationError
+from selenium.webdriver.common._bidi.speculation import Speculation
 from selenium.webdriver.common._bidi.storage import PartialCookie
 from selenium.webdriver.common._bidi.transport import Transport
 from selenium.webdriver.common._bidi.web_extension import ExtensionPath, WebExtension
+
+_DOMAINS_WITH_EVENTS = [Bluetooth, BrowsingContext, Input, Log, Network, Script, Speculation]
 
 
 class DrivingConnection:
@@ -281,6 +289,33 @@ def test_a_vendor_field_is_type_checked_like_any_other_field():
         web_extension.install(extension_data=ExtensionPath(path="/tmp/ext"), moz_permanent="yes")
 
     assert connection.sent is None
+
+
+# --- event types (the generated listener methods are exercised in bidi_dispatcher_tests) ---
+
+
+@pytest.mark.parametrize("domain", _DOMAINS_WITH_EVENTS)
+def test_event_types_maps_every_wire_event_to_a_payload_class(domain):
+    assert set(domain.EVENT_TYPES) == set(domain.EVENTS.values())
+    for payload in domain.EVENT_TYPES.values():
+        assert isinstance(payload, type)
+        assert callable(payload.from_json)
+
+
+def test_a_union_event_type_parses_raw_params_into_its_variant():
+    params = {
+        "context": "ctx-1",
+        "navigation": None,
+        "timestamp": 1,
+        "url": "https://example.com",
+        "download": "d-1",
+        "status": "canceled",
+    }
+
+    ended = BrowsingContext.EVENT_TYPES["browsingContext.downloadEnd"].from_json(params)
+
+    assert isinstance(ended, DownloadEndParamsCanceledParams)
+    assert ended.download == "d-1"
 
 
 # --- construction ---

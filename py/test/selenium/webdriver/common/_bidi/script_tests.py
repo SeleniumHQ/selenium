@@ -42,9 +42,12 @@ from selenium.webdriver.common._bidi.script import (
     SerializationOptions,
     SerializationOptionsIncludeShadowTree,
     StringValue,
+    WindowRealmInfo,
 )
 from selenium.webdriver.common._bidi.serialization import UNSET
+from selenium.webdriver.common._bidi.session import Session
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def _evaluate(driver, expression, context, *, await_promise=False, **kwargs):
@@ -622,3 +625,55 @@ def test_call_function_with_nested_object_argument(driver, pages):
     assert value_dict["userName"] == "John"
     assert value_dict["userAge"] == 30
     assert value_dict["hobbyCount"] == 2
+
+
+def test_realm_created_event(driver):
+    events = []
+    listener = Script(driver).add_realm_created_listener(events.append)
+    subscription = Session(driver).subscribe(events=["script.realmCreated"]).subscription
+
+    context = BrowsingContext(driver).create(type=CreateType.TAB).context
+
+    def realm_in_context(_):
+        return next((e for e in events if getattr(e, "context", None) == context), None)
+
+    realm = WebDriverWait(driver, 10).until(realm_in_context)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    Script(driver).remove_listener(listener)
+    BrowsingContext(driver).close(context=context)
+
+    assert isinstance(realm, WindowRealmInfo)
+
+
+def test_realm_destroyed_event(driver):
+    context = BrowsingContext(driver).create(type=CreateType.TAB).context
+    realms = {realm.realm for realm in Script(driver).get_realms(context=context).realms}
+    events = []
+    listener = Script(driver).add_realm_destroyed_listener(events.append)
+    subscription = Session(driver).subscribe(events=["script.realmDestroyed"]).subscription
+
+    BrowsingContext(driver).close(context=context)
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    Script(driver).remove_listener(listener)
+
+    assert events[0].realm in realms
+
+
+def test_message_event(driver):
+    events = []
+    listener = Script(driver).add_message_listener(events.append)
+    subscription = Session(driver).subscribe(events=["script.message"]).subscription
+
+    Script(driver).call_function(
+        function_declaration="channel => channel('hello')",
+        arguments=[ChannelValue(value=ChannelProperties(channel="greeting"))],
+        target=ContextTarget(context=driver.current_window_handle),
+        await_promise=False,
+    )
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    Script(driver).remove_listener(listener)
+
+    message = events[0]
+    assert (message.channel, message.data.value) == ("greeting", "hello")

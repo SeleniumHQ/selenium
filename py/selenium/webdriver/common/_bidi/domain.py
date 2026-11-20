@@ -23,7 +23,8 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Callable
+from typing import Any, ClassVar
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common._bidi.transport import Transport
@@ -36,6 +37,8 @@ class Domain:
     own :class:`Transport` (the driver starts BiDi if it hasn't already) — or a
     :class:`Transport` for the standalone path.
     """
+
+    EVENT_TYPES: ClassVar[dict[str, Any]]
 
     def __init__(self, source: Any) -> None:
         if isinstance(source, Transport):
@@ -52,3 +55,15 @@ class Domain:
 
     def _execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         return self._transport.execute(cmd, params=params, result=result)
+
+    def remove_listener(self, listener_id: str) -> None:
+        """Stop invoking the listener an ``add_<event>_listener`` method returned ``listener_id`` for.
+
+        Internal, unsupported. Local only: the subscription feeding it is left to the caller. Returns at once
+        without waiting for a running invocation to finish, so a listener may remove itself. Removing an
+        unknown or removed id does nothing.
+        """
+        self._transport.remove_listener(listener_id)
+
+    def _add_listener(self, event: str, listener: Callable[[Any], Any]) -> str:
+        return self._transport.add_listener(event, self.EVENT_TYPES[event], listener)
