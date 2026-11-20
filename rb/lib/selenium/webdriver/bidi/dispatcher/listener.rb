@@ -37,8 +37,6 @@ module Selenium
 
           def dispatch(payload)
             Thread.new { invoke(payload) }
-          rescue ThreadError => e
-            WebDriver.logger.error("Dropped a #{event} payload, no thread for its listener: #{e.message}", id: :bidi)
           end
 
           # Not joined: the caller may be this listener itself, removing itself or quitting the driver.

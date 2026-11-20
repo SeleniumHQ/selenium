@@ -61,9 +61,8 @@ module Selenium
           payload_type = listeners.first.payload_type
           begin
             payload = payload_type ? payload_type.from_json(params) : params
-          rescue StandardError => e
-            message = "Dropped a #{event} payload that failed validation: #{e.class}: #{e.message}"
-            return WebDriver.logger.error(message, id: :bidi)
+          rescue Error::SerializationError => e
+            return WebDriver.logger.error("Dropped a #{event} payload that failed validation: #{e.message}", id: :bidi)
           end
           listeners.each { |listener| listener.dispatch(payload) }
         end
