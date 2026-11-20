@@ -58,6 +58,11 @@ export interface RecordOptions {
   extensible?: boolean
 }
 
+/**
+ * Thrown by the generated BiDi modules when a value doesn't match its declared type. Unsupported, like them.
+ * @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+ * @internal
+ */
 export declare class ValidationError extends Error {}
 
 export interface RecordClass<T> {
