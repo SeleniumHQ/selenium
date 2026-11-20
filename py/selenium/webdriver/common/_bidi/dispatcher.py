@@ -31,8 +31,6 @@ from __future__ import annotations
 
 import itertools
 import logging
-import os
-import queue
 import threading
 from collections.abc import Callable
 from typing import Any
@@ -70,32 +68,6 @@ class _Listener:
             logger.exception("A listener for %s raised", self.event)
 
 
-class _OrderedListener(_Listener):
-    """Invoked with one payload at a time, in arrival order, on its own worker thread.
-
-    Used only when SE_ORDERED_EVENTS is true; kept for evaluating ordered delivery.
-    """
-
-    _STOP = object()
-
-    def __init__(self, name: str, event: str, payload_type: type | None, listener: Callable[[Any], Any]):
-        super().__init__(name, event, payload_type, listener)
-        self._queue: queue.SimpleQueue[Any] = queue.SimpleQueue()
-        threading.Thread(target=self._run, name=name, daemon=True).start()
-
-    def dispatch(self, payload: Any) -> None:
-        self._queue.put(payload)
-
-    def deactivate(self) -> None:
-        # A payload queued behind the marker arrived after removal and is never invoked.
-        super().deactivate()
-        self._queue.put(self._STOP)
-
-    def _run(self) -> None:
-        while (payload := self._queue.get()) is not self._STOP:
-            self._invoke(payload)
-
-
 class EventDispatcher:
     """Holds the event listeners of one BiDi connection and runs them.
 
@@ -117,8 +89,7 @@ class EventDispatcher:
             if self._closed:
                 raise WebDriverException("The BiDi connection is closed")
             listener_id = f"{event}#{next(self._ids)}"
-            kind = _OrderedListener if os.environ.get("SE_ORDERED_EVENTS") == "true" else _Listener
-            self._listeners[listener_id] = kind(f"bidi-listener-{listener_id}", event, payload_type, listener)
+            self._listeners[listener_id] = _Listener(f"bidi-listener-{listener_id}", event, payload_type, listener)
         return listener_id
 
     def remove_listener(self, listener_id: str) -> None:
