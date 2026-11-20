@@ -17,9 +17,11 @@
 // under the License.
 // </copyright>
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium;
@@ -30,8 +32,27 @@ namespace OpenQA.Selenium;
 public abstract class DriverService : IDisposable, IAsyncDisposable
 {
     private static readonly ILogger _logger = Log.GetLogger<DriverService>();
+
+    // Job objects created for started driver processes. Their handles must be
+    // kept open while any associated process may still be alive: closing a
+    // handle terminates every process still associated with the job, which
+    // would also kill a browser that the user asked to keep running
+    // (ChromiumOptions.LeaveBrowserRunning). Jobs that are already empty are
+    // released when their service stops; jobs that still have live processes
+    // are kept until the operating system closes their handles at process exit.
+    private static readonly ConcurrentDictionary<KillOnCloseJobObject, byte> DriverProcessJobs = new();
+
+    // Driver processes that could not be tracked in a job object (for example
+    // when the host does not allow nested job assignment). They are rooted
+    // here so that a last-resort ProcessExit handler can still terminate them
+    // when the application exits without disposing of their service.
+    private static readonly ConcurrentDictionary<int, Process> UntrackedDriverProcesses = new();
+    private static readonly object ProcessExitRegistrationLock = new();
+    private static bool processExitHookRegistered;
+
     private bool isDisposed;
     private Process? driverServiceProcess;
+    private KillOnCloseJobObject? driverProcessJob;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -199,6 +220,15 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
     }
 
     /// <summary>
+    /// Finalizes this instance, releasing the resources associated with the
+    /// driver process if this instance was not disposed of explicitly.
+    /// </summary>
+    ~DriverService()
+    {
+        this.Dispose(false);
+    }
+
+    /// <summary>
     /// Asynchronously releases all resources associated with this <see cref="DriverService"/>.
     /// </summary>
     /// <returns>A task that represents the asynchronous dispose operation.</returns>
@@ -269,6 +299,8 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
 
         this.driverServiceProcess.Start();
 
+        this.TrackDriverProcessLifetime(this.driverServiceProcess);
+
         // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
@@ -302,6 +334,23 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
                 }
 
                 this.StopAsync().GetAwaiter().GetResult();
+            }
+            else
+            {
+                // Executed on the finalizer thread, where asynchronous shutdown cannot
+                // be awaited: release the tracked resources synchronously as a best
+                // effort for instances that were not disposed of explicitly.
+                if (this.driverServiceProcess is not null)
+                {
+                    this.TryKillProcess(this.driverServiceProcess);
+                    RemoveDriverProcessFromExitTracking(this.driverServiceProcess);
+                    this.driverServiceProcess.Dispose();
+                    this.driverServiceProcess = null;
+                }
+
+                // The job object handle is released only when the job is
+                // already empty; see ReleaseDriverProcessJob for the reasoning.
+                this.ReleaseDriverProcessJob();
             }
 
             this.isDisposed = true;
@@ -373,10 +422,164 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
         }
     }
 
+    private void TrackDriverProcessLifetime(Process process)
+    {
+        // A job object with the "kill on close" flag makes the operating system
+        // terminate the driver (and the browser processes it spawns) even when
+        // this process exits abruptly, e.g. when a debugging session is stopped
+        // in an IDE, when no exit event is raised and no cleanup code can run.
+        // Each service owns a dedicated job object, so the lifetime of tracked
+        // processes is never tied to the disposal of another service. The job
+        // handle is deliberately never closed by this class: closing it while
+        // the application is still running would terminate processes the user
+        // may have asked to keep alive (ChromiumOptions.LeaveBrowserRunning),
+        // so it is only released when the operating system closes all handles
+        // at process exit. Failure to set this up must not prevent the driver
+        // from starting.
+        if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+        {
+            try
+            {
+                KillOnCloseJobObject job = new();
+                if (job.AddProcess(process))
+                {
+                    DriverProcessJobs.TryAdd(job, 0);
+                    this.driverProcessJob = job;
+                    return;
+                }
+
+                // The job could not take ownership of the process, so it tracks
+                // nothing and its handle is released right away.
+                job.Dispose();
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                if (_logger.IsEnabled(LogEventLevel.Trace))
+                {
+                    _logger.Trace($"Unable to track the driver process in a job object: {ex.Message}");
+                }
+            }
+        }
+
+        // The Windows job object is the preferred tracking mechanism because it
+        // also covers abrupt process termination, which no managed event can
+        // observe. On every other platform, and on Windows when the job object
+        // is unavailable, terminate the driver process from a ProcessExit
+        // handler instead: it at least covers every ordinary exit path,
+        // including Environment.Exit.
+        this.TrackDriverProcessForTerminationOnProcessExit(process);
+    }
+
+    private void TrackDriverProcessForTerminationOnProcessExit(Process process)
+    {
+        if (process.HasExited)
+        {
+            return;
+        }
+
+        lock (ProcessExitRegistrationLock)
+        {
+            if (!processExitHookRegistered)
+            {
+                AppDomain.CurrentDomain.ProcessExit += TerminateUntrackedDriverProcessesOnProcessExit;
+                processExitHookRegistered = true;
+            }
+        }
+
+        UntrackedDriverProcesses[process.Id] = process;
+
+        // Remove the entry once the process exits on its own, so that services
+        // whose driver crashes never accumulate rooted Process objects. The
+        // handler is subscribed before events are enabled: an already exited
+        // process raises Exited as soon as EnableRaisingEvents is set, and the
+        // opposite order could miss that notification and root the entry
+        // until application exit.
+        process.Exited += OnUntrackedDriverProcessExited;
+        process.EnableRaisingEvents = true;
+    }
+
+    private static void OnUntrackedDriverProcessExited(object? sender, EventArgs eventArgs)
+    {
+        if (sender is Process process)
+        {
+            RemoveDriverProcessFromExitTracking(process);
+        }
+    }
+
+    private static void RemoveDriverProcessFromExitTracking(Process process)
+    {
+        try
+        {
+            // Remove by key and value: removing by key alone could drop the
+            // entry of a different driver that was assigned a reused process
+            // id after this one exited. The explicit ICollection removal is
+            // used because it is available on every target framework,
+            // unlike TryRemove(KeyValuePair).
+            ((ICollection<KeyValuePair<int, Process>>)UntrackedDriverProcesses).Remove(new KeyValuePair<int, Process>(process.Id, process));
+            process.Exited -= OnUntrackedDriverProcessExited;
+        }
+        catch (InvalidOperationException)
+        {
+            // The process was never started, so it was never tracked. Reached
+            // from the finalizer of a service whose startup failed midway.
+        }
+    }
+
+    private static void TerminateUntrackedDriverProcessesOnProcessExit(object? sender, EventArgs eventArgs)
+    {
+        foreach (Process process in UntrackedDriverProcesses.Values)
+        {
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill();
+                }
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception)
+            {
+                // Best effort only: the process may have exited concurrently.
+                if (_logger.IsEnabled(LogEventLevel.Trace))
+                {
+                    _logger.Trace($"Unable to terminate an untracked driver process during process exit: {ex.Message}");
+                }
+            }
+            finally
+            {
+                process.Dispose();
+            }
+        }
+
+        UntrackedDriverProcesses.Clear();
+    }
+
+    private void ReleaseDriverProcessJob()
+    {
+        // The job handle is kept open while any associated process may still
+        // be alive, because closing it terminates those processes — including
+        // a browser the user asked to keep running (LeaveBrowserRunning).
+        // Once the job is empty the handle is released, so that repeatedly
+        // starting and stopping services in a long-running application does
+        // not accumulate job objects; jobs that still track live processes
+        // are released by the operating system at process exit.
+        if (this.driverProcessJob is KillOnCloseJobObject job && job.TryDisposeIfEmpty())
+        {
+            DriverProcessJobs.TryRemove(job, out _);
+        }
+
+        this.driverProcessJob = null;
+    }
+
     private async ValueTask StopAsync()
     {
         if (!this.IsRunning)
         {
+            if (this.driverServiceProcess is not null)
+            {
+                RemoveDriverProcessFromExitTracking(this.driverServiceProcess);
+            }
+
+            this.ReleaseDriverProcessJob();
             return;
         }
 
@@ -407,6 +610,8 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
         }
         finally
         {
+            this.ReleaseDriverProcessJob();
+            RemoveDriverProcessFromExitTracking(process);
             process.Dispose();
             this.driverServiceProcess = null;
         }
