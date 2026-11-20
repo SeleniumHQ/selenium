@@ -11,7 +11,8 @@ to capture this, so users write ad-hoc screenshot and logging hooks in each bind
 
 Other tools ship a recorded "trace" for this. Playwright's trace archive (`trace.zip` with NDJSON
 streams and image resources) is the de facto format, and there are viewers for it outside
-Playwright, such as the WebdriverIO trace viewer. Producing that format gives Selenium users
+Playwright, such as the Vibium record player and the WebdriverIO trace viewer. Producing that
+format gives Selenium users
 existing viewers for free.
 
 A previous proposal (#15311) recorded the desktop with FFmpeg from Selenium Manager. The TLC
@@ -56,7 +57,9 @@ Recording in Selenium Manager has to meet three conditions, or it gets in the wa
    values, capability values named like secrets, and URL user info. A check that cannot be made
    counts as sensitive.
 5. **Trace format.** A Playwright trace archive (`trace.trace`, `trace.network`, `resources/`)
-   using **schema version 8**, which current Playwright and WebdriverIO viewers read.
+   using **schema version 8**. Playwright upgrades older schemas when it loads them, and v8 is
+   the newest version the Vibium record player accepts (v6 to v8), so one file works in all the
+   viewers (Playwright trace viewer, Vibium record player, WebdriverIO trace viewer).
 6. **Lifecycle.** On `DELETE /session/{id}` the proxy writes the trace *before* replying, so
    bindings can end the process right after quitting (on Windows it is killed rather than
    signalled). On SIGINT/SIGTERM it saves what was recorded. A failure to write the trace is
@@ -80,14 +83,15 @@ Recording in Selenium Manager has to meet three conditions, or it gets in the wa
 - **Talk to Selenium Manager over stdin/stdout or WebSocket instead of HTTP.** Rejected: classic
   WebDriver is HTTP and bindings already have HTTP executors; pointing them at another URL is a
   small change in each binding.
-- **Emit the newest Playwright schema (v9/v10).** Rejected: some viewers do not read it yet,
-  while Playwright still reads v8.
+- **Emit the newest Playwright schema (v9/v10).** Rejected: the Vibium player rejects schemas
+  newer than v8, while Playwright still reads v8.
 - **A Selenium-specific trace format.** Rejected: it would need its own viewer.
 
 ## Consequences
 
 - Users get traces with one option and no extra dependencies, for local and remote sessions, and
-  can keep using BiDi in their tests while recording.
+  can keep using BiDi in their tests while recording. The archive opens in the Playwright trace
+  viewer, the Vibium record player and the WebdriverIO trace viewer.
 - Selenium Manager stays alive for the whole session. Driver service settings (port, arguments,
   log output) other than the executable are not used in pipe mode.
 - All traffic of a remote session goes through a local process, and screenshots after actions
