@@ -58,12 +58,8 @@ suite(
         await browsingContext.close({ context: result.context })
       })
 
-      it('rejects closing an unknown context with a WebDriverError', async function () {
-        await assert.rejects(browsingContext.close({ context: 'no-such-context' }), (err) => {
-          assert.ok(err instanceof error.WebDriverError)
-          assert.match(err.message, /^no such frame: /)
-          return true
-        })
+      it('rejects closing an unknown context with NoSuchFrameError', async function () {
+        await assert.rejects(browsingContext.close({ context: 'no-such-context' }), error.NoSuchFrameError)
       })
 
       it('can get browsing context tree', async function () {
