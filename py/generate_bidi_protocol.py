@@ -1061,19 +1061,19 @@ def _emit_command(c: CommandIR) -> list[str]:
 
 def _emit_event_listener(e: EventIR) -> list[str]:
     payload = e.payload_class or "dict[str, Any]"
-    args = ["self", f"listener: Callable[[{payload}], Any]", "*", "concurrent: bool = False"]
+    args = ["self", f"listener: Callable[[{payload}], Any]"]
     lines = [wrap_call(f"    def {_listener_method(e)}(", args, ") -> str:", 4)]
     lines.append(f'        """Invoke ``listener`` with each {e.wire} payload (internal, unsupported).')
     lines.append("")
     lines.append(f"        The listener gets a ``{payload}``; one that fails validation is logged and not delivered.")
-    lines.append("        By default it gets one payload at a time in arrival order; with ``concurrent=True`` each")
-    lines.append("        payload is invoked as it arrives. This sends nothing: payloads arrive once the caller")
-    lines.append("        subscribes with ``Session.subscribe``. Returns the id to pass to ``remove_listener``.")
+    lines.append("        Each payload is invoked on its own thread, without waiting for earlier ones. This sends")
+    lines.append("        nothing: payloads arrive once the caller subscribes with ``Session.subscribe``.")
+    lines.append("        Returns the id to pass to ``remove_listener``.")
     if e.spec_href:
         lines.append("")
         lines.append(f"        See {e.spec_href}")
     lines.append('        """')
-    lines.append(f"        return self._add_listener({lit(e.wire)}, listener, concurrent)")
+    lines.append(f"        return self._add_listener({lit(e.wire)}, listener)")
     return lines
 
 

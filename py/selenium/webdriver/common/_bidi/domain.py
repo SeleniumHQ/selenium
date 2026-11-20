@@ -54,16 +54,14 @@ class Domain:
     def _execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         return self._transport.execute(cmd, params=params, result=result)
 
-    def remove_listener(self, listener_id: str, *, drain_timeout: float | None = None) -> None:
+    def remove_listener(self, listener_id: str) -> None:
         """Stop invoking the listener an ``add_<event>_listener`` method returned ``listener_id`` for.
 
-        Internal, unsupported. Local only: the subscription feeding it is left to the caller. A running
-        invocation finishes either way. By default payloads not yet started are discarded and this returns at
-        once, so a listener may remove itself. With ``drain_timeout``, every payload received before the call is
-        invoked and this waits up to that many seconds for them to finish; past it the rest are discarded and
-        ``TimeoutError`` is raised. Removing an unknown or removed id does nothing.
+        Internal, unsupported. Local only: the subscription feeding it is left to the caller. Returns at once
+        without waiting for a running invocation to finish, so a listener may remove itself. Removing an
+        unknown or removed id does nothing.
         """
-        self._transport.remove_listener(listener_id, drain_timeout=drain_timeout)
+        self._transport.remove_listener(listener_id)
 
-    def _add_listener(self, event: str, listener: Callable[[Any], Any], concurrent: bool) -> str:
-        return self._transport.add_listener(event, self.EVENT_TYPES[event], listener, concurrent=concurrent)
+    def _add_listener(self, event: str, listener: Callable[[Any], Any]) -> str:
+        return self._transport.add_listener(event, self.EVENT_TYPES[event], listener)

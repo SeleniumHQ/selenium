@@ -163,22 +163,31 @@ def send_event(connection, method, params):
     connection._process_message(json.dumps({"type": "event", "method": method, "params": params}))
 
 
+def test_attaches_no_receiver_until_one_is_asked_for(monkeypatch):
+    assert connect(monkeypatch).event_receiver is None
+
+
+def test_attaches_one_receiver_and_returns_it_to_every_later_caller(monkeypatch):
+    connection = connect(monkeypatch)
+    receiver = connection.attach_event_receiver(Receiver)
+
+    assert connection.attach_event_receiver(Receiver) is receiver
+    assert connection.event_receiver is receiver
+
+
 def test_hands_every_event_to_the_receiver(monkeypatch):
     connection = connect(monkeypatch)
-    receiver = Receiver()
-    connection.set_event_receiver(receiver)
+    receiver = connection.attach_event_receiver(Receiver)
 
     send_event(connection, "browsingContext.load", {"url": "a"})
     send_event(connection, "log.entryAdded", {"text": "b"})
 
-    assert connection.event_receiver is receiver
     assert receiver.received == [("browsingContext.load", {"url": "a"}), ("log.entryAdded", {"text": "b"})]
 
 
 def test_does_not_hand_command_replies_to_the_receiver(monkeypatch):
     connection = connect(monkeypatch, reply=echo)
-    receiver = Receiver()
-    connection.set_event_receiver(receiver)
+    receiver = connection.attach_event_receiver(Receiver)
 
     connection.send_cmd("session.status", {})
 
@@ -187,7 +196,7 @@ def test_does_not_hand_command_replies_to_the_receiver(monkeypatch):
 
 def test_registered_callbacks_still_fire_with_a_receiver_attached(monkeypatch):
     connection = connect(monkeypatch)
-    connection.set_event_receiver(Receiver())
+    connection.attach_event_receiver(Receiver)
     called = threading.Event()
     connection.on(LoadEvent, lambda params: called.set())
 
@@ -196,17 +205,9 @@ def test_registered_callbacks_still_fire_with_a_receiver_attached(monkeypatch):
     assert called.wait(timeout=5)
 
 
-def test_takes_only_one_receiver(monkeypatch):
-    connection = connect(monkeypatch)
-    connection.set_event_receiver(Receiver())
-
-    with pytest.raises(WebDriverException, match="already has an event receiver"):
-        connection.set_event_receiver(Receiver())
-
-
 def test_a_failing_receiver_does_not_stop_message_processing(monkeypatch):
     connection = connect(monkeypatch)
-    connection.set_event_receiver(Receiver(error=RuntimeError("boom")))
+    connection.attach_event_receiver(lambda: Receiver(error=RuntimeError("boom")))
     called = threading.Event()
     connection.on(LoadEvent, lambda params: called.set())
 
@@ -217,9 +218,15 @@ def test_a_failing_receiver_does_not_stop_message_processing(monkeypatch):
 
 def test_closes_the_receiver_when_the_connection_closes(monkeypatch):
     connection = connect(monkeypatch)
-    receiver = Receiver()
-    connection.set_event_receiver(receiver)
+    receiver = connection.attach_event_receiver(Receiver)
 
     connection.close()
 
     assert receiver.closed
+
+
+def test_closes_a_receiver_attached_after_the_connection_closed(monkeypatch):
+    connection = connect(monkeypatch)
+    connection.close()
+
+    assert connection.attach_event_receiver(Receiver).closed

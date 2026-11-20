@@ -170,11 +170,6 @@ def test_execute_treats_the_presence_of_error_as_an_error_not_its_truthiness():
         Transport(connection).execute("bad.command", result=Result)
 
 
-def test_event_listeners_need_a_dispatcher_on_the_connection():
-    with pytest.raises(WebDriverException, match="no event dispatcher"):
-        Transport(DrivingConnection({})).add_listener("some.event", None, lambda payload: None)
-
-
 # --- Domain seam ---
 
 
