@@ -1456,7 +1456,6 @@ module BiDiGenerate
         spec_href: schema.domain_href(domain)
       )
       check_accessor_collisions!(mod)
-      check_listener_collisions!(mod)
       mod
     end
   end
@@ -1532,14 +1531,6 @@ module BiDiGenerate
 
       seen[name] = accessor.type_name
     end
-  end
-
-  # A listener method is named after its event, so fail generation if that name is already a
-  # command, an accessor or an inherited method.
-  def self.check_listener_collisions!(mod)
-    taken = (mod.commands + mod.accessors).to_set(&:method_name) + INHERITED_INSTANCE_METHODS
-    clash = mod.events.map(&:listener_method).find { |name| taken.include?(name) }
-    raise "listener #{mod.ruby_class}##{clash} collides with an existing method" if clash
   end
 
   def self.build_command(schema, cmd)
