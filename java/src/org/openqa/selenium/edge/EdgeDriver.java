@@ -90,7 +90,8 @@ public class EdgeDriver extends ChromiumDriver {
           service,
           options,
           Path.of(recordPath),
-          EdgeDriverCommandExecutor.getExtraCommands(),
+          ChromiumDriverCommandExecutor.withChromiumCommands(
+              EdgeDriverCommandExecutor.getExtraCommands()),
           clientConfig);
     }
     return new EdgeDriverCommandExecutor(service, clientConfig);

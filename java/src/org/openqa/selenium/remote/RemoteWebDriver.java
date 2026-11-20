@@ -100,6 +100,7 @@ import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.jdk.ConnectionException;
+import org.openqa.selenium.remote.service.TraceRecordingCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 import org.openqa.selenium.virtualauthenticator.Credential;
@@ -191,14 +192,25 @@ public class RemoteWebDriver
     this(
         enableTracing
             ? new TracedCommandExecutor(
-                new HttpCommandExecutor(
-                    clientFactory.createClient(clientConfig), clientConfig.baseUrl()),
+                createExecutor(capabilities, clientFactory, clientConfig),
                 OpenTelemetryTracer.getInstance())
-            : new HttpCommandExecutor(
-                clientFactory.createClient(clientConfig), clientConfig.baseUrl()),
+            : createExecutor(capabilities, clientFactory, clientConfig),
         capabilities,
         clientFactory,
         clientConfig);
+  }
+
+  private static CommandExecutor createExecutor(
+      Capabilities capabilities, HttpClient.Factory clientFactory, ClientConfig clientConfig) {
+    String recordPath =
+        capabilities instanceof AbstractDriverOptions
+            ? ((AbstractDriverOptions<?>) capabilities).getRecordPath()
+            : null;
+    if (recordPath != null) {
+      return TraceRecordingCommandExecutor.startRemote(
+          clientConfig.baseUrl(), capabilities, Path.of(recordPath), clientConfig);
+    }
+    return new HttpCommandExecutor(clientFactory.createClient(clientConfig), clientConfig.baseUrl());
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {

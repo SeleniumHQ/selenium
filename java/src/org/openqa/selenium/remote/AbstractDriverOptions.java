@@ -119,8 +119,10 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
    * commands, a screenshot after each action, and console and network activity when the driver
    * supports WebDriver BiDi. It is written when the driver is quit.
    *
-   * <p>Recording is done by Selenium Manager and is currently supported when starting Chrome, Edge
-   * or Firefox locally; the setting is not sent to the browser or to a remote end.
+   * <p>Recording is done by Selenium Manager, which runs locally in front of the driver: when
+   * starting Chrome, Edge or Firefox locally, or with {@link RemoteWebDriver} constructors in front
+   * of a remote end (e.g. Selenium Grid). The setting is never sent to the browser or to a remote
+   * end. The binding can still use WebDriver BiDi while the session is recorded.
    *
    * @param path path of the trace archive (for example {@code trace.zip}); an existing file is
    *     overwritten

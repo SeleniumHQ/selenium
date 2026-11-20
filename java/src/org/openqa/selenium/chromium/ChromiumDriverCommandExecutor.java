@@ -20,6 +20,7 @@ package org.openqa.selenium.chromium;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -46,10 +47,19 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
   public ChromiumDriverCommandExecutor(
       DriverService service, Map<String, CommandInfo> extraCommands, ClientConfig clientConfig) {
-    super(service, getExtraCommands(extraCommands), clientConfig);
+    super(service, withChromiumCommands(extraCommands), clientConfig);
   }
 
-  private static Map<String, CommandInfo> getExtraCommands(Map<String, CommandInfo> commands) {
+  /**
+   * Adds the commands every Chromium-based driver supports (network conditions, permissions,
+   * launch app) to browser-specific ones, for executors other than this one that talk to the same
+   * driver.
+   *
+   * @param commands browser-specific commands
+   * @return the given commands plus the Chromium ones
+   */
+  @Beta
+  public static Map<String, CommandInfo> withChromiumCommands(Map<String, CommandInfo> commands) {
     return Stream.of(
             commands,
             new AddHasNetworkConditions().getAdditionalCommands(),

@@ -95,14 +95,53 @@ public class TraceRecordingCommandExecutor extends HttpCommandExecutor {
     Require.nonNull("Trace path", tracePath);
     String driverPath = Require.nonNull("Driver executable", service.getExecutable());
 
-    List<String> arguments =
+    return launch(
         List.of(
             "--browser",
             options.getBrowserName(),
             "--driver-path",
             driverPath,
             "--record",
-            tracePath.toAbsolutePath().toString());
+            tracePath.toAbsolutePath().toString()),
+        tracePath,
+        additionalCommands,
+        clientConfig);
+  }
+
+  /**
+   * Records a session on an existing remote end (e.g. Selenium Grid or a cloud provider) through
+   * Selenium Manager in pipe mode, which runs locally in front of it. Selenium Manager does not
+   * resolve any driver or browser in this case.
+   *
+   * @param remoteAddress URL of the remote end
+   * @param options browser options of the session
+   * @param tracePath path of the trace archive to write when the session is quit
+   * @param clientConfig HTTP client configuration used to talk to the remote end
+   * @return the executor sending commands through the recording proxy
+   */
+  public static TraceRecordingCommandExecutor startRemote(
+      URL remoteAddress, Capabilities options, Path tracePath, ClientConfig clientConfig) {
+    Require.nonNull("Remote address", remoteAddress);
+    Require.nonNull("Driver options", options);
+    Require.nonNull("Trace path", tracePath);
+    return launch(
+        List.of(
+            "--browser",
+            options.getBrowserName(),
+            "--upstream",
+            remoteAddress.toString(),
+            "--record",
+            tracePath.toAbsolutePath().toString()),
+        tracePath,
+        Map.of(),
+        clientConfig);
+  }
+
+  private static TraceRecordingCommandExecutor launch(
+      List<String> arguments,
+      Path tracePath,
+      Map<String, CommandInfo> additionalCommands,
+      ClientConfig clientConfig) {
     ExternalProcess pipe = SeleniumManager.getInstance().startPipe(arguments);
     try {
       URL proxyUrl = awaitProxyUrl(pipe);
@@ -146,7 +185,12 @@ public class TraceRecordingCommandExecutor extends HttpCommandExecutor {
       Thread.currentThread().interrupt();
       pipe.shutdown();
     }
-    LOG.fine(() -> "Selenium Manager pipe mode output:\n" + pipe.getOutput(StandardCharsets.UTF_8));
+    String output = pipe.getOutput(StandardCharsets.UTF_8);
+    LOG.fine(() -> "Selenium Manager pipe mode output:\n" + output);
+    String traceError = findTraceError(output);
+    if (traceError != null) {
+      LOG.warning("The session trace could not be saved: " + traceError);
+    }
   }
 
   private static URL awaitProxyUrl(ExternalProcess pipe) {
@@ -182,16 +226,25 @@ public class TraceRecordingCommandExecutor extends HttpCommandExecutor {
 
   /** The proxy URL is announced as a single JSON line among the regular log lines. */
   static @Nullable String findProxyUrl(String output) {
+    return findJsonLineValue(output, "proxy_url");
+  }
+
+  /** A failure to write the trace is reported as a JSON line, after the session was quit. */
+  static @Nullable String findTraceError(String output) {
+    return findJsonLineValue(output, "trace_error");
+  }
+
+  private static @Nullable String findJsonLineValue(String output, String key) {
     for (String line : output.split("\\R")) {
       String trimmed = line.trim();
-      if (!trimmed.startsWith("{") || !trimmed.contains("\"proxy_url\"")) {
+      if (!trimmed.startsWith("{") || !trimmed.contains("\"" + key + "\"")) {
         continue;
       }
       try {
-        Map<String, Object> ready = new Json().toType(trimmed, Json.MAP_TYPE);
-        Object url = ready.get("proxy_url");
-        if (url instanceof String) {
-          return (String) url;
+        Map<String, Object> values = new Json().toType(trimmed, Json.MAP_TYPE);
+        Object value = values.get(key);
+        if (value instanceof String) {
+          return (String) value;
         }
       } catch (JsonException e) {
         LOG.log(Level.FINE, "Ignoring unparsable Selenium Manager output: " + trimmed, e);

@@ -42,4 +42,20 @@ class TraceRecordingCommandExecutorTest {
     assertThat(TraceRecordingCommandExecutor.findProxyUrl("[INFO] proxy_url not yet\n")).isNull();
     assertThat(TraceRecordingCommandExecutor.findProxyUrl("{\"proxy_url\": broken")).isNull();
   }
+
+  @Test
+  void findsTraceErrorAmongLogLines() {
+    String output =
+        "[2026-11-20T11:37:24.846Z WARN] Unable to save trace: disk full\n"
+            + "{\"trace_error\":\"disk full\"}\n";
+
+    assertThat(TraceRecordingCommandExecutor.findTraceError(output)).isEqualTo("disk full");
+  }
+
+  @Test
+  void noTraceErrorWhenAbsent() {
+    String output = "{\"proxy_url\":\"http://127.0.0.1:43341\"}\n[INFO] Trace saved to t.zip\n";
+
+    assertThat(TraceRecordingCommandExecutor.findTraceError(output)).isNull();
+  }
 }

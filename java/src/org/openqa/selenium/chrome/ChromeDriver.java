@@ -118,7 +118,8 @@ public class ChromeDriver extends ChromiumDriver {
           service,
           options,
           Path.of(recordPath),
-          ChromeDriverCommandExecutor.getExtraCommands(),
+          ChromiumDriverCommandExecutor.withChromiumCommands(
+              ChromeDriverCommandExecutor.getExtraCommands()),
           clientConfig);
     }
     return new ChromeDriverCommandExecutor(service, clientConfig);
