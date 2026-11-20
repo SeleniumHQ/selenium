@@ -81,11 +81,7 @@ class TestFirefoxDriverWebExtension:
             )
         else:
             executable = _resolve_bazel_path(request.config.option.executable)
-            service = (
-                webdriver.FirefoxService(executable_path=executable)
-                if executable
-                else webdriver.FirefoxService()
-            )
+            service = webdriver.FirefoxService(executable_path=executable) if executable else webdriver.FirefoxService()
             private_driver = webdriver.Firefox(options=firefox_options, service=service)
 
         yield private_driver
@@ -116,9 +112,7 @@ class TestFirefoxDriverWebExtension:
         driver.uninstall_web_extension(extension)
 
     def test_install_unsigned_from_directory(self, driver, pages):
-        extension = driver.install_web_extension(
-            os.path.join(EXTENSIONS, "webextensions-selenium-example")
-        )
+        extension = driver.install_web_extension(os.path.join(EXTENSIONS, "webextensions-selenium-example"))
 
         assert extension.id == EXTENSION_ID
         verify_extension_injection(driver, pages)
@@ -130,9 +124,7 @@ class TestFirefoxDriverWebExtension:
         # is rejected with "Permanent installation of unpacked extensions is not supported".
         # A permanent install also goes through AddonManager signature checking, so the
         # extension has to be the signed archive.
-        extension = driver.install_web_extension(
-            os.path.join(EXTENSIONS, EXTENSION_ARCHIVE_PATH), permanent=True
-        )
+        extension = driver.install_web_extension(os.path.join(EXTENSIONS, EXTENSION_ARCHIVE_PATH), permanent=True)
 
         assert extension.id == EXTENSION_ID
         verify_extension_injection(driver, pages)
@@ -236,15 +228,11 @@ class TestChromiumDriverWebExtension:
         verify_uninstalled(chromium_driver, extension)
 
     def test_install_unsigned_from_directory(self, chromium_driver, pages_chromium):
-        extension = chromium_driver.install_web_extension(
-            os.path.join(EXTENSIONS, "webextensions-selenium-example")
-        )
+        extension = chromium_driver.install_web_extension(os.path.join(EXTENSIONS, "webextensions-selenium-example"))
 
         verify_extension_injection(chromium_driver, pages_chromium)
         verify_uninstalled(chromium_driver, extension)
 
     def test_firefox_options_are_rejected(self, chromium_driver):
         with pytest.raises(ValueError):
-            chromium_driver.install_web_extension(
-                os.path.join(EXTENSIONS, EXTENSION_PATH), permanent=True
-            )
+            chromium_driver.install_web_extension(os.path.join(EXTENSIONS, EXTENSION_PATH), permanent=True)

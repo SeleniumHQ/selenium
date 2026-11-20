@@ -217,11 +217,11 @@ def create_matches(options: list[BaseOptions]) -> dict:
     # candidate key must appear in every set, so it must appear in the first one; values
     # may be dicts/lists and so are compared with ``==`` rather than placed in a set
     # (see https://bugs.python.org/issue38210).
-    always: dict[str, Any] = {
-        key: value
-        for key, value in opts[0].items()
-        if all(key in opt and opt[key] == value for opt in opts[1:])
-    } if opts else {}
+    always: dict[str, Any] = (
+        {key: value for key, value in opts[0].items() if all(key in opt and opt[key] == value for opt in opts[1:])}
+        if opts
+        else {}
+    )
 
     for opt_dict in opts:
         for key in always:
