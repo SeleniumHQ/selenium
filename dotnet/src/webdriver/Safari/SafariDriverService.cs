@@ -65,7 +65,7 @@ public sealed class SafariDriverService : DriverService
         {
             StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
 
-            if (this.Diagnose is true)
+            if (this.Diagnose is true || Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
                 argsBuilder.Append(" --diagnose");
             }
