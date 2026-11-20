@@ -140,6 +140,34 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --arg runs "$RUN
   | sort_by(-.streak, .target)
 ' "$WORK/all.jsonl" > "$WORK/failing.json"
 
+# GitHub numbers a step's log lines from its "Run" header, so the count restarts there.
+test_output_anchor() {
+  local job="$1" target="$2" log="$WORK/logs/$1"
+  if [ ! -f "$log.step" ]; then
+    gh api "repos/$REPO/actions/jobs/$job" --jq '.steps[] | select(.name == "Run Bazel") | .number' > "$log.step" \
+      && gh api --allow-escape-sequences "repos/$REPO/actions/jobs/$job/logs" > "$log" \
+      || : > "$log"
+  fi
+  awk -v output="Test output for $target:" -v step="$(cat "$log.step")" '
+    /##\[group\]Run / { start = NR }
+    step != "" && index($0, output) { printf "#step:%d:%d", step, NR - start + 1; exit }
+  ' "$log"
+}
+
+add_anchors() {
+  local rows="$1" link="$2"
+  jq -r --arg link "$link" '.[] | "\(.[$link] | sub(".*/"; ""))\t\(.target)"' "$rows" \
+    | while IFS=$'\t' read -r job target; do test_output_anchor "$job" "$target" < /dev/null; echo; done \
+    | jq -nR --arg link "$link" --slurpfile rows "$rows" \
+        '[inputs] as $anchors | $rows[0] | to_entries | map(.value + {($link): (.value[$link] + $anchors[.key])})' \
+    > "$rows.tmp"
+  mv "$rows.tmp" "$rows"
+}
+
+mkdir -p "$WORK/logs"
+add_anchors "$WORK/report.json" lastJob
+add_anchors "$WORK/failing.json" lastFailedJob
+
 {
   echo "## Failing tests"
   echo
