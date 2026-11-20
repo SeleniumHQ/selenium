@@ -28,6 +28,11 @@ module Selenium
         def initialize(path: nil, port: nil, log: nil, args: nil, env: nil)
           raise Error::WebDriverError, 'Safari Service does not support setting log output' if log
 
+          if ENV.key?('SE_DEBUG')
+            args = Array(args.dup)
+            args << '--diagnose' unless args.include?('--diagnose')
+          end
+
           super
         end
 
