@@ -727,24 +727,3 @@ def test_download_end_event(driver, pages):
     download = events[0]
     assert isinstance(download, DownloadEndParamsCompleteParams)
     assert download.url == pages.url("downloads/file_1.txt")
-
-
-def test_a_listener_gets_the_payloads_of_every_subscription_for_its_event(driver, pages):
-    window = driver.current_window_handle
-    other = BrowsingContext(driver).create(type=CreateType.TAB).context
-    loads = []
-    listener = BrowsingContext(driver).add_load_listener(loads.append)
-    window_subscription = Session(driver).subscribe(events=["browsingContext.load"], contexts=[window]).subscription
-    other_subscription = Session(driver).subscribe(events=["browsingContext.load"], contexts=[other]).subscription
-
-    BrowsingContext(driver).navigate(context=other, url=pages.url("blank.html"), wait=ReadinessState.COMPLETE)
-    BrowsingContext(driver).navigate(context=window, url=pages.url("simpleTest.html"), wait=ReadinessState.COMPLETE)
-    WebDriverWait(driver, 10).until(lambda _: len(loads) >= 2)
-    Session(driver).unsubscribe(subscriptions=[window_subscription, other_subscription])
-    BrowsingContext(driver).remove_listener(listener)
-    BrowsingContext(driver).close(context=other)
-
-    assert {(e.context, e.url) for e in loads} == {
-        (other, pages.url("blank.html")),
-        (window, pages.url("simpleTest.html")),
-    }

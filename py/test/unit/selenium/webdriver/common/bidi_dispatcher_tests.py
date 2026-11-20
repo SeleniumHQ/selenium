@@ -18,10 +18,10 @@
 
 """Unit tests for the BiDi event dispatcher and the generated listener methods that use it.
 
-Runs the generated domains over a real `WebSocketConnection` whose socket is replaced
-by `Browser`, which answers each command and can emit events, so registration, removal
-and delivery are tested through the connection's own dispatch. Each test is one rule of
-the low-level event record (18299) and doubles as a conformance scenario for the other bindings.
+Runs the generated domains over a real `WebSocketConnection` with only `WebSocketApp` replaced by
+`RemoteEnd`, so the connection's own reader thread delivers every reply and event in the order the
+remote end sent them, as it does against a browser. A listener that held up that thread would stall
+the replies queued behind it, which is what the timing assertions below detect.
 """
 
 import json
@@ -35,64 +35,73 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common._bidi.browsing_context import BrowsingContext, NavigationInfo
 from selenium.webdriver.common._bidi.dispatcher import EventDispatcher
 from selenium.webdriver.common._bidi.network import Network
-from selenium.webdriver.common._bidi.session import Session
 from selenium.webdriver.common._bidi.transport import Transport
+from selenium.webdriver.remote import websocket_connection
 from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
+# Long enough for any thread to be scheduled, short enough that a blocked reader thread fails the test.
+PROMPT = 1
 
-def load(context="ctx-1", url="https://example.com"):
-    return {"context": context, "navigation": None, "timestamp": 1, "url": url}
+
+def load(url="https://example.com"):
+    return {"context": "ctx-1", "navigation": None, "timestamp": 1, "url": url}
 
 
-class Browser:
-    """Stands in for ``WebSocketApp``: answers each command on its own thread and emits events on request."""
+class RemoteEnd:
+    """Stands in for ``WebSocketApp``: answers each command and emits events on request, in one ordered stream."""
 
-    def __init__(self, connection):
-        self.connection = connection
+    def __init__(self, url, on_open, on_message, on_error):
+        self._on_open = on_open
+        self._on_message = on_message
+        self._on_error = on_error
+        self._inbound = queue.SimpleQueue()
+        self._lock = threading.Lock()
         self.sent = []
-        self.before_subscribe_reply = None
+
+    def run_forever(self, **options):
+        self._on_open(self)
+        while (message := self._inbound.get()) is not None:
+            # websocket-client hands an exception from a callback to on_error rather than raising it.
+            try:
+                self._on_message(self, json.dumps(message))
+            except Exception as e:
+                self._on_error(self, e)
 
     def send(self, data):
         command = json.loads(data)
-        self.sent.append(command)
-        if command["method"] == "session.subscribe" and self.before_subscribe_reply:
-            self.before_subscribe_reply()
-        threading.Thread(target=self._deliver, args=(self._reply(command),)).start()
+        with self._lock:
+            self.sent.append(command)
+            self._inbound.put({"id": command["id"], "type": "success", "result": self._result(command["method"])})
 
     def emit(self, method, params):
-        self._deliver({"type": "event", "method": method, "params": params})
+        self._inbound.put({"type": "event", "method": method, "params": params})
 
     def close(self):
-        pass
+        self._inbound.put(None)
 
-    def _reply(self, command):
-        result = {}
-        if command["method"] == "browsingContext.getTree":
-            result = {"contexts": []}
-        elif command["method"] == "session.subscribe":
-            result = {"subscription": "sub-1"}
-        return {"id": command["id"], "type": "success", "result": result}
-
-    def _deliver(self, message):
-        self.connection._process_message(json.dumps(message))
+    @staticmethod
+    def _result(method):
+        return {"contexts": []} if method == "browsingContext.getTree" else {}
 
 
 @pytest.fixture
 def connection(monkeypatch):
-    def start_ws(self):
-        self._ws = Browser(self)
-        self._ws_thread = None
-        self._started.set()
-
-    monkeypatch.setattr(WebSocketConnection, "_start_ws", start_ws)
+    monkeypatch.setattr(websocket_connection, "WebSocketApp", RemoteEnd)
     connection = WebSocketConnection("ws://localhost", timeout=5)
     yield connection
     connection.close()
 
 
 @pytest.fixture
-def browser(connection):
+def remote_end(connection):
     return connection._ws
+
+
+@pytest.fixture
+def release():
+    event = threading.Event()
+    yield event
+    event.set()
 
 
 @pytest.fixture
@@ -110,23 +119,37 @@ def contexts(connection):
     return BrowsingContext(Transport(connection))
 
 
+def emit_load(remote_end, url="https://example.com"):
+    remote_end.emit("browsingContext.load", load(url=url))
+
+
+def await_dispatch(connection):
+    """The reader handles messages in order, so a reply means every earlier event has been dispatched."""
+    contexts(connection).get_tree()
+
+
+def assert_nothing_arrives(received):
+    with pytest.raises(queue.Empty):
+        received.get(timeout=0.2)
+
+
 def blocking_listener(started, release, finished):
     def blocks(payload):
         started.put(payload.url)
-        release.wait(5)
+        release.wait()
         finished.put(payload.url)
 
     return blocks
 
 
-def test_adding_a_listener_sends_nothing_and_returns_a_unique_id(connection, browser):
+def test_adding_a_listener_sends_nothing_and_returns_a_unique_id(connection, remote_end):
     def listener(payload):
         pass
 
     first = contexts(connection).add_load_listener(listener)
     second = contexts(connection).add_load_listener(listener)
 
-    assert browser.sent == []
+    assert remote_end.sent == []
     assert first != second
 
 
@@ -135,51 +158,50 @@ def test_adding_a_listener_requires_a_callable(connection):
         contexts(connection).add_load_listener(None)
 
 
-def test_a_listener_receives_its_events_typed_payloads_without_any_subscription(connection, browser):
+def test_a_listener_receives_its_events_typed_payloads_without_any_subscription(connection, remote_end):
     received = queue.Queue()
     contexts(connection).add_load_listener(received.put)
 
-    browser.emit("browsingContext.domContentLoaded", load(url="https://other"))
-    browser.emit("browsingContext.load", load())
+    remote_end.emit("browsingContext.domContentLoaded", load(url="https://other"))
+    emit_load(remote_end)
 
     assert received.get(timeout=5) == NavigationInfo.from_json(load())
-    with pytest.raises(queue.Empty):
-        received.get(timeout=0.2)
+    assert_nothing_arrives(received)
 
 
-def test_a_listener_is_invoked_with_each_payload_without_waiting_for_earlier_invocations(connection, browser):
-    started, release = queue.Queue(), threading.Event()
+def test_a_listener_is_invoked_with_each_payload_without_waiting_for_earlier_invocations(
+    connection, remote_end, release
+):
+    started = queue.Queue()
     contexts(connection).add_load_listener(blocking_listener(started, release, queue.Queue()))
 
-    browser.emit("browsingContext.load", load(url="https://one"))
-    browser.emit("browsingContext.load", load(url="https://two"))
+    emit_load(remote_end, "https://one")
+    emit_load(remote_end, "https://two")
 
-    assert {started.get(timeout=5), started.get(timeout=5)} == {"https://one", "https://two"}
-    release.set()
+    assert {started.get(timeout=PROMPT), started.get(timeout=PROMPT)} == {"https://one", "https://two"}
 
 
-def test_a_running_listener_delays_neither_another_listener_nor_a_command_reply(connection, browser):
-    release, other = threading.Event(), queue.Queue()
-    contexts(connection).add_load_listener(lambda payload: release.wait(5))
+def test_a_running_listener_delays_neither_another_listener_nor_a_command_reply(connection, remote_end, release):
+    other = queue.Queue()
+    contexts(connection).add_load_listener(lambda payload: release.wait())
     contexts(connection).add_load_listener(other.put)
 
-    browser.emit("browsingContext.load", load())
+    emit_load(remote_end)
 
-    assert other.get(timeout=1) == NavigationInfo.from_json(load())
+    assert other.get(timeout=PROMPT) == NavigationInfo.from_json(load())
     assert contexts(connection).get_tree().contexts == []
-    release.set()
 
 
-def test_a_listener_can_send_a_command(connection, browser):
+def test_a_listener_can_send_a_command(connection, remote_end):
     received = queue.Queue()
     contexts(connection).add_load_listener(lambda payload: received.put(contexts(connection).get_tree().contexts))
 
-    browser.emit("browsingContext.load", load())
+    emit_load(remote_end)
 
-    assert received.get(timeout=5) == []
+    assert received.get(timeout=PROMPT) == []
 
 
-def test_a_listener_that_raises_is_logged_and_still_gets_the_next_payload(connection, browser, logged):
+def test_a_listener_that_raises_is_logged_and_still_gets_the_next_payload(connection, remote_end, logged):
     received = queue.Queue()
 
     def fails_first(payload):
@@ -188,8 +210,8 @@ def test_a_listener_that_raises_is_logged_and_still_gets_the_next_payload(connec
             raise ValueError("boom")
 
     contexts(connection).add_load_listener(fails_first)
-    browser.emit("browsingContext.load", load(url="https://one"))
-    browser.emit("browsingContext.load", load(url="https://two"))
+    emit_load(remote_end, "https://one")
+    emit_load(remote_end, "https://two")
 
     assert {received.get(timeout=5), received.get(timeout=5)} == {"https://one", "https://two"}
     record = logged.get(timeout=5)
@@ -197,111 +219,84 @@ def test_a_listener_that_raises_is_logged_and_still_gets_the_next_payload(connec
     assert record.exc_info[0] is ValueError
 
 
-def fails_an_assert(url):
-    assert url == "https://two"
+def test_pytest_fail_in_a_listener_is_logged_although_it_is_not_an_exception(connection, remote_end, logged):
+    contexts(connection).add_load_listener(lambda payload: pytest.fail("from a listener"))
 
+    emit_load(remote_end)
 
-def calls_pytest_fail(url):
-    pytest.fail(f"unexpected {url}")
-
-
-@pytest.mark.parametrize(
-    ("check", "error"),
-    [(fails_an_assert, AssertionError), (calls_pytest_fail, pytest.fail.Exception)],
-)
-def test_a_failed_test_assertion_in_a_listener_is_logged(connection, browser, logged, check, error):
-    received = queue.Queue()
-
-    def asserts(payload):
-        received.put(payload.url)
-        if payload.url == "https://one":
-            check(payload.url)
-
-    contexts(connection).add_load_listener(asserts)
-    browser.emit("browsingContext.load", load(url="https://one"))
-    browser.emit("browsingContext.load", load(url="https://two"))
-
-    assert {received.get(timeout=5), received.get(timeout=5)} == {"https://one", "https://two"}
     record = logged.get(timeout=5)
     assert (record.levelname, record.getMessage()) == ("ERROR", "A listener for browsingContext.load raised")
-    assert record.exc_info[0] is error
+    assert record.exc_info[0] is pytest.fail.Exception
 
 
-def test_a_payload_that_fails_validation_is_logged_and_delivered_to_no_listener(connection, browser, logged):
+def test_a_payload_that_fails_validation_is_logged_and_delivered_to_no_listener(connection, remote_end, logged):
     first, second = queue.Queue(), queue.Queue()
     contexts(connection).add_load_listener(first.put)
     contexts(connection).add_load_listener(second.put)
 
-    browser.emit("browsingContext.load", {"context": "ctx-1", "url": "https://invalid"})
-    browser.emit("browsingContext.load", load())
+    remote_end.emit("browsingContext.load", {"context": "ctx-1", "url": "https://invalid"})
+    emit_load(remote_end)
 
+    assert first.get(timeout=5).url == second.get(timeout=5).url == "https://example.com"
+    assert_nothing_arrives(first)
     record = logged.get(timeout=5)
     assert record.levelname == "ERROR"
     assert record.getMessage().startswith("Dropped a browsingContext.load payload that failed validation: ")
-    assert first.get(timeout=5).url == second.get(timeout=5).url == "https://example.com"
-    with pytest.raises(queue.Empty):
-        first.get(timeout=0.2)
 
 
-def test_a_payload_for_an_event_with_no_listener_is_dropped_silently(connection, browser, logged):
-    browser.emit("browsingContext.load", {"context": "ctx-1", "url": "https://invalid"})
+def test_a_payload_for_an_event_with_no_listener_is_dropped_silently(connection, remote_end, logged):
+    remote_end.emit("browsingContext.load", {"context": "ctx-1", "url": "https://invalid"})
+    await_dispatch(connection)
 
     assert logged.empty()
 
 
-def test_payloads_sent_before_the_subscribe_reply_reach_a_listener_added_first(connection, browser):
-    received = queue.Queue()
-    contexts(connection).add_load_listener(received.put)
-    browser.before_subscribe_reply = lambda: browser.emit("browsingContext.load", load())
-
-    Session(Transport(connection)).subscribe(events=["browsingContext.load"])
-
-    assert received.get(timeout=5) == NavigationInfo.from_json(load())
-
-
-def test_removing_a_listener_is_local_and_can_be_repeated_through_any_domain_instance(connection, browser):
+def test_removing_a_listener_is_local_and_can_be_repeated_through_any_domain_instance(connection, remote_end):
     received = queue.Queue()
     listener = contexts(connection).add_load_listener(received.put)
 
     Network(Transport(connection)).remove_listener(listener)
     contexts(connection).remove_listener(listener)
-    assert browser.sent == []
+    assert remote_end.sent == []
 
-    browser.emit("browsingContext.load", load())
-    with pytest.raises(queue.Empty):
-        received.get(timeout=0.2)
+    emit_load(remote_end)
+    assert_nothing_arrives(received)
 
 
-def test_removing_one_listener_leaves_another_for_the_same_event(connection, browser):
+def test_removing_one_listener_leaves_another_for_the_same_event(connection, remote_end):
     first, second = queue.Queue(), queue.Queue()
     removed = contexts(connection).add_load_listener(first.put)
     contexts(connection).add_load_listener(second.put)
 
     contexts(connection).remove_listener(removed)
-    browser.emit("browsingContext.load", load())
+    emit_load(remote_end)
 
     assert second.get(timeout=5) == NavigationInfo.from_json(load())
-    with pytest.raises(queue.Empty):
-        first.get(timeout=0.2)
+    assert_nothing_arrives(first)
 
 
-def test_removal_returns_at_once_lets_a_running_invocation_finish_and_invokes_nothing_after_it(connection, browser):
-    started, release, finished = queue.Queue(), threading.Event(), queue.Queue()
+def test_removal_returns_at_once_lets_a_running_invocation_finish_and_invokes_nothing_after_it(
+    connection, remote_end, release
+):
+    started, finished = queue.Queue(), queue.Queue()
     listener = contexts(connection).add_load_listener(blocking_listener(started, release, finished))
-    browser.emit("browsingContext.load", load(url="https://running"))
+    emit_load(remote_end, "https://running")
     started.get(timeout=5)
 
-    contexts(connection).remove_listener(listener)
-    browser.emit("browsingContext.load", load(url="https://late"))
+    removal = threading.Thread(target=contexts(connection).remove_listener, args=(listener,), daemon=True)
+    removal.start()
+    removal.join(PROMPT)
+    assert not removal.is_alive()
+    emit_load(remote_end, "https://late")
+    await_dispatch(connection)
     release.set()
 
     assert finished.get(timeout=5) == "https://running"
-    with pytest.raises(queue.Empty):
-        finished.get(timeout=0.2)
+    assert_nothing_arrives(finished)
     assert started.empty()
 
 
-def test_a_listener_can_remove_itself(connection, browser):
+def test_a_listener_can_remove_itself(connection, remote_end):
     received, removed, listener = queue.Queue(), threading.Event(), None
 
     def once(payload):
@@ -310,24 +305,35 @@ def test_a_listener_can_remove_itself(connection, browser):
         removed.set()
 
     listener = contexts(connection).add_load_listener(once)
-    browser.emit("browsingContext.load", load(url="https://one"))
+    emit_load(remote_end, "https://one")
     assert removed.wait(5)
-    browser.emit("browsingContext.load", load(url="https://two"))
+    emit_load(remote_end, "https://two")
 
     assert received.get(timeout=5) == "https://one"
-    with pytest.raises(queue.Empty):
-        received.get(timeout=0.2)
+    assert_nothing_arrives(received)
 
 
-def test_closing_the_connection_drops_every_listener_and_refuses_new_ones(connection, browser):
+def test_closing_the_connection_drops_every_listener_and_refuses_new_ones(connection):
     received = queue.Queue()
     contexts(connection).add_load_listener(received.put)
 
     connection.close()
     connection.event_receiver.receive("browsingContext.load", load())
 
-    with pytest.raises(queue.Empty):
-        received.get(timeout=0.2)
+    assert_nothing_arrives(received)
+    with pytest.raises(WebDriverException, match="The BiDi connection is closed"):
+        contexts(connection).add_load_listener(lambda payload: None)
+
+
+def test_the_socket_going_away_drops_every_listener_and_refuses_new_ones(connection, remote_end):
+    received = queue.Queue()
+    contexts(connection).add_load_listener(received.put)
+
+    remote_end.close()
+    connection._ws_thread.join(5)
+    connection.event_receiver.receive("browsingContext.load", load())
+
+    assert_nothing_arrives(received)
     with pytest.raises(WebDriverException, match="The BiDi connection is closed"):
         contexts(connection).add_load_listener(lambda payload: None)
 
@@ -339,7 +345,7 @@ def test_a_first_listener_on_a_connection_that_already_closed_is_refused(connect
         contexts(connection).add_load_listener(lambda payload: None)
 
 
-def test_a_listener_can_close_the_connection(connection, browser):
+def test_a_listener_can_close_the_connection(connection, remote_end):
     closed = threading.Event()
 
     def closes(payload):
@@ -347,9 +353,10 @@ def test_a_listener_can_close_the_connection(connection, browser):
         closed.set()
 
     contexts(connection).add_load_listener(closes)
-    browser.emit("browsingContext.load", load())
+    emit_load(remote_end)
 
     assert closed.wait(5)
+    assert not connection._ws_thread.is_alive()
 
 
 def test_no_event_receiver_is_attached_until_a_listener_is_added(connection):
@@ -360,7 +367,7 @@ def test_no_event_receiver_is_attached_until_a_listener_is_added(connection):
     assert isinstance(connection.event_receiver, EventDispatcher)
 
 
-def test_the_legacy_callbacks_still_receive_raw_params_beside_a_listener(connection, browser):
+def test_the_legacy_callbacks_still_receive_raw_params_beside_a_listener(connection, remote_end):
     class LoadEvent:
         event_class = "browsingContext.load"
 
@@ -372,7 +379,7 @@ def test_the_legacy_callbacks_still_receive_raw_params_beside_a_listener(connect
     contexts(connection).add_load_listener(received.put)
     connection.add_callback(LoadEvent, raw.put)
 
-    browser.emit("browsingContext.load", load())
+    emit_load(remote_end)
 
     assert raw.get(timeout=5) == load()
     assert received.get(timeout=5) == NavigationInfo.from_json(load())
