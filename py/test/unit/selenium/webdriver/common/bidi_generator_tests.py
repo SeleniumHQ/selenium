@@ -646,15 +646,10 @@ def test_an_event_emits_a_listener_method_typed_by_its_payload_that_returns_an_i
 
     lines = _emit_event_listener(event)
 
-    assert lines[0].splitlines() == [
-        "    def add_thing_happened_listener(",
-        "        self,",
-        "        listener: Callable[[ThingHappenedParameters], Any],",
-        "        *,",
-        "        concurrent: bool = False,",
-        "    ) -> str:",
-    ]
-    assert lines[-1] == '        return self._add_listener("x.thingHappened", listener, concurrent)'
+    assert lines[0] == (
+        "    def add_thing_happened_listener(self, listener: Callable[[ThingHappenedParameters], Any]) -> str:"
+    )
+    assert lines[-1] == '        return self._add_listener("x.thingHappened", listener)'
 
 
 def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():

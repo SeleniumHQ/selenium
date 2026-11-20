@@ -48,7 +48,6 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException,
 )
-from selenium.webdriver.common._bidi.dispatcher import EventDispatcher
 from selenium.webdriver.common._bidi.web_extension import (
     ExtensionBase64Encoded,
     ExtensionDataValue,
@@ -1342,7 +1341,6 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("command_executor must be a RemoteConnection instance for BiDi support")
 
         self._websocket_connection = WebSocketConnection(ws_url, self.command_executor.client_config.websocket_timeout)
-        self._websocket_connection.set_event_receiver(EventDispatcher())
 
     @property
     def network(self) -> Network:

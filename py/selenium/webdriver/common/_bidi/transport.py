@@ -28,13 +28,10 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common._bidi.dispatcher import EventDispatcher
 from selenium.webdriver.common._bidi.errors import exception_for
-
-if TYPE_CHECKING:
-    from selenium.webdriver.common._bidi.dispatcher import EventDispatcher
 
 
 class Transport:
@@ -62,20 +59,15 @@ class Transport:
         value = reply["result"]
         return result.from_json(value) if result is not None else value
 
-    def add_listener(
-        self, event: str, payload_type: type | None, listener: Callable[[Any], Any], *, concurrent: bool = False
-    ) -> str:
+    def add_listener(self, event: str, payload_type: type | None, listener: Callable[[Any], Any]) -> str:
         """Add ``listener`` for the ``payload_type`` payloads of ``event`` to the connection's dispatcher."""
-        return self._dispatcher().add_listener(event, payload_type, listener, concurrent=concurrent)
+        return self._dispatcher().add_listener(event, payload_type, listener)
 
-    def remove_listener(self, listener_id: str, *, drain_timeout: float | None = None) -> None:
-        self._dispatcher().remove_listener(listener_id, drain_timeout=drain_timeout)
+    def remove_listener(self, listener_id: str) -> None:
+        self._dispatcher().remove_listener(listener_id)
 
     def _dispatcher(self) -> EventDispatcher:
-        dispatcher = getattr(self._connection, "event_receiver", None)
-        if dispatcher is None:
-            raise WebDriverException("This BiDi connection has no event dispatcher")
-        return dispatcher
+        return self._connection.attach_event_receiver(EventDispatcher)
 
     @staticmethod
     def _error(reply: dict) -> Exception:
