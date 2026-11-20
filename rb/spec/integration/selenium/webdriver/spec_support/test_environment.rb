@@ -346,33 +346,17 @@ module Selenium
         def chrome_driver(service: nil, **)
           service ||= WebDriver::Service.chrome
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
-          service.args << '--verbose' if WebDriver.logger.debug?
           WebDriver::Driver.for(:chrome, service: service, **)
         end
 
         def edge_driver(service: nil, **)
           service ||= WebDriver::Service.edge
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
-          service.args << '--verbose' if WebDriver.logger.debug?
           WebDriver::Driver.for(:edge, service: service, **)
         end
 
-        def firefox_driver(service: nil, **)
-          service ||= WebDriver::Service.firefox
-          service.args.push('--log', 'trace') if WebDriver.logger.debug?
-          WebDriver::Driver.for(:firefox, service: service, **)
-        end
-
-        def safari_driver(**)
-          service_opts = WebDriver.logger.debug? ? {args: '--diagnose'} : {}
-          service = WebDriver::Service.safari(**service_opts)
-          WebDriver::Driver.for(:safari, service: service, **)
-        end
-
         def safari_preview_driver(**)
-          service_opts = WebDriver.logger.debug? ? {args: '--diagnose'} : {}
-          service = WebDriver::Service.safari(**service_opts)
-          WebDriver::Driver.for(:safari, service: service, **)
+          WebDriver::Driver.for(:safari, **)
         end
 
         def chrome_options(args: [], **opts)
