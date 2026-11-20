@@ -1,3 +1,8 @@
+v4.54.0
+======
+* Log remaining diagnostics at a fixed FINE level (#18295)
+* Remove deprecated Debug.getDebugLogLevel() (#17835)
+
 v4.53.0
 ======
 * Support CDP versions: v155, v156, v157
