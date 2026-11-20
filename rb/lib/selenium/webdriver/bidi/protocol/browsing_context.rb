@@ -905,6 +905,104 @@ module Selenium
           end
 
           # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-contextCreated
+          def add_context_created_listener(&block)
+            add_listener('browsingContext.contextCreated', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-contextDestroyed
+          def add_context_destroyed_listener(&block)
+            add_listener('browsingContext.contextDestroyed', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-domContentLoaded
+          def add_dom_content_loaded_listener(&block)
+            add_listener('browsingContext.domContentLoaded', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-downloadEnd
+          def add_download_end_listener(&block)
+            add_listener('browsingContext.downloadEnd', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-downloadWillBegin
+          def add_download_will_begin_listener(&block)
+            add_listener('browsingContext.downloadWillBegin', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-fragmentNavigated
+          def add_fragment_navigated_listener(&block)
+            add_listener('browsingContext.fragmentNavigated', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-historyUpdated
+          def add_history_updated_listener(&block)
+            add_listener('browsingContext.historyUpdated', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-load
+          def add_load_listener(&block)
+            add_listener('browsingContext.load', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-navigationAborted
+          def add_navigation_aborted_listener(&block)
+            add_listener('browsingContext.navigationAborted', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-navigationCommitted
+          def add_navigation_committed_listener(&block)
+            add_listener('browsingContext.navigationCommitted', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-navigationFailed
+          def add_navigation_failed_listener(&block)
+            add_listener('browsingContext.navigationFailed', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-navigationStarted
+          def add_navigation_started_listener(&block)
+            add_listener('browsingContext.navigationStarted', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-userPromptClosed
+          def add_user_prompt_closed_listener(&block)
+            add_listener('browsingContext.userPromptClosed', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-browsingContext-userPromptOpened
+          def add_user_prompt_opened_listener(&block)
+            add_listener('browsingContext.userPromptOpened', &block)
+          end
+
+          # @api private
           # moz: vendor variant of BrowsingContext, with browser-specific commands and params.
           # Construct Moz.new(source) for a matching session; other sessions use BrowsingContext.
           class Moz < BrowsingContext
