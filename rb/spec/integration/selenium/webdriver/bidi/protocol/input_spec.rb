@@ -25,11 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe Input, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          safari_setup = {browser_family: :safari,
-                          reason: 'Safari script.evaluate result fails deserialization in input setup'}
-
-          after { |example| reset_driver!(example: example) }
-
           let(:input) { described_class.new(driver) }
           let(:script) { Script.new(driver) }
 
@@ -72,7 +67,9 @@ module Selenium
           end
 
           describe '#perform_actions' do
-            it 'clicks an element with pointer actions', pending_if: safari_setup do
+            it 'clicks an element with pointer actions',
+               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
+                            reason: 'Safari script.evaluate result fails deserialization in input setup'} do
               driver.navigate.to url_for('javascriptPage.html')
               element = shared_reference('#clickField')
 
@@ -118,7 +115,9 @@ module Selenium
               expect(driver.find_element(id: 'keyReporter').attribute('value')).to eq('Ab')
             end
 
-            it 'scrolls the page with wheel actions', pending_if: safari_setup do
+            it 'scrolls the page with wheel actions',
+               pending_if: {browser_family: :safari, exception: {class: Error::UnsupportedOperationError},
+                            reason: 'Safari does not support wheel input sources'} do
               driver.navigate.to url_for('scroll3.html')
               expect(page_y_offset).to eq(0)
 
@@ -138,7 +137,9 @@ module Selenium
           end
 
           describe '#release_actions' do
-            it 'releases a pressed pointer button', pending_if: safari_setup do
+            it 'releases a pressed pointer button',
+               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
+                            reason: 'Safari script.evaluate result fails deserialization in input setup'} do
               driver.navigate.to url_for('javascriptPage.html')
               element = shared_reference('#clickField')
 
@@ -182,11 +183,14 @@ module Selenium
           end
 
           describe '#set_files',
-                   pending_if: [safari_setup,
+                   pending_if: [{browser_family: :safari, exception: {class: Error::SerializationError},
+                                 reason: 'Safari script.evaluate result fails deserialization in input setup'},
                                 {browser: :firefox, platform: :windows,
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /(?:Unrecognized path|Failed to add file)/},
                                  reason: 'Firefox rejects the Windows temp file path for input.setFiles'}] do
+            after { driver.switch_to.default_content }
+
             it 'sets files on a file input element' do
               file = create_tempfile
               driver.navigate.to url_for('upload.html')

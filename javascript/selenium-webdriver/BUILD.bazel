@@ -122,7 +122,7 @@ generate_bidi_library(
 VERSION = VERSIONS["javascript"]
 
 BROWSER_VERSIONS = [
-    "v155",
+    "v158",
     "v156",
     "v157",
 ]
@@ -210,11 +210,13 @@ pkg_tar(
 SMALL_TESTS = [
     "test/bidi/domain_test.js",
     "test/bidi/index_test.js",
+    "test/bidi/map_record_test.js",
     "test/bidi/network_types_test.js",
     "test/bidi/serialization/record_test.js",
     "test/bidi/serialization/union_test.js",
     "test/bidi/serialization/wire_contract_test.js",
     "test/bidi/vendor_test.js",
+    "test/firefox/service_test.js",
     "test/http/http_test.js",
     "test/http/util_test.js",
     "test/io/io_test.js",

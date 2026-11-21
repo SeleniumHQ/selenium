@@ -329,6 +329,18 @@ module Selenium
             params = StepOverParameters.new(context: context)
             execute(cmd: 'moz:debugging.stepOver', params: params)
           end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def add_paused_listener(&block)
+            add_listener('moz:debugging.paused', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def add_resumed_listener(&block)
+            add_listener('moz:debugging.resumed', &block)
+          end
         end # MozDebugging
       end # Protocol
     end # BiDi

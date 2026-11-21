@@ -34,6 +34,8 @@ module Selenium
 
     @log: String | bool
 
+    @env: Hash[String, String?]?
+
     @log_file: untyped
 
     @process: untyped
@@ -63,7 +65,7 @@ module Selenium
 
     attr_accessor log: untyped
 
-    def initialize: (String jar, ?Hash[String | Symbol, Integer | bool] opts) -> void
+    def initialize: (String jar, ?Hash[String | Symbol, untyped] opts) -> void
 
     def start: () -> untyped
 

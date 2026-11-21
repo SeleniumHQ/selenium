@@ -1,3 +1,14 @@
+4.53.0 (2026-11-17)
+=========================
+* Support CDP versions: v155, v156, v157
+* download the Server jar with Selenium Manager instead of the GitHub API (#18245)
+* Allocate websocket command ids atomically (#18262)
+* add the accessibility snapshot atom and the binding methods (#18232)
+* [build] Automated Browser Version Update (major) with CDP (#18278)
+* Allow to set environment variables when staring a browser (#17395)
+* [build] Automated CDDL Spec Update (#18248)
+* Remove the accessibility snapshot client implementations (#18291)
+
 4.52.0 (2026-10-29)
 =========================
 * Support CDP versions: v154, v155, v156

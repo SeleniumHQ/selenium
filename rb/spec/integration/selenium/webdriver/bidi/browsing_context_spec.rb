@@ -18,12 +18,16 @@
 # under the License.
 
 require_relative '../spec_helper'
+require 'selenium/webdriver/bidi/protocol'
 
 module Selenium
   module WebDriver
     class BiDi
       describe BrowsingContext, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-        after { |example| reset_driver!(example: example) }
+        after do
+          browsing_context = described_class.new(bridge)
+          (driver.window_handles - [driver.window_handle]).each { |handle| browsing_context.close(context_id: handle) }
+        end
 
         let(:bridge) { driver.instance_variable_get(:@bridge) }
 
@@ -76,6 +80,9 @@ module Selenium
           browsing_context = described_class.new(bridge)
           browsing_context.set_viewport(width: 800, height: 600, device_pixel_ratio: 2.0)
           expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
+        ensure
+          Protocol::BrowsingContext.new(driver).set_viewport(context: driver.window_handle, viewport: nil,
+                                                             device_pixel_ratio: nil)
         end
 
         it 'accepts users prompts without text',

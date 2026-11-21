@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed record SubscribeParameters(ImmutableArray<string> Events, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
+internal sealed record SubscribeParameters(ImmutableArray<string> Events, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : Parameters;
 
 public sealed record SubscribeOptions : CommandOptions
 {

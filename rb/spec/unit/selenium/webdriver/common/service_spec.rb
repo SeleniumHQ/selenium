@@ -65,7 +65,7 @@ module Selenium
         it 'creates Safari instance' do
           service = described_class.safari(args: args)
           expect(service).to be_a(Safari::Service)
-          expect(service.args).to eq args
+          expect(service.args).to eq(args + debug_args('--diagnose'))
         end
       end
     end

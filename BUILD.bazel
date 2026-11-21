@@ -150,6 +150,10 @@ platform(
 
 buildifier(
     name = "buildifier",
+    exclude_patterns = [
+        "./.claude/*",
+        "./.local/*",
+    ],
     lint_mode = "fix",
     mode = "fix",
     tags = [

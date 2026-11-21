@@ -33,6 +33,7 @@ module Selenium
       POLL_INTERVAL = 0.1
 
       attr_accessor :detach, :env
+      attr_reader :status
       attr_writer :io
 
       def self.build(*command)

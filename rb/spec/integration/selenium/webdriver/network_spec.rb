@@ -21,8 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Network, pending_if: {browser_family: :safari,
-                                   reason: 'Safari does not support the BiDi network domain'},
+    describe Network, skip_if: {browser_family: :safari,
+                                reason: 'Safari does not support BiDi network interception'},
                       skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
       let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
       let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }

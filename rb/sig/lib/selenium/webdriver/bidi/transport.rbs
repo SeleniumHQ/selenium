@@ -28,7 +28,13 @@ module Selenium
 
         def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
 
+        def add_listener: (String event, untyped payload_type) { (untyped) -> void } -> String
+
+        def remove_listener: (String id) -> void
+
         private
+
+        def dispatcher: () -> Dispatcher
 
         def serialize: (untyped params) -> untyped
 

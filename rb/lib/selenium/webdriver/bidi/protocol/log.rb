@@ -108,6 +108,13 @@ module Selenium
           EVENT_TYPES = {
             'log.entryAdded' => Log::Entry
           }.freeze
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-log-entryAdded
+          def add_entry_added_listener(&block)
+            add_listener('log.entryAdded', &block)
+          end
         end # Log
       end # Protocol
     end # BiDi

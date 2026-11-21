@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe Session, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:session) { described_class.new(driver) }
 
           describe '#status' do
@@ -40,7 +38,7 @@ module Selenium
           end
 
           describe '#subscribe',
-                   pending_if: {browser_family: :safari,
+                   pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                                 reason: 'Safari session.subscribe result fails strict deserialization'} do
             it 'subscribes to an event globally' do
               result = session.subscribe(events: ['browsingContext.load'])
@@ -65,7 +63,7 @@ module Selenium
           end
 
           describe '#unsubscribe',
-                   pending_if: {browser_family: :safari,
+                   pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                                 reason: 'Safari session.unsubscribe result fails strict deserialization'} do
             it 'unsubscribes by event name' do
               session.subscribe(events: ['browsingContext.load'])
@@ -98,6 +96,8 @@ module Selenium
                                 exception: {class: Error::UnsupportedOperationError,
                                             message: /Ending a session /},
                                 reason: 'Firefox returns unsupported operation for session.end on Classic sessions'} do
+            after { |example| reset_driver!(example: example) }
+
             it 'ends the active BiDi session' do
               expect(session.end_).to be_empty
             end

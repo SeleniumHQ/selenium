@@ -173,7 +173,7 @@ public sealed class FirefoxDriverService : DriverService
             }
             else
             {
-                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --websocket-port {0}", PortUtilities.FindFreePort()));
+                argsBuilder.Append(" --websocket-port 0");
             }
 
             if (this.BrowserCommunicationPort > 0)

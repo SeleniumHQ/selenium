@@ -49,6 +49,7 @@ module Selenium
         @callback_threads = ThreadGroup.new
 
         @callbacks_mtx = Mutex.new
+        @event_receiver_mtx = Mutex.new
         @messages_mtx = Mutex.new
         @closing_mtx = Mutex.new
 
@@ -73,6 +74,16 @@ module Selenium
           thread.join(0.5)
         rescue StandardError => e
           WebDriver.logger.debug "Failed to join thread during close: #{e.class}: #{e.message}", id: :ws
+        end
+      end
+
+      # The receiver of every event payload, attached by the first caller to pass a factory.
+      # Assigned before @closing is checked so a close racing the attach still closes it.
+      def event_receiver(&factory)
+        @event_receiver_mtx.synchronize do
+          @event_receiver ||= factory&.call
+          @event_receiver&.close if @closing
+          @event_receiver
         end
       end
 
@@ -192,6 +203,7 @@ module Selenium
         WebDriver.logger.debug "WebSocket socket closed: #{e.class}: #{e.message}", id: :ws
       ensure
         release_pending_responses
+        @event_receiver&.close
       end
 
       def process_incoming_frames
@@ -201,6 +213,7 @@ module Selenium
           message = process_frame(frame)
           next unless message['method']
 
+          @event_receiver&.receive(message['method'], message['params'])
           @messages_mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
             @callback_threads.add(callback_thread(message['params'], &callback))
           end

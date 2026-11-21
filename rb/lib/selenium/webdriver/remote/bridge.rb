@@ -421,18 +421,6 @@ module Selenium
           execute :get_element_aria_label, id: element
         end
 
-        # The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one.
-        def accessibility_snapshot(root = nil, interesting_only: true)
-          unless bidi?
-            raise Error::UnsupportedOperationError,
-                  'accessibility_snapshot requires WebDriver BiDi; ' \
-                  'enable it by setting #web_socket_url to true in options class'
-          end
-
-          @accessibility_snapshotter ||= AccessibilitySnapshotter.new(self)
-          @accessibility_snapshotter.snapshot(root, interesting_only: interesting_only)
-        end
-
         def element_value(element)
           element_property element, 'value'
         end

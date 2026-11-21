@@ -412,9 +412,13 @@ def test_set_viewport_back_to_default(driver, pages):
 
     try:
         bc.set_viewport(context=context_id, viewport=Viewport(width=254, height=304), device_pixel_ratio=10)
+        WebDriverWait(driver, 5).until(
+            lambda d: d.execute_script("return window.innerWidth;") != default_viewport_size[0]
+        )
 
         bc.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
+        WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.innerWidth;") != 254)
         viewport_size = driver.execute_script("return [window.innerWidth, window.innerHeight];")
         device_pixel_ratio = driver.execute_script("return window.devicePixelRatio")
 

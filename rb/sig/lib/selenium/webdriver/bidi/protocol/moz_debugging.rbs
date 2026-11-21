@@ -197,6 +197,8 @@ module Selenium
           def step_into: (context: String) -> untyped
           def step_out: (context: String) -> untyped
           def step_over: (context: String) -> untyped
+          def add_paused_listener: () { (MozDebugging::PausedParameters) -> void } -> String
+          def add_resumed_listener: () { (MozDebugging::ResumedParameters) -> void } -> String
         end
       end
     end
