@@ -127,46 +127,23 @@ public class FrameSwitchingTests : DriverTestFixture
         Assert.That(Driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
     }
 
-    [Test]
-    public void ShouldBeAbleToSwitchToAnIframeWhoseIdStartsWithADigit()
+    [TestCase("id", "1")]
+    [TestCase("id", "frame 1")]
+    [TestCase("id", "-1")]
+    [TestCase("name", "O'Brien")]
+    [TestCase("id", "O'Brien")]
+    [TestCase("name", "a\nb")]
+    [TestCase("id", "a\nb")]
+    public void ShouldBeAbleToSwitchToAnInlineFrameByNameOrId(string attribute, string frameName)
     {
-        SwitchToInlineFrame("id", "1");
-    }
+        string inner = Urls.CreateInlinePage(new InlinePage()
+            .WithBody("<p id='inside'>inside</p>"));
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
+            .WithBody(string.Format("<iframe {0}=\"{1}\" src='{2}'></iframe>", attribute, frameName, inner)));
 
-    [Test]
-    public void ShouldBeAbleToSwitchToAnIframeWhoseIdContainsASpace()
-    {
-        SwitchToInlineFrame("id", "frame 1");
-    }
+        Driver.SwitchTo().Frame(frameName);
 
-    [Test]
-    public void ShouldBeAbleToSwitchToAnIframeWhoseIdStartsWithAHyphen()
-    {
-        SwitchToInlineFrame("id", "-1");
-    }
-
-    [Test]
-    public void ShouldBeAbleToSwitchToAnIframeWhoseNameContainsAnApostrophe()
-    {
-        SwitchToInlineFrame("name", "O'Brien");
-    }
-
-    [Test]
-    public void ShouldBeAbleToSwitchToAnIframeWhoseIdContainsAnApostrophe()
-    {
-        SwitchToInlineFrame("id", "O'Brien");
-    }
-
-    [Test]
-    public void ShouldBeAbleToSwitchToAnIframeWhoseNameContainsANewline()
-    {
-        SwitchToInlineFrame("name", "a\nb");
-    }
-
-    [Test]
-    public void ShouldBeAbleToSwitchToAnIframeWhoseIdContainsANewline()
-    {
-        SwitchToInlineFrame("id", "a\nb");
+        Assert.That(Driver.FindElement(By.Id("inside")).Text, Is.EqualTo("inside"));
     }
 
     [Test]
@@ -624,18 +601,6 @@ public class FrameSwitchingTests : DriverTestFixture
         IWebElement element = Driver.FindElement(By.Name("id-name1"));
 
         Assert.That(element, Is.Not.Null);
-    }
-
-    private void SwitchToInlineFrame(string attribute, string frameName)
-    {
-        string inner = Urls.CreateInlinePage(new InlinePage()
-            .WithBody("<p id='inside'>inside</p>"));
-        Driver.Url = Urls.CreateInlinePage(new InlinePage()
-            .WithBody(string.Format("<iframe {0}=\"{1}\" src='{2}'></iframe>", attribute, frameName, inner)));
-
-        Driver.SwitchTo().Frame(frameName);
-
-        Assert.That(Driver.FindElement(By.Id("inside")).Text, Is.EqualTo("inside"));
     }
 
     private string GetTextOfGreetingElement()
