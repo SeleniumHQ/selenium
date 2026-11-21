@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.support.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Quotes {
 
   /**
@@ -36,18 +39,18 @@ public class Quotes {
   @SuppressWarnings("JavaDoc")
   public static String escape(String toEscape) {
     if (toEscape.contains("\"") && toEscape.contains("'")) {
-      boolean quoteIsLast = toEscape.lastIndexOf("\"") == toEscape.length() - 1;
-      String[] substringsWithoutQuotes = toEscape.split("\"");
-
-      StringBuilder quoted = new StringBuilder("concat(");
-      for (int i = 0; i < substringsWithoutQuotes.length; i++) {
-        quoted.append("\"").append(substringsWithoutQuotes[i]).append("\"");
-        quoted.append(
-            ((i == substringsWithoutQuotes.length - 1)
-                ? (quoteIsLast ? ", '\"')" : ")")
-                : ", '\"', "));
+      // A negative limit keeps trailing empty pieces, so each trailing " survives.
+      String[] parts = toEscape.split("\"", -1);
+      List<String> tokens = new ArrayList<>();
+      for (int i = 0; i < parts.length; i++) {
+        if (i > 0) {
+          tokens.add("'\"'");
+        }
+        if (!parts[i].isEmpty()) {
+          tokens.add("\"" + parts[i] + "\"");
+        }
       }
-      return quoted.toString();
+      return "concat(" + String.join(", ", tokens) + ")";
     }
 
     // Escape string with just a quote into being single quoted: f"oo -> 'f"oo'
