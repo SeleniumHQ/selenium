@@ -1032,6 +1032,9 @@ ACTIONS_TESTS = [
 
 DRIVER_FINDER_TESTS = ["test/selenium/webdriver/common/driver_finder_tests.py"]
 
+# Trace recording runs the driver through Selenium Manager in pipe mode.
+TRACE_RECORDING_TESTS = ["test/selenium/webdriver/common/trace_recording_tests.py"]
+
 # Behavior that differs by host OS (window geometry, screenshots, input); tagged
 # so CI runs these on every OS rather than only on the Linux RBE pass.
 OS_SENSITIVE_TESTS = [
@@ -1128,7 +1131,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + TRACE_RECORDING_TESTS +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -1244,6 +1247,30 @@ FEATURE_SUITE_DEFS = {
     for browser in DEFAULT_BROWSER_TESTS
 ]
 
+# The trace recording tests start the pinned driver through Selenium Manager.
+[
+    py_test_suite(
+        name = "test-%s-trace-recording" % browser,
+        size = "large",
+        srcs = TRACE_RECORDING_TESTS,
+        args = [
+            "--instafail",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + SE_MANAGER_TEST_DATA,
+        env = SE_MANAGER_TEST_ENV,
+        env_inherit = ["DISPLAY"],
+        exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES,
+        tags = BROWSERS[browser]["tags"] + ["se-manager"],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in DEFAULT_BROWSER_TESTS
+]
+
 # Generate test-<browser>-bidi targets
 [
     py_test_suite(
@@ -1322,7 +1349,7 @@ FEATURE_SUITE_DEFS = {
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + TRACE_RECORDING_TESTS +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [

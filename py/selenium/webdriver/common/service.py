@@ -162,7 +162,8 @@ class Service(ABC):
                 os.close(self.log_output)
             elif self.log_output is not None and self._owns_log_output:
                 self.log_output.close()
-        if self.process is not None:
+        # The process is only set once the service has started.
+        if getattr(self, "process", None) is not None:
             try:
                 if self.process.poll() is None:
                     try:

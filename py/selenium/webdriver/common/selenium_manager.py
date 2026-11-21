@@ -54,6 +54,47 @@ class SeleniumManager:
 
         return self._run(args)
 
+    def start_pipe(self, args: list[str]) -> subprocess.Popen:
+        """Starts Selenium Manager in pipe mode (``--pipe`` or ``--record``).
+
+        Unlike :meth:`binary_paths`, the process keeps running: it starts the driver
+        behind a local HTTP proxy, prints a JSON line with the ``proxy_url`` to its
+        output, and exits once the WebDriver session is deleted.
+
+        This is a beta feature and may change.
+
+        Args:
+            args: the commands to send to the selenium manager binary.
+
+        Returns:
+            The running Selenium Manager process, with stderr merged into stdout.
+            The caller is responsible for stopping it.
+
+        Raises:
+            WebDriverException: If Selenium Manager cannot be started.
+        """
+        args = [str(self._get_binary())] + args
+        args.append("--language-binding")
+        args.append("python")
+        if logger.getEffectiveLevel() == logging.DEBUG:
+            args.append("--debug")
+
+        command = " ".join(args)
+        logger.debug("Starting Selenium Manager in pipe mode: %s", command)
+        kwargs: dict = {}
+        if sys.platform == "win32":
+            kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
+        try:
+            return subprocess.Popen(
+                args,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                **kwargs,
+            )
+        except Exception as err:
+            raise WebDriverException(f"Failed to start Selenium Manager in pipe mode: {command}") from err
+
     @staticmethod
     def _get_binary() -> Path:
         """Determines the path of the Selenium Manager binary.
