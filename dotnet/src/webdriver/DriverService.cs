@@ -35,11 +35,11 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
 
     // Job objects created for started driver processes. Their handles must be
     // kept open while any associated process may still be alive: closing a
-    // handle terminates every process still associated with the job, which
-    // would also kill a browser that the user asked to keep running
-    // (ChromiumOptions.LeaveBrowserRunning). Jobs that are already empty are
-    // released when their service stops; jobs that still have live processes
-    // are kept until the operating system closes their handles at process exit.
+    // handle terminates every process still associated with the job. Jobs that
+    // are already empty are released when their service stops; jobs that still
+    // have live processes are kept until the operating system closes their
+    // handles at process exit. Services whose child processes must outlive the
+    // application (see KeepDriverChildProcessesAlive) never create a job.
     private static readonly ConcurrentDictionary<KillOnCloseJobObject, byte> DriverProcessJobs = new();
 
     // Driver processes that could not be tracked in a job object (for example
@@ -127,6 +127,29 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
     /// Gets or sets a value indicating whether the command prompt window of the service should be hidden.
     /// </summary>
     public bool HideCommandPromptWindow { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether processes started by the driver
+    /// process, such as the browser, must be allowed to outlive this
+    /// application. When this is <see langword="true"/>, the driver process is
+    /// not placed in a Windows job object, because that job would terminate
+    /// those processes when this application exits. Defaults to
+    /// <see langword="false"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is set automatically from browser options that ask for the browser
+    /// to be kept running after the driver session closes, such as
+    /// <see cref="Chromium.ChromiumOptions.LeaveBrowserRunning"/>.
+    /// </para>
+    /// <para>
+    /// While this is <see langword="true"/>, abruptly terminating this
+    /// application can leave the driver process running: no cleanup code runs
+    /// in that case, and the job object that would normally terminate the
+    /// driver then is deliberately not created.
+    /// </para>
+    /// </remarks>
+    protected internal bool KeepDriverChildProcessesAlive { get; set; }
 
     /// <summary>
     /// Gets the process ID of the running driver service executable. Returns 0 if the process is not running.
@@ -430,13 +453,16 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
         // in an IDE, when no exit event is raised and no cleanup code can run.
         // Each service owns a dedicated job object, so the lifetime of tracked
         // processes is never tied to the disposal of another service. The job
-        // handle is deliberately never closed by this class: closing it while
-        // the application is still running would terminate processes the user
-        // may have asked to keep alive (ChromiumOptions.LeaveBrowserRunning),
-        // so it is only released when the operating system closes all handles
-        // at process exit. Failure to set this up must not prevent the driver
-        // from starting.
-        if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+        // handle is deliberately never closed by this class while the
+        // application is still running, because that would immediately
+        // terminate every process still in the job; it is released when the
+        // operating system closes all handles at process exit. Because closing
+        // the handle at process exit would kill a browser the user asked to
+        // keep running (ChromiumOptions.LeaveBrowserRunning), services whose
+        // child processes must outlive the application do not create a job at
+        // all (KeepDriverChildProcessesAlive). Failure to set this up must not
+        // prevent the driver from starting.
+        if (Environment.OSVersion.Platform == PlatformID.Win32NT && !this.KeepDriverChildProcessesAlive)
         {
             try
             {
@@ -544,24 +570,24 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
                     _logger.Trace($"Unable to terminate an untracked driver process during process exit: {ex.Message}");
                 }
             }
-            finally
-            {
-                process.Dispose();
-            }
         }
 
+        // The tracked Process wrappers are not disposed here: a service may
+        // still reference its wrapper, and accessing a disposed wrapper from
+        // its finalizer would throw. Dropping the references is enough, since
+        // the wrappers release their handles when they are collected.
         UntrackedDriverProcesses.Clear();
     }
 
     private void ReleaseDriverProcessJob()
     {
         // The job handle is kept open while any associated process may still
-        // be alive, because closing it terminates those processes — including
-        // a browser the user asked to keep running (LeaveBrowserRunning).
-        // Once the job is empty the handle is released, so that repeatedly
-        // starting and stopping services in a long-running application does
-        // not accumulate job objects; jobs that still track live processes
-        // are released by the operating system at process exit.
+        // be alive, because closing it terminates those processes; a browser
+        // can still be lingering in the job after its driver exited. Once the
+        // job is empty the handle is released, so that repeatedly starting
+        // and stopping services in a long-running application does not
+        // accumulate job objects; jobs that still track live processes are
+        // released by the operating system at process exit.
         if (this.driverProcessJob is KillOnCloseJobObject job && job.TryDisposeIfEmpty())
         {
             DriverProcessJobs.TryRemove(job, out _);

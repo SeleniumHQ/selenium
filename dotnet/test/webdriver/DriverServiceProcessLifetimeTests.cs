@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -69,9 +70,10 @@ public class DriverServiceProcessLifetimeTests
     public async Task ProcessStartedByDriverThatIsStillRunningSurvivesServiceDisposal()
     {
         // A process spawned by the driver and still alive when the service is
-        // disposed models a browser kept running by the user through
-        // ChromiumOptions.LeaveBrowserRunning: it must not be terminated by the
-        // disposal of the service.
+        // disposed must not be terminated by the disposal itself: releasing the
+        // job handle at that point would kill every process still in the job.
+        // (The LeaveBrowserRunning scenario is covered separately, without any
+        // job object at all.)
         string stubExePath = CreateStubExecutable();
         string stubExeName = Path.GetFileNameWithoutExtension(stubExePath);
         try
@@ -98,13 +100,107 @@ public class DriverServiceProcessLifetimeTests
             Assert.That(
                 Process.GetProcessesByName(stubExeName).Length,
                 Is.GreaterThan(0),
-                "A process started by the driver that is still running must survive the disposal of the service, like a browser kept running by LeaveBrowserRunning");
+                "A process started by the driver that is still running must survive the disposal of the service");
         }
         finally
         {
             // Terminate every surviving child and wait for the termination to
             // complete before deleting the executable: a kill alone does not
             // release the file, which would fail the deletion.
+            KillAllProcessesNamed(stubExeName);
+            File.Delete(stubExePath);
+        }
+    }
+
+    [Test]
+    [Platform("Win")]
+    public async Task ServiceThatKeepsDriverChildProcessesAliveSkipsJobObjectTracking()
+    {
+        // Job membership is inherited by every process the driver starts, and
+        // the job is terminated when this application exits, which would kill
+        // a browser the user asked to keep running (LeaveBrowserRunning). A
+        // service that opts out must therefore create no job object at all and
+        // track its driver through the ProcessExit fallback instead.
+        string stubExePath = CreateStubExecutable();
+        string stubExeName = Path.GetFileNameWithoutExtension(stubExePath);
+        try
+        {
+            int port = GetFreeTcpPort();
+            using StubDriverHttpServer httpServer = new(port);
+            using StubDriverService service = new(
+                Path.GetDirectoryName(stubExePath)!, port, Path.GetFileName(stubExePath), "-n 120 127.0.0.1");
+            service.KeepDriverChildProcessesAliveForTesting = true;
+
+            await service.StartAsync();
+
+            FieldInfo jobField = typeof(DriverService).GetField("driverProcessJob", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo registryField = typeof(DriverService).GetField("UntrackedDriverProcesses", BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.That(jobField, Is.Not.Null, "The DriverService job object field should exist");
+            Assert.That(registryField, Is.Not.Null, "The DriverService exit tracking registry should exist");
+            Assert.That(jobField.GetValue(service), Is.Null, "A service that keeps its driver child processes alive must not create a job object");
+
+            var registry = (ConcurrentDictionary<int, Process>)registryField.GetValue(null)!;
+            Assert.That(registry.ContainsKey(service.ProcessId), Is.True, "The driver process must be tracked by the ProcessExit fallback instead of a job object");
+        }
+        finally
+        {
+            KillAllProcessesNamed(stubExeName);
+            File.Delete(stubExePath);
+        }
+    }
+
+    [Test]
+    [Platform("Win")]
+    public async Task ProcessExitFallbackKeepsChildProcessAliveWhenServiceOptsOutOfJobTracking()
+    {
+        // Models an application that exits without disposing of its driver
+        // service while a browser the user asked to keep running
+        // (LeaveBrowserRunning) is still alive: at application exit the driver
+        // process must be terminated, and the browser must survive it.
+        string stubExePath = CreateStubExecutable();
+        string stubExeName = Path.GetFileNameWithoutExtension(stubExePath);
+        try
+        {
+            int port = GetFreeTcpPort();
+            using StubDriverHttpServer httpServer = new(port);
+
+            string powerShellPath = Path.Combine(Environment.SystemDirectory, "WindowsPowerShell", "v1.0", "powershell.exe");
+            string spawnChildCommand = $"Start-Process -FilePath '{stubExePath}' -ArgumentList '-n','120','127.0.0.1' -NoNewWindow; Start-Sleep -Seconds 120";
+            using StubDriverService service = new(
+                Path.GetDirectoryName(powerShellPath)!, port, Path.GetFileName(powerShellPath), $"-NoProfile -Command \"{spawnChildCommand}\"");
+            service.KeepDriverChildProcessesAliveForTesting = true;
+
+            await service.StartAsync();
+
+            Assert.That(
+                () => Process.GetProcessesByName(stubExeName).Length,
+                Is.GreaterThan(0).After(30000, 100),
+                "The stub driver process should spawn its child process");
+
+            int driverProcessId = service.ProcessId;
+
+            MethodInfo terminateOnProcessExit = typeof(DriverService).GetMethod(
+                "TerminateUntrackedDriverProcessesOnProcessExit",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.That(terminateOnProcessExit, Is.Not.Null, "The DriverService process exit handler should exist");
+
+            // Invoke the application-exit handler directly: the test process
+            // itself must stay alive to observe the outcome.
+            terminateOnProcessExit!.Invoke(null, new object[] { null, EventArgs.Empty });
+
+            Assert.That(
+                () => IsProcessRunning(driverProcessId),
+                Is.False.After(10000, 50),
+                "At application exit the driver process must be terminated");
+            Assert.That(
+                Process.GetProcessesByName(stubExeName).Length,
+                Is.GreaterThan(0),
+                "A process kept running by LeaveBrowserRunning must survive the application exit");
+        }
+        finally
+        {
+            // The powershell driver process is terminated by the exit handler
+            // or by service disposal; only its spawned child needs cleanup.
             KillAllProcessesNamed(stubExeName);
             File.Delete(stubExePath);
         }
@@ -143,8 +239,6 @@ public class DriverServiceProcessLifetimeTests
 
             registerForTermination.Invoke(service, new object[] { process });
 
-            // The exit handler disposes the registered processes, so the id
-            // must be captured before it runs.
             int processId = process.Id;
 
             terminateOnProcessExit.Invoke(null, new object[] { null, EventArgs.Empty });
@@ -292,6 +386,14 @@ public class DriverServiceProcessLifetimeTests
         }
 
         protected override string CommandLineArguments => this.commandLineArguments;
+
+        // The opt-out from job object tracking is protected on DriverService;
+        // this stand-in exposes it so the tests can model the
+        // LeaveBrowserRunning (detach) scenario.
+        public bool KeepDriverChildProcessesAliveForTesting
+        {
+            set => this.KeepDriverChildProcessesAlive = value;
+        }
 
         // The stub executable has no shutdown endpoint; disposing the service
         // must terminate it by force, which is exactly the path whose

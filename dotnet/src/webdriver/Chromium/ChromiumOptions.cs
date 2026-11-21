@@ -97,6 +97,15 @@ public abstract class ChromiumOptions : DriverOptions
     /// Gets or sets a value indicating whether Chromium should be left running after the
     /// ChromeDriver instance is exited. Defaults to <see langword="false"/>.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// When this is set, the bindings do not couple the lifetime of the driver
+    /// process to the lifetime of the application: a job object that would
+    /// terminate the browser along with the application is deliberately not
+    /// created for the driver process. As a consequence, terminating the
+    /// application abruptly may leave the driver process running.
+    /// </para>
+    /// </remarks>
     public bool LeaveBrowserRunning { get; set; }
 
     /// <summary>
