@@ -17,6 +17,7 @@
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.webdriver import LocalWebDriver
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.webkitgtk.options import Options
 from selenium.webdriver.webkitgtk.service import Service
 
@@ -28,6 +29,7 @@ class WebDriver(LocalWebDriver):
         self,
         options: Options | None = None,
         service: Service | None = None,
+        client_config: ClientConfig | None = None,
     ):
         """Creates a new instance of the WebKitGTK driver.
 
@@ -36,6 +38,7 @@ class WebDriver(LocalWebDriver):
         Args:
             options: Instance of Options.
             service: Service object for handling the browser driver if you need to pass extra details.
+            client_config: Custom client configuration to use. Defaults to None.
         """
         self.options = options or Options()
         self.service = service or Service()
@@ -43,7 +46,9 @@ class WebDriver(LocalWebDriver):
         self.service.start()
 
         try:
-            super().__init__(command_executor=self.service.service_url, options=self.options)
+            super().__init__(
+                command_executor=self.service.service_url, options=self.options, client_config=client_config
+            )
         except Exception:
             self.quit()
             raise
