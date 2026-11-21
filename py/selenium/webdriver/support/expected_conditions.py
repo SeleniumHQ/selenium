@@ -266,7 +266,10 @@ def visibility_of_any_elements_located(locator: tuple[str, str]) -> Callable[[We
     """
 
     def _predicate(driver: WebDriverOrWebElement):
-        return [element for element in driver.find_elements(*locator) if _element_if_visible(element)]
+        try:
+            return [element for element in driver.find_elements(*locator) if _element_if_visible(element)]
+        except StaleElementReferenceException:
+            return False
 
     return _predicate
 
@@ -514,12 +517,15 @@ def element_to_be_clickable(
     # and WebElement args are valid
     def _predicate(driver: WebDriverOrWebElement):
         target = mark
-        if not isinstance(target, WebElement):  # if given locator instead of WebElement
-            target = driver.find_element(*target)  # grab element at locator
-        element = visibility_of(target)(driver)
-        if element and element.is_enabled():
-            return element
-        return False
+        try:
+            if not isinstance(target, WebElement):  # if given locator instead of WebElement
+                target = driver.find_element(*target)  # grab element at locator
+            element = visibility_of(target)(driver)
+            if element and element.is_enabled():
+                return element
+            return False
+        except StaleElementReferenceException:
+            return False
 
     return _predicate
 
@@ -592,7 +598,10 @@ def element_located_to_be_selected(locator: tuple[str, str]) -> Callable[[WebDri
     """
 
     def _predicate(driver: WebDriverOrWebElement):
-        return driver.find_element(*locator).is_selected()
+        try:
+            return driver.find_element(*locator).is_selected()
+        except StaleElementReferenceException:
+            return False
 
     return _predicate
 
