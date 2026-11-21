@@ -84,16 +84,6 @@ class Service(service.Service):
     def command_line_args(self) -> list[str]:
         return ["--port", f"{self.port}"] + self._service_args
 
-    def is_connectable(self) -> bool:
-        """Check if geckodriver is ready via the W3C WebDriver /status endpoint.
-
-        geckodriver listens on 127.0.0.1 unless --host is given. On Windows, connecting to "localhost"
-        tries ::1 first, and that attempt takes a full second to fail, so ask 127.0.0.1 directly.
-        """
-        if any(arg == "--host" or arg.startswith("--host=") for arg in self._service_args):
-            return super().is_connectable()
-        return utils.is_url_connectable(self.port, host="127.0.0.1")
-
     def send_remote_shutdown_command(self) -> None:
         """Skip the shutdown request: geckodriver has no /shutdown endpoint, so stop() just ends the process."""
 
