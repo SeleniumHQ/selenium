@@ -54,4 +54,20 @@ class QuotesTest {
     assertThat(escape("Bar \"Rock'n'Roll\""))
         .isEqualTo("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')");
   }
+
+  @Test
+  void shouldKeepEveryTrailingQuote() {
+    assertThat(escape("x'\"\"")).isEqualTo("concat(\"x'\", '\"', '\"')");
+    assertThat(escape("x'\"\"\"")).isEqualTo("concat(\"x'\", '\"', '\"', '\"')");
+  }
+
+  @Test
+  void shouldKeepEveryQuoteInARunInTheMiddle() {
+    assertThat(escape("a\"\"b'")).isEqualTo("concat(\"a\", '\"', '\"', \"b'\")");
+  }
+
+  @Test
+  void shouldEscapeAValueThatStartsAndEndsWithAQuote() {
+    assertThat(escape("\"it's\"")).isEqualTo("concat('\"', \"it's\", '\"')");
+  }
 }
