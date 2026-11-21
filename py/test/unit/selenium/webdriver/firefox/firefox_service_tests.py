@@ -15,6 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import subprocess
+import sys
+
+from selenium.webdriver.common import service as common_service
 from selenium.webdriver.firefox.service import Service
 
 
@@ -30,6 +34,18 @@ def test_command_line_args():
             break
 
     assert found, "Provided arguments do not exist in array"
+
+
+def test_stop_does_not_send_shutdown_request(monkeypatch):
+    requested = []
+    monkeypatch.setattr(common_service.request, "urlopen", lambda url, timeout=None: requested.append(url))
+
+    service = Service(executable_path=sys.executable)
+    service.process = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
+    service.stop()
+
+    assert requested == []
+    assert service.process.poll() is not None
 
 
 def test_lets_firefox_choose_the_websocket_port():
