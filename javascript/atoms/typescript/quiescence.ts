@@ -826,8 +826,10 @@ export default function installQuiescence(global: any = globalThis): void {
   }
   function withinRoot(node, root) {
     if (!root) return true;
-    // Composed, so a wait scoped to a shadow host covers its shadow tree.
-    return !!node && composedContains(root, node);
+    // Plain containment covers a ShadowRoot scope (composed ancestry steps
+    // from its children straight to the host); composed containment covers
+    // a shadow host scope, whose shadow tree contains() cannot see.
+    return !!node && ((root.contains && root.contains(node)) || composedContains(root, node));
   }
   function domLastMeaningfulTs(root) {
     if (!root) return domState.lastMeaningfulTs;

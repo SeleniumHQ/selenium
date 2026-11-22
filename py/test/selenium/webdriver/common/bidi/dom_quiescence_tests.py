@@ -467,6 +467,27 @@ def test_wait_scoped_to_a_shadow_host_sees_its_shadow_tree(driver, pages):
     assert result["settled"] is False
 
 
+def test_wait_scoped_to_a_shadow_root_sees_changes_deep_inside_it(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # The scope is the ShadowRoot itself, and the churn is below its children.
+    result = driver.execute_async_script(
+        "const done = arguments[arguments.length - 1];"
+        "const host = document.createElement('div'); document.body.appendChild(host);"
+        "const root = host.attachShadow({mode: 'open'});"
+        "const inner = document.createElement('div'); root.appendChild(inner); let n = 0;"
+        "const h = setInterval(() => {"
+        "  const d = document.createElement('div');"
+        "  for (let i = 0; i < (n++ % 3) + 1; i++) d.appendChild(document.createElement('span'));"
+        "  inner.appendChild(d);"
+        "}, 40);"
+        "window.__quiescence.awaitDomSettled({root, settleMs: 200, timeoutMs: 1000, requirePendingQuiet: false})"
+        "  .then((r) => { clearInterval(h); done(r); });"
+    )
+
+    assert result["settled"] is False
+
+
 def test_inert_host_discounts_its_shadow_tree(driver, pages):
     _navigate(driver, pages, "blank.html")
     driver.execute_script(

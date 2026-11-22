@@ -667,7 +667,9 @@ class WebDriver(BaseWebDriver):
                 self.execute(Command.SET_TIMEOUTS, {"script": int(seconds * 1000)})
                 previous = current
         except Exception as exc:
-            logger.debug("Could not read/adjust script timeout: %s", exc)
+            # Warned: if the browser's script timeout is shorter than this wait,
+            # it aborts the wait with a script timeout instead of its diagnosis.
+            logger.warning("Could not raise the script timeout for this wait: %s", exc)
         try:
             yield
         finally:
