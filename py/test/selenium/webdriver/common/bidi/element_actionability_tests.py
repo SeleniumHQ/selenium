@@ -1053,3 +1053,63 @@ def test_cross_origin_frame_readiness_says_ancestors_were_not_checked(framed, dr
 
     assert result["ready"] is True
     assert result["unobservable"] == ["cross-origin-ancestor"]
+
+
+# ---------------------------------------------------------------------------
+# Editability by input type, hit-target ownership, clipping, late changes
+# ---------------------------------------------------------------------------
+
+
+def test_checkbox_is_not_ready_to_type(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script('document.body.innerHTML = \'<input id="c" type="checkbox"><input id="e" type="email">\';')
+
+    checkbox = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "c"), interaction="type", timeout_ms=500)
+    email = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "e"), interaction="type", timeout_ms=2000)
+
+    assert checkbox["ready"] is False
+    assert email["ready"] is True
+
+
+def test_target_with_pointer_events_none_is_obstructed_by_its_ancestor(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    # Hit testing skips the button, so a click at its centre lands on the
+    # wrapper instead.
+    driver.execute_script(
+        'document.body.innerHTML = \'<div id="wrap" style="padding:20px">'
+        '<button id="t" style="pointer-events:none">x</button></div>\';'
+    )
+
+    result = _interaction_point(driver, driver.find_element(By.ID, "t"))
+
+    assert result["reason"] == "obstructed"
+    assert result["obstructedBy"] == "div#wrap"
+
+
+def test_overflow_clip_hides_a_clipped_away_control(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        'document.body.innerHTML = \'<div style="width:100px;height:100px;overflow:clip;position:relative">'
+        '<button id="t" style="position:absolute;left:300px;top:0">x</button></div>\';'
+    )
+
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=500)
+
+    assert result["ready"] is False
+
+
+def test_state_is_checked_again_after_the_stability_frames(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script("document.body.innerHTML = '<button id=\"t\">x</button>';")
+
+    # The button is disabled during the frames that sample stability; the
+    # earlier "enabled" reading must not be reported as ready.
+    result = driver.execute_async_script(
+        "const done = arguments[arguments.length - 1]; const b = arguments[0];"
+        "const pending = window.__quiescence.waitForInteractionReady(b, {timeoutMs: 600});"
+        "requestAnimationFrame(() => { b.disabled = true; });"
+        "pending.then(done);",
+        driver.find_element(By.ID, "t"),
+    )
+
+    assert result["ready"] is False

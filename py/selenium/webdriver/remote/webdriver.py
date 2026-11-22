@@ -401,6 +401,7 @@ class WebDriver(BaseWebDriver):
         self._devtools: Any | None = None
         self._quiescence_script_id: str | None = None
         self._quiescence_preload_attempted: bool = False
+        self._quiescence_preload_warned: bool = False
 
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
@@ -633,15 +634,45 @@ class WebDriver(BaseWebDriver):
         """
         if self._quiescence_preload_attempted:
             return
-        self._quiescence_preload_attempted = True
         if not self.caps.get("webSocketUrl"):
+            self._quiescence_preload_attempted = True
             return
         try:
-            self._quiescence_script_id = self.script._add_preload_script(_load_quiescence_preload())
+            # The BiDi module directly: driver.script is the public wrapper, which
+            # would raise a DeprecationWarning for an internal call the user never made.
+            self._quiescence_script_id = self.script._script._add_preload_script(_load_quiescence_preload())
+            self._quiescence_preload_attempted = True
         except Exception as exc:
-            # Warned, not debugged: readiness has silently turned itself off
-            # for this session and every later report will be lower fidelity.
-            logger.warning("Could not register quiescence preload script: %s", exc)
+            # Left unmarked so the next navigation retries: the failure may be
+            # transient (the BiDi socket not ready yet). Warned once, not debugged:
+            # until it succeeds every report is lower fidelity.
+            if self._quiescence_preload_warned:
+                logger.debug("Could not register quiescence preload script: %s", exc)
+            else:
+                self._quiescence_preload_warned = True
+                logger.warning("Could not register quiescence preload script: %s", exc)
+
+    @contextmanager
+    def _script_timeout_of_at_least(self, seconds: float):
+        """Raise the session's script timeout to ``seconds`` for the block, then restore it.
+
+        ``driver.timeouts`` returns a fresh ``Timeouts`` each time, so assigning to
+        its ``script`` attribute changes nothing; the command is sent directly, with
+        only the script timeout, so the other timeouts are left as they are.
+        """
+        previous = None
+        try:
+            current = self.timeouts.script
+            if current is not None and current < seconds:
+                self.execute(Command.SET_TIMEOUTS, {"script": int(seconds * 1000)})
+                previous = current
+        except Exception as exc:
+            logger.debug("Could not read/adjust script timeout: %s", exc)
+        try:
+            yield
+        finally:
+            if previous is not None:
+                self.execute(Command.SET_TIMEOUTS, {"script": int(previous * 1000)})
 
     def wait_for_dom_settled(
         self,
@@ -681,18 +712,8 @@ class WebDriver(BaseWebDriver):
             self.execute_script(_quiescence_source())
 
         # The async script must outlive our own timeout, or the browser aborts
-        # it first. Temporarily widen the script timeout when necessary.
-        needed = timeout + 5
-        previous_script_timeout = None
-        try:
-            current = self.timeouts.script
-            if current is not None and current < needed:
-                previous_script_timeout = current
-                self.timeouts.script = needed
-        except Exception as exc:
-            logger.debug("Could not read/adjust script timeout: %s", exc)
-
-        try:
+        # it first.
+        with self._script_timeout_of_at_least(timeout + 5):
             return self.execute_async_script(
                 "const done = arguments[arguments.length - 1];"
                 "window.__quiescence.awaitDomSettled({"
@@ -704,9 +725,6 @@ class WebDriver(BaseWebDriver):
                 int(timeout * 1000),
                 require_pending_quiet,
             )
-        finally:
-            if previous_script_timeout is not None:
-                self.timeouts.script = previous_script_timeout
 
     def wait_until_actionable(
         self,
@@ -744,17 +762,7 @@ class WebDriver(BaseWebDriver):
         if not self.execute_script("return !!window.__quiescence;"):
             self.execute_script(_quiescence_source())
 
-        needed = timeout + 5
-        previous_script_timeout = None
-        try:
-            current = self.timeouts.script
-            if current is not None and current < needed:
-                previous_script_timeout = current
-                self.timeouts.script = needed
-        except Exception as exc:
-            logger.debug("Could not read/adjust script timeout: %s", exc)
-
-        try:
+        with self._script_timeout_of_at_least(timeout + 5):
             return self.execute_async_script(
                 "const done = arguments[arguments.length - 1];"
                 "window.__quiescence.waitUntilActionable(arguments[0], {"
@@ -765,9 +773,6 @@ class WebDriver(BaseWebDriver):
                 int(timeout * 1000),
                 settled,
             )
-        finally:
-            if previous_script_timeout is not None:
-                self.timeouts.script = previous_script_timeout
 
     @property
     def title(self) -> str:

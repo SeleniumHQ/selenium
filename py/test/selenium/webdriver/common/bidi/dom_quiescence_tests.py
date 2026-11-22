@@ -28,7 +28,10 @@ isolated from the timer/network ledger (a driving ``setInterval`` is itself a
 pending blocker); composition with pending work is covered separately.
 """
 
+import warnings
+
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -428,7 +431,7 @@ def test_injected_oracle_reports_its_missing_history(driver, pages):
     driver.wait_for_dom_settled(timeout=1, settle_ms=0.1)  # ensure the preload is registered
     script_id = driver._quiescence_script_id
     assert script_id is not None, "preload registration is a precondition of this test"
-    driver.script._remove_preload_script(script_id)
+    driver.script._script._remove_preload_script(script_id)
     driver._quiescence_script_id = None
     try:
         _navigate(driver, pages, "blank.html")
@@ -439,3 +442,139 @@ def test_injected_oracle_reports_its_missing_history(driver, pages):
     finally:
         driver._quiescence_preload_attempted = False
         driver._ensure_quiescence_preload()
+
+
+# ---------------------------------------------------------------------------
+# Shadow trees, noise reclassification and unresolved scopes
+# ---------------------------------------------------------------------------
+
+
+def test_wait_scoped_to_a_shadow_host_sees_its_shadow_tree(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "const host = document.createElement('div'); host.id = 'host'; document.body.appendChild(host);"
+        "const root = host.attachShadow({mode: 'open'}); let n = 0;"
+        "window.__q_s = setInterval(() => {"
+        "  const d = document.createElement('div');"
+        "  for (let i = 0; i < (n++ % 3) + 1; i++) d.appendChild(document.createElement('span'));"
+        "  root.appendChild(d);"
+        "}, 40);"
+    )
+
+    result = _await_dom_settled(driver, root="#host", settle_ms=200, timeout_ms=1000)
+    driver.execute_script("clearInterval(window.__q_s);")
+
+    assert result["settled"] is False
+
+
+def test_inert_host_discounts_its_shadow_tree(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "const host = document.createElement('div'); host.setAttribute('data-wd-inert', '');"
+        "document.body.appendChild(host);"
+        "const root = host.attachShadow({mode: 'open'});"
+        "window.__q_s = setInterval(() => root.appendChild(document.createElement('div')), 40);"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=200, timeout_ms=3000)
+    driver.execute_script("clearInterval(window.__q_s);")
+
+    assert result["settled"] is True
+
+
+def test_noise_region_counts_again_when_its_cadence_breaks(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    # A regular clock is classified as noise; once its rhythm breaks, a later
+    # update is real content again and must reset the settle window.
+    driver.execute_async_script(
+        "const done = arguments[arguments.length - 1];"
+        "document.body.innerHTML = '<p id=\"p\">x</p>'; const p = document.getElementById('p'); let i = 0;"
+        "const h = setInterval(() => { p.textContent = 'tick ' + i++;"
+        "  if (i > 10) { clearInterval(h); done(); } }, 40);"
+    )
+    driver.execute_script("setTimeout(() => { document.getElementById('p').textContent = 'late'; }, 300);")
+
+    result = _await_dom_settled(driver, settle_ms=400, timeout_ms=3000)
+
+    assert result["settled"] is True
+    assert result["elapsedMs"] >= 650
+
+
+def test_replacing_an_element_on_a_cadence_is_not_noise(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    # Swapping one element for another keeps the child count but is a
+    # re-render, not a ticking value.
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"box\"><section></section></div>';"
+        "window.__q_r = setInterval(() => document.getElementById('box')"
+        "  .replaceChildren(document.createElement('section')), 40);"
+    )
+
+    result = _await_dom_settled(driver, settle_ms=200, timeout_ms=1500)
+    driver.execute_script("clearInterval(window.__q_r);")
+
+    assert result["settled"] is False
+
+
+def test_unresolved_root_is_reported_not_widened(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    result = _await_dom_settled(driver, root="#does-not-exist", settle_ms=50, timeout_ms=500)
+
+    assert result["settled"] is False
+    assert any(u["reason"] == "root-not-found" for u in result["unobservable"])
+
+
+def test_root_rendered_later_is_waited_for(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "setTimeout(() => { const d = document.createElement('div'); d.id = 'late';"
+        "  document.body.appendChild(d); }, 300);"
+    )
+
+    result = _await_dom_settled(driver, root="#late", settle_ms=100, timeout_ms=3000)
+
+    assert result["settled"] is True
+    assert result["elapsedMs"] >= 350
+
+
+# ---------------------------------------------------------------------------
+# The Python wrappers: script timeout and preload registration
+# ---------------------------------------------------------------------------
+
+
+def test_wait_longer_than_the_script_timeout_returns_its_result(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "document.body.innerHTML = '<div id=\"c\"></div>';"
+        "window.__q_c = setInterval(() => document.getElementById('c')"
+        "  .appendChild(document.createElement('span')), 50);"
+    )
+    original = driver.timeouts
+    driver.timeouts = Timeouts(script=1)
+    try:
+        # The in-page wait outlives the 1 s script timeout; the browser must not
+        # abort it, so the diagnostic result comes back instead of an error.
+        result = driver.wait_for_dom_settled(timeout=3, require_pending_quiet=False)
+
+        assert result["settled"] is False
+        assert driver.timeouts.script == 1
+    finally:
+        driver.execute_script("clearInterval(window.__q_c);")
+        driver.timeouts = original
+
+
+def test_preload_registration_raises_no_deprecation_warning(driver, pages):
+    driver.wait_for_dom_settled(timeout=1, settle_ms=0.1)  # ensure the preload is registered
+    script_id = driver._quiescence_script_id
+    assert script_id is not None, "preload registration is a precondition of this test"
+    driver.script._script._remove_preload_script(script_id)
+    driver._quiescence_script_id = None
+    driver._quiescence_preload_attempted = False
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+
+        _navigate(driver, pages, "blank.html")
+
+    assert driver._quiescence_script_id is not None
+    assert not [w for w in caught if issubclass(w.category, DeprecationWarning)]

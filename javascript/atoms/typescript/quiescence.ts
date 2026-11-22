@@ -116,6 +116,8 @@ export default function installQuiescence(global: any = globalThis): void {
     // Whether outstanding subresource loads (img/media/iframe/object/script/
     // stylesheet) count as blockers.
     countResourceLoads: true,
+    // Whether every quiet/busy transition is also written to console.debug.
+    debugLog: false,
   };
   let compiledIgnores = [];
   function compileIgnores() {
@@ -197,10 +199,14 @@ export default function installQuiescence(global: any = globalThis): void {
         for (const cb of listeners) {
           try { cb(payload); } catch (err) { /* listener errors are not ours */ }
         }
-        // Debug channel visible to remote ends without a BiDi channel wired up.
-        try {
-          console.debug('[quiescence] stateChanged', JSON.stringify(payload));
-        } catch (_) { /* ignore */ }
+        // Opt-in debug channel for remote ends without a BiDi channel wired
+        // up; off by default because every transition would otherwise land in
+        // the page console and in users' log.entryAdded handlers.
+        if (policy.debugLog) {
+          try {
+            console.debug('[quiescence] stateChanged', JSON.stringify(payload));
+          } catch (_) { /* ignore */ }
+        }
       }
     });
   }
@@ -211,11 +217,11 @@ export default function installQuiescence(global: any = globalThis): void {
   const effectFlags = { network: false, storage: false };
   let mutObs = null;
   function ensureObserver() {
-    if (mutObs || !global.document) return;
-    const root = global.document.documentElement;
-    if (!root) return; // too early at document_start; retried below
+    if (mutObs || !global.document || !global.MutationObserver) return;
     mutObs = new MutationObserver(() => {});
-    mutObs.observe(root, {
+    // The document node, not documentElement: a preload can run before the
+    // root element exists, and observing the document misses nothing then.
+    mutObs.observe(global.document, {
       childList: true, subtree: true, attributes: true, characterData: true,
     });
   }
@@ -224,8 +230,12 @@ export default function installQuiescence(global: any = globalThis): void {
     global.document.addEventListener('DOMContentLoaded', ensureObserver, { once: true });
   }
 
-  /** Runs fn, returns true if it produced an observable effect synchronously. */
-  function runTracked(fn, thisArg, args) {
+  /**
+   * Runs fn and reports to `record` whether it produced an observable effect
+   * synchronously. Reported from `finally` rather than returned so an
+   * exception from fn still propagates to the page's error handlers.
+   */
+  function runTracked(fn, thisArg, args, record) {
     ensureObserver();
     if (mutObs) mutObs.takeRecords(); // clear backlog
     effectFlags.network = false;
@@ -234,8 +244,7 @@ export default function installQuiescence(global: any = globalThis): void {
       fn.apply(thisArg, args);
     } finally {
       const mutated = mutObs ? mutObs.takeRecords().length > 0 : true; // fail closed
-      const effectful = mutated || effectFlags.network || effectFlags.storage;
-      return effectful; // eslint-disable-line no-unsafe-finally
+      record(mutated || effectFlags.network || effectFlags.storage);
     }
   }
 
@@ -267,9 +276,16 @@ export default function installQuiescence(global: any = globalThis): void {
     timeoutLedgerByHandle.set(handle, ledgerId);
     return handle;
   };
+  // Timeouts and intervals share one list of active timers, so either clear
+  // function cancels either kind; the ledger entry has to follow suit.
+  function untrackTimer(handle) {
+    for (const byHandle of [timeoutLedgerByHandle, intervalLedgerByHandle]) {
+      const ledgerId = byHandle.get(handle);
+      if (ledgerId !== undefined) { remove(ledgerId); byHandle.delete(handle); }
+    }
+  }
   global.clearTimeout = function (handle) {
-    const ledgerId = timeoutLedgerByHandle.get(handle);
-    if (ledgerId !== undefined) { remove(ledgerId); timeoutLedgerByHandle.delete(handle); }
+    untrackTimer(handle);
     return native.clearTimeout(handle);
   };
 
@@ -278,11 +294,7 @@ export default function installQuiescence(global: any = globalThis): void {
   global.setInterval = function (cb, period, ...args) {
     const p = Number(period) || 0;
     const state = { quietStreak: 0, invocations: 0, ledgerId: null };
-    const handle = native.setInterval(function () {
-      state.invocations++;
-      const effectful = typeof cb === 'function'
-        ? runTracked(cb, this, args)
-        : (cb ? ((0, eval)(String(cb)), true) : false);
+    function recordTick(effectful) {
       if (effectful) {
         state.quietStreak = 0;
         // Observed effects re-promote an interval unless it has been
@@ -300,6 +312,12 @@ export default function installQuiescence(global: any = globalThis): void {
       }
       const e = ledger.get(state.ledgerId);
       if (e) { e.meta.invocations = state.invocations; e.meta.quietStreak = state.quietStreak; }
+    }
+    const handle = native.setInterval(function () {
+      state.invocations++;
+      if (typeof cb === 'function') runTracked(cb, this, args, recordTick);
+      else if (cb) { recordTick(true); (0, eval)(String(cb)); } // string form, spec-compat
+      else recordTick(false);
     }, p);
     state.ledgerId = add('interval', {
       period: p, source: 'setInterval', invocations: 0, quietStreak: 0,
@@ -308,42 +326,44 @@ export default function installQuiescence(global: any = globalThis): void {
     return handle;
   };
   global.clearInterval = function (handle) {
-    const ledgerId = intervalLedgerByHandle.get(handle);
-    if (ledgerId !== undefined) { remove(ledgerId); intervalLedgerByHandle.delete(handle); }
+    untrackTimer(handle);
     return native.clearInterval(handle);
   };
 
   // ---- requestAnimationFrame — chain detection + observed inertness ---------
   // A "chain" is a callback that schedules another rAF from within itself.
-  let rafChain = { depth: 0, quietStreak: 0, inChainCallback: false, ledgerId: null };
+  // Each chain carries its own state, so a request made outside any frame
+  // callback (a scroll handler, a framework scheduler) starts a new chain
+  // instead of resetting a loop that is already running.
+  let currentChain = null; // the chain whose frame callback is running
   const rafLedgerByHandle = new Map();
   if (native.requestAnimationFrame) {
     global.requestAnimationFrame = function (cb) {
-      const scheduledFromChain = rafChain.inChainCallback;
-      if (scheduledFromChain) rafChain.depth++;
-      else rafChain = { depth: 1, quietStreak: 0, inChainCallback: false, ledgerId: null };
+      const chain = currentChain || { depth: 0, quietStreak: 0 };
+      chain.depth++;
 
       let ledgerId = null;
       const handle = native.requestAnimationFrame(function (ts) {
         remove(ledgerId);
         rafLedgerByHandle.delete(handle);
-        rafChain.inChainCallback = true;
-        const isLoop = rafChain.depth >= policy.rafLoopChainThreshold;
+        const outer = currentChain;
+        currentChain = chain;
         try {
-          if (isLoop) {
-            const effectful = runTracked(cb, this, [ts]);
-            if (effectful) rafChain.quietStreak = 0;
-            else rafChain.quietStreak++;
+          if (chain.depth >= policy.rafLoopChainThreshold) {
+            runTracked(cb, this, [ts], (effectful) => {
+              if (effectful) chain.quietStreak = 0;
+              else chain.quietStreak++;
+            });
           } else {
             cb.call(this, ts);
           }
         } finally {
-          rafChain.inChainCallback = false;
+          currentChain = outer;
         }
       });
-      const loopInert = rafChain.depth >= policy.rafLoopChainThreshold
-        && rafChain.quietStreak >= policy.quietInvocationsForInert;
-      ledgerId = add('raf', { chainDepth: rafChain.depth, source: 'requestAnimationFrame' },
+      const loopInert = chain.depth >= policy.rafLoopChainThreshold
+        && chain.quietStreak >= policy.quietInvocationsForInert;
+      ledgerId = add('raf', { chainDepth: chain.depth, source: 'requestAnimationFrame' },
         { inert: loopInert });
       rafLedgerByHandle.set(handle, ledgerId);
       return handle;
@@ -418,7 +438,14 @@ export default function installQuiescence(global: any = globalThis): void {
       const ignored = urlIgnored(this.__q_url || '');
       const ledgerId = add('xhr', { url: this.__q_url || '' }, { ignored });
       this.addEventListener('loadend', () => remove(ledgerId), { once: true });
-      return origSend.apply(this, a);
+      try {
+        return origSend.apply(this, a);
+      } catch (err) {
+        // A send that throws (before open(), or sent twice) never starts a
+        // request, so no loadend will ever clear the entry.
+        remove(ledgerId);
+        throw err;
+      }
     };
   }
 
@@ -462,6 +489,22 @@ export default function installQuiescence(global: any = globalThis): void {
     return el.relList ? el.relList.contains('stylesheet')
       : /(^|\s)stylesheet(\s|$)/i.test(el.rel || '');
   }
+  // A script whose type is not JavaScript or a module (text/template,
+  // text/x-handlebars, ...) is a data block the browser never fetches, and a
+  // nomodule script is skipped by every module-capable browser. Neither fires
+  // load or error, so tracking one would hold the ledger until timeout.
+  const JS_MIME_TYPES = [
+    'application/ecmascript', 'application/javascript', 'application/x-ecmascript',
+    'application/x-javascript', 'text/ecmascript', 'text/javascript', 'text/javascript1.0',
+    'text/javascript1.1', 'text/javascript1.2', 'text/javascript1.3', 'text/javascript1.4',
+    'text/javascript1.5', 'text/jscript', 'text/livescript', 'text/x-ecmascript',
+    'text/x-javascript',
+  ];
+  function scriptWillFetch(el) {
+    if (el.noModule) return false;
+    const type = (el.getAttribute('type') || '').trim().toLowerCase();
+    return type === '' || type === 'module' || JS_MIME_TYPES.indexOf(type) !== -1;
+  }
   function resourcePending(el, kind, atSweep) {
     switch (kind) {
       case 'img':
@@ -484,6 +527,7 @@ export default function installQuiescence(global: any = globalThis): void {
       case 'script':
         if (atSweep || startedScripts.has(el)) return false;
         if (!el.getAttribute('src') || !el.isConnected) return false;
+        if (!scriptWillFetch(el)) return false;
         startedScripts.add(el);
         return true;
       case 'stylesheet':
@@ -519,9 +563,17 @@ export default function installQuiescence(global: any = globalThis): void {
     for (const rec of records) {
       if (rec.type === 'attributes') {
         const attr = rec.attributeName;
-        // Scripts never refetch on src change; retracking one would stick.
-        if ((attr === 'src' || attr === 'srcset' || attr === 'href' || attr === 'data')
-            && rec.target.tagName !== 'SCRIPT') {
+        const tag = rec.target.tagName;
+        if (tag === 'SCRIPT') {
+          // A script only ever fetches once, so a src change is ignored --
+          // except the first src on a connected script inserted with neither
+          // src nor text, which the browser has not started yet and now does.
+          if (attr === 'src' && rec.oldValue === null && rec.target.text === '') {
+            trackResource(rec.target);
+          }
+        } else if (attr === 'src' || attr === 'srcset' || attr === 'href' || attr === 'data'
+            || (attr === 'rel' && tag === 'LINK') // becoming a stylesheet starts a load
+            || (attr === 'loading' && tag === 'IMG')) { // lazy -> eager starts a load
           trackResource(rec.target);
         }
       } else if (rec.type === 'childList') {
@@ -621,7 +673,8 @@ export default function installQuiescence(global: any = globalThis): void {
     return p + '|text';
   }
   function nodeInert(node) {
-    for (let n = node; n; n = n.parentNode) {
+    // Composed ancestry, so an inert shadow host covers its shadow tree.
+    for (let n = node; n; n = composedParent(n)) {
       if (domState.inertNodes.has(n)) return true;
       if (n.nodeType === 1 && n.hasAttribute && n.hasAttribute('data-wd-inert')) return true;
     }
@@ -654,6 +707,10 @@ export default function installQuiescence(global: any = globalThis): void {
     const variance = _mean(a.map((x) => (x - m) * (x - m)));
     return Math.sqrt(variance) / m;
   }
+  function hasElement(nodes) {
+    for (let i = 0; i < nodes.length; i++) if (nodes[i].nodeType === 1) return true;
+    return false;
+  }
   function updateFingerprint(key, rec, now) {
     let fp = domState.fingerprints.get(key);
     if (!fp) {
@@ -665,8 +722,18 @@ export default function installQuiescence(global: any = globalThis): void {
     }
     if (fp.lastTs) { fp.intervals.push(now - fp.lastTs); if (fp.intervals.length > 12) fp.intervals.shift(); }
     fp.lastTs = now; fp.count++; fp.lastTarget = rec.target;
-    if (rec.type === 'childList' && rec.addedNodes.length !== rec.removedNodes.length) {
+    // Structural: the node count changes, or an element (not just a text
+    // node, as textContent swaps) comes or goes -- swapping one element for
+    // another at a steady cadence is a re-render, not a ticking value.
+    if (rec.type === 'childList'
+        && (rec.addedNodes.length !== rec.removedNodes.length
+          || hasElement(rec.addedNodes) || hasElement(rec.removedNodes))) {
       fp.valueOnly = false; fp.structuralSeen = true; fp.classifiedNoise = false; // re-promote
+    }
+    // Noise is a claim about a regular cadence; once the cadence breaks, the
+    // target's updates count again until it settles back into a rhythm.
+    if (fp.classifiedNoise && _cv(fp.intervals) > domPolicy.cadenceCV) {
+      fp.classifiedNoise = false;
     }
     // Observed inertness: value-only churn on a regular cadence is periodic
     // noise (a clock, a counter) and stops counting against quiescence.
@@ -679,9 +746,7 @@ export default function installQuiescence(global: any = globalThis): void {
   }
   let domObs = null;
   function ensureDomObserver() {
-    if (domObs || !global.document) return;
-    const root = global.document.documentElement;
-    if (!root) return; // too early at document_start; retried on DOMContentLoaded
+    if (domObs || !global.document || !global.MutationObserver) return;
     domObs = new MutationObserver((records) => {
       scanRecordsForResources(records);
       const now = native.now();
@@ -697,7 +762,8 @@ export default function installQuiescence(global: any = globalThis): void {
       }
       if (meaningful) { domState.lastMeaningfulTs = now; scheduleEmit(); }
     });
-    domObs.observe(root, {
+    // The document node, for the same reason as ensureObserver().
+    domObs.observe(global.document, {
       childList: true, subtree: true, attributes: true,
       characterData: true, attributeOldValue: true, characterDataOldValue: true,
     });
@@ -743,7 +809,7 @@ export default function installQuiescence(global: any = globalThis): void {
         if (a.playState !== 'running') continue;
         const target = a.effect && a.effect.target;
         if (!target || nodeInert(target)) continue;
-        if (root && root.contains && !root.contains(target)) continue;
+        if (root && !withinRoot(target, root)) continue;
         const timing = a.effect.getTiming ? a.effect.getTiming() : {};
         if (timing.iterations === Infinity) continue; // spinner-style noise
         return true;
@@ -760,7 +826,8 @@ export default function installQuiescence(global: any = globalThis): void {
   }
   function withinRoot(node, root) {
     if (!root) return true;
-    return !!(node && root.contains && root.contains(node));
+    // Composed, so a wait scoped to a shadow host covers its shadow tree.
+    return !!node && composedContains(root, node);
   }
   function domLastMeaningfulTs(root) {
     if (!root) return domState.lastMeaningfulTs;
@@ -789,8 +856,13 @@ export default function installQuiescence(global: any = globalThis): void {
     const settleMs = o.settleMs != null ? o.settleMs : domPolicy.settleMs;
     const timeoutMs = o.timeoutMs != null ? o.timeoutMs : domPolicy.timeoutMs;
     const requirePendingQuiet = o.requirePendingQuiet !== false;
-    const root = resolveRoot(o.root);
+    // A scope that resolves to nothing must not widen to the whole document:
+    // the wait holds until the root exists (it may render later) and, if it
+    // never does, says so instead of reporting on unrelated regions.
+    const scoped = o.root != null;
+    let root = resolveRoot(o.root);
     const started = native.now();
+    let windowStart = started;
     // Fixed-cadence poll rather than event-driven re-arm: a mutation outside a
     // scoped `root` must not reset that root's settle window.
     const pollMs = Math.min(settleMs, 50);
@@ -799,9 +871,14 @@ export default function installQuiescence(global: any = globalThis): void {
       let pollHandle = null;
       let deadlineHandle = null;
       function settledNow() {
+        if (scoped && !root) {
+          root = resolveRoot(o.root);
+          if (root) windowStart = native.now(); // observe it for a full window
+          return false;
+        }
         // Observe for at least one settle window before declaring settled, so
         // churn that begins just after the call is not missed.
-        return (native.now() - started) >= settleMs
+        return (native.now() - windowStart) >= settleMs
           && (native.now() - domLastMeaningfulTs(root)) >= settleMs
           && (!requirePendingQuiet || isQuiet())
           && !(domPolicy.treatCssAnimationsAsActivity && animationsActive(root));
@@ -809,12 +886,15 @@ export default function installQuiescence(global: any = globalThis): void {
       function finish(settled) {
         native.clearTimeout(pollHandle);
         native.clearTimeout(deadlineHandle);
+        const missing = scoped && !root;
+        const unobservable = domState.unobservable.slice();
+        if (missing) unobservable.push({ reason: 'root-not-found', root: String(o.root) });
         resolve({
           settled,
           elapsedMs: native.now() - started,
-          activeRegions: settled ? [] : getActiveRegions(root),
-          lastMutationAgeMs: native.now() - domLastMeaningfulTs(root),
-          unobservable: domState.unobservable.slice(),
+          activeRegions: settled || missing ? [] : getActiveRegions(root),
+          lastMutationAgeMs: missing ? null : native.now() - domLastMeaningfulTs(root),
+          unobservable,
         });
       }
       function poll() {
@@ -838,6 +918,7 @@ export default function installQuiescence(global: any = globalThis): void {
   // is_enabled(), extended with what that atom lacks: contenteditable/
   // aria-readonly, checked/indeterminate, and in-viewport clipping.
   function composedParent(node) {
+    if (node.nodeType === 11 && node.host) return node.host; // a shadow root itself
     if (node.assignedSlot) return node.assignedSlot;
     const parent = node.parentNode;
     if (parent && parent.nodeType === 11 && parent.host) return parent.host; // shadow root
@@ -879,8 +960,7 @@ export default function installQuiescence(global: any = globalThis): void {
     node = composedParent(el);
     while (node && node.nodeType === 1) {
       const cs = global.getComputedStyle(node);
-      if (!generatesNoBox(cs)
-          && (cs.overflow === 'hidden' || cs.overflowX === 'hidden' || cs.overflowY === 'hidden')) {
+      if (!generatesNoBox(cs) && clipsOverflow(cs)) {
         const ar = node.getBoundingClientRect();
         if (rect.right <= ar.left || rect.left >= ar.right
             || rect.bottom <= ar.top || rect.top >= ar.bottom) {
@@ -936,8 +1016,14 @@ export default function installQuiescence(global: any = globalThis): void {
     }
     return false;
   }
+  // Same list as bot.dom.TEXTUAL_INPUT_TYPES_ (javascript/atoms/dom.js): a
+  // checkbox or submit input is enabled but cannot take typed text.
+  const TEXTUAL_INPUT_TYPES = ['text', 'search', 'tel', 'url', 'email', 'password', 'number'];
   function isEditable(el) {
     if (!el || el.nodeType !== 1) return false;
+    if (el.tagName === 'INPUT' && TEXTUAL_INPUT_TYPES.indexOf(String(el.type).toLowerCase()) === -1) {
+      return false;
+    }
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
       return !el.readOnly && isEnabled(el);
     }
@@ -968,11 +1054,17 @@ export default function installQuiescence(global: any = globalThis): void {
     if (right <= left || bottom <= top) return null;
     return { left, top, right, bottom };
   }
+  // `clip` cuts content off like `hidden` but without a scroll container, so
+  // a clipped-away control cannot be scrolled back into view either.
+  function clipsOverflow(cs) {
+    return [cs.overflow, cs.overflowX, cs.overflowY].some((v) => v === 'hidden' || v === 'clip');
+  }
   function isClippingAncestor(cs) {
     if (generatesNoBox(cs)) return false;
-    return cs.overflow === 'hidden' || cs.overflow === 'auto' || cs.overflow === 'scroll'
-      || cs.overflowX === 'hidden' || cs.overflowX === 'auto' || cs.overflowX === 'scroll'
-      || cs.overflowY === 'hidden' || cs.overflowY === 'auto' || cs.overflowY === 'scroll';
+    return clipsOverflow(cs)
+      || cs.overflow === 'auto' || cs.overflow === 'scroll'
+      || cs.overflowX === 'auto' || cs.overflowX === 'scroll'
+      || cs.overflowY === 'auto' || cs.overflowY === 'scroll';
   }
   /**
    * Frame elements from `win` up to the top-level document. A user sees the
@@ -1151,11 +1243,27 @@ export default function installQuiescence(global: any = globalThis): void {
     if (!blocker) return { point, obstructedBy: null, reason: null, unobservable };
     return { point, obstructedBy: nodePreview(blocker), reason: 'obstructed', unobservable };
   }
+  /**
+   * The element a click at (x, y) actually lands on. The document-level hit
+   * test retargets into shadow trees as their host, so it descends through
+   * open shadow roots to the innermost hit; closed roots stop at the host.
+   */
+  function deepHitAt(doc, x, y) {
+    let hit = doc.elementsFromPoint(x, y)[0];
+    while (hit && hit.shadowRoot && hit.shadowRoot.elementsFromPoint) {
+      const inner = hit.shadowRoot.elementsFromPoint(x, y)[0];
+      if (!inner || inner === hit) break;
+      hit = inner;
+    }
+    return hit;
+  }
   function obstructionAt(doc, x, y, target) {
     if (!doc.elementsFromPoint) return null;
-    const top = doc.elementsFromPoint(x, y)[0];
-    if (!top || top === target || composedContains(top, target) || composedContains(target, top)) return null;
-    if (doc.defaultView.getComputedStyle(top).pointerEvents === 'none') return null;
+    const top = deepHitAt(doc, x, y);
+    // Only the target or something inside it receives the click. An ancestor
+    // hit there means the target itself is not hit-testable (pointer-events:
+    // none, clipped away), and the click would land on that ancestor.
+    if (!top || composedContains(target, top)) return null;
     return top;
   }
   const INTERACTION_BACKOFF_MS = [0, 0, 20, 50, 100, 100, 500];
@@ -1199,12 +1307,19 @@ export default function installQuiescence(global: any = globalThis): void {
           elapsedMs: native.now() - started,
         });
       }
-      function tick() {
+      function evaluate() {
         const state: any = elementState(el);
         state.el = el;
         state.requiresEditable = requiresEditable;
         state.requiresEnabled = requiresEnabled;
         const hit = interactionPoint(el);
+        const ready = state.visible && (!requiresEnabled || state.enabled)
+          && (!requiresEditable || state.editable)
+          && !hit.obstructedBy && state.inViewport;
+        return { state, hit, ready };
+      }
+      function tick() {
+        const { state, hit, ready } = evaluate();
         unobservable = hit.unobservable;
         // Retried, not one-shot: a layout that restores its own scroll
         // position puts the element straight back out of view, and one scroll
@@ -1215,16 +1330,28 @@ export default function installQuiescence(global: any = globalThis): void {
           lastScrollAt = native.now();
           try { el.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (_) { /* ignore */ }
         }
-        const ready = state.visible && (!requiresEnabled || state.enabled)
-          && (!requiresEditable || state.editable)
-          && !hit.obstructedBy && state.inViewport;
         if (ready) {
           if (!requireStable) { done(true, hit.point, null); return; }
+          // Stability is sampled over animation frames, which a throttled or
+          // hidden document may never deliver: the timeout still holds.
+          let answered = false;
+          const remaining = Math.max(0, timeoutMs - (native.now() - started));
+          const deadline = native.setTimeout(() => {
+            if (answered) return;
+            answered = true;
+            done(false, hit.point, reasonFor(state, hit));
+          }, remaining);
           isStable(el, { epsilonPx: o.stableEpsilonPx }).then((stable) => {
-            if (stable) { done(true, hit.point, null); return; }
-            const perpetual = perpetualMotionSource(el);
-            if (perpetual) { done(true, hit.point, null, perpetual); return; }
-            armNext(state, hit);
+            if (answered) return;
+            answered = true;
+            native.clearTimeout(deadline);
+            const perpetual = stable ? null : perpetualMotionSource(el);
+            if (!stable && !perpetual) { armNext(state, hit); return; }
+            // The checks above ran before those frames; an overlay or a
+            // disabled state could have arrived since, so ask again.
+            const now = evaluate();
+            if (now.ready) { done(true, now.hit.point, null, perpetual); return; }
+            armNext(now.state, now.hit);
           });
           return;
         }
@@ -1375,9 +1502,15 @@ export default function installQuiescence(global: any = globalThis): void {
     return true;
   }
 
+  const URL_IGNORABLE_TYPES = ['fetch', 'fetch-body', 'xhr', 'resource'];
   function setPolicy(partial) {
     Object.assign(policy, partial || {});
     compileIgnores();
+    // Ignore patterns describe requests, not when they started: one already in
+    // flight follows the policy now in force, in either direction.
+    for (const e of ledger.values()) {
+      if (URL_IGNORABLE_TYPES.indexOf(e.type) !== -1) e.ignored = urlIgnored(e.meta.url || '');
+    }
     scheduleEmit();
     return { ...policy };
   }

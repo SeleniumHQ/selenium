@@ -292,3 +292,65 @@ def test_ignored_url_pattern_resource_does_not_block(driver, pages):
     )
 
     assert _is_quiet(driver) is True
+
+
+# ---------------------------------------------------------------------------
+# Loads started by an attribute change, and scripts that never load
+# ---------------------------------------------------------------------------
+
+
+def _has_resource_blocker(driver):
+    return any(b["type"] == "resource" for b in _blockers(driver))
+
+
+def test_non_javascript_scripts_do_not_block(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # Data blocks (text/template, ...) and nomodule scripts are never fetched
+    # and fire no load/error, so tracking them would hold until timeout.
+    driver.execute_script(
+        "for (const type of ['text/template', 'text/x-handlebars']) {"
+        "  const s = document.createElement('script'); s.type = type; s.src = '/slow?ms=60000';"
+        "  document.body.appendChild(s);"
+        "}"
+        "const nm = document.createElement('script'); nm.noModule = true; nm.src = '/slow?ms=60000';"
+        "document.body.appendChild(nm);"
+    )
+
+    assert _await_quiet(driver, timeout_ms=2000)["quiet"] is True
+
+
+def test_link_becoming_a_stylesheet_blocks(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "const l = document.createElement('link'); l.id = 'l'; l.rel = 'preconnect';"
+        "l.href = '/slow?ms=3000&css=1'; document.head.appendChild(l);"
+    )
+
+    driver.execute_script("document.getElementById('l').rel = 'stylesheet';")
+
+    WebDriverWait(driver, 2, poll_frequency=0.05).until(_has_resource_blocker)
+
+
+def test_first_src_on_an_empty_script_blocks(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    # Inserted with neither src nor text, the script has not started yet, so
+    # setting src later does fetch it.
+    driver.execute_script("const s = document.createElement('script'); s.id = 's'; document.body.appendChild(s);")
+
+    driver.execute_script("document.getElementById('s').src = '/slow?ms=3000';")
+
+    WebDriverWait(driver, 2, poll_frequency=0.05).until(_has_resource_blocker)
+
+
+def test_lazy_image_switched_to_eager_blocks(driver, pages):
+    _navigate(driver, pages, "blank.html")
+    driver.execute_script(
+        "const i = document.createElement('img'); i.id = 'i'; i.loading = 'lazy';"
+        "i.style.cssText = 'position:absolute;top:20000px'; i.src = '/slow?ms=3000&img=1';"
+        "document.body.appendChild(i);"
+    )
+
+    driver.execute_script("document.getElementById('i').loading = 'eager';")
+
+    WebDriverWait(driver, 2, poll_frequency=0.05).until(_has_resource_blocker)

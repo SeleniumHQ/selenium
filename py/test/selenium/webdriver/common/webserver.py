@@ -138,10 +138,15 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                     # first body bytes go out with the headers because Firefox
                     # holds fetch() until it has some body, not just headers.
                     self._send_response("application/json")
-                    self.wfile.write(b'{"slept": ')
-                    self.wfile.flush()
-                    time.sleep(body_ms / 1000)
-                    self.wfile.write(f"{delay_ms + body_ms}}}".encode())
+                    try:
+                        self.wfile.write(b'{"slept": ')
+                        self.wfile.flush()
+                        time.sleep(body_ms / 1000)
+                        self.wfile.write(f"{delay_ms + body_ms}}}".encode())
+                    except (BrokenPipeError, ConnectionResetError):
+                        # The status line is already out; the catch-all's 500
+                        # would land in the body. A client that left is fine.
+                        pass
                     return
                 if params.get("img"):
                     with open(os.path.join(HTML_ROOT, "button.png"), "rb") as f:

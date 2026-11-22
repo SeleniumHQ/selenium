@@ -464,3 +464,91 @@ def test_on_state_changed_reports_transitions(driver, pages):
     events = driver.execute_script("window.__q_unsub(); return window.__q_events;")
     assert False in events
     assert True in events
+
+
+# ---------------------------------------------------------------------------
+# Ledger edge cases: errors, cross-kind clearing, failed sends, policy changes
+# ---------------------------------------------------------------------------
+
+
+def test_error_in_tracked_interval_reaches_the_page(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # Observed-inertness tracking wraps every interval tick; the page's own
+    # exception must still reach window.onerror (and error-reporting SDKs).
+    reached = driver.execute_async_script(
+        "const done = arguments[arguments.length - 1];"
+        "window.addEventListener('error', (e) => { e.preventDefault(); done(true); });"
+        "const h = setInterval(() => { clearInterval(h); throw new Error('boom'); }, 10);"
+        "setTimeout(() => done(false), 1000);"
+    )
+
+    assert reached is True
+
+
+def test_clear_timeout_cancels_an_interval_and_vice_versa(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # Timeouts and intervals share one list of timers: either clear function
+    # cancels either kind, and the ledger entry must go with it.
+    driver.execute_script(
+        "const i = setInterval(() => {}, 50); clearTimeout(i);const t = setTimeout(() => {}, 5000); clearInterval(t);"
+    )
+
+    assert _await_quiet(driver, timeout_ms=2000)["quiet"] is True
+
+
+def test_xhr_send_that_throws_does_not_block(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # send() before open() throws without starting a request, so no loadend
+    # will ever arrive to clear the entry.
+    driver.execute_script("try { new XMLHttpRequest().send(); } catch (e) {}")
+
+    assert _await_quiet(driver, timeout_ms=2000)["quiet"] is True
+
+
+def test_ignore_pattern_set_later_applies_to_pending_fetch(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    driver.execute_script("window.__q_fetch = fetch('/slow?ms=3000');")
+    assert "fetch" in _blocker_types(driver)
+
+    quiet = driver.execute_script(
+        "window.__quiescence.setPolicy({ignoreUrlPatterns: ['slow']});return window.__quiescence.isQuiet();"
+    )
+
+    assert quiet is True
+
+
+def test_state_changes_are_not_logged_to_the_console_by_default(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # Every quiet/busy transition would otherwise reach users' console and
+    # BiDi log handlers.
+    logged = driver.execute_async_script(
+        "const done = arguments[arguments.length - 1];"
+        "const original = console.debug; let n = 0;"
+        "console.debug = (...a) => { if (String(a[0]).includes('[quiescence]')) n++; };"
+        "setTimeout(() => {}, 10); fetch('/slow?ms=10');"
+        "setTimeout(() => { console.debug = original; done(n); }, 500);"
+    )
+
+    assert logged == 0
+
+
+def test_raf_loop_becomes_inert_while_other_code_requests_frames(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # An effect-free animation loop is classified inert once its chain is long
+    # enough; unrelated frame requests (scroll handlers, schedulers) start
+    # their own chains rather than resetting the loop's.
+    driver.execute_script(
+        "const loop = () => requestAnimationFrame(loop); loop();"
+        "window.__q_other = setInterval(() => requestAnimationFrame(() => {}), 100);"
+    )
+
+    result = _await_quiet(driver, timeout_ms=6000)
+    driver.execute_script("clearInterval(window.__q_other);")
+
+    assert result["quiet"] is True
