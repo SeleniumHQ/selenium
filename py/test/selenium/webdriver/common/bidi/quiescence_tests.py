@@ -171,10 +171,12 @@ def test_unread_fetch_body_does_not_block(driver, pages):
     _navigate(driver, pages, "blank.html")
 
     # Only body reads that start are tracked: a response nobody consumes must
-    # not hold quiescence open.
-    driver.execute_script("window.__q_fetch = fetch('/slow?bodyMs=60000');")
+    # not hold quiescence open. The wait times out before the body arrives, so
+    # an untracked body is the only way to see quiet; the body stays short
+    # because server_close() joins the request thread still sending it.
+    driver.execute_script("window.__q_fetch = fetch('/slow?bodyMs=3000');")
 
-    result = _await_quiet(driver, timeout_ms=5000)
+    result = _await_quiet(driver, timeout_ms=2000)
     assert result["quiet"] is True
 
 
