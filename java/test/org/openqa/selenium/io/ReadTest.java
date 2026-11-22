@@ -41,6 +41,7 @@ class ReadTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void canReadResourceFromClasspath() {
     String script = Read.resourceAsString(Read.class, "/org/openqa/selenium/remote/isDisplayed.js");
     assertThat(script).isNotBlank().contains("(function");
