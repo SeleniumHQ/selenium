@@ -268,6 +268,13 @@ class CddlCommand:
             body += f"        {validate_func}({param_args})\n"
             body += "\n"
 
+        # Statements to run before the command is sent, so a method can gain a
+        # side effect without replacing its generated signature and docstring.
+        if enhancements.get("before_execute"):
+            for line in enhancements["before_execute"]:
+                body += f"        {line}\n" if line else "\n"
+            body += "\n"
+
         # Add transformation and preprocessing
         # First, check if any transform is needed
         if "transform" in enhancements:
