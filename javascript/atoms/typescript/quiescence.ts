@@ -87,7 +87,10 @@ export default function installQuiescence(global: any = globalThis): void {
       ? global.cancelAnimationFrame.bind(global) : null,
     fetch: global.fetch ? global.fetch.bind(global) : null,
     WebSocket: global.WebSocket || null,
-    now: () => Date.now(),
+    // Bound now, not looked up per call: fake-timer libraries replace
+    // window.Date, and a frozen clock would stop every settle window and
+    // timeout check here from ever elapsing.
+    now: Date.now.bind(Date),
   };
 
   // ---- Policy (remote-end annotation surface; mirrors quiescence.setPolicy) --

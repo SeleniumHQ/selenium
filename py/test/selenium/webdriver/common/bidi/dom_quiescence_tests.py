@@ -343,6 +343,17 @@ def test_child_frame_churn_does_not_block_parent(driver, pages):
 # ---------------------------------------------------------------------------
 
 
+def test_frozen_page_clock_does_not_stall_settling(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # Fake-timer libraries replace window.Date after the preload has run; the
+    # oracle's own clock must not follow it, or no settle window ever elapses.
+    driver.execute_script("const RealDate = Date;window.Date = class extends RealDate { static now() { return 0; } };")
+
+    result = _await_dom_settled(driver, settle_ms=50, timeout_ms=2000)
+    assert result["settled"] is True
+
+
 def test_wait_for_dom_settled_returns_settled(driver, pages):
     _navigate(driver, pages, "blank.html")
 
