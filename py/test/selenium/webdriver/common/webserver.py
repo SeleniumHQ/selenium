@@ -133,12 +133,15 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 time.sleep(delay_ms / 1000)
                 body_ms = min(int(params.get("bodyMs", ["0"])[0]), 30000)
                 if body_ms:
-                    # Headers first, body later: fetch() resolves at headers,
-                    # so this separates "response arrived" from "body read".
+                    # The response arrives now and the body completes later,
+                    # separating "response arrived" from "body read". The
+                    # first body bytes go out with the headers because Firefox
+                    # holds fetch() until it has some body, not just headers.
                     self._send_response("application/json")
+                    self.wfile.write(b'{"slept": ')
                     self.wfile.flush()
                     time.sleep(body_ms / 1000)
-                    self.wfile.write(f'{{"slept": {delay_ms + body_ms}}}'.encode())
+                    self.wfile.write(f"{delay_ms + body_ms}}}".encode())
                     return
                 if params.get("img"):
                     with open(os.path.join(HTML_ROOT, "button.png"), "rb") as f:
