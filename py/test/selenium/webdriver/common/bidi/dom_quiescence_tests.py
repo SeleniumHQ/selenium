@@ -360,7 +360,7 @@ def test_frozen_page_clock_does_not_stall_settling(driver, pages):
 def test_wait_for_dom_settled_returns_settled(driver, pages):
     _navigate(driver, pages, "blank.html")
 
-    result = driver.wait_for_dom_settled(timeout=3, settle_ms=0.15)
+    result = driver.wait_for_dom_settled(timeout=3, settle_time=0.15)
 
     assert result["settled"] is True
 
@@ -374,7 +374,7 @@ def test_wait_for_dom_settled_with_css_root(driver, pages):
         "  () => document.getElementById('foot').appendChild(document.createElement('span')), 80);"
     )
 
-    result = driver.wait_for_dom_settled(root="#main", timeout=3, settle_ms=0.25, require_pending_quiet=False)
+    result = driver.wait_for_dom_settled(root="#main", timeout=3, settle_time=0.25, require_pending_quiet=False)
     driver.execute_script("clearInterval(window.__q_f);")
 
     assert result["settled"] is True
@@ -390,7 +390,7 @@ def test_wait_for_dom_settled_with_webelement_root(driver, pages):
     )
     main = driver.find_element(By.ID, "main")
 
-    result = driver.wait_for_dom_settled(root=main, timeout=3, settle_ms=0.25, require_pending_quiet=False)
+    result = driver.wait_for_dom_settled(root=main, timeout=3, settle_time=0.25, require_pending_quiet=False)
     driver.execute_script("clearInterval(window.__q_f);")
 
     assert result["settled"] is True
@@ -403,7 +403,7 @@ def test_wait_for_dom_settled_timeout_reports_active_regions(driver, pages):
         "window.__q_c = setInterval(  () => document.body.appendChild(document.createElement('div')), 80);"
     )
 
-    result = driver.wait_for_dom_settled(timeout=1.5, settle_ms=0.2, require_pending_quiet=False)
+    result = driver.wait_for_dom_settled(timeout=1.5, settle_time=0.2, require_pending_quiet=False)
     driver.execute_script("clearInterval(window.__q_c);")
 
     assert result["settled"] is False
@@ -422,13 +422,13 @@ def test_wait_for_dom_settled_timeout_reports_active_regions(driver, pages):
 def test_preloaded_oracle_does_not_report_late_install(driver, pages):
     _navigate(driver, pages, "blank.html")
 
-    result = driver.wait_for_dom_settled(timeout=2, settle_ms=0.1)
+    result = driver.wait_for_dom_settled(timeout=2, settle_time=0.1)
 
     assert not [u for u in result["unobservable"] if u["reason"] == "late-install"]
 
 
 def test_injected_oracle_reports_its_missing_history(driver, pages):
-    driver.wait_for_dom_settled(timeout=1, settle_ms=0.1)  # ensure the preload is registered
+    driver.wait_for_dom_settled(timeout=1, settle_time=0.1)  # ensure the preload is registered
     script_id = driver._quiescence_script_id
     assert script_id is not None, "preload registration is a precondition of this test"
     driver.script._script._remove_preload_script(script_id)
@@ -436,7 +436,7 @@ def test_injected_oracle_reports_its_missing_history(driver, pages):
     try:
         _navigate(driver, pages, "blank.html")
 
-        result = driver.wait_for_dom_settled(timeout=2, settle_ms=0.1)
+        result = driver.wait_for_dom_settled(timeout=2, settle_time=0.1)
 
         assert [u for u in result["unobservable"] if u["reason"] == "late-install"]
     finally:
@@ -565,7 +565,7 @@ def test_wait_longer_than_the_script_timeout_returns_its_result(driver, pages):
 
 
 def test_preload_registration_raises_no_deprecation_warning(driver, pages):
-    driver.wait_for_dom_settled(timeout=1, settle_ms=0.1)  # ensure the preload is registered
+    driver.wait_for_dom_settled(timeout=1, settle_time=0.1)  # ensure the preload is registered
     script_id = driver._quiescence_script_id
     assert script_id is not None, "preload registration is a precondition of this test"
     driver.script._script._remove_preload_script(script_id)

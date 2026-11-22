@@ -678,14 +678,14 @@ class WebDriver(BaseWebDriver):
         self,
         root=None,
         timeout: float = 10,
-        settle_ms: float = 0.1,
+        settle_time: float = 0.1,
         require_pending_quiet: bool = True,
     ) -> dict:
         """Block until the DOM has stopped meaningfully mutating.
 
         Backed by the quiescence polyfill's ``awaitDomSettled``: resolves once
         no meaningful mutation (structural change, content text, layout-affecting
-        attribute, or running CSS animation) has occurred for ``settle_ms``,
+        attribute, or running CSS animation) has occurred for ``settle_time``,
         discounting periodic noise (clocks, spinners) and cooperatively inert
         regions.
 
@@ -694,7 +694,8 @@ class WebDriver(BaseWebDriver):
                 selector string; ``None`` waits on the whole document.
             timeout: Seconds to wait before giving up (returns ``settled=False``
                 with the still-active regions).
-            settle_ms: Seconds of quiet required before declaring settled.
+            settle_time: Seconds of quiet required before declaring settled, like
+                every other timeout in this binding.
             require_pending_quiet: Also require the timer/network ledger to be
                 quiet (compose with pending-work quiescence).
 
@@ -721,7 +722,7 @@ class WebDriver(BaseWebDriver):
                 "  timeoutMs: arguments[2], requirePendingQuiet: arguments[3]"
                 "}).then(done);",
                 root,
-                int(settle_ms * 1000),
+                int(settle_time * 1000),
                 int(timeout * 1000),
                 require_pending_quiet,
             )
