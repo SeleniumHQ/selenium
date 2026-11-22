@@ -31,7 +31,7 @@ pending blocker); composition with pending work is covered separately.
 import warnings
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.timeouts import Timeouts
+from selenium.webdriver.remote.command import Command
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -571,18 +571,20 @@ def test_wait_longer_than_the_script_timeout_returns_its_result(driver, pages):
         "window.__q_c = setInterval(() => document.getElementById('c')"
         "  .appendChild(document.createElement('span')), 50);"
     )
-    original = driver.timeouts
-    driver.timeouts = Timeouts(script=1)
+    # Raw commands rather than driver.timeouts: the Timeouts class is a separate
+    # Bazel library that this test target does not depend on.
+    original = driver.execute(Command.GET_TIMEOUTS)["value"]["script"]
+    driver.execute(Command.SET_TIMEOUTS, {"script": 1000})
     try:
         # The in-page wait outlives the 1 s script timeout; the browser must not
         # abort it, so the diagnostic result comes back instead of an error.
         result = driver.wait_for_dom_settled(timeout=3, require_pending_quiet=False)
 
         assert result["settled"] is False
-        assert driver.timeouts.script == 1
+        assert driver.execute(Command.GET_TIMEOUTS)["value"]["script"] == 1000
     finally:
         driver.execute_script("clearInterval(window.__q_c);")
-        driver.timeouts = original
+        driver.execute(Command.SET_TIMEOUTS, {"script": original})
 
 
 def test_preload_registration_raises_no_deprecation_warning(driver, pages):

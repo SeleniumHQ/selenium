@@ -657,13 +657,15 @@ class WebDriver(BaseWebDriver):
         """Raise the session's script timeout to ``seconds`` for the block, then restore it.
 
         ``driver.timeouts`` returns a fresh ``Timeouts`` each time, so assigning to
-        its ``script`` attribute changes nothing; the command is sent directly, with
-        only the script timeout, so the other timeouts are left as they are.
+        its ``script`` attribute changes nothing; the commands are sent directly,
+        with only the script timeout, so the other timeouts are left as they are.
+        That also keeps this independent of the ``Timeouts`` class, which is
+        packaged separately in the Bazel build.
         """
         previous = None
         try:
-            current = self.timeouts.script
-            if current is not None and current < seconds:
+            current = self.execute(Command.GET_TIMEOUTS)["value"].get("script")  # ms; None = no limit
+            if current is not None and current < seconds * 1000:
                 self.execute(Command.SET_TIMEOUTS, {"script": int(seconds * 1000)})
                 previous = current
         except Exception as exc:
@@ -674,7 +676,7 @@ class WebDriver(BaseWebDriver):
             yield
         finally:
             if previous is not None:
-                self.execute(Command.SET_TIMEOUTS, {"script": int(previous * 1000)})
+                self.execute(Command.SET_TIMEOUTS, {"script": previous})
 
     def wait_for_dom_settled(
         self,
