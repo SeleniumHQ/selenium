@@ -176,7 +176,8 @@ def test_parser_created_slow_image_is_awaited(driver, pages):
                 " && !!window.__quiescence"
                 " && window.__quiescence.getBlockers().some(b => b.type === 'resource')"
             )
-            return isinstance(result, dict) and result.get("value") is True
+            # driver.script.execute returns the deserialized value, not a RemoteValue dict.
+            return result is True
         except Exception:
             return False  # navigation may still be committing
 
