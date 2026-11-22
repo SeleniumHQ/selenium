@@ -131,6 +131,15 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 params = urllib.parse.parse_qs(qs)
                 delay_ms = min(int(params.get("ms", ["0"])[0]), 30000)
                 time.sleep(delay_ms / 1000)
+                body_ms = min(int(params.get("bodyMs", ["0"])[0]), 30000)
+                if body_ms:
+                    # Headers first, body later: fetch() resolves at headers,
+                    # so this separates "response arrived" from "body read".
+                    self._send_response("application/json")
+                    self.wfile.flush()
+                    time.sleep(body_ms / 1000)
+                    self.wfile.write(f'{{"slept": {delay_ms + body_ms}}}'.encode())
+                    return
                 if params.get("img"):
                     with open(os.path.join(HTML_ROOT, "button.png"), "rb") as f:
                         self._send_response("image/png")

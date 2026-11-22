@@ -147,6 +147,37 @@ def test_xhr_blocks_and_clears(driver, pages):
     WebDriverWait(driver, 8).until(lambda d: _is_quiet(d))
 
 
+def test_fetch_blocks_until_its_body_has_been_read(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # fetch() resolves when headers arrive; the body follows 1500 ms later.
+    # Quiet must not be reported until the page has consumed and rendered it.
+    driver.execute_script(
+        "window.__q_rendered = false;"
+        "fetch('/slow?bodyMs=1500').then((r) => r.json())"
+        "  .then(() => { window.__q_rendered = true; });"
+    )
+
+    result = driver.execute_async_script(
+        "const done = arguments[arguments.length - 1];"
+        "window.__quiescence.awaitQuiet({timeoutMs: 8000, settleMs: 50})"
+        "  .then((r) => done({quiet: r.quiet, rendered: window.__q_rendered}));"
+    )
+
+    assert result == {"quiet": True, "rendered": True}
+
+
+def test_unread_fetch_body_does_not_block(driver, pages):
+    _navigate(driver, pages, "blank.html")
+
+    # Only body reads that start are tracked: a response nobody consumes must
+    # not hold quiescence open.
+    driver.execute_script("window.__q_fetch = fetch('/slow?bodyMs=60000');")
+
+    result = _await_quiet(driver, timeout_ms=5000)
+    assert result["quiet"] is True
+
+
 def test_ignored_url_pattern_does_not_block(driver, pages):
     _navigate(driver, pages, "blank.html")
 

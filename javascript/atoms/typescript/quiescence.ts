@@ -29,7 +29,8 @@
  *   window.__quiescence.markInert(handle)      -> boolean  (in-page cooperative annotation)
  *   window.__quiescence.onStateChanged(cb)     -> unsubscribe fn
  *
- * Blocker classes tracked in v0: timeout, interval, raf, fetch, xhr,
+ * Blocker classes tracked in v0: timeout, interval, raf, fetch, fetch-body
+ * (a started body read: json/text/arrayBuffer/blob/bytes/formData), xhr,
  * websocket, resource (outstanding subresource loads: images, media, frames,
  * objects, dynamically inserted scripts and stylesheets).
  * Observed-inertness is implemented for intervals and rAF loops: a periodic
@@ -42,6 +43,9 @@
  *    interval that awaits then fetches) are attributed to the fetch blocker,
  *    not back to the interval's inertness score. A real implementation would
  *    use task attribution inside the browser.
+ *  - A fetch body consumed as a stream (`res.body.getReader()`, `for await`,
+ *    `pipeTo`) is not tracked: the fetch entry clears at headers and only
+ *    the settle window covers the rest of the download.
  *  - Workers, MessageChannel, SSE, WebTransport, IndexedDB, and canvas-only
  *    rAF effects are not tracked in v0.
  *  - Promise reactions are not tracked (undecidable from script level without
@@ -158,7 +162,7 @@ export default function installQuiescence(global: any = globalThis): void {
         return policy.countOpenSockets;
       case 'resource':
         return policy.countResourceLoads;
-      default: // fetch, xhr
+      default: // fetch, fetch-body, xhr
         return true;
     }
   }
@@ -349,6 +353,37 @@ export default function installQuiescence(global: any = globalThis): void {
   }
 
   // ---- fetch -----------------------------------------------------------------
+  // fetch() settles when headers arrive, not when the body has been read, so
+  // a body read the page starts holds its own 'fetch-body' entry until it
+  // finishes. Only reads that start are tracked: a response whose body is
+  // never consumed must not block forever.
+  const BODY_READERS = ['arrayBuffer', 'blob', 'bytes', 'formData', 'json', 'text'];
+  function trackBodyReads(res, meta, flags) {
+    for (const name of BODY_READERS) {
+      const read = res[name];
+      if (typeof read !== 'function') continue;
+      res[name] = function (...a) {
+        const ledgerId = add('fetch-body', meta, flags);
+        let p;
+        try {
+          p = read.apply(this, a);
+        } catch (err) {
+          remove(ledgerId);
+          throw err;
+        }
+        // Released a task later, so the page's own reactions to the body
+        // have run before the entry clears.
+        const release = () => native.setTimeout(() => remove(ledgerId), 0);
+        p.then(release, release);
+        return p;
+      };
+    }
+    const clone = res.clone;
+    if (typeof clone === 'function') {
+      res.clone = function () { return trackBodyReads(clone.call(this), meta, flags); };
+    }
+    return res;
+  }
   if (native.fetch) {
     global.fetch = function (input, init) {
       const url = (input && input.url) ? input.url : String(input);
@@ -356,7 +391,12 @@ export default function installQuiescence(global: any = globalThis): void {
       const ignored = urlIgnored(url);
       const ledgerId = add('fetch', { url }, { ignored });
       const p = native.fetch(input, init);
-      p.then(() => remove(ledgerId), () => remove(ledgerId));
+      // Registered before the page sees `p`, so the readers are wrapped
+      // before any page reaction to the response runs.
+      p.then((res) => {
+        trackBodyReads(res, { url }, { ignored });
+        remove(ledgerId);
+      }, () => remove(ledgerId));
       return p;
     };
   }
