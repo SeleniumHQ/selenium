@@ -28,6 +28,8 @@ module Selenium
 
         @web_extension: BiDi::Protocol::WebExtension
 
+        @current_window: String
+
         attr_reader bidi: BiDi
 
         attr_reader connection: untyped
@@ -49,6 +51,8 @@ module Selenium
         def quit: () -> void
 
         def close: () -> void
+
+        def switch_to_window: (String name) -> void
 
         private
 
