@@ -9,6 +9,9 @@
 # The CDDL parser keeps the carriage return in a production name, so a CRLF
 # checkout of the overlays in common/bidi makes every type they define unresolvable.
 *.cddl   text eol=lf
+# The corpus consistency test compares these byte for byte with the renderer's output.
+common/src/web/accessibility/*.txt  text eol=lf
+common/src/web/accessibility/*.json text eol=lf
 *.sql    text
 *.xml    text
 

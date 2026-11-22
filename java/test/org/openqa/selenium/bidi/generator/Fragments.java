@@ -29,6 +29,13 @@ final class Fragments {
 
   static final String INTEGER_ALIAS = "{'kind': 'alias', 'type': {'primitive': 'integer'}}";
 
+  static final String JS_INT =
+      "{'kind': 'alias', 'type': {'primitive': 'integer', 'min': -9007199254740991,"
+          + " 'max': 9007199254740991}}";
+
+  static final String JS_UINT =
+      "{'kind': 'alias', 'type': {'primitive': 'integer', 'min': 0, 'max': 9007199254740991}}";
+
   static final String SET_FORCED_COLORS_MODE_THEME_OVERRIDE_PARAMETERS =
       "{'kind': 'record', 'fields': ["
           + "{'name': 'theme', 'wire': 'theme', 'required': true,"

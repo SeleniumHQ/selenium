@@ -1,3 +1,14 @@
+## 4.53.0
+
+- Support CDP versions: v155, v156, v157
+- [build] Automated Dependency Update (#18242)
+- hold BiDi numbers to their declared ranges (#18272)
+- add the accessibility snapshot atom and the binding methods (#18232)
+- [build] Automated Dependency Update (#18288)
+- [build] Automated Browser Version Update (major) with CDP (#18278)
+- Snapshot accessibility in Classic sessions too (#18308)
+- [build] Automated Dependency Update (#18320)
+
 ## 4.52.0
 
 - Support CDP versions: v154, v155, v156

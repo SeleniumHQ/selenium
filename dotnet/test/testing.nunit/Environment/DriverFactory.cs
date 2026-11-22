@@ -49,7 +49,9 @@ public class DriverFactory
     {
         if (this.browser == Browser.Remote)
         {
-            var remoteDriver = new RemoteWebDriver(RemoteSeleniumServer.ServerUri, new ChromeOptions());
+            var remoteOptions = new ChromeOptions();
+            configureOptions?.Invoke(remoteOptions);
+            var remoteDriver = new RemoteWebDriver(RemoteSeleniumServer.ServerUri, remoteOptions);
             remoteDriver.FileDetector = new LocalFileDetector();
             return remoteDriver;
         }

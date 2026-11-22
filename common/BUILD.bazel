@@ -140,17 +140,27 @@ config_setting(
     [
         config_setting(
             name = "use_pinned_%s_%s" % (platform, browser),
-            constraint_values = [
-                "@platforms//os:%s" % platform,
-            ],
+            constraint_values = constraint_values,
             flag_values = {
                 ":pin_browsers": "true",
             },
         )
-        for platform in [
-            "linux",
-            "macos",
-            "windows",
+        for (platform, constraint_values) in [
+            (
+                "linux",
+                [
+                    "@platforms//os:linux",
+                    "@platforms//cpu:x86_64",
+                ],
+            ),
+            (
+                "macos",
+                ["@platforms//os:macos"],
+            ),
+            (
+                "windows",
+                ["@platforms//os:windows"],
+            ),
         ]
     ]
     for browser in [

@@ -53,8 +53,11 @@ A browser tag (e.g. `firefox`) matches every variant of that browser (local, rem
 bazel test //rb/spec/integration/selenium/webdriver:driver-chrome
 ```
 
-By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not
-depend on what the machine has installed. To have Selenium Manager handle this instead, pass
+By default on x64 Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do
+not depend on what the machine has installed. Elsewhere, Selenium Manager uses the pinned major
+version: it reuses an installed browser of that major or downloads one, Chrome always comes from
+Chrome for Testing, and installing Edge on Windows needs admin. To have Selenium Manager pick the
+browser and driver instead, pass
 `--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
 to ensure the latest stable version, pass
 `--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.

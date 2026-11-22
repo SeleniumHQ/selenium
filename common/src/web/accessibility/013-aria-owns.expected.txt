@@ -1,0 +1,15 @@
+- document "aria-owns"
+  - list
+    - listitem
+      - text: One
+    - listitem
+      - text: Two
+    - listitem
+      - text: Zero
+  - combobox "Fruit" [expanded]: Apple
+    - text: Apple
+    - listbox
+      - option "Apple" [selected]
+      - option "Banana"
+  - paragraph
+    - text: Between

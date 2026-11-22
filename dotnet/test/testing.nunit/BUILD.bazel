@@ -5,6 +5,15 @@ exports_files(
     visibility = ["//dotnet/test:__subpackages__"],
 )
 
+genrule(
+    name = "java-location",
+    srcs = [],
+    outs = ["java-location.txt"],
+    cmd = "echo $(JAVA) > $@",
+    toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
+    visibility = ["//dotnet/test:__subpackages__"],
+)
+
 csharp_library(
     name = "testing.nunit",
     testonly = True,

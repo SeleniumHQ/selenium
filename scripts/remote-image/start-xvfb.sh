@@ -13,6 +13,6 @@ rm -f /tmp/.X*lock
 xvfb-run --server-num=99 \
   --listen-tcp \
   --server-args="-screen 0 ${GEOMETRY} -fbdir /var/tmp -dpi ${SCREEN_DPI} -listen tcp -noreset -ac +extension RANDR" \
-  fluxbox -display :99.0 2&1>/dev/null &
+  fluxbox -display :99.0 >/dev/null 2>&1 &
 
-exec $@
+exec "$@"

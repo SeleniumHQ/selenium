@@ -62,7 +62,9 @@ BIDI_SPEC_FILE = "index.html"
 BIDI_SPEC_REPO_NAME = "webdriver_bidi_spec_html"
 BIDI_SPEC_RAW = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{commit}/index.html"
 
-API_HEADERS = {"Accept": "application/vnd.github+json", "User-Agent": "selenium-update-cddl"}
+API_HEADERS = {}
+if os.environ.get("GITHUB_TOKEN"):
+    API_HEADERS["Authorization"] = f"Bearer {os.environ['GITHUB_TOKEN']}"
 
 # Where each vendor publishes its grammar, keyed by vendor namespace. Branches are in order of
 # preference: a directory that has not reached the release channel yet is taken from the next one.
@@ -179,7 +181,8 @@ webref_cddl_extension = module_extension(
 def get(url, headers=None):
     r = http.request("GET", url, headers=headers)
     if r.status != 200:
-        raise RuntimeError(f"Failed to download {url}: HTTP {r.status}")
+        body = r.data[:200].decode("utf-8", "replace")
+        raise RuntimeError(f"Failed to download {url}: HTTP {r.status}: {body}")
     return r.data
 
 

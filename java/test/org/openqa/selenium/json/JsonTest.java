@@ -26,6 +26,8 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.PropertySetting.BY_FIELD;
 
 import com.google.common.reflect.TypeToken;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.time.Instant;
 import java.util.Collections;
@@ -47,7 +49,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
@@ -148,6 +149,37 @@ class JsonTest {
             "Duplicate JSON field name detected while collecting field writers:"
                 + " FieldWriter(org.openqa.selenium.json.JsonTest$ChildFieldBean.value) vs"
                 + " FieldWriter(org.openqa.selenium.json.JsonTest$ParentFieldBean.value)");
+  }
+
+  @Test
+  void shouldParseStringsLargerThanTheDirectParseLimit() {
+    String value = "a".repeat(2 * 1024 * 1024);
+
+    Map<String, Object> map = new Json().toType("{\"value\": \"" + value + "\"}", MAP_TYPE);
+
+    assertThat(map).containsEntry("value", value);
+  }
+
+  @Test
+  void canReadAndWriteBeansFromAnotherClassLoader() throws ClassNotFoundException {
+    Class<?> type =
+        new IsolatingClassLoader(LoaderBean.class).loadClass(LoaderBean.class.getName());
+    assertThat(type).isNotSameAs(LoaderBean.class);
+
+    Object bean = new Json().toType("{\"value\": \"cheese\"}", type);
+
+    assertThat(bean).isInstanceOf(type);
+    Map<String, Object> map = new Json().toType(new Json().toJson(bean), MAP_TYPE);
+    assertThat(map).containsEntry("value", "cheese");
+  }
+
+  @Test
+  void shouldAbbreviateLongSourcesInParseErrors() {
+    String raw = "[\"" + "a".repeat(1000) + "\"";
+
+    assertThatThrownBy(() -> new Json().toType(raw, MAP_TYPE))
+        .isInstanceOf(JsonException.class)
+        .hasMessage("Unable to parse: " + raw.substring(0, 512) + "...");
   }
 
   @Test
@@ -438,14 +470,12 @@ class JsonTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void shouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
     String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
     Response parsed = new Json().toType(json, Response.class);
     assertThat(parsed.getValue()).isEqualTo("false");
     assertThat(parsed.getSessionId()).isEqualTo("1210083863107");
     assertThat(parsed.getState()).isNull();
-    assertThat(parsed.getStatus()).isNull();
   }
 
   @Test
@@ -465,14 +495,14 @@ class JsonTest {
     Response response = new Response();
     response.setSessionId("bar");
     response.setValue(value);
-    response.setStatus(1512);
+    response.setState("no such element");
 
     String json = new Json().toJson(response);
     Response converted = new Json().toType(json, Response.class);
 
-    assertThat(response.getSessionId()).isEqualTo("bar");
+    assertThat(converted.getSessionId()).isEqualTo("bar");
     assertThat(((List<?>) converted.getValue())).hasSize(2);
-    assertThat(response.getStatus()).isEqualTo(1512);
+    assertThat(converted.getState()).isEqualTo("no such element");
   }
 
   @Test
@@ -611,8 +641,7 @@ class JsonTest {
   void shouldRecognizeNumericStatus() {
     Response response = new Json().toType("{\"status\":0,\"value\":\"cheese\"}", Response.class);
 
-    assertThat(response.getStatus()).isZero();
-    assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
+    assertThat(response.getState()).isEqualTo("success");
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
   }
@@ -622,8 +651,7 @@ class JsonTest {
     Response response =
         new Json().toType("{\"status\":\"success\",\"value\":\"cheese\"}", Response.class);
 
-    assertThat(response.getStatus()).isZero();
-    assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
+    assertThat(response.getState()).isEqualTo("success");
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
   }
@@ -635,8 +663,7 @@ class JsonTest {
             .toType(
                 "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}",
                 Response.class);
-    assertThat(response.getStatus()).isEqualTo(32);
-    assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(32));
+    assertThat(response.getState()).isEqualTo("invalid selector");
   }
 
   @Test
@@ -644,15 +671,14 @@ class JsonTest {
     Response response =
         new Json().toType("{\"state\":\"success\",\"value\":\"cheese\"}", Response.class);
     assertThat(response.getState()).isEqualTo("success");
-    assertThat(response.getStatus()).isZero();
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
   }
 
   @Test
-  void noStatusShouldBeNullInResponseObject() {
+  void noStatusShouldLeaveStateNullInResponseObject() {
     Response response = new Json().toType("{\"value\":\"cheese\"}", Response.class);
-    assertThat(response.getStatus()).isNull();
+    assertThat(response.getState()).isNull();
   }
 
   @Test
@@ -805,5 +831,46 @@ class JsonTest {
     Instant birth;
     Date wedding;
     Instant death;
+  }
+
+  public static class LoaderBean {
+    private String value;
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+  }
+
+  /** Loads its own copy of one class, so that class is not visible from Selenium's loader. */
+  private static class IsolatingClassLoader extends ClassLoader {
+    private final String isolated;
+
+    IsolatingClassLoader(Class<?> isolated) {
+      super(isolated.getClassLoader());
+      this.isolated = isolated.getName();
+    }
+
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+      if (!name.equals(isolated)) {
+        return super.loadClass(name, resolve);
+      }
+      synchronized (getClassLoadingLock(name)) {
+        Class<?> loaded = findLoadedClass(name);
+        if (loaded != null) {
+          return loaded;
+        }
+        try (InputStream in = getParent().getResourceAsStream(name.replace('.', '/') + ".class")) {
+          byte[] bytes = in.readAllBytes();
+          return defineClass(name, bytes, 0, bytes.length);
+        } catch (IOException e) {
+          throw new ClassNotFoundException(name, e);
+        }
+      }
+    }
   }
 }

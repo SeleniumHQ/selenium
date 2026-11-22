@@ -122,9 +122,9 @@ generate_bidi_library(
 VERSION = VERSIONS["javascript"]
 
 BROWSER_VERSIONS = [
-    "v155",
+    "v158",
     "v156",
-    "v154",
+    "v157",
 ]
 
 js_library(
@@ -172,6 +172,7 @@ npm_package(
         ":manager-sbom",
         ":manager-windows",
         ":prod-src-files",
+        "//javascript/selenium-webdriver/lib/atoms:accessibility_snapshot",
         "//javascript/selenium-webdriver/lib/atoms:bidi-mutation-listener",
         "//javascript/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/selenium-webdriver/lib/atoms:get_attribute",
@@ -209,15 +210,18 @@ pkg_tar(
 SMALL_TESTS = [
     "test/bidi/domain_test.js",
     "test/bidi/index_test.js",
+    "test/bidi/map_record_test.js",
     "test/bidi/network_types_test.js",
     "test/bidi/serialization/record_test.js",
     "test/bidi/serialization/union_test.js",
     "test/bidi/serialization/wire_contract_test.js",
     "test/bidi/vendor_test.js",
+    "test/firefox/service_test.js",
     "test/http/http_test.js",
     "test/http/util_test.js",
     "test/io/io_test.js",
     "test/io/zip_test.js",
+    "test/lib/accessibility_snapshot_test.js",
     "test/lib/bidi_connection_test.js",
     "test/lib/by_test.js",
     "test/lib/credentials_test.js",
@@ -493,6 +497,8 @@ eslint_bin.eslint_test(
         ":node_modules/ws",
         ":package-json",
         ":prod-src-files",
+        # lib/accessibility_snapshot.js requires the built atom module statically.
+        "//javascript/selenium-webdriver/lib/atoms:accessibility_snapshot",
     ],
     tags = [
         "lint",

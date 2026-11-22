@@ -267,6 +267,11 @@ function defineRecord(name, fields, options = {}) {
         if (!extensible) {
           throw new ValidationError(`${name}: unknown property "${key}"`)
         }
+        // A declared field's wire key would serialize next to that field and override it, so it
+        // must never ride the extension map (ADR 17786 decision 1).
+        if (byWire.has(key)) {
+          throw new ValidationError(`${name}: "${key}" is declared; pass it as "${byWire.get(key).name}"`)
+        }
         // Object.defineProperty, not `this[key] = ...`: key is caller-supplied and a
         // literal "__proto__" key assigned via bracket notation hijacks this instance's
         // actual prototype instead of becoming a field (CWE-1321). defineProperty always

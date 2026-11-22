@@ -2,22 +2,11 @@ name: CI - Java
 
 on:
   workflow_call:
-    inputs:
-      compile-manager:
-        description: Build Selenium Manager from source instead of downloading the pinned binary
-        required: false
-        type: boolean
-        default: false
   workflow_dispatch:
-    inputs:
-      compile-manager:
-        description: Build Selenium Manager from source instead of downloading the pinned binary
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   smoke:
@@ -28,9 +17,6 @@ jobs:
       matrix:
         os: [windows, macos]
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
-        # macOS runners are scarce, so only use for PRs and nightly runs
-        exclude:
-          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
         include:
           # Edge has no linux-arm64 build
           - os: ubuntu-24.04-arm
@@ -40,11 +26,9 @@ jobs:
       os: ${{ matrix.os }}
       needs-display: true
       rerun-with-debug: true
-      download-artifact-name: targets
+      remote-cache: true
       run: >
-        [ -s bazel-targets-java.txt ] || echo //java/... > bazel-targets-java.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
-        ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
-        --target_pattern_file=bazel-targets-java.txt
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
+        //java/...

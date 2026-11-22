@@ -19,6 +19,7 @@ package org.openqa.selenium.testing.drivers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -26,12 +27,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
+
+  private static final Logger LOG = Logger.getLogger(WebDriverBuilder.class.getName());
+  private static final int SAFARI_PAIRING_RETRIES = 5;
+  private static final Duration SAFARI_PAIRING_INTERVAL = Duration.ofSeconds(1);
 
   private static final LinkedList<Runnable> shutdownActions = new LinkedList<>();
   private static final Set<WebDriver> managedDrivers = new HashSet<>();
@@ -66,21 +73,48 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         Objects.requireNonNull(Browser.detect()).getCapabilities().merge(desiredCapabilities);
 
     WebDriver driver =
-        Stream.of(
-                new ExternalDriverSupplier(desiredCaps),
-                new GridSupplier(desiredCaps),
-                new RemoteSupplier(desiredCaps),
-                new TestInternetExplorerSupplier(desiredCaps),
-                new DefaultDriverSupplier(desiredCaps))
-            .map(Supplier::get)
-            .filter(Objects::nonNull)
-            .findFirst()
-            .orElseThrow(() ->
-                new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities));
+        retryWhileSafariIsPaired(() ->
+            Stream.of(
+                    new ExternalDriverSupplier(desiredCaps),
+                    new GridSupplier(desiredCaps),
+                    new RemoteSupplier(desiredCaps),
+                    new TestInternetExplorerSupplier(desiredCaps),
+                    new DefaultDriverSupplier(desiredCaps))
+                .map(Supplier::get)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElseThrow(() ->
+                    new RuntimeException(
+                        "Cannot instantiate driver instance: " + desiredCapabilities)));
 
     modifyLogLevel(driver);
     managedDrivers.add(driver);
     return driver;
+  }
+
+  // Safari can stay paired with the previous session for a moment after it quits.
+  private static WebDriver retryWhileSafariIsPaired(Supplier<WebDriver> createDriver) {
+    for (int retry = 1; ; retry++) {
+      try {
+        return createDriver.get();
+      } catch (WebDriverException e) {
+        if (retry > SAFARI_PAIRING_RETRIES || !isSafariPairingBusy(e)) {
+          throw e;
+        }
+        LOG.warning(
+            String.format("Safari pairing busy; retry %d/%d", retry, SAFARI_PAIRING_RETRIES));
+        try {
+          Thread.sleep(SAFARI_PAIRING_INTERVAL.toMillis());
+        } catch (InterruptedException ie) {
+          Thread.currentThread().interrupt();
+          throw e;
+        }
+      }
+    }
+  }
+
+  private static boolean isSafariPairingBusy(WebDriverException e) {
+    return String.valueOf(e.getMessage()).contains("instance is already paired");
   }
 
   private void modifyLogLevel(WebDriver driver) {

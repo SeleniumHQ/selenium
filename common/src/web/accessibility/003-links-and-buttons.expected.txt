@@ -1,0 +1,13 @@
+- document "Links and buttons"
+  - link "A link"
+  - text: Not a link
+  - link "Map"
+    - img "Map"
+  - button "Save now"
+  - button "Disabled" [disabled]
+  - button "Bold" [pressed]
+  - button "Menu"
+  - button "Send"
+  - button "Reset"
+  - button "Custom"
+  - link "Help"

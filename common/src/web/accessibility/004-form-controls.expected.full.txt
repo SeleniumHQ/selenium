@@ -1,0 +1,54 @@
+- document "Form controls"
+  - generic
+    - generic
+      - generic
+        - text: Name
+      - textbox "Name": Ada
+      - generic
+        - text: Email
+      - textbox "Email"
+      - generic
+        - checkbox "I agree" [checked]
+        - text: I agree
+      - checkbox "Partial"
+      - group "Size"
+        - generic
+          - text: Size
+        - generic
+          - radio "Small" [checked]
+          - text: Small
+        - generic
+          - radio "Large"
+          - text: Large
+      - generic
+        - text: Notes
+      - textbox "Notes": Some notes
+      - generic
+        - text: Choice
+      - combobox "Choice": Beta
+        - option "Alpha"
+        - option "Beta" [selected]
+      - generic
+        - text: Many
+      - listbox "Many"
+        - option "One" [selected]
+        - option "Two"
+      - generic
+        - text: Volume
+      - slider "Volume": 7
+      - generic
+        - text: Count
+      - spinbutton "Count": 3
+      - generic
+        - text: Progress
+      - progressbar "Progress": 2
+      - generic
+        - text: Level
+      - meter "Level": 0.25
+      - generic
+        - text: Secret
+      - textbox "Secret": •••••••
+      - group "Off"
+        - generic
+          - text: Off
+        - textbox "Off field" [disabled]

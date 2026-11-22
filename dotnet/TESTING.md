@@ -60,7 +60,7 @@ bazel test //dotnet/test/webdriver/... --flaky_test_attempts=3
 bazel test //dotnet/test/webdriver/... --test_output=all
 ```
 
-By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not depend on what the machine has installed. To have Selenium Manager handle browser and driver discovery instead, pass `--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present; to force a browser download and ignore drivers on `PATH`, pass `--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
+By default on x64 Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not depend on what the machine has installed. Elsewhere, Selenium Manager uses the pinned major version: it reuses an installed browser of that major or downloads one, Chrome always comes from Chrome for Testing, and installing Edge on Windows needs admin. To have Selenium Manager handle browser and driver discovery instead, pass `--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present; to force a browser download and ignore drivers on `PATH`, pass `--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
 
 Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for the Rust and Selenium Manager tests. We use GitHub Actions runners for checks that RBE cannot cover, such as OS-specific behavior and Selenium Manager on other platforms.
 

@@ -806,6 +806,7 @@ exports.Session = session.Session
 exports.ThenableWebDriver = ThenableWebDriver
 exports.WebDriver = webdriver.WebDriver
 exports.WebElement = webdriver.WebElement
+exports.AccessibilityNode = webdriver.AccessibilityNode
 exports.WebElementCondition = webdriver.WebElementCondition
 exports.WebElementPromise = webdriver.WebElementPromise
 exports.WebExtension = webExtension.WebExtension

@@ -1,0 +1,18 @@
+<!DOCTYPE html><html><head><style>
+.u::before { content: url(/testdata/map.png); }
+.ut::before { content: url("/testdata/map.png") "Pic "; }
+.a::before { content: attr(data-label); }
+.d::before { content: "x"; display: none; }
+.v::before { content: "x"; visibility: hidden; }
+#h::part(b)::before { content: "Part "; }
+</style></head><body>
+<button class="u">1</button><button class="ut">2</button><button class="a" data-label="Lbl">3</button><button class="d">4</button><button class="v">5</button>
+<div id="h"></div>
+<script>
+document.getElementById('h').attachShadow({mode:'open'}).innerHTML='<button part="b" id="pb">Save</button>';
+var out=[];
+['u','ut','a','d','v'].forEach(function(c){var e=document.querySelector('.'+c);var s=getComputedStyle(e,'::before');out.push(c+' content='+JSON.stringify(s.content)+' display='+s.display+' vis='+s.visibility);});
+var pb=document.getElementById('h').shadowRoot.getElementById('pb');
+out.push('part content='+JSON.stringify(getComputedStyle(pb,'::before').content));
+document.body.setAttribute('data-out', out.join(' || '));
+</script></body></html>

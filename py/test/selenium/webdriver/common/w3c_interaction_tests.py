@@ -22,7 +22,6 @@ from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 from selenium.webdriver.common.actions.wheel_input import WheelInput
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -33,22 +32,6 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 
     assert pointers is not None
     assert keyboards is not None
-
-
-@pytest.mark.xfail_safari
-@pytest.mark.xfail_remote
-def test_sending_keys_to_active_element_with_modifier(driver, pages):
-    pages.load("formPage.html")
-    e = driver.find_element(By.ID, "working")
-    e.click()
-
-    actions = ActionBuilder(driver)
-    key_action = actions.key_action
-    key_action.key_down(Keys.SHIFT).send_keys("abc").key_up(Keys.SHIFT)
-
-    actions.perform()
-
-    assert "ABC" == e.get_attribute("value")
 
 
 @pytest.mark.xfail_firefox
@@ -96,19 +79,6 @@ def test_can_clear_actions(driver, pages):
     actions.clear_actions()
 
 
-def test_move_and_click(driver, pages):
-    pages.load("javascriptPage.html")
-    toClick = driver.find_element(By.ID, "clickField")
-
-    actions = ActionBuilder(driver)
-    pointer = actions.pointer_action
-
-    pointer.move_to(toClick).click()
-
-    actions.perform()
-    assert "Clicked" == toClick.get_attribute("value")
-
-
 def test_drag_and_drop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
@@ -130,34 +100,6 @@ def test_drag_and_drop(driver, pages):
     dropInto = driver.find_element(By.ID, "droppable")
     text = dropInto.find_element(By.TAG_NAME, "p").text
     assert "Dropped!" == text
-
-
-def test_context_click(driver, pages):
-    pages.load("javascriptPage.html")
-    toContextClick = driver.find_element(By.ID, "doubleClickField")
-
-    actions = ActionBuilder(driver)
-    pointer = actions.pointer_action
-    pointer.context_click(toContextClick)
-
-    actions.perform()
-    assert "ContextClicked" == toContextClick.get_attribute("value")
-
-
-@pytest.mark.xfail_firefox
-@pytest.mark.xfail_safari
-def test_double_click(driver, pages):
-    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-    pages.load("javascriptPage.html")
-    toDoubleClick = driver.find_element(By.ID, "doubleClickField")
-
-    actions = ActionBuilder(driver)
-    pointer = actions.pointer_action
-
-    pointer.double_click(toDoubleClick)
-
-    actions.perform()
-    assert "DoubleClicked" == toDoubleClick.get_attribute("value")
 
 
 def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):

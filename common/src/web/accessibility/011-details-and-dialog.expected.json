@@ -1,0 +1,119 @@
+{
+  "role": "document",
+  "name": "Details and dialog",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "group",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "details",
+      "children": [
+        {
+          "role": "button",
+          "name": "Settings",
+          "description": "",
+          "states": {
+            "expanded": true
+          },
+          "element": "summary",
+          "children": []
+        },
+        {
+          "role": "paragraph",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "settings",
+          "children": [
+            {
+              "role": "text",
+              "name": "Settings body",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "dialog",
+      "name": "Confirm",
+      "description": "",
+      "states": {},
+      "element": "dialog",
+      "children": [
+        {
+          "role": "heading",
+          "name": "Confirm",
+          "description": "",
+          "states": {
+            "level": 2
+          },
+          "element": "dialog-title",
+          "children": []
+        },
+        {
+          "role": "paragraph",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "dialog-text",
+          "children": [
+            {
+              "role": "text",
+              "name": "Are you sure?",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "button",
+          "name": "OK",
+          "description": "",
+          "states": {},
+          "element": "ok",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "alert",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "alert",
+      "children": [
+        {
+          "role": "text",
+          "name": "Saved.",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "status",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "status",
+      "children": [
+        {
+          "role": "text",
+          "name": "3 items",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    }
+  ]
+}

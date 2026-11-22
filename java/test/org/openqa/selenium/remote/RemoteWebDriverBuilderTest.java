@@ -41,6 +41,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -638,6 +642,54 @@ class RemoteWebDriverBuilderTest {
             .build();
 
     assertThat(driver).isInstanceOf(HasDevTools.class);
+  }
+
+  @Test
+  void oneOfMetadataAndCapabilityOverwritesLogAtFine() {
+    Logger logger = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
+    Level previousLoggerLevel = logger.getLevel();
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.setLevel(Level.ALL);
+    logger.addHandler(handler);
+    try {
+      RemoteWebDriver.builder()
+          .oneOf(new ImmutableCapabilities("browserName", "firefox"))
+          .oneOf(new ImmutableCapabilities("browserName", "chrome"))
+          .addMetadata("cloud:key", "one")
+          .addMetadata("cloud:key", "two")
+          .setCapability("se:cheese", "brie")
+          .setCapability("se:cheese", "cheddar");
+
+      assertThat(records)
+          .filteredOn(
+              record -> record.getMessage().contains("Removing existing requested capabilities"))
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("Overwriting metadata"))
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("Overwriting capability"))
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previousLoggerLevel);
+    }
   }
 
   @SuppressWarnings("unchecked")

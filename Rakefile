@@ -146,15 +146,23 @@ task :format do |_task, arguments|
   Rake::Task['all:format'].invoke(*args)
 end
 
-def lint_actions
+desc 'Lint GitHub workflows with actionlint'
+task :lint_workflows do
   shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
   Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
+end
+
+desc 'Lint all shell scripts with shellcheck'
+task :lint_shell do
+  shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
+  sh shellcheck, *SeleniumRake.git.ls_files('*.sh').keys
 end
 
 desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
 task :lint do
   SeleniumRake.aggregate_errors(
-    shellcheck_and_actionlint: -> { lint_actions },
+    workflows: -> { Rake::Task['lint_workflows'].invoke },
+    shell: -> { Rake::Task['lint_shell'].invoke },
     all: -> { Rake::Task['all:lint'].invoke }
   )
 end

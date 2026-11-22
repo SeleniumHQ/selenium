@@ -1,3 +1,21 @@
+v4.53.0
+======
+* Support CDP versions: v155, v156, v157
+* Escape name locators sent to the driver (#18151)
+* [build] Automated Dependency Update (#18242)
+* hold generated BiDi numbers to their declared ranges (#18266)
+* add the accessibility snapshot atom and the binding methods (#18232)
+* [grid] Spread new sessions across Nodes again (#18281)
+* Escape frame ids that are not valid CSS identifiers (#18274)
+* Log remote-client diagnostics at a fixed FINE level (#18254)
+* [build] Automated Browser Version Update (major) with CDP (#18278)
+* stop reading and writing Response.status internally (#18171)
+* Speed up JSON serialisation and parsing (#17750)
+* remove Response.status (#18172)
+* [bidi] type vendor-declared BiDi fields instead of dropping the… (#18233)
+* [bidi] Generate listExtensions and add tests (#18322)
+* Remove the accessibility snapshot client implementations (#18291)
+
 v4.52.0
 ======
 * Support CDP versions: v154, v155, v156

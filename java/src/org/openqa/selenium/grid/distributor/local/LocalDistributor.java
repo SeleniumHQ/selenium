@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -448,34 +447,30 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   @Nullable
   private SlotId reserveSlot(RequestId requestId, Capabilities caps) {
-    // Use read lock for slot selection to allow concurrent reads
-    // This reduces contention compared to using write lock for the entire operation
-    Set<SlotId> slotIds;
-    Lock readLock = lock.readLock();
-    readLock.lock();
+    // Select and reserve under the same write lock, so the next request sees this reservation
+    // in the node load. Otherwise, concurrent requests pick the same node and fill it before
+    // using the others.
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
     try {
-      slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
-    } finally {
-      readLock.unlock();
-    }
-
-    if (slotIds.isEmpty()) {
-      LOG.log(
-          getDebugLogLevel(),
-          String.format("No slots found for request %s and capabilities %s", requestId, caps));
-      return null;
-    }
-
-    // Try to reserve each candidate slot
-    // The reserve() method uses write lock briefly and atomic operations ensure thread safety
-    // Multiple threads may select the same slot but only one will successfully reserve it
-    for (SlotId slotId : slotIds) {
-      if (reserve(slotId)) {
-        return slotId;
+      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
+      if (slotIds.isEmpty()) {
+        LOG.log(
+            Level.FINE,
+            String.format("No slots found for request %s and capabilities %s", requestId, caps));
+        return null;
       }
-    }
 
-    return null;
+      for (SlotId slotId : slotIds) {
+        if (reserve(slotId)) {
+          return slotId;
+        }
+      }
+
+      return null;
+    } finally {
+      writeLock.unlock();
+    }
   }
 
   private boolean isNotSupported(Capabilities caps) {
@@ -570,9 +565,7 @@ public class LocalDistributor extends Distributor implements Closeable {
               sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req));
             } catch (RejectedExecutionException e) {
               LOG.log(
-                  getDebugLogLevel(),
-                  "Dropping session creation task while shutting down distributor",
-                  e);
+                  Level.FINE, "Dropping session creation task while shutting down distributor", e);
             }
           });
         }
@@ -623,8 +616,8 @@ public class LocalDistributor extends Distributor implements Closeable {
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try (Span childSpan = span.createSpan("distributor.retry")) {
-            if (LOG.isLoggable(getDebugLogLevel())) {
-              LOG.log(getDebugLogLevel(), "Retrying {0}", sessionRequest.getDesiredCapabilities());
+            if (LOG.isLoggable(Level.FINE)) {
+              LOG.log(Level.FINE, "Retrying {0}", sessionRequest.getDesiredCapabilities());
             }
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 

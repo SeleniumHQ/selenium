@@ -58,8 +58,15 @@ module Selenium
             attr_reader proxy: untyped
             attr_reader unhandled_prompt_behavior: untyped
             attr_reader web_socket_url: untyped
+            attr_reader moz_build_id: untyped
+            attr_reader moz_headless: untyped
+            attr_reader moz_platform_version: untyped
+            attr_reader moz_process_id: untyped
+            attr_reader moz_profile: untyped
+            attr_reader moz_shutdown_timeout: untyped
+            attr_reader moz_user_context: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String, ?extensions: Hash[String, untyped]) -> instance
+            def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String, ?moz_build_id: String, ?moz_headless: bool, ?moz_platform_version: String, ?moz_process_id: Integer, ?moz_profile: String, ?moz_shutdown_timeout: Integer, ?moz_user_context: String, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class ProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Union

@@ -1,0 +1,23 @@
+- document "Headings and landmarks"
+  - banner
+    - heading "Site title" [level=1]
+    - navigation
+      - link "Home"
+      - link "Docs"
+  - main
+    - heading "Section" [level=2]
+    - region "Updates"
+      - heading "Latest" [level=3]
+      - paragraph
+        - text: First paragraph.
+    - paragraph
+      - text: Unlabelled section content.
+    - complementary
+      - heading "Related" [level=4]
+    - heading "ARIA heading" [level=5]
+    - search
+      - text: Search
+      - searchbox "Search": kittens
+  - contentinfo
+    - paragraph
+      - text: Footer text

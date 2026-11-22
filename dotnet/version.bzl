@@ -5,9 +5,9 @@ load("//:version.bzl", "VERSIONS")
 SE_VERSION = VERSIONS["dotnet"]
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
-    "v155",
+    "v158",
     "v156",
-    "v154",
+    "v157",
 ]
 
 ASSEMBLY_COMPANY = "Selenium Committers"

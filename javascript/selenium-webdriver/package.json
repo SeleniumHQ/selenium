@@ -25,14 +25,14 @@
     "@bazel/runfiles": "^6.5.0",
     "jszip": "^3.10.2",
     "tmp": "^0.2.7",
-    "ws": "^8.22.1"
+    "ws": "^8.23.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "cddl": "^0.21.2",
     "cddl2ts": "^0.10.2",
     "clean-jsdoc-theme": "^4.3.3",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-mocha": "^11.3.0",
     "eslint-plugin-n": "^18.5.0",
@@ -45,7 +45,7 @@
     "mocha": "^11.8.0",
     "mocha-junit-reporter": "^2.2.1",
     "multer": "^2.5.0",
-    "prettier": "^3.9.10",
+    "prettier": "^3.10.1",
     "serve-index": "^1.9.2",
     "sinon": "^22.1.0",
     "supports-color": "^10.2.2"

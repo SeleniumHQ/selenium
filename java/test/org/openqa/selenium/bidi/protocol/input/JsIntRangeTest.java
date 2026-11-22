@@ -62,9 +62,10 @@ class JsIntRangeTest {
         .hasMessageContaining("x");
   }
 
-  // browsingContext.LocateNodesParameters.maxNodeCount is js-uint (unsigned) — same upper bound
-  // as js-int, but 0 is the floor instead of -(2^53 - 1). It's optional, so this also exercises
-  // the fluent setter path (a caller-created value), not just the constructor.
+  // browsingContext.LocateNodesParameters.maxNodeCount is js-uint (unsigned) narrowed by its own
+  // ".ge 1" — same upper bound as js-int, but 1 is the floor instead of -(2^53 - 1). It's
+  // optional, so this also exercises the fluent setter path (a caller-created value), not just
+  // the constructor.
 
   private static LocateNodesParameters params() {
     return new LocateNodesParameters("context-1", new CssLocator("css", "div"));
@@ -78,10 +79,17 @@ class JsIntRangeTest {
   }
 
   @Test
-  void jsUintAcceptsZero() {
-    LocateNodesParameters p = params().setMaxNodeCount(0L);
+  void fieldBoundRejectsZeroThatTheAliasAloneWouldAllow() {
+    assertThatThrownBy(() -> params().setMaxNodeCount(0L))
+        .isInstanceOf(BiDiException.class)
+        .hasMessageContaining("maxNodeCount");
+  }
 
-    assertThat(p.getMaxNodeCount()).contains(0L);
+  @Test
+  void fieldBoundAcceptsItsOwnFloor() {
+    LocateNodesParameters p = params().setMaxNodeCount(1L);
+
+    assertThat(p.getMaxNodeCount()).contains(1L);
   }
 
   @Test

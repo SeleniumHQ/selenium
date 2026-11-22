@@ -213,8 +213,7 @@ class Proxy:
                 else:
                     raise TypeError("no_proxy must be a comma-separated string or a list of strings")
 
-        elif proxy_type == "pac":
-            if self.proxyAutoconfigUrl:
-                result["proxyAutoconfigUrl"] = self.proxyAutoconfigUrl
+        elif proxy_type == "pac" and self.proxyAutoconfigUrl:
+            result["proxyAutoconfigUrl"] = self.proxyAutoconfigUrl
 
         return result

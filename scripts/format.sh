@@ -155,6 +155,8 @@ if [[ "$run_lint" == "true" ]]; then
     echo "    actionlint (with shellcheck)" >&2
     SHELLCHECK="$(bazel run --run_under=echo @multitool//tools/shellcheck)"
     bazel run @multitool//tools/actionlint:cwd -- -shellcheck "$SHELLCHECK"
+    echo "    shellcheck scripts" >&2
+    (cd "$WORKSPACE_ROOT" && git ls-files -z '*.sh' | xargs -0 "$SHELLCHECK")
 fi
 
 # Check if formatting introduced new changes (comparing to baseline)

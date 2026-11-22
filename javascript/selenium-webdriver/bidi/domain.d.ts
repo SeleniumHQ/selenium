@@ -33,6 +33,11 @@ export function event<T>(method: string, type?: { fromWire(payload: unknown): T 
 /** Internal construction guard — only a generated `Class.create(driver)` passes this. Never use directly. */
 export const DOMAIN_TOKEN: unique symbol
 
+/**
+ * Base of the generated BiDi domain classes. Unsupported, like them.
+ * @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+ * @internal
+ */
 export declare class Domain {
   protected constructor(bidi: unknown, token: typeof DOMAIN_TOKEN)
   protected static connect(driver: unknown): Promise<unknown>

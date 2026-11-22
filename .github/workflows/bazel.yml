@@ -46,11 +46,6 @@ on:
         required: false
         type: string
         default: ''
-      download-artifact-name:
-        description: Name of an artifact to download into the workspace before running
-        required: false
-        type: string
-        default: ''
       artifact-name:
         description: Name of artifact to upload
         required: false
@@ -66,13 +61,13 @@ on:
         required: false
         type: boolean
         default: false
-      cache-name:
-        description: Name for cache restore (restores {name}.gz with key {name}-)
-        required: false
-        type: string
-        default: ''
       cache-save:
         description: Save the Bazel cache after the run (avoids multiple jobs clobbering it)
+        required: false
+        type: boolean
+        default: false
+      remote-cache:
+        description: Read the EngFlow remote cache (trunk pushes also write it; the nightly reads it but re-runs every test)
         required: false
         type: boolean
         default: false
@@ -81,11 +76,6 @@ on:
         required: false
         type: boolean
         default: true
-      gem-trusted-publishing:
-        description: Exchange GitHub OIDC token for a RubyGems API token (requires trusted publisher configured on rubygems.org)
-        required: false
-        type: boolean
-        default: false
     outputs:
       output:
         description: Value the run script writes to $GITHUB_OUTPUT as "output=..."; empty when unused
@@ -104,7 +94,6 @@ jobs:
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
       TWINE_NIGHTLY_PASSWORD: ${{ secrets.TWINE_NIGHTLY_PASSWORD }}
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       MSYS_NO_PATHCONV: 1
@@ -131,25 +120,13 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
-      - name: Pull latest changes from head ref for PRs
-        if: contains(github.head_ref, 'renovate/')
-        shell: bash
-        run: git pull origin "$HEAD_REF"
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-      - name: Pull latest changes from ref for branch pushes
-        if: contains(github.ref, 'renovate/')
-        shell: bash
-        run: git pull origin "$GIT_REF"
-        env:
-          GIT_REF: ${{ github.ref }}
       - name: Delete browsers and drivers
         if: startsWith(inputs.os, 'ubuntu') || inputs.os == 'macos'
         run: ./scripts/github-actions/delete-browsers-drivers.sh
       - name: Delete drivers (Windows)
         if: inputs.os == 'windows'
         shell: pwsh
-        run: ./scripts/github-actions/delete-browsers-drivers.ps1
+        run: ./scripts/github-actions/delete-drivers.ps1
       - name: Free disk space
         if: contains(inputs.os, 'ubuntu')
         shell: bash
@@ -162,19 +139,6 @@ jobs:
         if: inputs.os != 'macos'
         shell: bash
         run: . ./scripts/github-actions/disk-status.sh
-      - name: Restore cache
-        if: inputs.cache-name != ''
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ inputs.cache-name }}
-          key: ${{ inputs.cache-name }}-
-          restore-keys: ${{ inputs.cache-name }}-
-      - name: Download artifact
-        if: inputs.download-artifact-name != ''
-        uses: actions/download-artifact@v8
-        with:
-          name: ${{ inputs.download-artifact-name }}
-        continue-on-error: true
       - name: Set Python version
         if: inputs.python-version != ''
         run: echo '${{ inputs.python-version }}' > py/.python-version
@@ -191,22 +155,21 @@ jobs:
         with:
           cache-save: ${{ inputs.cache-save }}
           bazelisk-cache: true
-          bazelrc: common --color=yes
+          bazelrc: |
+            common --color=yes
+            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && (github.event_name == 'push' && 'build --config=remote-cache-write' || 'build --config=remote-cache') || '' }}
+            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && github.event_name == 'schedule' && 'test --nocache_test_results' || '' }}
+            ${{ github.event_name == 'schedule' && 'test:gh-browser --manager=download' || '' }}
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
           external-cache: false
-          # Keep the key files in sync with the paths filter in gh-cache.yml
-          repository-cache: ${{ inputs.use-cache && '[MODULE.bazel, multitool.lock.json, pnpm-lock.yaml, rust/Cargo.lock, java/maven_install.json, py/requirements_lock.txt, rb/Gemfile.lock, dotnet/paket.lock, common/selenium_manager.bzl]' || 'false' }}
+          # Keep the key files in sync with the paths filter in gh-cache.yml; populate-repository-cache.sh writes build/repository-cache-run
+          repository-cache: ${{ inputs.use-cache && '[MODULE.bazel, multitool.lock.json, pnpm-lock.yaml, rust/Cargo.lock, java/maven_install.json, py/requirements_lock.txt, rb/Gemfile.lock, dotnet/paket.lock, build/repository-cache-run]' || 'false' }}
       - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash
         run: . ./scripts/github-actions/disk-status.sh
-      - name: Clear old repository cache
-        if: inputs.cache-save
-        shell: bash
-        run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then rm -rf /d/b-repo; else rm -rf "$HOME/.cache/bazel-repo"; fi
       - name: Setup Fluxbox and Xvfb
         if: inputs.needs-display && contains(inputs.os, 'ubuntu')
         run: |
@@ -236,12 +199,20 @@ jobs:
           brew install --cask safari-technology-preview
           sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
       - name: Configure RubyGems credentials via OIDC
-        if: inputs.gem-trusted-publishing
+        if: contains(github.workflow_ref, '/.github/workflows/release.yml@') && contains(inputs.run, 'ruby:release')
         uses: rubygems/configure-rubygems-credentials@v2.1.0
+      - name: Get NuGet API key via OIDC
+        id: nuget-login
+        if: contains(github.workflow_ref, '/.github/workflows/release.yml@') && contains(inputs.run, 'dotnet:release')
+        uses: NuGet/login@v1.2.0
+        with:
+          user: ${{ vars.NUGET_USER }}
       - name: Run Bazel
         id: run-bazel
         continue-on-error: true
         shell: bash
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
           mkdir -p build
           {
@@ -252,12 +223,17 @@ jobs:
         if: steps.run-bazel.outcome == 'failure'
         continue-on-error: true
         shell: bash
-        run: ./scripts/github-actions/retry-transient-download.sh '${{ inputs.run }}'
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+          RUN_CMD: ${{ inputs.run }}
+        run: ./scripts/github-actions/retry-transient-download.sh "$RUN_CMD"
       - name: Rerun failures with debug
         id: rerun-failures
         if: steps.run-bazel.outcome == 'failure' && (steps.retry-transient.outputs.retried != 'true' || steps.retry-transient.outcome == 'failure')
         shell: bash
-        run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
+        env:
+          RUN_CMD: ${{ inputs.run }}
+        run: ./scripts/github-actions/rerun-failures.sh "$RUN_CMD" '${{ inputs.rerun-with-debug }}'
       - name: Collect failed logs
         if: always() && steps.run-bazel.outcome == 'failure'
         shell: bash
@@ -269,22 +245,22 @@ jobs:
           name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 7
           path: build/failures/**
-      - name: Parse flaky results
-        id: parse-flaky
+      - name: Record test health
+        id: record-test-health
         if: ${{ !cancelled() && inputs.rerun-with-debug && github.event_name == 'schedule' && github.ref == 'refs/heads/trunk' }}
         continue-on-error: true
         shell: bash
         env:
           JOB_ID: ${{ job.check_run_id }}
-        run: ./scripts/github-actions/parse-flaky-results.sh
-      - name: Upload flaky results
-        if: always() && steps.parse-flaky.outputs.results == 'true'
+        run: ./scripts/github-actions/record-test-health.sh
+      - name: Upload test health
+        if: always() && steps.record-test-health.outputs.results == 'true'
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
+          name: test-health-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 60
-          path: build/failures/results.jsonl
+          path: build/test-health/results.jsonl
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3

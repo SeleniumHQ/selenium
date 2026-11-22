@@ -23,7 +23,12 @@ jobs:
           if [[ "$ACTION" == opened ]]; then
             gh pr comment "$NUMBER" --repo "$REPO" --body /agentic_describe
           fi
+          stale=$(gh api "repos/$REPO/issues/$NUMBER/comments" --paginate \
+            --jq '.[] | select(.user.login == "selenium-ci" and .body == "/agentic_review" and .reactions.eyes > 0) | .id') || true
           gh pr comment "$NUMBER" --repo "$REPO" --body /agentic_review
+          for id in $stale; do
+            gh api -X DELETE "repos/$REPO/issues/comments/$id" || true
+          done
         env:
           # selenium-ci holds a Qodo seat, and reading team membership needs an org-scoped token
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
@@ -41,9 +46,15 @@ jobs:
     steps:
       - name: Post Qodo command for label
         run: |
-          gh pr comment "$NUMBER" --repo "$REPO" --body "/agentic_${LABEL#Q-qodo-}"
+          command="/agentic_${LABEL#Q-qodo-}"
+          stale=$(gh api "repos/$REPO/issues/$NUMBER/comments" --paginate \
+            --jq ".[] | select(.user.login == \"selenium-ci\" and .body == \"$command\" and .reactions.eyes > 0) | .id") || true
+          gh pr comment "$NUMBER" --repo "$REPO" --body "$command"
           # Removing the label lets it be applied again to request another run
           gh api -X DELETE "repos/$REPO/issues/$NUMBER/labels/$LABEL"
+          for id in $stale; do
+            gh api -X DELETE "repos/$REPO/issues/comments/$id" || true
+          done
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
           LABEL: ${{ github.event.label.name }}

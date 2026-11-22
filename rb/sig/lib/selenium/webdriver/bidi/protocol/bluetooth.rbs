@@ -243,6 +243,10 @@ module Selenium
           def simulate_characteristic_response: (context: String, address: String, service_uuid: String, characteristic_uuid: String, type: Symbol, code: Integer, ?data: Array[Integer]) -> untyped
           def simulate_descriptor: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: Symbol) -> untyped
           def simulate_descriptor_response: (context: String, address: String, service_uuid: String, characteristic_uuid: String, descriptor_uuid: String, type: Symbol, code: Integer, ?data: Array[Integer]) -> untyped
+          def add_request_device_prompt_updated_listener: () { (Bluetooth::RequestDevicePromptUpdatedParameters) -> void } -> String
+          def add_gatt_connection_attempted_listener: () { (Bluetooth::GattConnectionAttemptedParameters) -> void } -> String
+          def add_characteristic_event_generated_listener: () { (Bluetooth::CharacteristicEventGeneratedParameters) -> void } -> String
+          def add_descriptor_event_generated_listener: () { (Bluetooth::DescriptorEventGeneratedParameters) -> void } -> String
         end
       end
     end

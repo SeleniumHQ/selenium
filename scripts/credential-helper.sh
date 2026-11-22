@@ -15,7 +15,7 @@ function netrc_password() {
     return
   fi
 
-  cat $HOME/.netrc | sed -e 's/#.*//' | awk -v host="$1" -v field=password '{
+  sed -e 's/#.*//' "$HOME/.netrc" | awk -v host="$1" -v field=password '{
         if ($1 == "machine") {
           found = ($2 == host);
         } else if (found && ($1 == field)) {
@@ -30,7 +30,7 @@ function netrc_password() {
 function get() {
   INPUT=$1
 
-  if [ -z "$(echo "$INPUT" | grep "gypsum.cluster")" ]; then
+  if ! echo "$INPUT" | grep -q "gypsum.cluster"; then
     exit 0
   fi
 

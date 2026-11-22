@@ -63,6 +63,18 @@ module Selenium
         expect(mock_process).not_to have_received(:wait)
       end
 
+      it 'passes environment variables to the server process' do
+        described_class.new(jar, port: port, env: {'FOO' => 'bar'}).start
+
+        expect(mock_process).to have_received(:env=).with({'FOO' => 'bar'})
+      end
+
+      it 'keeps the inherited environment by default' do
+        described_class.new(jar, port: port).start
+
+        expect(mock_process).not_to have_received(:env=)
+      end
+
       it 'adds additional args' do
         server = described_class.new(jar, port: port)
         server << %w[foo bar]
@@ -104,6 +116,44 @@ module Selenium
         expect {
           described_class.new(jar, port: port, timeout: 0).start
         }.to raise_error(Selenium::Server::Error)
+      end
+
+      context 'when the logger is at debug' do
+        around do |example|
+          logger = WebDriver.logger
+          original_level = logger.level
+          logger.level = :debug unless logger.debug?
+          example.run
+        ensure
+          logger.level = original_level unless logger.level == original_level
+        end
+
+        it 'sends server output to the logger' do
+          described_class.new(jar, port: port).start
+
+          expect(mock_process).to have_received(:io=).with(WebDriver.logger.io)
+        end
+
+        it 'keeps a log file set by the user' do
+          described_class.new(jar, port: port, log: 'server.log').start
+
+          expected = ENV.key?('SE_DEBUG') ? WebDriver.logger.io : 'server.log'
+          expect(mock_process).to have_received(:io=).with(expected)
+        end
+      end
+
+      context 'when SE_DEBUG is set' do
+        around { |example| with_env(SE_DEBUG: 'true') { example.run } }
+
+        it 'sends server output to the logger' do
+          described_class.new(jar, port: port).start
+
+          expect(mock_process).to have_received(:io=).with(WebDriver.logger.io)
+        end
+
+        it 'warns when overriding a log file set by the user' do
+          expect { described_class.new(jar, port: port, log: 'server.log').start }.to have_warning(:se_debug)
+        end
       end
     end
 

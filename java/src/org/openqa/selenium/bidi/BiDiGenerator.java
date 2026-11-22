@@ -206,6 +206,7 @@ public class BiDiGenerator {
 
     @SuppressWarnings("unchecked")
     Generator(Map<String, Object> schema) {
+      schema = foldVendorExtensions(schema);
       this.schema =
           (Map<String, Object>)
               inlineSyntheticMaps(schema, (Map<String, Object>) schema.get("types"));
@@ -215,9 +216,7 @@ public class BiDiGenerator {
           types.put(entry.getKey(), (Map<String, Object>) entry.getValue());
         }
       }
-      List<Map<String, Object>> commands =
-          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
-              .orElse(Collections.emptyList());
+      List<Map<String, Object>> commands = allCommands();
       List<Map<String, Object>> events =
           Optional.ofNullable((List<Map<String, Object>>) schema.get("events"))
               .orElse(Collections.emptyList());
@@ -227,6 +226,18 @@ public class BiDiGenerator {
       this.variantParent = computeVariantParent();
       this.scalarUnionParent = computeScalarUnionParent();
       this.syntheticChildren = computeSyntheticChildren();
+    }
+
+    // The spec's commands plus the vendor-variant commands foldVendorExtensions adds (each sends a
+    // vendor-variant params record), so those records count as reachable, sendable types.
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> allCommands() {
+      List<Map<String, Object>> all = new ArrayList<>();
+      for (String key : new String[] {"commands", "vendorCommands"}) {
+        Object list = schema.get(key);
+        if (list instanceof List) all.addAll((List<Map<String, Object>>) list);
+      }
+      return all;
     }
 
     @SuppressWarnings("unchecked")
@@ -248,9 +259,7 @@ public class BiDiGenerator {
 
     @SuppressWarnings("unchecked")
     private Set<String> computeSenderTypes() {
-      List<Map<String, Object>> commands =
-          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
-              .orElse(Collections.emptyList());
+      List<Map<String, Object>> commands = allCommands();
       Set<String> result = new LinkedHashSet<>();
       java.util.ArrayDeque<String> queue = new java.util.ArrayDeque<>();
       for (Map<String, Object> cmd : commands) {
@@ -293,9 +302,7 @@ public class BiDiGenerator {
 
     @SuppressWarnings("unchecked")
     private Set<String> computeReceivableTypes() {
-      List<Map<String, Object>> commands =
-          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
-              .orElse(Collections.emptyList());
+      List<Map<String, Object>> commands = allCommands();
       List<Map<String, Object>> events =
           Optional.ofNullable((List<Map<String, Object>>) schema.get("events"))
               .orElse(Collections.emptyList());
@@ -397,6 +404,10 @@ public class BiDiGenerator {
 
       Map<String, List<Map<String, Object>>> cmdByDomain = groupByDomain(commands);
       Map<String, List<Map<String, Object>>> evtByDomain = groupByDomain(events);
+      Map<String, List<Map<String, Object>>> vendorCmdByDomain =
+          groupByDomain(
+              Optional.ofNullable((List<Map<String, Object>>) schema.get("vendorCommands"))
+                  .orElse(Collections.emptyList()));
 
       Set<String> domains = new LinkedHashSet<>();
       domains.addAll(cmdByDomain.keySet());
@@ -407,6 +418,7 @@ public class BiDiGenerator {
             domain,
             cmdByDomain.getOrDefault(domain, Collections.emptyList()),
             evtByDomain.getOrDefault(domain, Collections.emptyList()),
+            vendorCmdByDomain.getOrDefault(domain, Collections.emptyList()),
             outDir);
       }
 
@@ -521,6 +533,7 @@ public class BiDiGenerator {
         String domain,
         List<Map<String, Object>> commands,
         List<Map<String, Object>> events,
+        List<Map<String, Object>> vendorCommands,
         Path outDir)
         throws IOException {
 
@@ -584,7 +597,43 @@ public class BiDiGenerator {
       sb.append("    super(driver);\n");
       sb.append("  }\n\n");
 
-      // Command methods
+      appendCommandMethods(sb, commands, moduleDomain, "");
+
+      // The vendor variant of this module (#18184): a subclass that sends a vendor-variant params
+      // record, so a vendor-only field reaches the wire only when the caller picks the variant.
+      // Choosing the variant for a session's browser belongs to the layer that owns the session.
+      Map<String, List<Map<String, Object>>> byVendor = new LinkedHashMap<>();
+      for (Map<String, Object> cmd : vendorCommands) {
+        byVendor.computeIfAbsent(str(cmd, "vendor"), k -> new ArrayList<>()).add(cmd);
+      }
+      for (Map.Entry<String, List<Map<String, Object>>> v : byVendor.entrySet()) {
+        String variant = capitalize(v.getKey());
+        sb.append("  /** ")
+            .append(v.getKey())
+            .append(": vendor variant of ")
+            .append(cls)
+            .append(", for a session on that vendor's browser. */\n");
+        sb.append("  @Beta\n");
+        sb.append("  @ApiStatus.Internal\n");
+        sb.append("  public static class ")
+            .append(variant)
+            .append(" extends ")
+            .append(cls)
+            .append(" {\n\n");
+        sb.append("    public ").append(variant).append("(WebDriver driver) {\n");
+        sb.append("      super(driver);\n");
+        sb.append("    }\n\n");
+        appendCommandMethods(sb, v.getValue(), moduleDomain, "  ");
+        sb.append("  }\n\n");
+      }
+
+      sb.append("}\n");
+
+      writeFile(outDir, pkg.replace('.', '/') + "/" + cls + ".java", sb.toString());
+    }
+
+    private void appendCommandMethods(
+        StringBuilder sb, List<Map<String, Object>> commands, String moduleDomain, String indent) {
       for (Map<String, Object> cmd : commands) {
         String method = str(cmd, "method");
         String cmdName = escapeReserved(str(cmd, "name"));
@@ -609,7 +658,8 @@ public class BiDiGenerator {
           paramsMapExpr = "params.toMap()";
         }
 
-        sb.append("  public ")
+        sb.append(indent)
+            .append("  public ")
             .append(returnType)
             .append(" ")
             .append(cmdName)
@@ -618,13 +668,15 @@ public class BiDiGenerator {
             .append(") {\n");
 
         if ("void".equals(returnType)) {
-          sb.append("    send(new Command<>(\"")
+          sb.append(indent)
+              .append("    send(new Command<>(\"")
               .append(method)
               .append("\", ")
               .append(paramsMapExpr)
               .append("));\n");
         } else if (resultArg != null) {
-          sb.append("    return send(new Command<>(\"")
+          sb.append(indent)
+              .append("    return send(new Command<>(\"")
               .append(method)
               .append("\", ")
               .append(paramsMapExpr)
@@ -632,18 +684,15 @@ public class BiDiGenerator {
               .append(resultArg)
               .append("));\n");
         } else {
-          sb.append("    return send(new Command<>(\"")
+          sb.append(indent)
+              .append("    return send(new Command<>(\"")
               .append(method)
               .append("\", ")
               .append(paramsMapExpr)
               .append("));\n");
         }
-        sb.append("  }\n\n");
+        sb.append(indent).append("  }\n\n");
       }
-
-      sb.append("}\n");
-
-      writeFile(outDir, pkg.replace('.', '/') + "/" + cls + ".java", sb.toString());
     }
 
     // ─── Record POJO ──────────────────────────────────────────────
@@ -891,7 +940,7 @@ public class BiDiGenerator {
               .append(" ")
               .append(f.name)
               .append(") {\n");
-          appendJsRangeValidation(sb, f, f.name, true, m + "  ");
+          appendRangeValidation(sb, f, f.name, true, m + "  ");
           sb.append(m)
               .append("  this.")
               .append(f.name)
@@ -1081,6 +1130,22 @@ public class BiDiGenerator {
       // an integer or enum field here is actually held to its declared type, not silently
       // accepted from a string/fraction or matched case-insensitively.
       sb.append(m).append("  Json json = ConverterFunctions.JSON;\n");
+      // map.get() can't tell a missing key from an explicit null, so a required-nullable field
+      // would otherwise pass with its key absent. ConstructorCoercer rejects that
+      // (throwForMissingParameter); this keeps fromJson to the same contract.
+      for (FieldInfo f : fields) {
+        if (f.required) {
+          sb.append(m).append("  if (!map.containsKey(\"").append(f.wire).append("\")) {\n");
+          sb.append(m)
+              .append("    throw new org.openqa.selenium.json.JsonException(")
+              .append("\"Missing JSON value for ")
+              .append(cls)
+              .append(".")
+              .append(f.wire)
+              .append("\");\n");
+          sb.append(m).append("  }\n");
+        }
+      }
       for (FieldInfo f : fields) {
         String decodeType =
             f.required ? resolveJavaType(f.typeRef, domain, true) : fieldJavaType(f, domain);
@@ -1346,14 +1411,69 @@ public class BiDiGenerator {
       return null;
     }
 
-    // js-int/js-uint (see resolveJavaType's alias comment) additionally restrict a plain
-    // "integer" (already resolved to Long/long) to JavaScript's safe-integer range: the browser's
-    // own numeric type is a double, so a value the wire can represent as a signed 64-bit integer
-    // may still be one BiDi itself declares invalid — js-uint further requires non-negative.
-    // Checked here, in the single constructor both directions (an outbound caller-built value and
-    // an inbound deserialized one) share, so a value outside the range is rejected identically
-    // either way, the same as appendConstValidation does for a spec'd const value.
-    private static final long JS_SAFE_INTEGER_MAX = 9007199254740991L; // 2^53 - 1
+    // The schema declares numeric bounds both on aliases (js-int/js-uint hold an "integer" to
+    // JavaScript's safe-integer range, since the browser's own numeric type is a double) and on
+    // the fields that use them (js-uint .ge 1). A field is held to both: the alias chain's bounds,
+    // narrowed by each referencing node's own. Checked in the single constructor both directions
+    // (an outbound caller-built value and an inbound deserialized one) share, so a value outside
+    // the range is rejected identically either way, the same as appendConstValidation does for a
+    // spec'd const value.
+    private static final class Bounds {
+      private java.math.BigDecimal min;
+      private boolean exclusiveMin;
+      private java.math.BigDecimal max;
+      private boolean exclusiveMax;
+
+      private boolean isEmpty() {
+        return min == null && max == null;
+      }
+    }
+
+    /** The "integer" or "number" a type ref resolves to through aliases, or null. */
+    private String numericPrimitive(Map<String, Object> typeRef) {
+      if (typeRef == null) return null;
+      String primitive = str(typeRef, "primitive");
+      if (primitive != null) {
+        return "integer".equals(primitive) || "number".equals(primitive) ? primitive : null;
+      }
+      String ref = str(typeRef, "ref");
+      Map<String, Object> named = ref != null ? types.get(ref) : null;
+      if (named == null || !"alias".equals(str(named, "kind"))) return null;
+      return numericPrimitive(mapField(named, "type"));
+    }
+
+    private Bounds bounds(Map<String, Object> typeRef) {
+      Bounds bounds = new Bounds();
+      if (typeRef == null || numericPrimitive(typeRef) == null) return bounds;
+      String ref = str(typeRef, "ref");
+      if (ref != null) {
+        bounds = bounds(mapField(types.get(ref), "type"));
+      }
+      narrow(bounds, typeRef);
+      return bounds;
+    }
+
+    // Each side keeps the tighter of the two; at a tie, the exclusive one.
+    private static void narrow(Bounds bounds, Map<String, Object> node) {
+      if (node.get("min") != null) {
+        java.math.BigDecimal min = new java.math.BigDecimal(node.get("min").toString());
+        boolean exclusive = Boolean.TRUE.equals(node.get("exclusiveMin"));
+        int comparison = bounds.min == null ? 1 : min.compareTo(bounds.min);
+        if (comparison > 0 || (comparison == 0 && exclusive)) {
+          bounds.min = min;
+          bounds.exclusiveMin = exclusive;
+        }
+      }
+      if (node.get("max") != null) {
+        java.math.BigDecimal max = new java.math.BigDecimal(node.get("max").toString());
+        boolean exclusive = Boolean.TRUE.equals(node.get("exclusiveMax"));
+        int comparison = bounds.max == null ? -1 : max.compareTo(bounds.max);
+        if (comparison < 0 || (comparison == 0 && exclusive)) {
+          bounds.max = max;
+          bounds.exclusiveMax = exclusive;
+        }
+      }
+    }
 
     // An inline union of a bare primitive arm and one or more ref arms — e.g.
     // script.NumberValue.value: a JSON number or a script.SpecialNumber — isn't a scalarUnion
@@ -1401,38 +1521,63 @@ public class BiDiGenerator {
       sb.append(bodyIndent).append("}\n");
     }
 
-    private void appendJsRangeValidation(
+    private void appendRangeValidation(
         StringBuilder sb, FieldInfo f, String varName, boolean nullGuard, String bodyIndent) {
-      String ref = f.typeRef != null ? str(f.typeRef, "ref") : null;
-      if (!"js-int".equals(ref) && !"js-uint".equals(ref)) return;
-      long min = "js-uint".equals(ref) ? 0L : -JS_SAFE_INTEGER_MAX;
-      sb.append(bodyIndent).append("if (");
-      if (nullGuard) {
-        sb.append(varName).append(" != null && (");
+      appendRangeValidation(sb, f, varName, nullGuard ? varName + " != null" : null, bodyIndent);
+    }
+
+    private void appendRangeValidation(
+        StringBuilder sb, FieldInfo f, String value, String guard, String bodyIndent) {
+      String primitive = numericPrimitive(f.typeRef);
+      Bounds bounds = bounds(f.typeRef);
+      if (primitive == null || bounds.isEmpty()) return;
+      boolean integer = "integer".equals(primitive);
+      // A Number is compared as a double, and a failed comparison is the out-of-range test, so
+      // NaN is rejected too; a long has no NaN, so its plain form reads more directly.
+      String operand = integer ? value : value + ".doubleValue()";
+      List<String> inRange = new ArrayList<>();
+      List<String> outOfRange = new ArrayList<>();
+      List<String> description = new ArrayList<>();
+      if (bounds.min != null) {
+        String limit = numericLiteral(bounds.min, integer, f);
+        inRange.add(operand + (bounds.exclusiveMin ? " > " : " >= ") + limit);
+        outOfRange.add(operand + (bounds.exclusiveMin ? " <= " : " < ") + limit);
+        description.add((bounds.exclusiveMin ? "> " : ">= ") + bounds.min.toPlainString());
       }
-      sb.append(varName)
-          .append(" < ")
-          .append(min)
-          .append("L || ")
-          .append(varName)
-          .append(" > ")
-          .append(JS_SAFE_INTEGER_MAX)
-          .append("L");
-      if (nullGuard) {
-        sb.append(")");
+      if (bounds.max != null) {
+        String limit = numericLiteral(bounds.max, integer, f);
+        inRange.add(operand + (bounds.exclusiveMax ? " < " : " <= ") + limit);
+        outOfRange.add(operand + (bounds.exclusiveMax ? " >= " : " > ") + limit);
+        description.add((bounds.exclusiveMax ? "< " : "<= ") + bounds.max.toPlainString());
+      }
+      String check =
+          integer ? String.join(" || ", outOfRange) : "!(" + String.join(" && ", inRange) + ")";
+      sb.append(bodyIndent).append("if (");
+      if (guard != null) {
+        sb.append(guard).append(" && ").append(integer ? "(" + check + ")" : check);
+      } else {
+        sb.append(check);
       }
       sb.append(") {\n");
       sb.append(bodyIndent)
           .append("  throw new BiDiException(\"")
           .append(f.wire)
-          .append(" must be between ")
-          .append(min)
-          .append(" and ")
-          .append(JS_SAFE_INTEGER_MAX)
+          .append(" must be ")
+          .append(String.join(" and ", description))
           .append(", got: \" + ")
-          .append(varName)
+          .append(value)
           .append(");\n");
       sb.append(bodyIndent).append("}\n");
+    }
+
+    private static String numericLiteral(java.math.BigDecimal bound, boolean integer, FieldInfo f) {
+      if (!integer) return bound.toPlainString() + "d";
+      try {
+        return bound.longValueExact() + "L";
+      } catch (ArithmeticException e) {
+        throw new IllegalArgumentException(
+            "Integer field " + f.wire + " has a non-integral bound: " + bound, e);
+      }
     }
 
     private void appendConstructorAssignment(
@@ -1445,7 +1590,8 @@ public class BiDiGenerator {
       if (f.required) {
         boolean nullable = f.typeRef != null && Boolean.TRUE.equals(f.typeRef.get("nullable"));
         appendConstValidation(sb, f, nullable, bodyIndent);
-        appendJsRangeValidation(sb, f, f.name, nullable, bodyIndent);
+        // A non-nullable Number is still a reference: leave a null to the required check below.
+        appendRangeValidation(sb, f, f.name, nullable || !isPrimitive(f.typeRef), bodyIndent);
         // Always null-guarded regardless of nullable/required: nullness itself is enforced right
         // below (Objects.requireNonNull, or simply allowed through for a nullable field) — this
         // only checks the value's shape when one is actually present, so a missing/null value
@@ -1480,35 +1626,12 @@ public class BiDiGenerator {
               .append(" is required\");\n");
         }
       } else {
-        String ref = f.typeRef != null ? str(f.typeRef, "ref") : null;
-        if ("js-int".equals(ref) || "js-uint".equals(ref)) {
-          long min = "js-uint".equals(ref) ? 0L : -JS_SAFE_INTEGER_MAX;
-          sb.append(bodyIndent)
-              .append("if (")
-              .append(f.name)
-              .append(" != null && ")
-              .append(f.name)
-              .append(".isPresent() && (")
-              .append(f.name)
-              .append(".get() < ")
-              .append(min)
-              .append("L || ")
-              .append(f.name)
-              .append(".get() > ")
-              .append(JS_SAFE_INTEGER_MAX)
-              .append("L)) {\n");
-          sb.append(bodyIndent)
-              .append("  throw new BiDiException(\"")
-              .append(f.wire)
-              .append(" must be between ")
-              .append(min)
-              .append(" and ")
-              .append(JS_SAFE_INTEGER_MAX)
-              .append(", got: \" + ")
-              .append(f.name)
-              .append(".get());\n");
-          sb.append(bodyIndent).append("}\n");
-        }
+        appendRangeValidation(
+            sb,
+            f,
+            f.name + ".get()",
+            f.name + " != null && " + f.name + ".isPresent()",
+            bodyIndent);
         String copyExpr = isReceivable ? immutableCopyExpr("v", f.typeRef) : null;
         if (copyExpr != null) {
           // A plain (a != null ? a : Optional.empty()).map(...) infers fine on its own, but once
@@ -2271,6 +2394,247 @@ public class BiDiGenerator {
       return new FieldInfo(name, wire != null ? wire : rawName, required, type);
     }
 
+    // A vendor section declares fields that a vendor adds to a spec type (e.g. Firefox's moz:name
+    // and moz:scope on browsingContext.Info). ADR 17786 counts supported vendor extensions as part
+    // of the spec, so they are declared fields: typed, and the shared type stays closed (#18184).
+    // Where they go depends on direction, as for Ruby in #18190:
+    //  - Received: optional fields on the shared type (Info gets mozName / mozScope), because
+    //    responses and events arrive through the shared classes whatever the browser.
+    //  - Sent (a command's params): a closed vendor-variant record (browsingContext
+    //    .MozGetTreeParameters), sent only by the vendor variant of the module
+    //    (BrowsingContext.Moz#getTree), so the shared params can never carry a vendor field.
+    // An extensible type is left as is: it already keeps vendor fields as extensions.
+    // An inline vendor enum is hoisted to a named type in the extended type's domain (moz:scope
+    // becomes browsingContext.MozScope), since a field can only ref an enum; both directions share
+    // it.
+    @SuppressWarnings("unchecked")
+    static Map<String, Object> foldVendorExtensions(Map<String, Object> schema) {
+      Object vendor = schema.get("vendor");
+      if (!(vendor instanceof Map)) return schema;
+      Map<String, Object> types = new LinkedHashMap<>((Map<String, Object>) schema.get("types"));
+      Map<String, Map<String, Object>> commandByParams = new LinkedHashMap<>();
+      for (Map<String, Object> cmd :
+          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
+              .orElse(Collections.emptyList())) {
+        Object params = cmd.get("params");
+        if (params instanceof Map) {
+          commandByParams.putIfAbsent(str((Map<String, Object>) params, "ref"), cmd);
+        }
+      }
+      List<Map<String, Object>> vendorCommands = new ArrayList<>();
+      for (Map.Entry<String, Object> ns : ((Map<String, Object>) vendor).entrySet()) {
+        String namespace = ns.getKey();
+        Map<String, Object> section = (Map<String, Object>) ns.getValue();
+        Map<String, Object> extendsNode =
+            Optional.ofNullable((Map<String, Object>) section.get("extends"))
+                .orElse(Collections.emptyMap());
+        for (Map.Entry<String, Object> ext : extendsNode.entrySet()) {
+          String typeName = ext.getKey();
+          Map<String, Object> type = (Map<String, Object>) types.get(typeName);
+          if (type == null) {
+            throw new IllegalStateException(
+                "vendor " + namespace + " extends unknown type " + typeName);
+          }
+          if (!"record".equals(str(type, "kind"))) {
+            throw new IllegalStateException(
+                "vendor " + namespace + " extends " + typeName + ", which is not a record");
+          }
+          if (Boolean.TRUE.equals(type.get("extensible"))) continue;
+
+          String domain =
+              typeName.contains(".") ? typeName.substring(0, typeName.indexOf('.')) : "";
+          Map<String, Object> command = commandByParams.get(typeName);
+          List<Object> fields =
+              new ArrayList<>(
+                  Optional.ofNullable((List<Object>) type.get("fields"))
+                      .orElse(Collections.emptyList()));
+          Set<String> taken = new LinkedHashSet<>();
+          Set<String> declaredWires = new LinkedHashSet<>();
+          for (Object f : fields) {
+            taken.add(str((Map<String, Object>) f, "name"));
+            declaredWires.add(str((Map<String, Object>) f, "wire"));
+          }
+
+          Object vendorFields = ((Map<String, Object>) ext.getValue()).get("fields");
+          if (!(vendorFields instanceof List)) {
+            throw new IllegalStateException(
+                "vendor " + namespace + " extends " + typeName + " without declaring any fields");
+          }
+          for (Object f : (List<Object>) vendorFields) {
+            Map<String, Object> field = new LinkedHashMap<>((Map<String, Object>) f);
+            String rawName = str(field, "name");
+            String wire = str(field, "wire") != null ? str(field, "wire") : rawName;
+            // A vendor may only add to a type; winning a clash would change the neutral protocol.
+            if (declaredWires.contains(wire)) {
+              throw new IllegalStateException(
+                  "vendor " + namespace + " redeclares " + wire + " on " + typeName);
+            }
+            String prefixed = vendorFieldName(rawName);
+            // A variant record is Firefox-only, so its fields drop the prefix (scope ->
+            // "moz:scope") unless that clashes with a spec field; a shared type keeps it.
+            String name = prefixed;
+            if (command != null) {
+              String stripped = vendorFieldName(stripNamespace(rawName, namespace));
+              if (!taken.contains(stripped)) name = stripped;
+            }
+            field.put("name", name);
+            field.put("wire", wire);
+            field.put("required", Boolean.TRUE.equals(field.get("required")) && command != null);
+            Map<String, Object> fieldType = (Map<String, Object>) field.get("type");
+            if (fieldType != null && fieldType.get("enum") != null) {
+              field.put("type", hoistVendorEnum(types, domain, prefixed, fieldType));
+            }
+            taken.add(name);
+            fields.add(field);
+          }
+
+          Map<String, Object> folded = new LinkedHashMap<>(type);
+          folded.put("fields", fields);
+          if (command == null) {
+            types.put(typeName, folded);
+            continue;
+          }
+          String variantName =
+              (domain.isEmpty() ? "" : domain + ".")
+                  + capitalize(namespace)
+                  + typeName.substring(typeName.indexOf('.') + 1);
+          if (types.containsKey(variantName)) {
+            throw new IllegalStateException(
+                "vendor variant " + variantName + " conflicts with an existing type");
+          }
+          folded.remove("specHref");
+          types.put(variantName, folded);
+          Map<String, Object> variantCommand = new LinkedHashMap<>(command);
+          Map<String, Object> paramsRef = new LinkedHashMap<>();
+          paramsRef.put("ref", variantName);
+          variantCommand.put("params", paramsRef);
+          variantCommand.put("vendor", namespace);
+          vendorCommands.add(variantCommand);
+        }
+        foldVendorCommands(schema, namespace, section, types, vendorCommands);
+      }
+      Map<String, Object> result = new LinkedHashMap<>(schema);
+      result.put("types", types);
+      result.put("vendorCommands", vendorCommands);
+      return result;
+    }
+
+    // A vendor command in a spec domain (webExtension.moz:listExtensions) goes on that domain's
+    // vendor variant, with the vendor types it reaches. A whole vendor domain (moz:debugging) has
+    // no spec module to vary, so it isn't emitted; a vendor event in a spec domain is rejected
+    // because a variant has no way to subscribe to it.
+    private static void foldVendorCommands(
+        Map<String, Object> schema,
+        String namespace,
+        Map<String, Object> section,
+        Map<String, Object> types,
+        List<Map<String, Object>> vendorCommands) {
+      List<Map<String, Object>> specCommands = listOfMaps(schema, "commands");
+      Set<String> specDomains = new LinkedHashSet<>();
+      for (Map<String, Object> cmd : specCommands) specDomains.add(str(cmd, "domain"));
+      for (Map<String, Object> evt : listOfMaps(schema, "events")) {
+        specDomains.add(str(evt, "domain"));
+      }
+
+      for (Map<String, Object> evt : listOfMaps(section, "events")) {
+        if (specDomains.contains(str(evt, "domain"))) {
+          throw new IllegalStateException(
+              "vendor event " + str(evt, "method") + " in a spec domain is unsupported");
+        }
+      }
+
+      Map<String, Object> vendorTypes =
+          Optional.ofNullable(mapField(section, "types")).orElse(Collections.emptyMap());
+      for (Map<String, Object> cmd : listOfMaps(section, "commands")) {
+        String domain = str(cmd, "domain");
+        if (!specDomains.contains(domain)) continue;
+        String name = stripNamespace(str(cmd, "name"), namespace);
+        boolean shadowsSpec =
+            specCommands.stream()
+                .anyMatch(c -> domain.equals(str(c, "domain")) && name.equals(str(c, "name")));
+        if (shadowsSpec) {
+          throw new IllegalStateException(
+              "vendor command " + str(cmd, "method") + " would shadow spec command " + name);
+        }
+        Map<String, Object> variantCommand = new LinkedHashMap<>(cmd);
+        variantCommand.put("name", name);
+        variantCommand.put("vendor", namespace);
+        vendorCommands.add(variantCommand);
+        collectVendorTypes(cmd.get("params"), vendorTypes, types);
+        collectVendorTypes(cmd.get("result"), vendorTypes, types);
+      }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void collectVendorTypes(
+        Object node, Map<String, Object> vendorTypes, Map<String, Object> into) {
+      if (node instanceof List) {
+        for (Object item : (List<Object>) node) collectVendorTypes(item, vendorTypes, into);
+        return;
+      }
+      if (!(node instanceof Map)) return;
+      Map<String, Object> map = (Map<String, Object>) node;
+      String ref = str(map, "ref");
+      if (ref != null && vendorTypes.containsKey(ref)) {
+        Object vendorNode = vendorTypes.get(ref);
+        Object existing = into.get(ref);
+        if (existing == null) {
+          into.put(ref, vendorNode);
+          collectVendorTypes(vendorNode, vendorTypes, into);
+        } else if (existing != vendorNode) {
+          throw new IllegalStateException("vendor type " + ref + " collides with a spec type");
+        }
+      }
+      for (Object value : map.values()) collectVendorTypes(value, vendorTypes, into);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Map<String, Object>> listOfMaps(Map<String, Object> parent, String key) {
+      Object list = parent.get(key);
+      return list instanceof List ? (List<Map<String, Object>>) list : Collections.emptyList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> hoistVendorEnum(
+        Map<String, Object> types, String domain, String fieldName, Map<String, Object> fieldType) {
+      String enumName = (domain.isEmpty() ? "" : domain + ".") + capitalize(fieldName);
+      Map<String, Object> enumNode = new LinkedHashMap<>();
+      enumNode.put("kind", "enum");
+      enumNode.put("values", fieldType.get("enum"));
+      enumNode.put("primitive", fieldType.getOrDefault("primitive", "string"));
+      Object existing = types.get(enumName);
+      if (existing != null && !existing.equals(enumNode)) {
+        throw new IllegalStateException(
+            "vendor enum " + enumName + " conflicts with an existing type");
+      }
+      types.put(enumName, enumNode);
+      Map<String, Object> ref = new LinkedHashMap<>();
+      if (fieldType.containsKey("nullable")) ref.put("nullable", fieldType.get("nullable"));
+      ref.put("ref", enumName);
+      return ref;
+    }
+
+    private static String stripNamespace(String name, String namespace) {
+      String prefix = namespace + ":";
+      return name.startsWith(prefix) ? name.substring(prefix.length()) : name;
+    }
+
+    // "moz:name" -> "mozName": the prefix stays so it can't collide with a spec field of the same
+    // base name, and the colon (not a legal identifier character) camel-cases the next letter.
+    private static String vendorFieldName(String name) {
+      StringBuilder out = new StringBuilder();
+      boolean upper = false;
+      for (char c : name.toCharArray()) {
+        if (c == ':' || c == '-' || c == '_') {
+          upper = out.length() > 0;
+        } else {
+          out.append(upper ? Character.toUpperCase(c) : c);
+          upper = false;
+        }
+      }
+      return out.toString();
+    }
+
     // The schema projector has no inline map form for a field, so a CDDL map such as
     // script.NodeProperties.attributes ({*text => text}) is hoisted into a synthetic record with
     // no fields and the value type under "map" (e.g. script.NodePropertiesAttributes). Resolving
@@ -2306,7 +2670,8 @@ public class BiDiGenerator {
     // one. Only primitive-valued maps are inlined for now, per the scope agreed in #18106. A ref-
     // or union-valued map is not: it still becomes an empty nested class that drops every entry
     // on receipt, a known gap until its value typing is decided. (The only such maps in the schema
-    // today are Mozilla vendor types, which this generator does not read.)
+    // today are Mozilla vendor types that nothing generated reaches: moz:firefoxOptions stays an
+    // extension, and the moz:debugging domain isn't emitted.)
     @SuppressWarnings("unchecked")
     private static Map<String, Object> syntheticMapValue(Map<String, Object> node) {
       if (node == null) return null;

@@ -13,11 +13,12 @@ awk '$1 ~ /^\/\// && $2 ~ /(FAILED|TIMEOUT|INCOMPLETE)/ && $3 == "in" { print $1
 errors=$(awk '{ gsub(/\033\[[0-9;]*m/, ""); sub(/^\([0-9:]+\) /, "") } /^ERROR: / { print }' build/bazel-console.log)
 
 if [ -n "$errors" ]; then
-  echo "::error::This step failed because the 'Run Bazel' step above failed with a build/analysis error — reruns will not help. See that step's log for full context; the ERROR lines are reproduced below."
+  echo "::error::This step failed because the 'Run Bazel' step above failed with a build/analysis error, so it fails even if a rerun of the failed tests passes. See that step's log for full context; the ERROR lines are reproduced below."
   echo "::group::ERROR lines from the 'Run Bazel' step"
   echo "$errors"
   echo "::endgroup::"
-  exit 1
+  # Failed tests did build and run, so a build error elsewhere, like the packaging check, must not skip their rerun.
+  [ "$RERUN_WITH_DEBUG" = "true" ] && [ -s build/failures/_run1.txt ] || exit 1
 fi
 
 if [ "$RERUN_WITH_DEBUG" != "true" ]; then
@@ -33,8 +34,8 @@ fi
 if [[ "$RUN_CMD" == *"/ci-build.sh"* ]]; then
   base_cmd="bazel test --config=rbe-ci --build_tests_only --keep_going"
 else
-  # Reduce the run command to its bazel invocation
-  base_cmd=$(sed -E 's/^.*;[[:space:]]*//; s/ --target_pattern_file=[^[:space:]]+//; s| //[^ ]*||g' <<<"$RUN_CMD")
+  # The rerun covers only the failed targets, so drop the run's own target patterns
+  base_cmd=$(sed -E 's| //[^ ]*||g' <<<"$RUN_CMD")
 fi
 rerun_cmd="$base_cmd --test_env=SE_DEBUG=true --test_output=all --flaky_test_attempts=1 --target_pattern_file=build/failures/_run1.txt"
 echo "Rerunning tests: $rerun_cmd"
@@ -45,4 +46,5 @@ set +e
 status=$?
 set -e
 awk '$1 ~ /^\/\// && $2 ~ /FAILED/ && $3 == "in" { print $1 }' build/bazel-console2.log > build/failures/_run2.txt
+[ -z "$errors" ] || status=1
 exit $status

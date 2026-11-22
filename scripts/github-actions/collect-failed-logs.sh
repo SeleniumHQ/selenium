@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Collects failed test logs from Bazel testlogs directory
+# Collects failed test logs from Bazel testlogs directory, plus safaridriver diagnostics from the debug rerun
 # Reads targets from build/failures/_run2.txt if present, otherwise _run1.txt
 
 set -euxo pipefail
@@ -36,3 +36,10 @@ while IFS= read -r target; do
     echo "Warning: No log found for $target at $log_source" >&2
   fi
 done < "$LIST_FILE"
+
+# Only the SE_DEBUG rerun passes --diagnose; safaridriver ignores Bazel's HOME and logs under the real one.
+SAFARIDRIVER_LOGS="$HOME/Library/Logs/com.apple.WebDriver"
+if [ -f build/bazel-console2.log ] && [ -d "$SAFARIDRIVER_LOGS" ]; then
+  echo "Copying safaridriver diagnostics..."
+  cp -R "$SAFARIDRIVER_LOGS" build/failures/safaridriver-diagnose
+fi

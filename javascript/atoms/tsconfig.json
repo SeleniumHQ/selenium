@@ -9,5 +9,5 @@
     "outDir": "dist",
     "strict": false
   },
-  "include": ["index.ts", "typescript/*.ts", "typescript/core/*.ts"]
+  "include": ["index.ts", "typescript/*.ts", "typescript/core/**/*.ts"]
 }
