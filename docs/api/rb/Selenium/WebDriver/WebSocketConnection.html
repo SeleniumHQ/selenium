@@ -312,6 +312,28 @@ websocket clients' limits; this constant only affects websocket-ruby.</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#event_receiver-instance_method" title="#event_receiver (instance method)">#<strong>event_receiver</strong>(&amp;factory)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>The receiver of every event payload, attached by the first caller to pass a factory.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(url:)  &#x21d2; WebSocketConnection </a>
     
 
@@ -426,7 +448,8 @@ websocket clients' limits; this constant only affects websocket-ruby.</p>
 59
 60
 61
-62</pre>
+62
+63</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 48</span>
@@ -435,6 +458,7 @@ websocket clients' limits; this constant only affects websocket-ruby.</p>
   <span class='ivar'>@callback_threads</span> <span class='op'>=</span> <span class='const'>ThreadGroup</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 
   <span class='ivar'>@callbacks_mtx</span> <span class='op'>=</span> <span class='const'>Mutex</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='ivar'>@event_receiver_mtx</span> <span class='op'>=</span> <span class='const'>Mutex</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
   <span class='ivar'>@messages_mtx</span> <span class='op'>=</span> <span class='const'>Mutex</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
   <span class='ivar'>@closing_mtx</span> <span class='op'>=</span> <span class='const'>Mutex</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 
@@ -486,15 +510,15 @@ websocket clients' limits; this constant only affects websocket-ruby.</p>
       <pre class="lines">
 
 
-83
-84
-85
-86
-87
-88</pre>
+94
+95
+96
+97
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_callback'>add_callback</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='ivar'>@callbacks_mtx</span><span class='period'>.</span><span class='id identifier rubyid_synchronize'>synchronize</span> <span class='kw'>do</span>
@@ -535,12 +559,12 @@ websocket clients' limits; this constant only affects websocket-ruby.</p>
       <pre class="lines">
 
 
-79
-80
-81</pre>
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_callbacks'>callbacks</span>
   <span class='ivar'>@callbacks</span> <span class='op'>||=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_callbacks'>callbacks</span><span class='comma'>,</span> <span class='id identifier rubyid_event'>event</span><span class='op'>|</span> <span class='id identifier rubyid_callbacks'>callbacks</span><span class='lbracket'>[</span><span class='id identifier rubyid_event'>event</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -580,7 +604,6 @@ than short-circuiting on @closing.</p>
       <pre class="lines">
 
 
-67
 68
 69
 70
@@ -590,10 +613,11 @@ than short-circuiting on @closing.</p>
 74
 75
 76
-77</pre>
+77
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='id identifier rubyid_close_socket'>close_socket</span>
@@ -604,6 +628,58 @@ than short-circuiting on @closing.</p>
     <span class='id identifier rubyid_thread'>thread</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='rparen'>)</span>
   <span class='kw'>rescue</span> <span class='const'>StandardError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
     <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_debug'><span class='object_link'><a href="Logger.html#debug-instance_method" title="Selenium::WebDriver::Logger#debug (method)">debug</a></span></span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Failed to join thread during close: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:ws</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="event_receiver-instance_method">
+  
+    #<strong>event_receiver</strong>(&amp;factory)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>The receiver of every event payload, attached by the first caller to pass a factory.
+Assigned before @closing is checked so a close racing the attach still closes it.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+82
+83
+84
+85
+86
+87
+88</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 82</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_event_receiver'>event_receiver</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_factory'>factory</span><span class='rparen'>)</span>
+  <span class='ivar'>@event_receiver_mtx</span><span class='period'>.</span><span class='id identifier rubyid_synchronize'>synchronize</span> <span class='kw'>do</span>
+    <span class='ivar'>@event_receiver</span> <span class='op'>||=</span> <span class='id identifier rubyid_factory'>factory</span><span class='op'>&amp;.</span><span class='id identifier rubyid_call'>call</span>
+    <span class='ivar'>@event_receiver</span><span class='op'>&amp;.</span><span class='id identifier rubyid_close'>close</span> <span class='kw'>if</span> <span class='ivar'>@closing</span>
+    <span class='ivar'>@event_receiver</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -639,20 +715,20 @@ than short-circuiting on @closing.</p>
       <pre class="lines">
 
 
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100</pre>
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_callback'>remove_callback</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='ivar'>@callbacks_mtx</span><span class='period'>.</span><span class='id identifier rubyid_synchronize'>synchronize</span> <span class='kw'>do</span>
@@ -711,17 +787,6 @@ than short-circuiting on @closing.</p>
       <pre class="lines">
 
 
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
 113
 114
 115
@@ -740,10 +805,21 @@ than short-circuiting on @closing.</p>
 128
 129
 130
-131</pre>
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span>
   <span class='comment'># IOError to match what writing to an already-closed socket raises
@@ -785,7 +861,7 @@ than short-circuiting on @closing.</p>
 </div>
 
       <div id="footer">
-  Generated on Tue Nov 17 17:52:55 2026 by
+  Generated on Mon Nov 23 09:09:04 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-3.3.12).
 </div>

@@ -226,7 +226,7 @@
 
   <span class='kw'>begin</span>
     <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_http_client'>http_client</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
-  <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span>
+  <span class='kw'>rescue</span> <span class='const'>StandardError</span>
     <span class='ivar'>@service_manager</span><span class='op'>&amp;.</span><span class='id identifier rubyid_stop'>stop</span>
     <span class='id identifier rubyid_raise'>raise</span>
   <span class='kw'>end</span>
@@ -325,7 +325,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Nov 17 17:52:51 2026 by
+  Generated on Mon Nov 23 09:08:59 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-3.3.12).
 </div>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.firefox.service &#8212; Selenium 4.53.0 documentation</title>
+    <title>selenium.webdriver.firefox.service &#8212; Selenium 4.54.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=4b98536b"></script>
+    <script src="../_static/documentation_options.js?v=c5c3a2a5"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_firefox/selenium.webdriver.firefox.service';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.53" />
+  <meta name="docsearch:version" content="4.54" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.53.0 documentation</p>
+    <p class="title logo__title">Selenium 4.54.0 documentation</p>
   
 </a></div>
     
@@ -375,6 +375,17 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.firefox.service.Service.send_remote_shutdown_command">
+<span class="sig-name descname"><span class="pre">send_remote_shutdown_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/service.html#Service.send_remote_shutdown_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.service.Service.send_remote_shutdown_command" title="Link to this definition">#</a></dt>
+<dd><p>Skip the shutdown request: geckodriver has no /shutdown endpoint, so stop() just ends the process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.firefox.service.Service.assert_process_still_running">
 <span class="sig-name descname"><span class="pre">assert_process_still_running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/service.html#Service.assert_process_still_running"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.service.Service.assert_process_still_running" title="Link to this definition">#</a></dt>
 <dd><p>Check if the underlying process is still running.</p>
@@ -414,17 +425,6 @@
 <dt class="sig sig-object py" id="selenium.webdriver.firefox.service.Service.path">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.firefox.service.Service.path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.firefox.service.Service.send_remote_shutdown_command">
-<span class="sig-name descname"><span class="pre">send_remote_shutdown_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/service.html#Service.send_remote_shutdown_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.service.Service.send_remote_shutdown_command" title="Link to this definition">#</a></dt>
-<dd><p>Dispatch an HTTP request to the shutdown endpoint to stop the service.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.firefox.service.Service.service_url">
@@ -499,11 +499,11 @@
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service"><code class="docutils literal notranslate"><span class="pre">Service</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.command_line_args"><code class="docutils literal notranslate"><span class="pre">Service.command_line_args()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.send_remote_shutdown_command"><code class="docutils literal notranslate"><span class="pre">Service.send_remote_shutdown_command()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.assert_process_still_running"><code class="docutils literal notranslate"><span class="pre">Service.assert_process_still_running()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.env_path"><code class="docutils literal notranslate"><span class="pre">Service.env_path()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.is_connectable"><code class="docutils literal notranslate"><span class="pre">Service.is_connectable()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.path"><code class="docutils literal notranslate"><span class="pre">Service.path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.send_remote_shutdown_command"><code class="docutils literal notranslate"><span class="pre">Service.send_remote_shutdown_command()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.service_url"><code class="docutils literal notranslate"><span class="pre">Service.service_url</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.start"><code class="docutils literal notranslate"><span class="pre">Service.start()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.service.Service.stop"><code class="docutils literal notranslate"><span class="pre">Service.stop()</span></code></a></li>

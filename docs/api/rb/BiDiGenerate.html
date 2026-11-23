@@ -254,8 +254,8 @@ or a union dispatched to one of its variants); anything else forwards a raw hash
   You should avoid using this constant if possible, as it may be removed or be changed in the future.
 </p>
 <p>Public instance methods every accessor would shadow if it reused their name:
-Domain's own (<code>execute</code>/<code>initialize</code>) plus everything Object/Kernel expose. The
-collision guard fails generation before a schema-driven shadow can ship.</p>
+Domain's own plus everything Object/Kernel expose. The collision guard fails generation
+before a schema-driven shadow can ship.</p>
 
   </div>
 </div>
@@ -264,7 +264,8 @@ collision guard fails generation before a schema-driven shadow can ship.</p>
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='lparen'>(</span><span class='qwords_beg'>%w[</span><span class='tstring_content'>execute</span><span class='words_sep'> </span><span class='tstring_content'>initialize</span><span class='tstring_end'>]</span></span><span class='period'>.</span><span class='id identifier rubyid_to_set'>to_set</span> <span class='op'>+</span> <span class='const'>Object</span><span class='period'>.</span><span class='id identifier rubyid_instance_methods'>instance_methods</span><span class='period'>.</span><span class='id identifier rubyid_to_set'>to_set</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_s</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+        <dd><pre class="code"><span class='lparen'>(</span><span class='qwords_beg'>%w[</span><span class='tstring_content'>execute</span><span class='words_sep'> </span><span class='tstring_content'>initialize</span><span class='words_sep'> </span><span class='tstring_content'>add_listener</span><span class='words_sep'> </span><span class='tstring_content'>remove_listener</span><span class='tstring_end'>]</span></span><span class='period'>.</span><span class='id identifier rubyid_to_set'>to_set</span> <span class='op'>+</span>
+<span class='const'>Object</span><span class='period'>.</span><span class='id identifier rubyid_instance_methods'>instance_methods</span><span class='period'>.</span><span class='id identifier rubyid_to_set'>to_set</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_s</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -1087,16 +1088,16 @@ reached by a plain field ref (browsingContext.AccessibilityLocator's <code>value
       <pre class="lines">
 
 
-1489
-1490
-1491
-1492
-1493
-1494
-1495</pre>
+1504
+1505
+1506
+1507
+1508
+1509
+1510</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1489</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1504</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_accessor?'>accessor?</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_wrappers'>wrappers</span><span class='comma'>,</span> <span class='id identifier rubyid_plainly_reached'>plainly_reached</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_outbound'>outbound</span>
@@ -1141,13 +1142,13 @@ this split; the emitted map (error_code.rb) stays the full self-contained set.</
       <pre class="lines">
 
 
-1608
-1609
-1610
-1611</pre>
+1625
+1626
+1627
+1628</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1608</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1625</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_bidi_only_classes'>bidi_only_classes</span><span class='lparen'>(</span><span class='id identifier rubyid_codes'>codes</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_require_relative'>require_relative</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>../../common/error</span><span class='tstring_end'>&#39;</span></span>
@@ -1188,18 +1189,18 @@ so a nested synthetic (referenced by a Ruby-relative <code>Owner::Label</code> p
       <pre class="lines">
 
 
-1473
-1474
-1475
-1476
-1477
-1478
-1479
-1480
-1481</pre>
+1488
+1489
+1490
+1491
+1492
+1493
+1494
+1495
+1496</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1473</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1488</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_build_accessors'>build_accessors</span><span class='lparen'>(</span><span class='id identifier rubyid_schema'>schema</span><span class='comma'>,</span> <span class='id identifier rubyid_domain'>domain</span><span class='comma'>,</span> <span class='id identifier rubyid_types'>types</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_wrappers'>wrappers</span> <span class='op'>=</span> <span class='id identifier rubyid_schema'>schema</span><span class='period'>.</span><span class='id identifier rubyid_command_wrapper_refs'>command_wrapper_refs</span><span class='lparen'>(</span><span class='id identifier rubyid_domain'>domain</span><span class='rparen'>)</span>
@@ -1243,30 +1244,30 @@ so a nested synthetic (referenced by a Ruby-relative <code>Owner::Label</code> p
       <pre class="lines">
 
 
-1520
-1521
-1522
-1523
-1524
-1525
-1526
-1527
-1528
-1529
-1530
-1531
-1532
-1533
-1534
-1535
 1536
 1537
 1538
 1539
-1540</pre>
+1540
+1541
+1542
+1543
+1544
+1545
+1546
+1547
+1548
+1549
+1550
+1551
+1552
+1553
+1554
+1555
+1556</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1520</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1536</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_build_command'>build_command</span><span class='lparen'>(</span><span class='id identifier rubyid_schema'>schema</span><span class='comma'>,</span> <span class='id identifier rubyid_cmd'>cmd</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='id identifier rubyid_schema'>schema</span><span class='period'>.</span><span class='id identifier rubyid_params_for'>params_for</span><span class='lparen'>(</span><span class='id identifier rubyid_cmd'>cmd</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>params</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -1322,19 +1323,21 @@ so a nested synthetic (referenced by a Ruby-relative <code>Owner::Label</code> p
       <pre class="lines">
 
 
-1542
-1543
-1544
-1545
-1546</pre>
+1558
+1559
+1560
+1561
+1562
+1563</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1542</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1558</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_build_event'>build_event</span><span class='lparen'>(</span><span class='id identifier rubyid_schema'>schema</span><span class='comma'>,</span> <span class='id identifier rubyid_event'>event</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='id identifier rubyid_event'>event</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>params</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_payload_ref'>payload_ref</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ref</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_schema'>schema</span><span class='period'>.</span><span class='id identifier rubyid_structured_ref'>structured_ref</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ref</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="BiDiGenerate/Event.html" title="BiDiGenerate::Event (class)">Event</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>wire_name:</span> <span class='id identifier rubyid_event'>event</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>method</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>event_name:</span> <span class='id identifier rubyid_camel_to_snake'>camel_to_snake</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>name</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>payload_ref:</span> <span class='id identifier rubyid_payload_ref'>payload_ref</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="BiDiGenerate/Event.html" title="BiDiGenerate::Event (class)">Event</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>wire_name:</span> <span class='id identifier rubyid_event'>event</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>method</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>event_name:</span> <span class='id identifier rubyid_camel_to_snake'>camel_to_snake</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>name</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>payload_ref:</span> <span class='id identifier rubyid_payload_ref'>payload_ref</span><span class='comma'>,</span>
+            <span class='label'>spec_href:</span> <span class='id identifier rubyid_event'>event</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>specHref</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1369,30 +1372,30 @@ so a nested synthetic (referenced by a Ruby-relative <code>Owner::Label</code> p
       <pre class="lines">
 
 
-1426
-1427
-1428
-1429
-1430
-1431
-1432
-1433
-1434
-1435
-1436
-1437
-1438
-1439
-1440
 1441
 1442
 1443
 1444
 1445
-1446</pre>
+1446
+1447
+1448
+1449
+1450
+1451
+1452
+1453
+1454
+1455
+1456
+1457
+1458
+1459
+1460
+1461</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1426</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1441</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_build_ir'>build_ir</span><span class='lparen'>(</span><span class='id identifier rubyid_schema'>schema</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_schema'>schema</span><span class='period'>.</span><span class='id identifier rubyid_domains'>domains</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_domain'>domain</span><span class='op'>|</span>
@@ -1448,18 +1451,18 @@ so a nested synthetic (referenced by a Ruby-relative <code>Owner::Label</code> p
       <pre class="lines">
 
 
-1570
-1571
-1572
-1573
-1574
-1575
-1576
-1577
-1578</pre>
+1587
+1588
+1589
+1590
+1591
+1592
+1593
+1594
+1595</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1570</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1587</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span><span class='comma'>,</span> <span class='id identifier rubyid_output_dir'>output_dir</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raw'>raw</span> <span class='op'>=</span> <span class='id identifier rubyid_load_json'>load_json</span><span class='lparen'>(</span><span class='id identifier rubyid_schema_path'>schema_path</span><span class='rparen'>)</span>
@@ -1627,23 +1630,23 @@ rather than a silently overridden method.</p>
       <pre class="lines">
 
 
-1505
-1506
-1507
-1508
-1509
-1510
-1511
-1512
-1513
-1514
-1515
-1516
-1517
-1518</pre>
+1521
+1522
+1523
+1524
+1525
+1526
+1527
+1528
+1529
+1530
+1531
+1532
+1533
+1534</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1505</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1521</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_check_accessor_collisions!'>check_accessor_collisions!</span><span class='lparen'>(</span><span class='id identifier rubyid_mod'>mod</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_commands'>commands</span> <span class='op'>=</span> <span class='id identifier rubyid_mod'>mod</span><span class='period'>.</span><span class='id identifier rubyid_commands'>commands</span><span class='period'>.</span><span class='id identifier rubyid_to_set'>to_set</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:method_name</span><span class='rparen'>)</span>
@@ -1693,20 +1696,20 @@ one file per module. Used for both the Ruby source and its RBS signatures.</p>
       <pre class="lines">
 
 
-1615
-1616
-1617
-1618
-1619
-1620
-1621
-1622
-1623
-1624
-1625</pre>
+1632
+1633
+1634
+1635
+1636
+1637
+1638
+1639
+1640
+1641
+1642</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1615</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1632</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_emit'>emit</span><span class='lparen'>(</span><span class='id identifier rubyid_modules'>modules</span><span class='comma'>,</span> <span class='id identifier rubyid_output_dir'>output_dir</span><span class='comma'>,</span> <span class='id identifier rubyid_template'>template</span><span class='comma'>,</span> <span class='id identifier rubyid_extension'>extension</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_target'>target</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='id identifier rubyid_workspace_root'>workspace_root</span><span class='comma'>,</span> <span class='id identifier rubyid_output_dir'>output_dir</span><span class='rparen'>)</span>
@@ -1753,15 +1756,15 @@ dir as the generated domain files.</p>
       <pre class="lines">
 
 
-1597
-1598
-1599
-1600
-1601
-1602</pre>
+1614
+1615
+1616
+1617
+1618
+1619</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1597</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1614</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_emit_error_module'>emit_error_module</span><span class='lparen'>(</span><span class='id identifier rubyid_schema'>schema</span><span class='comma'>,</span> <span class='id identifier rubyid_output_dir'>output_dir</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_codes'>codes</span> <span class='op'>=</span> <span class='id identifier rubyid_error_code_map'>error_code_map</span><span class='lparen'>(</span><span class='id identifier rubyid_schema'>schema</span><span class='rparen'>)</span>
@@ -1909,12 +1912,12 @@ already ending in &quot;error&quot; (&quot;unknown error&quot; -&gt; UnknownErro
       <pre class="lines">
 
 
-1591
-1592
-1593</pre>
+1608
+1609
+1610</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1591</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1608</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_error_class_name'>error_class_name</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_code'>code</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:capitalize</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='period'>.</span><span class='id identifier rubyid_sub'>sub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>Error$</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>Error</span><span class='tstring_end'>&quot;</span></span>
@@ -1955,12 +1958,12 @@ the shared Error namespace. Self-contained — no reference to the classic error
       <pre class="lines">
 
 
-1584
-1585
-1586</pre>
+1601
+1602
+1603</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1584</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1601</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_error_code_map'>error_code_map</span><span class='lparen'>(</span><span class='id identifier rubyid_schema'>schema</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_schema'>schema</span><span class='period'>.</span><span class='id identifier rubyid_error_codes'>error_codes</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_code'>code</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_code'>code</span><span class='comma'>,</span> <span class='id identifier rubyid_error_class_name'>error_class_name</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -2061,20 +2064,20 @@ ruby_path). Synthetic enums stay domain-level. Raises on a missing owner.</p>
       <pre class="lines">
 
 
-1552
-1553
-1554
-1555
-1556
-1557
-1558
-1559
-1560
-1561
-1562</pre>
+1569
+1570
+1571
+1572
+1573
+1574
+1575
+1576
+1577
+1578
+1579</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1552</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1569</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_nest_synthetic'>nest_synthetic</span><span class='lparen'>(</span><span class='id identifier rubyid_types'>types</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_index'>index</span> <span class='op'>=</span> <span class='id identifier rubyid_types'>types</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_schema_name'>schema_name</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -2219,14 +2222,14 @@ keyword-optionality is expressed separately by the <code>?</code> prefix (see rb
       <pre class="lines">
 
 
-1564
-1565
-1566
-1567
-1568</pre>
+1581
+1582
+1583
+1584
+1585</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1564</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1581</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_render'>render</span><span class='lparen'>(</span><span class='id identifier rubyid_mod'>mod</span><span class='comma'>,</span> <span class='id identifier rubyid_template_path'>template_path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_generated_note'>generated_note</span> <span class='op'>=</span> <span class='const'>GeneratedNote</span><span class='period'>.</span><span class='id identifier rubyid_render'>render</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
@@ -2506,12 +2509,12 @@ e.g. rb/lib/.../protocol -&gt; rb/sig/lib/.../protocol.</p>
       <pre class="lines">
 
 
-1629
-1630
-1631</pre>
+1646
+1647
+1648</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1629</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1646</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_sig_dir'>sig_dir</span><span class='lparen'>(</span><span class='id identifier rubyid_output_dir'>output_dir</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_output_dir'>output_dir</span><span class='period'>.</span><span class='id identifier rubyid_sub'>sub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>(\A|/)lib/</span><span class='regexp_end'>}</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\1sig/lib/</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -2595,17 +2598,17 @@ back to <code>**untyped</code>.</p>
       <pre class="lines">
 
 
-1461
-1462
-1463
-1464
-1465
-1466
-1467
-1468</pre>
+1476
+1477
+1478
+1479
+1480
+1481
+1482
+1483</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1461</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1476</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_thread_variant_arg_sigs'>thread_variant_arg_sigs</span><span class='lparen'>(</span><span class='id identifier rubyid_schema'>schema</span><span class='comma'>,</span> <span class='id identifier rubyid_types'>types</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_record_sigs'>record_sigs</span> <span class='op'>=</span> <span class='id identifier rubyid_types'>types</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:union?</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_schema'>schema</span><span class='period'>.</span><span class='id identifier rubyid_ruby_path_for'>ruby_path_for</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_schema_name'>schema_name</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_rbs_new_args'>rbs_new_args</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -2739,15 +2742,15 @@ The first letter is capitalized so a lower-cased spec name (e.g.
       <pre class="lines">
 
 
-1450
-1451
-1452
-1453
-1454
-1455</pre>
+1465
+1466
+1467
+1468
+1469
+1470</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1450</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 1465</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_vendor_accessors'>vendor_accessors</span><span class='lparen'>(</span><span class='id identifier rubyid_vendor_modules'>vendor_modules</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_vendor_modules'>vendor_modules</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_vendor_module'>vendor_module</span><span class='op'>|</span>
@@ -2862,7 +2865,7 @@ counts what the caller appends to the last line (an entry's separating comma).</
 </div>
 
       <div id="footer">
-  Generated on Tue Nov 17 17:52:51 2026 by
+  Generated on Mon Nov 23 09:08:59 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-3.3.12).
 </div>

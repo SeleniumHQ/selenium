@@ -1611,6 +1611,50 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#add_auth_required_listener-instance_method" title="#add_auth_required_listener (instance method)">#<strong>add_auth_required_listener</strong>(&amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_before_request_sent_listener-instance_method" title="#add_before_request_sent_listener (instance method)">#<strong>add_before_request_sent_listener</strong>(&amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#add_data_collector-instance_method" title="#add_data_collector (instance method)">#<strong>add_data_collector</strong>(data_types:, max_encoded_data_size:, collector_type: Serialization::UNSET, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)  &#x21d2; Object </a>
     
 
@@ -1633,7 +1677,73 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#add_fetch_error_listener-instance_method" title="#add_fetch_error_listener (instance method)">#<strong>add_fetch_error_listener</strong>(&amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#add_intercept-instance_method" title="#add_intercept (instance method)">#<strong>add_intercept</strong>(phases:, contexts: Serialization::UNSET, url_patterns: Serialization::UNSET)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_response_completed_listener-instance_method" title="#add_response_completed_listener (instance method)">#<strong>add_response_completed_listener</strong>(&amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_response_started_listener-instance_method" title="#add_response_started_listener (instance method)">#<strong>add_response_started_listener</strong>(&amp;block)  &#x21d2; Object </a>
     
 
     
@@ -2129,7 +2239,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Domain.html" title="Selenium::WebDriver::BiDi::Protocol::Domain (class)">Domain</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">#initialize</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="Domain.html#remove_listener-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#remove_listener (method)">#remove_listener</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -2143,7 +2253,109 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="add_data_collector-instance_method">
+  <h3 class="signature first" id="add_auth_required_listener-instance_method">
+  
+    #<strong>add_auth_required_listener</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#event-network-authRequired" target="_parent" title="https://w3c.github.io/webdriver-bidi/#event-network-authRequired">https://w3c.github.io/webdriver-bidi/#event-network-authRequired</a></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+763
+764
+765</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/network.rb', line 763</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_auth_required_listener'>add_auth_required_listener</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_listener'>add_listener</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.authRequired</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="add_before_request_sent_listener-instance_method">
+  
+    #<strong>add_before_request_sent_listener</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+769
+770
+771</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/network.rb', line 769</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_before_request_sent_listener'>add_before_request_sent_listener</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_listener'>add_listener</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.beforeRequestSent</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="add_data_collector-instance_method">
   
     #<strong>add_data_collector</strong>(data_types:, max_encoded_data_size:, collector_type: Serialization::UNSET, contexts: Serialization::UNSET, user_contexts: Serialization::UNSET)  &#x21d2; <tt>Object</tt> 
   
@@ -2225,6 +2437,58 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="add_fetch_error_listener-instance_method">
+  
+    #<strong>add_fetch_error_listener</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#event-network-fetchError" target="_parent" title="https://w3c.github.io/webdriver-bidi/#event-network-fetchError">https://w3c.github.io/webdriver-bidi/#event-network-fetchError</a></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+776
+777
+778</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/network.rb', line 776</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_fetch_error_listener'>add_fetch_error_listener</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_listener'>add_listener</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.fetchError</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="add_intercept-instance_method">
   
     #<strong>add_intercept</strong>(phases:, contexts: Serialization::UNSET, url_patterns: Serialization::UNSET)  &#x21d2; <tt>Object</tt> 
@@ -2274,6 +2538,110 @@
   <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='period'>.</span><span class='id identifier rubyid_validate!'><span class='object_link'><a href="../Serialization.html#validate!-class_method" title="Selenium::WebDriver::BiDi::Serialization.validate! (method)">validate!</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>phases</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_phases'>phases</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::Network (class)">Network</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#INTERCEPT_PHASE-constant" title="Selenium::WebDriver::BiDi::Protocol::Network::INTERCEPT_PHASE (constant)">INTERCEPT_PHASE</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#AddInterceptParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::Network::AddInterceptParameters (constant)">AddInterceptParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>phases:</span> <span class='id identifier rubyid_phases'>phases</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='id identifier rubyid_contexts'>contexts</span><span class='comma'>,</span> <span class='label'>url_patterns:</span> <span class='id identifier rubyid_url_patterns'>url_patterns</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.addIntercept</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::Network (class)">Network</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#AddInterceptResult-constant" title="Selenium::WebDriver::BiDi::Protocol::Network::AddInterceptResult (constant)">AddInterceptResult</a></span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="add_response_completed_listener-instance_method">
+  
+    #<strong>add_response_completed_listener</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#event-network-responseCompleted" target="_parent" title="https://w3c.github.io/webdriver-bidi/#event-network-responseCompleted">https://w3c.github.io/webdriver-bidi/#event-network-responseCompleted</a></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+783
+784
+785</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/network.rb', line 783</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_response_completed_listener'>add_response_completed_listener</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_listener'>add_listener</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.responseCompleted</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="add_response_started_listener-instance_method">
+  
+    #<strong>add_response_started_listener</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#event-network-responseStarted" target="_parent" title="https://w3c.github.io/webdriver-bidi/#event-network-responseStarted">https://w3c.github.io/webdriver-bidi/#event-network-responseStarted</a></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+790
+791
+792</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/network.rb', line 790</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_response_started_listener'>add_response_started_listener</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_listener'>add_listener</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.responseStarted</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -3377,7 +3745,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Nov 17 17:52:54 2026 by
+  Generated on Mon Nov 23 09:09:02 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-3.3.12).
 </div>

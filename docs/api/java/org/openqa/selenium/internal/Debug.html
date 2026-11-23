@@ -59,7 +59,6 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#isDebugging()" tabindex="0">isDebugging()</a></li>
-<li><a href="#getDebugLogLevel()" tabindex="0">getDebugLogLevel()</a></li>
 <li><a href="#isDebugAll()" tabindex="0">isDebugAll()</a></li>
 <li><a href="#configureLogger()" tabindex="0">configureLogger()</a></li>
 </ol>
@@ -103,7 +102,7 @@ bridge themselves instead.</div>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -114,21 +113,14 @@ bridge themselves instead.</div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Shows Selenium's diagnostic log records on the console if debugging is enabled.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.logging/java/util/logging/Level.html" title="class or interface in java.util.logging" class="external-link">Level</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDebugLogLevel()" class="member-name-link">getDebugLogLevel</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Log diagnostics at a fixed level such as <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.logging/java/util/logging/Level.html#FINE" title="class or interface in java.util.logging" class="external-link"><code>Level.FINE</code></a>.</div>
-</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isDebugAll()" class="member-name-link">isDebugAll</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isDebugAll()" class="member-name-link">isDebugAll</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns whether the <code>SE_DEBUG</code> environment variable is set to <code>true</code>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isDebugging()" class="member-name-link">isDebugging</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isDebugging()" class="member-name-link">isDebugging</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns whether the <code>selenium.debug</code> or <code>selenium.webdriver.verbose</code> system
 property is currently set to <code>true</code>.</div>
 </div>
@@ -162,24 +154,6 @@ honoured.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd><code>true</code> if either debug system property is currently enabled</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getDebugLogLevel()">
-<h3>getDebugLogLevel</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
-</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.logging/java/util/logging/Level.html" title="class or interface in java.util.logging" class="external-link">Level</a></span>&nbsp;<span class="element-name">getDebugLogLevel</span>()</div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Log diagnostics at a fixed level such as <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.logging/java/util/logging/Level.html#FINE" title="class or interface in java.util.logging" class="external-link"><code>Level.FINE</code></a>. <a href="#configureLogger()"><code>configureLogger()</code></a> makes those records visible when debugging is enabled.</div>
-</div>
-<div class="block">Returns the level that legacy call sites use for their diagnostic messages.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.logging/java/util/logging/Level.html#INFO" title="class or interface in java.util.logging" class="external-link"><code>Level.INFO</code></a> while <a href="#isDebugging()"><code>isDebugging()</code></a> is <code>true</code>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.logging/java/util/logging/Level.html#FINE" title="class or interface in java.util.logging" class="external-link"><code>Level.FINE</code></a>
-    otherwise</dd>
 </dl>
 </div>
 </section>

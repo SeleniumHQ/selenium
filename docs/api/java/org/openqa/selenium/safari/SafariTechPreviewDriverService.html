@@ -80,6 +80,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#getDefaultDriverOptions()" tabindex="0">getDefaultDriverOptions()</a></li>
 <li><a href="#createDefaultService()" tabindex="0">createDefaultService()</a></li>
 <li><a href="#waitUntilAvailable()" tabindex="0">waitUntilAvailable()</a></li>
+<li><a href="#hasShutdownEndpoint()" tabindex="0">hasShutdownEndpoint()</a></li>
 </ol>
 </li>
 </ol>
@@ -201,15 +202,18 @@ configuration.</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDriverProperty()" class="member-name-link">getDriverProperty</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#waitUntilAvailable()" class="member-name-link">waitUntilAvailable</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasShutdownEndpoint()" class="member-name-link">hasShutdownEndpoint</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#waitUntilAvailable()" class="member-name-link">waitUntilAvailable</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.openqa.selenium.remote.service.DriverService">Methods inherited from class&nbsp;<a href="../remote/service/DriverService.html#method-summary" title="class in org.openqa.selenium.remote.service">DriverService</a></h3>
-<code><a href="../remote/service/DriverService.html#close()" title="close()">close</a>, <a href="../remote/service/DriverService.html#getArgs()" title="getArgs()">getArgs</a>, <a href="../remote/service/DriverService.html#getEnvironment()" title="getEnvironment()">getEnvironment</a>, <a href="../remote/service/DriverService.html#getExecutable()" title="getExecutable()">getExecutable</a>, <a href="../remote/service/DriverService.html#getOutputStream()" title="getOutputStream()">getOutputStream</a>, <a href="../remote/service/DriverService.html#getTimeout()" title="getTimeout()">getTimeout</a>, <a href="../remote/service/DriverService.html#getUrl()" title="getUrl()">getUrl</a>, <a href="../remote/service/DriverService.html#getUrl(int)" title="getUrl(int)">getUrl</a>, <a href="../remote/service/DriverService.html#hasShutdownEndpoint()" title="hasShutdownEndpoint()">hasShutdownEndpoint</a>, <a href="../remote/service/DriverService.html#isRunning()" title="isRunning()">isRunning</a>, <a href="../remote/service/DriverService.html#sendOutputTo(java.io.OutputStream)" title="sendOutputTo(OutputStream)">sendOutputTo</a>, <a href="../remote/service/DriverService.html#setExecutable(java.lang.String)" title="setExecutable(String)">setExecutable</a>, <a href="../remote/service/DriverService.html#start()" title="start()">start</a>, <a href="../remote/service/DriverService.html#stop()" title="stop()">stop</a></code></div>
+<code><a href="../remote/service/DriverService.html#close()" title="close()">close</a>, <a href="../remote/service/DriverService.html#getArgs()" title="getArgs()">getArgs</a>, <a href="../remote/service/DriverService.html#getEnvironment()" title="getEnvironment()">getEnvironment</a>, <a href="../remote/service/DriverService.html#getExecutable()" title="getExecutable()">getExecutable</a>, <a href="../remote/service/DriverService.html#getOutputStream()" title="getOutputStream()">getOutputStream</a>, <a href="../remote/service/DriverService.html#getTimeout()" title="getTimeout()">getTimeout</a>, <a href="../remote/service/DriverService.html#getUrl()" title="getUrl()">getUrl</a>, <a href="../remote/service/DriverService.html#getUrl(int)" title="getUrl(int)">getUrl</a>, <a href="../remote/service/DriverService.html#isRunning()" title="isRunning()">isRunning</a>, <a href="../remote/service/DriverService.html#sendOutputTo(java.io.OutputStream)" title="sendOutputTo(OutputStream)">sendOutputTo</a>, <a href="../remote/service/DriverService.html#setExecutable(java.lang.String)" title="setExecutable(String)">setExecutable</a>, <a href="../remote/service/DriverService.html#start()" title="start()">start</a>, <a href="../remote/service/DriverService.html#stop()" title="stop()">stop</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#method-summary" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
@@ -397,6 +401,18 @@ service created by this method will be configured to use a free port on the curr
 <dl class="notes">
 <dt>Overrides:</dt>
 <dd><code><a href="../remote/service/DriverService.html#waitUntilAvailable()">waitUntilAvailable</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="hasShutdownEndpoint()">
+<h3>hasShutdownEndpoint</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">hasShutdownEndpoint</span>()</div>
+<dl class="notes">
+<dt>Overrides:</dt>
+<dd><code><a href="../remote/service/DriverService.html#hasShutdownEndpoint()">hasShutdownEndpoint</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
 </dl>
 </div>
 </section>
