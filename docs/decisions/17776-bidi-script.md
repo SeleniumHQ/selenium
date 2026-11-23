@@ -33,7 +33,8 @@ Every script this API takes as source — for `execute`, `pin`, and `add_event_h
 arguments are the function's parameters, not an `arguments` array, and its result is the function's
 return value. This is the form the protocol runs natively, so bindings pass it through without
 wrapping, and it is the same form in every binding. It differs from `execute_script`, which takes a
-function body; that method is unchanged.
+function body; that method is unchanged, and `execute` has an opt-in `body` option (decision 1) so
+an `execute_script` string moves over without rewriting.
 
 **Running scripts**
 
@@ -42,6 +43,15 @@ function body; that method is unchanged.
    covers both sync and async, and async-versus-sync is a per-language return-type detail, not a
    second method. Passing a handle invokes the pinned script without resending its source — the
    original point of pinning — so a large atom travels once and each call carries only the invocation.
+   **Arguments and results convert as `execute_script` converts them**: an element passed in reaches
+   the script as its DOM node, and a DOM node returned comes back as an element, with the same
+   handling of collections, numbers, and `null`.
+   **An optional `body` flag, off by default, takes the script as a function body instead**, wrapped
+   by the binding so `return` and `arguments` behave exactly as in `execute_script`; it exists so an
+   `execute_script` snippet moves to `execute` unchanged. It applies to a source string only, not to
+   a pinned handle, and `pin` and `add_event_handler` have no such option. The function form stays the
+   default because its failure is loud: a body sent as a function is a syntax error, while a function
+   sent as a body silently returns `null`.
    Bindings must stop listening for the result of a pending `execute` command once they have waited
    longer than the session's script timeout value, and then raise the same script timeout error as
    `execute_script`. The binding takes the session's value from the capabilities it sent and from its
@@ -52,20 +62,25 @@ function body; that method is unchanged.
 
 ```ruby
 driver.script.execute("() => document.title")
+driver.script.execute("return document.title", body: true)  # an execute_script string, unchanged
 ```
 ```java
 driver.script().execute("() => document.title");
+driver.script().execute("return document.title", ScriptOptions.body());
 ```
 
 2. **`pin(source)` registers a script the browser keeps on every future page** — run before the
    page's own scripts on each navigation and in every new browsing context for the rest of the
    session. It returns a handle: pass it to `execute` to invoke the pinned script without resending
    the source, or to `unpin` to discard it.
-   - **On each load the pinned function is called once, with no arguments.** If it returns a
-     function, that returned function is the *pinned callable*: the binding keeps it on the page, and
-     `execute(handle, *args)` invokes it with `args`. If it returns anything else, the script was
-     self-running — it has already taken effect — and `execute(handle)` re-runs it. The
-     binding checks the return value in the browser, so no binding parses the source to classify it.
+   - **A pinned function that declares parameters is a callable; one that declares none runs
+     itself.** On each load the binding checks the function's `length` in the browser. If it is
+     non-zero, the function is the *pinned callable*: the binding keeps it on the page without
+     calling it, and `execute(handle, *args)` invokes it with `args`. If it is zero, the function is
+     self-running: it is called once on each load, and `execute(handle)` calls it again and returns
+     its result. The check is the language's own, made in the browser, so no binding parses the
+     source to classify it. `length` does not count rest or defaulted parameters, so a callable must
+     declare at least one plain leading parameter to be kept rather than run.
    - **`pin` does not run on the already-loaded page**, because a pinned script's guarantee is that
      it runs before the page's own scripts, and that moment has passed. Instead, when
      `execute(handle)` reaches a page the pinned script has not run on, the binding runs the pinned
@@ -73,7 +88,7 @@ driver.script().execute("() => document.title");
      current page; only that first call on that page carries the source.
 
 ```ruby
-displayed = driver.script.pin("() => (el) => el.offsetParent !== null")  # the atom rides on every future page
+displayed = driver.script.pin("(el) => el.offsetParent !== null")  # the atom rides on every future page
 driver.get("https://example.com")
 driver.script.execute(displayed, driver.find_element(id: "menu")) # invoked by handle; atom not resent
 driver.script.unpin(displayed)
@@ -81,7 +96,7 @@ driver.script.unpin(displayed)
 driver.script.pin("() => { window.__seleniumStart = performance.now() }")  # self-running on each load
 ```
 ```java
-PinnedScript displayed = driver.script().pin("() => (el) => el.offsetParent !== null");
+PinnedScript displayed = driver.script().pin("(el) => el.offsetParent !== null");
 driver.get("https://example.com");
 driver.script().execute(displayed, driver.findElement(By.id("menu")));
 driver.script().unpin(displayed);
@@ -183,19 +198,19 @@ driver.script().addConsoleMessageHandler(m -> { throw new RuntimeException("boom
    handle must never be passed as a bare string alongside a script's args, where a binding could not
    tell `execute(script, "abc")` apart from a call targeting window `"abc"`. Languages with named
    arguments take it as a named argument. Languages without them (Java, .NET) take it, together with
-   the sandbox (decision 9), in a dedicated options type. The handle survives navigation, so a scope
+   the sandbox (decision 9) and `execute`'s `body` flag, in a dedicated options type. The handle survives navigation, so a scope
    the user holds stays valid. Reaching a worker or
    worklet, which has no window handle, and how window handles relate to user contexts, are left to a
    separate record.
 
 ```ruby
-driver.script.pin("() => (el) => el.offsetParent !== null")                      # every tab, present and future
-driver.script.pin("() => (el) => el.offsetParent !== null", window_handle: tab)  # only this tab's future loads
+driver.script.pin("(el) => el.offsetParent !== null")                      # every tab, present and future
+driver.script.pin("(el) => el.offsetParent !== null", window_handle: tab)  # only this tab's future loads
 driver.script.add_console_message_handler(window_handle: tab) { |m| log(m.text) }  # just this tab
 ```
 ```java
-driver.script().pin("() => (el) => el.offsetParent !== null");                    // every tab
-driver.script().pin("() => (el) => el.offsetParent !== null",
+driver.script().pin("(el) => el.offsetParent !== null");                    // every tab
+driver.script().pin("(el) => el.offsetParent !== null",
     ScriptOptions.windowHandle(otherTab));                                         // only that tab
 ```
 
@@ -220,15 +235,19 @@ driver.script().pin(paintScript, ScriptOptions.sandbox("selenium"));
 ## Considered options
 
 - **Script source as a function body, as `execute_script` takes it.**
-  - It is the form every Selenium user already writes (`"return document.title"`, args in `arguments`), so `execute` would read the same as the method it overlaps. But `pin` and `add_event_handler` need a function value — something to keep and call, or something to hand `emit` to — so a body would have to be wrapped differently for each method. A function expression is the one form that fits all three and that the protocol runs without rewriting. `execute_script` keeps its body form, so no existing code changes.
+  - It is the form every Selenium user already writes (`"return document.title"`, args in `arguments`), so `execute` would read the same as the method it overlaps. But `pin` and `add_event_handler` need a function value — something to keep and call, or something to hand `emit` to — so a body would have to be wrapped differently for each method. A function expression is the one form that fits all three and that the protocol runs without rewriting. `execute_script` keeps its body form, so no existing code changes, and the opt-in `body` flag on `execute` covers copying a snippet across.
+- **Detecting a body sent as a function and retrying it as a body.**
+  - It would let `execute` take either form with no flag. But the failure is not a clean pre-check: the browser evaluates the source as an expression before finding it is not callable, so a body without `return` has already run once, with whatever side effects it has, before the retry runs it again. An explicit flag runs the script exactly once.
 - **Deciding pinned-callable versus self-running by parsing the source.**
-  - Treating "the source is a function expression" as the signal for a callable is what a reader expects. But every binding would need a JavaScript parser to agree on edge cases (parenthesized expressions, `async` functions, comments), and they would drift. Calling the pinned function and checking whether it returns a function is decided once, in the browser, the same way for every binding.
+  - Treating "the source has parameters" as the signal for a callable is what a reader expects. But every binding would need a JavaScript parser to agree on edge cases (parenthesized expressions, `async` functions, comments), and they would drift. Reading the function's `length` in the browser gets the same answer with no parser, decided once, the same way for every binding.
+- **Deciding pinned-callable by calling the function and checking whether it returns a function.**
+  - It needs no rule about parameters and lets a zero-argument callable be pinned. But every callable is then written as a function returning a function (`"() => (el) => …"`), a cost every user pays in every example, and it misclassifies a self-running script whose last expression happens to be a function, such as `() => window.helper = function () { … }`. A zero-argument callable gains nothing from the distinction anyway, because `execute(handle)` on a self-running script calls it again and returns its result.
 - **Having `pin` also run on the already-loaded page.**
   - It would make `pin` then `execute(handle)` work on the current page with no special case. But a pinned script promises to run before the page's own scripts; running it late on the current page would quietly break that promise for self-running scripts, such as an instrumentation hook that has to see the page's first network request. Running the source from `execute(handle)` gets the same result for callables and touches the current page only when the user asks it to.
 - **A separate `log` accessor for the console and error events.**
   - These come from the BiDi `log` domain, so a `log` accessor mirrors the protocol and reads naturally to someone thinking in spec terms. But it splits console and error away from the DOM-mutation event and the scripts they are used alongside, spreading one workflow over two objects; and `log` already means browser logs in Selenium (`manage().logs()`, log levels), so `driver.log` would be read as that. Keeping everything on `script` avoids both.
 - **A separate `preload` command alongside `pin`.**
-  - It looks like two behaviors — `pin` a script to call by handle, versus `preload` one that runs on every page — so two names seem to fit, and today's bindings lean that way (Java and JavaScript `pin` auto-runs, Python `pin` is a handle). But it is one mechanism: `pin` keeps a script on every page, and whether it runs on its own or waits to be called is a property of the script, not the command — a pinned script that returns a function is exactly run-on-demand, invoked through `execute`. A second command would split one concept across two names for no behavior the first cannot express.
+  - It looks like two behaviors — `pin` a script to call by handle, versus `preload` one that runs on every page — so two names seem to fit, and today's bindings lean that way (Java and JavaScript `pin` auto-runs, Python `pin` is a handle). But it is one mechanism: `pin` keeps a script on every page, and whether it runs on its own or waits to be called is a property of the script, not the command — a pinned script that declares parameters is exactly run-on-demand, invoked through `execute`. A second command would split one concept across two names for no behavior the first cannot express.
 - **A single merged console/error handler.**
   - One subscription maps directly to the `log.entryAdded` event that carries both, so it is the least to implement. But a user almost always wants console output or uncaught errors, not both interleaved, and a merged handler makes every subscriber re-filter by type; splitting moves that demultiplex into the binding, done once instead of by every user.
 - **Returning a bare id from `add`.**
@@ -246,7 +265,8 @@ driver.script().pin(paintScript, ScriptOptions.sandbox("selenium"));
 
 - Convergence is mostly reclassifying what exists: Java, JavaScript, and Python keep `pin` but return
   a registration object instead of a bare id and settle on one behavior — a script the browser keeps
-  on every page, invoked through `execute` when it returns a callable; Python also drops its
+  on every page, invoked through `execute` when it declares parameters. Java and JavaScript `pin`
+  take a function body today, so their users rewrite pinned scripts as function expressions; Python also drops its
   second payload shape; Ruby adds `execute`, `pin`, and the DOM-mutation handler; .NET builds the
   high-level surface it lacks.
 - `add_event_handler` is new surface every binding adds; the DOM-mutation handler becomes its first
@@ -254,7 +274,11 @@ driver.script().pin(paintScript, ScriptOptions.sandbox("selenium"));
   and custom async events no longer force a drop to the low-level module.
 - `execute` overlaps the existing `execute_script`. Whether to deprecate `execute_script` is left to a
   separate decision, under the normal deprecation policy. Until then, Selenium 5 documentation and
-  examples use `driver.script.execute` for new code, and `execute_script` remains supported.
+  examples use `driver.script.execute` for new code, and `execute_script` remains supported. Users
+  carrying an existing `execute_script` string across pass `body`; new examples use the function form.
+- `execute` converting arguments and results as `execute_script` does matches Python today. Java's
+  `execute` returns a `RemoteValue` and JavaScript's returns the raw protocol result, so both change
+  what `execute` returns, through the deprecation policy since the current return types are public.
 - Bindings need to store the value of the script timeout when a user sets it in either the
   capabilities or through the timeouts API. When the binding stops waiting, the script keeps
   running in the browser; the client has no way to stop it.
@@ -266,7 +290,8 @@ driver.script().pin(paintScript, ScriptOptions.sandbox("selenium"));
 - Sandbox is additive: bindings pass an optional sandbox name to `execute`, `pin`, and
   `add_event_handler`, and run their own injected scripts in one so instrumentation stays out of the
   page's own world.
-- Bindings that store pinned callables need a per-page key to keep them under (in the sandbox
+- Bindings wrap each pinned source in a small preload that reads its `length` and either stores or
+  calls it, need a per-page key to keep stored callables under (in the sandbox
   where one is used), and need to keep each pinned source so `execute(handle)` can run it on a page
   the pinned script has not reached.
 - Preload removal is future-only: `unpin` (and detaching a handler) stops the script from arming
