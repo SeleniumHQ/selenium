@@ -29,11 +29,13 @@ module BiDiGenerate
     protocol_dir = File.expand_path('../protocol', __dir__)
     template = File.join(__dir__, 'templates', 'module.rb.erb')
 
-    stale = build_ir(schema).filter_map do |mod|
+    modules = build_ir(schema)
+    stale = modules.filter_map do |mod|
       path = File.join(protocol_dir, "#{mod.filename}.rb")
       "#{mod.filename}.rb" unless File.exist?(path) && File.read(path) == render(mod, template)
     end
     stale << 'error_code.rb' unless error_module_current?(schema, protocol_dir)
+    stale << 'domains.rb' unless domains_module_current?(modules, protocol_dir)
     return if stale.empty?
 
     warn "Generated BiDi protocol code is stale or hand-edited: #{stale.sort.join(', ')}"
@@ -46,6 +48,13 @@ module BiDiGenerate
     mod = ErrorModule.new(filename: 'error_code', codes: error_code_map(schema))
     path = File.join(protocol_dir, 'error_code.rb')
     File.exist?(path) && File.read(path) == render(mod, File.join(__dir__, 'templates', 'error_code.rb.erb'))
+  end
+
+  # Whether the checked-in protocol/domains.rb matches what the generator would render now.
+  def self.domains_module_current?(modules, protocol_dir)
+    path = File.join(protocol_dir, 'domains.rb')
+    template = File.join(__dir__, 'templates', 'domains.rb.erb')
+    File.exist?(path) && File.read(path) == render(domains_module(modules), template)
   end
 
   # $(rootpath) is relative to the runfiles root; __dir__ anchors us there so it resolves the

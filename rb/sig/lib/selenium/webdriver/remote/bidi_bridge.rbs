@@ -22,11 +22,7 @@ module Selenium
       class BiDiBridge < Bridge
         READINESS_STATE: Hash[String, Symbol]
 
-        @browsing_context: BiDi::Protocol::BrowsingContext
-
         @connection: untyped
-
-        @web_extension: BiDi::Protocol::WebExtension
 
         @current_window: String
 
@@ -57,10 +53,6 @@ module Selenium
         private
 
         def validated_socket_url: () -> String
-
-        def browsing_context: () -> BiDi::Protocol::BrowsingContext
-
-        def web_extension: () -> BiDi::Protocol::WebExtension
 
         def web_extension_data: (String path) -> untyped
 

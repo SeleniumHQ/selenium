@@ -55,12 +55,12 @@ module Selenium
           end
 
           options = {allow_private_browsing:, permanent:}.compact
-          result = web_extension.moz.install(extension_data: web_extension_data(path), **options)
+          result = bidi_web_extension.moz.install(extension_data: web_extension_data(path), **options)
           WebDriver::WebExtension.new(result.extension)
         end
 
         def uninstall_web_extension(extension_id)
-          bidi? ? web_extension.uninstall(extension: extension_id) : uninstall_addon(extension_id)
+          bidi? ? bidi_web_extension.uninstall(extension: extension_id) : uninstall_addon(extension_id)
           nil
         end
 

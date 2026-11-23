@@ -21,7 +21,7 @@ interface _Bridge
 
   def bidi?: () -> bool
 
-  def web_extension: () -> Selenium::WebDriver::BiDi::Protocol::WebExtension
+  def bidi_web_extension: () -> Selenium::WebDriver::BiDi::Protocol::WebExtension
 
   def web_extension_data: (String path) -> untyped
 
