@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Concatenate the per-job result artifacts of a workflow run into one file, so
-# the weekly report reads a couple of files a day rather than one per job.
+# the test health report reads a couple of files a day rather than one per job.
 #
 # Only runs that fan out across many jobs need this. The report prefers a run's
 # merged file and otherwise reads the per-job artifacts, so a workflow with a
@@ -8,8 +8,8 @@
 
 set -euo pipefail
 
-SRC="${1:-build/flaky-artifacts}"
-OUT=build/flaky
+SRC="${1:-build/test-health-artifacts}"
+OUT=build/test-health
 
 mkdir -p "$OUT"
 : > "$OUT/results.jsonl"

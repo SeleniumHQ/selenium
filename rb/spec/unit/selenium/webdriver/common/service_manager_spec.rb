@@ -32,11 +32,11 @@ module Selenium
           FileUtils.rm_rf(driver_dir)
         end
 
-        def manager_for(script)
+        def manager_for(script, **)
           path = File.join(driver_dir, 'fake_driver')
           File.write(path, "#!/bin/sh\n#{script}\n")
           File.chmod(0o755, path)
-          described_class.new(Service.chrome(path: path))
+          described_class.new(Service.chrome(path: path, **))
         end
 
         it 'reports the exit status when the driver exits before accepting connections' do
@@ -60,6 +60,34 @@ module Selenium
 
           expect { manager.start }.to raise_error(Error::WebDriverError, /EADDRINUSE/)
           expect(Net::HTTP).to have_received(:start).at_least(2).times
+        end
+
+        context 'when the logger is at debug' do
+          around do |example|
+            logger = WebDriver.logger
+            original_level = logger.level
+            logger.level = :debug unless logger.debug?
+            example.run
+          ensure
+            logger.level = original_level unless logger.level == original_level
+          end
+
+          it 'sends driver output to the logger' do
+            manager = manager_for('exit 3')
+
+            expect { manager.start }.to raise_error(Error::WebDriverError)
+            expect(manager.instance_variable_get(:@process).io).to eq WebDriver.logger.io
+          end
+
+          it 'keeps a driver log set by the user' do
+            File.open(File.join(driver_dir, 'driver.log'), 'w') do |log|
+              manager = manager_for('exit 3', log: log)
+
+              expect { manager.start }.to raise_error(Error::WebDriverError)
+              expected = ENV.key?('SE_DEBUG') ? WebDriver.logger.io : log
+              expect(manager.instance_variable_get(:@process).io).to eq expected
+            end
+          end
         end
       end
     end

@@ -25,7 +25,7 @@ module Selenium
     class BiDi
       module Protocol
         describe Network, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
+          after { |example| quit_driver unless example.skipped? }
 
           let(:network) { described_class.new(driver) }
           let(:browsing_context) { BrowsingContext.new(driver) }

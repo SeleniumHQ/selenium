@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Rerun the Bazel command once when its console log shows a transient download failure.
-# The retried run replaces build/bazel-console.log so the debug rerun and the flaky-test
-# parsing act on it; the aborted run is kept as build/bazel-console-transient.log.
+# The retried run replaces build/bazel-console.log so the debug rerun and the test health
+# recording act on it; the aborted run is kept as build/bazel-console-transient.log.
 
 set -euo pipefail
 

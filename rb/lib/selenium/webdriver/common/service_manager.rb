@@ -92,6 +92,8 @@ module Selenium
                                   id: :se_debug)
           end
           @io = WebDriver.logger.io
+        elsif WebDriver.logger.debug?
+          @io ||= WebDriver.logger.io
         end
         @process.io = @io if @io
 

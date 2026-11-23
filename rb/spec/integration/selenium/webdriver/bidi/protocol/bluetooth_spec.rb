@@ -39,7 +39,7 @@ module Selenium
             rescue StandardError
               nil
             end
-            reset_driver!(example: example)
+            quit_driver
           end
 
           let(:bluetooth) { described_class.new(driver) }

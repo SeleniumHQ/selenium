@@ -84,6 +84,9 @@ class Service(service.Service):
     def command_line_args(self) -> list[str]:
         return ["--port", f"{self.port}"] + self._service_args
 
+    def send_remote_shutdown_command(self) -> None:
+        """Skip the shutdown request: geckodriver has no /shutdown endpoint, so stop() just ends the process."""
+
     @property
     def service_args(self) -> Sequence[str]:
         """Returns the sequence of service arguments."""

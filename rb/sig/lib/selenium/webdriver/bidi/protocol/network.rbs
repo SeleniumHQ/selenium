@@ -415,6 +415,11 @@ module Selenium
           def remove_intercept: (intercept: String) -> untyped
           def set_cache_behavior: (cache_behavior: Symbol, ?contexts: Array[String]) -> untyped
           def set_extra_headers: (headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header], ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def add_auth_required_listener: () { (Network::AuthRequiredParameters) -> void } -> String
+          def add_before_request_sent_listener: () { (Network::BeforeRequestSentParameters) -> void } -> String
+          def add_fetch_error_listener: () { (Network::FetchErrorParameters) -> void } -> String
+          def add_response_completed_listener: () { (Network::ResponseCompletedParameters) -> void } -> String
+          def add_response_started_listener: () { (Network::ResponseStartedParameters) -> void } -> String
         end
       end
     end

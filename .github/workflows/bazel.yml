@@ -245,22 +245,22 @@ jobs:
           name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 7
           path: build/failures/**
-      - name: Parse flaky results
-        id: parse-flaky
+      - name: Record test health
+        id: record-test-health
         if: ${{ !cancelled() && inputs.rerun-with-debug && github.event_name == 'schedule' && github.ref == 'refs/heads/trunk' }}
         continue-on-error: true
         shell: bash
         env:
           JOB_ID: ${{ job.check_run_id }}
-        run: ./scripts/github-actions/parse-flaky-results.sh
-      - name: Upload flaky results
-        if: always() && steps.parse-flaky.outputs.results == 'true'
+        run: ./scripts/github-actions/record-test-health.sh
+      - name: Upload test health
+        if: always() && steps.record-test-health.outputs.results == 'true'
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
+          name: test-health-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 60
-          path: build/failures/results.jsonl
+          path: build/test-health/results.jsonl
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3

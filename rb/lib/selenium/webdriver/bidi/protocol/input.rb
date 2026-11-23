@@ -411,6 +411,13 @@ module Selenium
             params = SetFilesParameters.new(context: context, element: element, files: files)
             execute(cmd: 'input.setFiles', params: params)
           end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-input-fileDialogOpened
+          def add_file_dialog_opened_listener(&block)
+            add_listener('input.fileDialogOpened', &block)
+          end
         end # Input
       end # Protocol
     end # BiDi

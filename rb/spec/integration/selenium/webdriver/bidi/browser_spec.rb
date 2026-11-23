@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     class BiDi
       describe Browser, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-        after { |example| reset_driver!(example: example) }
+        after { |example| quit_driver unless example.skipped? }
 
         let(:bidi) { driver.bidi }
 

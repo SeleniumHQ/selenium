@@ -127,6 +127,38 @@ public class FrameSwitchingTests : DriverTestFixture
         Assert.That(Driver.FindElement(By.Name("id-name1")).GetAttribute("value"), Is.EqualTo("name"));
     }
 
+    [TestCase("id", "1")]
+    [TestCase("id", "frame 1")]
+    [TestCase("id", "-1")]
+    [TestCase("name", "O'Brien")]
+    [TestCase("id", "O'Brien")]
+    [TestCase("name", "a\nb")]
+    [TestCase("id", "a\nb")]
+    public void ShouldBeAbleToSwitchToAnInlineFrameByNameOrId(string attribute, string frameName)
+    {
+        string inner = Urls.CreateInlinePage(new InlinePage()
+            .WithBody("<p id='inside'>inside</p>"));
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
+            .WithBody(string.Format("<iframe {0}=\"{1}\" src='{2}'></iframe>", attribute, frameName, inner)));
+
+        Driver.SwitchTo().Frame(frameName);
+
+        Assert.That(Driver.FindElement(By.Id("inside")).Text, Is.EqualTo("inside"));
+    }
+
+    [Test]
+    public void ShouldMatchAFrameIdIgnoringCaseInAQuirksModePage()
+    {
+        string inner = Urls.CreateInlinePage(new InlinePage()
+            .WithBody("<p id='inside'>inside</p>"));
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
+            .WithBody(string.Format("<iframe id='quirky' src='{0}'></iframe>", inner)));
+
+        Driver.SwitchTo().Frame("QUIRKY");
+
+        Assert.That(Driver.FindElement(By.Id("inside")).Text, Is.EqualTo("inside"));
+    }
+
     [Test]
     public void ShouldBeAbleToSwitchToFrameWithNameContainingDot()
     {

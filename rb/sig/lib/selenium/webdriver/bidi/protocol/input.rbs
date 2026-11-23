@@ -225,6 +225,7 @@ module Selenium
           def perform_actions: (context: String, actions: Array[::Selenium::WebDriver::BiDi::Protocol::Input::source_actions]) -> untyped
           def release_actions: (context: String) -> untyped
           def set_files: (context: String, element: ::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference, files: Array[String]) -> untyped
+          def add_file_dialog_opened_listener: () { (Input::FileDialogInfo) -> void } -> String
         end
       end
     end

@@ -139,8 +139,8 @@ jobs:
     uses: ./.github/workflows/ci-javascript.yml
     if: "!cancelled() && needs.targets.outputs.js != ''"
 
-  merge-flaky-results:
-    name: Merge Flaky Results
+  merge-test-health:
+    name: Merge Test Health
     if: always() && github.event_name == 'schedule' && github.ref == 'refs/heads/trunk'
     needs: [dotnet, java, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
@@ -151,19 +151,19 @@ jobs:
         uses: actions/download-artifact@v8
         continue-on-error: true
         with:
-          pattern: flaky-*
-          path: build/flaky-artifacts
+          pattern: test-health-*
+          path: build/test-health-artifacts
       - name: Merge results
         id: merge
         shell: bash
-        run: ./scripts/github-actions/merge-flaky-results.sh
+        run: ./scripts/github-actions/merge-test-health.sh
       - name: Upload results
         if: steps.merge.outputs.results == 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: merged-flaky-results-${{ github.run_id }}
+          name: merged-test-health-${{ github.run_id }}
           retention-days: 60
-          path: build/flaky/results.jsonl
+          path: build/test-health/results.jsonl
           overwrite: true
 
   ci-success:

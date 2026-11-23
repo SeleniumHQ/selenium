@@ -27,7 +27,7 @@ module Selenium
         let(:dialog) { driver.fedcm_dialog }
 
         before { driver.get url_for('fedcm/fedcm.html') }
-        after { reset_driver! }
+        after { |example| quit_driver unless example.skipped? }
 
         context 'without dialog present' do
           it 'throws an error' do

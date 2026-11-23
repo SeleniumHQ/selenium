@@ -24,24 +24,21 @@ module Selenium
     module Chrome
       describe Options, skip_unless: {browser: :chrome} do
         it 'passes emulated device correctly' do
-          reset_driver!(emulation: {device_name: 'Pixel 10'}) do |driver|
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to include('Pixel 10')
-          end
+          driver = local_driver(emulation: {device_name: 'Pixel 10'})
+          ua = driver.execute_script 'return window.navigator.userAgent'
+          expect(ua).to include('Pixel 10')
         end
 
         it 'passes emulated user agent correctly' do
-          reset_driver!(emulation: {user_agent: 'foo;bar'}) do |driver|
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to eq('foo;bar')
-          end
+          driver = local_driver(emulation: {user_agent: 'foo;bar'})
+          ua = driver.execute_script 'return window.navigator.userAgent'
+          expect(ua).to eq('foo;bar')
         end
 
         it 'passes args correctly' do
-          reset_driver!(args: ['--user-agent=foo;bar']) do |driver|
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to eq('foo;bar')
-          end
+          driver = local_driver(args: ['--user-agent=foo;bar'])
+          ua = driver.execute_script 'return window.navigator.userAgent'
+          expect(ua).to eq('foo;bar')
         end
 
         it 'enables bidi', skip_unless: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do

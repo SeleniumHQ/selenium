@@ -40,6 +40,8 @@ module Selenium
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
+          @local_drivers = []
+          @local_drivers_lock = Mutex.new
           @remote_server = nil
           pin_driver_path
           ENV['SE_MANAGER_PATH'] = runfiles_path('SE_MANAGER_PATH') if ENV.key?('SE_MANAGER_PATH')
@@ -81,21 +83,16 @@ module Selenium
           ENV.fetch('WD_BROWSER_VERSION', 'stable')
         end
 
-        def driver_instance(...)
-          @driver_used = true
-          @driver_instance || create_driver!(...)
+        def driver_instance
+          @driver_instance ||= create_driver
         end
 
-        def reset_driver!(**opts, &block)
-          # do not reset if the test was marked skipped
-          return if opts.delete(:example)&.metadata&.fetch(:skip, nil)
-          # a driver nobody has used since the last reset is still clean
-          return @driver_instance unless @driver_used || opts.any? || block
-
+        def local_driver(...)
+          # Safari allows only one session at a time
           quit_driver
-          driver = driver_instance(**opts, &block)
-          @driver_used = false
-          driver
+          instance = create_driver(...)
+          @local_drivers_lock.synchronize { @local_drivers << instance }
+          instance
         end
 
         def quit_driver
@@ -104,6 +101,15 @@ module Selenium
           # good riddance
         ensure
           @driver_instance = nil
+        end
+
+        def quit_local_drivers
+          @local_drivers.each do |instance|
+            instance.quit
+          rescue StandardError
+            # good riddance
+          end
+          @local_drivers.clear
         end
 
         def app_server
@@ -124,6 +130,7 @@ module Selenium
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 120,
+            env: safari_diagnose_env,
             args: %w[--enable-managed-downloads true --detect-drivers false] + driver_configuration
           )
         end
@@ -221,7 +228,7 @@ module Selenium
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
-        def create_driver!(listener: nil, http_client: nil, service: nil, **, &block)
+        def create_driver(listener: nil, http_client: nil, service: nil, **)
           check_for_previous_error
           http_client ||= Remote::Http::Default.new(read_timeout: 60)
           @safari_pairing_attempts ||= 0
@@ -230,15 +237,7 @@ module Selenium
           instance = new_driver_instance(**opts)
           @safari_pairing_attempts = 0
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
-          if block
-            begin
-              yield(instance)
-            ensure
-              instance.quit
-            end
-          else
-            @driver_instance = instance
-          end
+          instance
         rescue StandardError => e
           retry if safari_pairing_retry?(e)
           @create_driver_error = e
@@ -346,33 +345,32 @@ module Selenium
         def chrome_driver(service: nil, **)
           service ||= WebDriver::Service.chrome
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
-          service.args << '--verbose' if WebDriver.logger.debug?
           WebDriver::Driver.for(:chrome, service: service, **)
         end
 
         def edge_driver(service: nil, **)
           service ||= WebDriver::Service.edge
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
-          service.args << '--verbose' if WebDriver.logger.debug?
           WebDriver::Driver.for(:edge, service: service, **)
         end
 
-        def firefox_driver(service: nil, **)
-          service ||= WebDriver::Service.firefox
-          service.args.push('--log', 'trace') if WebDriver.logger.debug?
-          WebDriver::Driver.for(:firefox, service: service, **)
+        def safari_driver(service: nil, **)
+          WebDriver::Driver.for(:safari, service: service || safari_service, **)
         end
 
-        def safari_driver(**)
-          service_opts = WebDriver.logger.debug? ? {args: '--diagnose'} : {}
-          service = WebDriver::Service.safari(**service_opts)
-          WebDriver::Driver.for(:safari, service: service, **)
+        def safari_preview_driver(service: nil, **)
+          WebDriver::Driver.for(:safari, service: service || safari_service, **)
         end
 
-        def safari_preview_driver(**)
-          service_opts = WebDriver.logger.debug? ? {args: '--diagnose'} : {}
-          service = WebDriver::Service.safari(**service_opts)
-          WebDriver::Driver.for(:safari, service: service, **)
+        def safari_service
+          WebDriver::Service.safari(env: safari_diagnose_env)
+        end
+
+        # rules_ruby points HOME at TEST_TMPDIR, and safaridriver writes no --diagnose logs without the real HOME
+        def safari_diagnose_env
+          return unless ENV.key?('SE_DEBUG') && browser.to_s.start_with?('safari')
+
+          {'HOME' => Dir.home(ENV.fetch('USER'))}
         end
 
         def chrome_options(args: [], **opts)

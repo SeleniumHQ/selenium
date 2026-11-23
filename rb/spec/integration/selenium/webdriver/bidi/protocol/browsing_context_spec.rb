@@ -43,10 +43,9 @@ module Selenium
 
           describe '.new' do
             it 'errors when bidi not enabled' do
-              reset_driver!(web_socket_url: false) do |driver|
-                msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
-                expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
-              end
+              driver = local_driver(web_socket_url: false)
+              msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
+              expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
             end
           end
 
@@ -95,9 +94,7 @@ module Selenium
             end
 
             it 'limits the screenshot to the requested image size',
-               pending_if: [{browser: :edge,
-                             reason: 'Edge 157 ignores the captureScreenshot imageSize parameter'},
-                            {browser_family: :safari,
+               pending_if: [{browser_family: :safari,
                              reason: 'Safari ignores the captureScreenshot imageSize parameter'}] do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
 
@@ -163,22 +160,23 @@ module Selenium
                pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                             reason: 'Safari session.subscribe result fails strict deserialization'} do
               event_name = 'browsingContext.contextCreated'
-              connection = driver.send(:bridge).connection
               session = Session.new(driver)
-              events = []
-              callback = connection.add_callback(event_name) { |params| events << params }
+              events = Queue.new
+              listener = browsing_context.add_context_created_listener { |payload| events << payload }
               session.subscribe(events: [event_name])
 
               context = browsing_context.create(type: :tab).context
-              event = wait.until { events.find { |params| params['context'] == context } }
-              created = BrowsingContext::EVENT_TYPES[event_name].from_json(event)
+              created = wait.until do
+                payload = events.pop(timeout: 0)
+                payload if payload&.context == context
+              end
 
               expect(created).to be_a(BrowsingContext::ContextCreatedParameters)
               expect(created.user_context).to eq('default')
               expect(created.parent).to be_nil
             ensure
               session&.unsubscribe(events: [event_name])
-              connection.remove_callback(event_name, callback) if callback
+              browsing_context.remove_listener(listener) if listener
             end
 
             it 'accepts reference, background, and user context parameters',
@@ -384,11 +382,7 @@ module Selenium
           end
 
           describe '#set_bypass_csp',
-                   pending_if: [{browser: :edge,
-                                 exception: {class: Error::UnsupportedOperationError,
-                                             message: /browsingContext\.setBypassCSP/},
-                                 reason: 'Edge 157 returns unsupported operation for browsingContext.setBypassCSP'},
-                                {browser: :firefox,
+                   pending_if: [{browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox returns unknown command for browsingContext.setBypassCSP'},
                                 {browser_family: :safari,
@@ -486,9 +480,7 @@ module Selenium
             end
           end
 
-          describe '#traverse_history',
-                   skip_if: {browser_family: :safari,
-                             reason: 'Times out: browsingContext.traverseHistory hangs on Safari'} do
+          describe '#traverse_history' do
             it 'moves backward and forward in the context history' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
               browsing_context.navigate(

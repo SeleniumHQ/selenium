@@ -20,6 +20,7 @@
 module Selenium
   module WebDriver
     module Remote
+      # @api private
       class Bridge
         autoload :COMMANDS, 'selenium/webdriver/remote/bridge/commands'
         autoload :LocatorConverter, 'selenium/webdriver/remote/bridge/locator_converter'
