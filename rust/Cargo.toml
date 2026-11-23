@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "0.4.54"
+version = "0.4.55-nightly"
 edition = "2024"
 rust-version = "1.93"
 authors = ["Selenium <selenium-developers@googlegroups.com"]

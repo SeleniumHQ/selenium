@@ -1988,7 +1988,7 @@ dependencies = [
 
 [[package]]
 name = "selenium-manager"
-version = "0.4.54"
+version = "0.4.55-nightly"
 dependencies = [
  "anyhow",
  "apple-flat-package",
