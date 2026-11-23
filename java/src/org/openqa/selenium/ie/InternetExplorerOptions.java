@@ -261,14 +261,13 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
       streamFrom.entrySet().stream()
           .filter(entry -> CAPABILITY_NAMES.contains(entry.getKey()))
           .filter(entry -> entry.getValue() != null)
-          .forEach(
-              entry -> {
-                if (IE_SWITCHES.equals(entry.getKey())) {
-                  setCapability(entry.getKey(), List.of((entry.getValue().toString()).split(" ")));
-                } else {
-                  setCapability(entry.getKey(), entry.getValue());
-                }
-              });
+          .forEach(entry -> {
+            if (IE_SWITCHES.equals(entry.getKey())) {
+              setCapability(entry.getKey(), List.of((entry.getValue().toString()).split(" ")));
+            } else {
+              setCapability(entry.getKey(), entry.getValue());
+            }
+          });
     }
   }
 

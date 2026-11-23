@@ -21,13 +21,13 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed record SetLocaleOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? Locale, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+internal sealed record SetLocaleOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? Locale, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : Parameters;
 
 public sealed record SetLocaleOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetLocaleOverrideResult : EmptyResult;

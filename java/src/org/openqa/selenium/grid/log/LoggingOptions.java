@@ -196,14 +196,13 @@ public class LoggingOptions {
     }
     return config
         .get(LOGGING_SECTION, "log-file")
-        .map(
-            fileName -> {
-              try {
-                return (OutputStream) new FileOutputStream(fileName);
-              } catch (FileNotFoundException e) {
-                throw new UncheckedIOException(e);
-              }
-            })
+        .map(fileName -> {
+          try {
+            return (OutputStream) new FileOutputStream(fileName);
+          } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+          }
+        })
         .orElseGet(() -> Debug.isDebugAll() ? System.err : System.out);
   }
 

@@ -87,7 +87,7 @@ class InternetExplorerOptionsTest {
   void shouldSurviveASerializationRoundTrip() {
     InternetExplorerOptions options =
         new InternetExplorerOptions()
-            .withInitialBrowserUrl("http://www.cheese.com")
+            .withInitialBrowserUrl("http://www.cheese.test")
             .addCommandSwitches("--cake");
 
     String json = new Json().toJson(options);

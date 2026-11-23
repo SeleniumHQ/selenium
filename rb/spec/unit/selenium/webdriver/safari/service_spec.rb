@@ -25,6 +25,7 @@ module Selenium
       describe Service do
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+          let(:debug_args) { ENV.key?('SE_DEBUG') ? ['--diagnose'] : [] }
 
           before do
             allow(Platform).to receive(:assert_executable)
@@ -58,7 +59,7 @@ module Selenium
           it 'does not create args by default' do
             service = described_class.new
 
-            expect(service.extra_args).to be_empty
+            expect(service.extra_args).to eq debug_args
           end
 
           it 'does not allow log=' do
@@ -71,17 +72,48 @@ module Selenium
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
-            expect(service.extra_args).to eq ['--foo', '--bar']
+            expect(service.extra_args).to eq(['--foo', '--bar'] + debug_args)
+          end
+
+          it 'uses provided environment variables' do
+            service = described_class.new(env: {'FOO' => 'bar', 'BAZ' => 'qux'})
+
+            expect(service.env).to eq({'FOO' => 'bar', 'BAZ' => 'qux'})
+          end
+
+          context 'when SE_DEBUG is set' do
+            around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
+              ENV['SE_DEBUG'] = '1'
+              example.run
+            ensure
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
+            end
+
+            it 'adds --diagnose flag' do
+              service = described_class.new(args: ['--foo'])
+
+              expect(service.extra_args).to eq ['--foo', '--diagnose']
+            end
+
+            it 'does not duplicate --diagnose when provided' do
+              service = described_class.new(args: ['--diagnose'])
+
+              expect(service.extra_args).to eq ['--diagnose']
+            end
+
+            it 'does not modify provided args' do
+              args = ['--foo']
+              described_class.new(args: args)
+
+              expect(args).to eq ['--foo']
+            end
           end
         end
 
         context 'when initializing driver' do
           let(:driver) { Safari::Driver }
-          let(:service) do
-            instance_double(described_class, launch: service_manager, executable_path: nil, 'executable_path=': nil,
-                                             class: described_class)
-          end
-          let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
+          let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com', start: nil) }
           let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
           let(:finder) { instance_double(DriverFinder, browser_path?: false, driver_path: '/path/to/driver') }
 
@@ -94,47 +126,24 @@ module Selenium
           it 'is not created when :url is provided' do
             expect {
               driver.new(url: 'http://example.com:4321')
-            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Safari::Driver with :url")
+            }.to raise_error(ArgumentError, /Can't set the server URL for/)
           end
 
           it 'is created when :url is not provided' do
             allow(DriverFinder).to receive(:new).and_return(finder)
-            allow(described_class).to receive(:new).and_return(service)
 
             driver.new
 
-            expect(described_class).to have_received(:new).with(no_args)
+            expect(ServiceManager).to have_received(:new).once.with(an_instance_of(described_class))
           end
 
           it 'accepts :service without creating a new instance' do
             allow(DriverFinder).to receive(:new).and_return(finder)
-            allow(described_class).to receive(:new)
+            service = described_class.new
 
             driver.new(service: service)
 
-            expect(described_class).not_to have_received(:new)
-          end
-
-          context 'with a path env variable' do
-            let(:service) { described_class.new }
-            let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
-
-            before do
-              ENV['SE_SAFARIDRIVER'] = service_path
-            end
-
-            after { ENV.delete('SE_SAFARIDRIVER') }
-
-            it 'uses the path from the environment' do
-              expect(service.executable_path).to match(/safaridriver/)
-            end
-
-            it 'updates the path after setting the environment variable' do
-              ENV['SE_SAFARIDRIVER'] = '/foo/bar'
-              service.executable_path = service_path
-
-              expect(service.executable_path).to match(/safaridriver/)
-            end
+            expect(ServiceManager).to have_received(:new).once.with(service)
           end
         end
       end

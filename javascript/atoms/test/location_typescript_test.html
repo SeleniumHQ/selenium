@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>location_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/get-location-global.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    #positioned {
+      position: absolute;
+      left: 50px;
+      top: 400px;
+      width: 100px;
+      height: 50px;
+      padding: 0;
+      border: 0;
+    }
+
+    #hidden {
+      position: absolute;
+      left: 10px;
+      top: 20px;
+      width: 30px;
+      height: 40px;
+      display: none;
+    }
+
+    #invisible {
+      position: absolute;
+      left: 10px;
+      top: 20px;
+      width: 30px;
+      height: 40px;
+      visibility: hidden;
+    }
+
+    #tall {
+      height: 3000px;
+    }
+  </style>
+  <script type="text/javascript">
+    // getLocation is webdriver.atoms.element.getLocation: goog.style.getBounds
+    // behind an isShown guard. The returned shape is goog.math.Rect's
+    // serialised form -- {left, top, width, height} -- because that is what
+    // crosses the wire today, and the coordinates are page space, so they do
+    // not move when the document scrolls.
+    var getLocation = window.bot.dom.typescript.getLocation;
+
+    function assertClose(assert, actual, expected, message) {
+      assert.ok(Math.abs(actual - expected) < 0.01,
+        message + ' (expected ' + expected + ', got ' + actual + ')');
+    }
+
+    QUnit.test('returns the page-space bounds of a shown element', function (assert) {
+      var bounds = getLocation(document.getElementById('positioned'));
+      assert.ok(bounds, 'expected bounds for a shown element');
+      assertClose(assert, bounds.left, 50, 'left');
+      assertClose(assert, bounds.top, 400, 'top');
+      assertClose(assert, bounds.width, 100, 'width');
+      assertClose(assert, bounds.height, 50, 'height');
+    });
+
+    QUnit.test('reports only the goog.math.Rect keys', function (assert) {
+      var bounds = getLocation(document.getElementById('positioned'));
+      assert.deepEqual(Object.keys(bounds).sort(), ['height', 'left', 'top', 'width'],
+        'the wire shape must stay what goog.math.Rect serialised to');
+    });
+
+    // Page space, not client space: this is the property that distinguishes
+    // getLocation from get_top_left_coordinates.
+    QUnit.test('coordinates do not move when the document scrolls', function (assert) {
+      var element = document.getElementById('positioned');
+      var before = getLocation(element);
+      window.scrollTo(0, 200);
+      try {
+        assert.ok(window.pageYOffset > 0, 'the document actually scrolled');
+        var after = getLocation(element);
+        assertClose(assert, after.left, before.left, 'left is unchanged by scrolling');
+        assertClose(assert, after.top, before.top, 'top is unchanged by scrolling');
+      } finally {
+        window.scrollTo(0, 0);
+      }
+    });
+
+    QUnit.test('returns null for a display:none element', function (assert) {
+      assert.strictEqual(getLocation(document.getElementById('hidden')), null);
+    });
+
+    QUnit.test('returns null for a visibility:hidden element', function (assert) {
+      assert.strictEqual(getLocation(document.getElementById('invisible')), null);
+    });
+  </script>
+</head>
+
+<body>
+  <div id="positioned"></div>
+  <div id="hidden"></div>
+  <div id="invisible"></div>
+  <div id="tall"></div>
+</body>
+
+</html>

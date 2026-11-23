@@ -153,14 +153,12 @@ public abstract class DistributorTestBase {
     new FluentWait<>(distributor)
         .withTimeout(Duration.ofSeconds(10))
         .pollingEvery(Duration.ofMillis(100))
-        .until(
-            d -> {
-              Set<NodeStatus> nodes = d.getStatus().getNodes();
-              return nodes.size() == nodeCount
-                  && nodes.stream()
-                      .allMatch(
-                          node -> node.getAvailability() == availability && node.hasCapacity());
-            });
+        .until(d -> {
+          Set<NodeStatus> nodes = d.getStatus().getNodes();
+          return nodes.size() == nodeCount
+              && nodes.stream()
+                  .allMatch(node -> node.getAvailability() == availability && node.hasCapacity());
+        });
   }
 
   protected Node createNode(Capabilities stereotype, int count, int currentLoad) {

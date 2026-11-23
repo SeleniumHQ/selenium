@@ -53,6 +53,11 @@ try {
   // Fall through
 }
 
+// Bazel hands over a runfiles path; the library needs one it can spawn.
+if (process.env.SE_MANAGER_PATH && !fs.existsSync(process.env.SE_MANAGER_PATH)) {
+  process.env.SE_MANAGER_PATH = locate(process.env.SE_MANAGER_PATH)
+}
+
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
  * @record
@@ -218,6 +223,7 @@ function init(force = false) {
   seleniumJar = process.env['SELENIUM_SERVER_JAR']
   seleniumUrl = process.env['SELENIUM_REMOTE_URL']
   if (seleniumJar) {
+    seleniumJar = locate(seleniumJar)
     info(`Using Selenium server jar: ${seleniumJar}`)
   }
 
@@ -249,6 +255,10 @@ function init(force = false) {
       return seleniumServer.kill()
     }
   })
+}
+
+function isHeadless() {
+  return process.env['SE_HEADLESS'] === 'true'
 }
 
 const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */ new WeakMap()
@@ -290,6 +300,31 @@ class Environment {
   }
 
   /**
+   * Returns a predicate function that will suppress tests in this environment
+   * when it runs them through a Selenium server (such as a Grid) rather than a
+   * browser driver started locally.
+   *
+   *     ignore(env.remote()).it('reads a browser preference', ...)
+   *
+   * @return {function(): boolean} a new predicate function.
+   */
+  remote() {
+    return () => URL_MAP.get(this) !== null
+  }
+
+  /**
+   * Returns a predicate function that will suppress tests in this environment
+   * when it starts browsers headless, as requested by `SE_HEADLESS=true`.
+   *
+   *     ignore(env.headless()).it('installs an extension', ...)
+   *
+   * @return {function(): boolean} a new predicate function.
+   */
+  headless() {
+    return isHeadless
+  }
+
+  /**
    * @return {!Builder} a new WebDriver builder configured to target this
    *     environment's {@linkplain #browser browser}.
    */
@@ -315,6 +350,19 @@ class Environment {
       builder.setChromeOptions(options)
     }
     // Edge
+    if ('SE_EDGEDRIVER' in process.env) {
+      const found = locate(process.env.SE_EDGEDRIVER)
+      const service = new edge.ServiceBuilder(found)
+      builder.setEdgeService(service)
+    }
+    if ('SE_EDGE' in process.env) {
+      const binary = locate(process.env.SE_EDGE)
+      const options = new edge.Options()
+      options.setBinaryPath(binary)
+      options.setAcceptInsecureCerts(true)
+      options.addArguments('disable-infobars', 'disable-breakpad', 'disable-dev-shm-usage', 'no-sandbox')
+      builder.setEdgeOptions(options)
+    }
     // Firefox
     if ('SE_GECKODRIVER' in process.env) {
       const found = locate(process.env.SE_GECKODRIVER)
@@ -327,6 +375,24 @@ class Environment {
       options.enableBidi()
       options.setBinary(binary)
       builder.setFirefoxOptions(options)
+    }
+
+    if (browser.name === Browser.CHROME && !builder.getChromeOptions()) {
+      builder.setChromeOptions(new chrome.Options())
+    } else if (browser.name === Browser.EDGE && !builder.getEdgeOptions()) {
+      builder.setEdgeOptions(new edge.Options())
+    } else if (browser.name === Browser.FIREFOX && !builder.getFirefoxOptions()) {
+      builder.setFirefoxOptions(new firefox.Options())
+    }
+
+    if (isHeadless()) {
+      if (browser.name === Browser.CHROME) {
+        builder.getChromeOptions().addArguments('--headless')
+      } else if (browser.name === Browser.EDGE) {
+        builder.getEdgeOptions().addArguments('--headless')
+      } else if (browser.name === Browser.FIREFOX) {
+        builder.getFirefoxOptions().addArguments('-headless')
+      }
     }
 
     builder.disableEnvironmentOverrides()
@@ -343,9 +409,18 @@ class Environment {
         builder.setCapability('moz:debuggerAddress', true)
       }
 
-      // Enable BiDi for supporting browsers.
+      // Enable BiDi for supporting browsers, unless the test asked for a Classic
+      // session by setting webSocketUrl to false. Browser options are merged over
+      // the base capabilities at build time, and SE_FIREFOX turns BiDi on in the
+      // Firefox options, so a Classic request has to be written there too.
       if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
-        builder.setCapability('webSocketUrl', true)
+        if (builder.getCapabilities().get('webSocketUrl') === false) {
+          for (const options of [builder.getChromeOptions(), builder.getEdgeOptions(), builder.getFirefoxOptions()]) {
+            options?.set('webSocketUrl', false)
+          }
+        } else {
+          builder.setCapability('webSocketUrl', true)
+        }
         builder.setCapability('unhandledPromptBehavior', 'ignore')
       }
 
@@ -444,7 +519,11 @@ function suite(fn, options = undefined) {
 
       describe(`[${browser.name}]`, function () {
         if (!seleniumUrl && seleniumJar && !seleniumServer) {
-          seleniumServer = new remote.SeleniumServer(seleniumJar)
+          seleniumServer = new remote.SeleniumServer(seleniumJar, {
+            java: bazelJava(),
+            loopback: true,
+            args: ['--host', '127.0.0.1', ...gridArgs(targetBrowsers.map((b) => b.name))],
+          })
 
           const startTimeout = 65 * 1000
 
@@ -545,6 +624,53 @@ function getTestHook(name) {
     )
   }
   return fn
+}
+
+/**
+ * Bazel's hermetic java, from `SE_BAZEL_JAVA_LOCATION` (a file holding the `$(JAVA)` path).
+ * @return {(string|undefined)} the java executable, or undefined to use the server's default.
+ */
+function bazelJava() {
+  const javaLocation = process.env['SE_BAZEL_JAVA_LOCATION']
+  if (!javaLocation) {
+    return undefined
+  }
+  // $(JAVA) is an exec path (external/<repo>/...); without the prefix it is a runfiles path.
+  const execPath = fs.readFileSync(locate(javaLocation), { encoding: 'utf8' }).trim()
+  const java = locate(execPath.replace(/^external\//, ''))
+  // Resolve the JDK symlink to its real path to dodge a Windows JVM bug mapping lib\modules.
+  return process.platform === 'win32' ? fs.realpathSync(java) : java
+}
+
+/** Browser name -> [driver env var, browser env var, vendor options key], for a Grid slot. */
+const GRID_BROWSERS = {
+  [Browser.CHROME]: ['SE_CHROMEDRIVER', 'SE_CHROME', 'goog:chromeOptions'],
+  [Browser.FIREFOX]: ['SE_GECKODRIVER', 'SE_FIREFOX', 'moz:firefoxOptions'],
+  [Browser.EDGE]: ['SE_EDGEDRIVER', 'SE_EDGE', 'ms:edgeOptions'],
+}
+
+/**
+ * Gives the Grid node a slot for only the browser under test, so it doesn't run Selenium Manager
+ * for every browser at startup. A Bazel-provided driver and browser are pinned in that slot; on
+ * CI, Selenium Manager would find no installed browser.
+ * @param {!Array<string>} browserNames the browsers sharing the server.
+ * @return {!Array<string>} empty to keep driver detection.
+ */
+function gridArgs(browserNames) {
+  // The command line merges repeated --driver-configuration flags into one, so only a single
+  // browser can have a slot; with several, detection must stay on to give each one a slot.
+  if (browserNames.length !== 1 || !(browserNames[0] in GRID_BROWSERS)) {
+    return []
+  }
+  const [browserName] = browserNames
+  const [driverVar, browserVar, vendorKey] = GRID_BROWSERS[browserName]
+  const slot = [`display-name=${browserName}`, 'max-sessions=1']
+  const stereotype = { browserName }
+  if (process.env[driverVar] && process.env[browserVar]) {
+    slot.push(`webdriver-executable=${locate(process.env[driverVar])}`)
+    stereotype[vendorKey] = { binary: locate(process.env[browserVar]) }
+  }
+  return ['--detect-drivers', 'false', '--driver-configuration', ...slot, `stereotype=${JSON.stringify(stereotype)}`]
 }
 
 function locate(fileLike) {

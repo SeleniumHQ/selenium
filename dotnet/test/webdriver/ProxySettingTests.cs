@@ -24,7 +24,6 @@ using System.Text;
 using BenderProxy;
 using BenderProxy.Writers;
 using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -38,9 +37,7 @@ public class ProxySettingTests : DriverTestFixture
     [SetUp]
     public void RestartOriginalDriver()
     {
-        driver = EnvironmentManager.Instance.GetCurrentDriver();
         proxyServer = new ProxyServer();
-        EnvironmentManager.Instance.DriverStarting += EnvironmentManagerDriverStarting;
     }
 
     [TearDown]
@@ -48,7 +45,7 @@ public class ProxySettingTests : DriverTestFixture
     {
         if (localDriver != null)
         {
-            localDriver.Quit();
+            localDriver.Dispose();
             localDriver = null;
         }
 
@@ -57,8 +54,6 @@ public class ProxySettingTests : DriverTestFixture
             proxyServer.Quit();
             proxyServer = null;
         }
-
-        EnvironmentManager.Instance.DriverStarting -= EnvironmentManagerDriverStarting;
     }
 
     [Test]
@@ -69,7 +64,7 @@ public class ProxySettingTests : DriverTestFixture
         Proxy proxyToUse = proxyServer.AsProxy();
         InitLocalDriver(proxyToUse);
 
-        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+        localDriver.Url = Urls.SimpleTestPage;
         Assert.That(proxyServer.HasBeenCalled("simpleTest.html"), Is.True);
     }
 
@@ -79,19 +74,19 @@ public class ProxySettingTests : DriverTestFixture
     {
         proxyServer.EnableLogResourcesOnResponse();
         Proxy proxyToUse = proxyServer.AsProxy();
-        proxyToUse.AddBypassAddresses(EnvironmentManager.Instance.UrlBuilder.HostName);
+        proxyToUse.AddBypassAddresses(Urls.HostName);
 
-        if (TestUtilities.IsInternetExplorer(driver))
+        if (TestUtilities.IsInternetExplorer(Driver))
         {
             proxyToUse.AddBypassAddress("<-localhost>");
         }
 
         InitLocalDriver(proxyToUse);
 
-        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+        localDriver.Url = Urls.SimpleTestPage;
         Assert.That(proxyServer.HasBeenCalled("simpleTest.html"), Is.False);
 
-        localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsViaNonLoopbackAddress("simpleTest.html");
+        localDriver.Url = Urls.WhereIsViaNonLoopbackAddress("simpleTest.html");
         Assert.That(proxyServer.HasBeenCalled("simpleTest.html"), Is.True);
     }
 
@@ -111,7 +106,7 @@ public class ProxySettingTests : DriverTestFixture
             Proxy proxyToUse = new Proxy();
             proxyToUse.ProxyAutoConfigUrl = string.Format("http://{0}:{1}/proxy.pac", pacServer.HostName, pacServer.Port);
             InitLocalDriver(proxyToUse);
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+            localDriver.Url = Urls.SimpleTestPage;
             Assert.That(localDriver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Hello, world!"));
         }
     }
@@ -123,7 +118,7 @@ public class ProxySettingTests : DriverTestFixture
     {
         StringBuilder pacFileContentBuilder = new StringBuilder();
         pacFileContentBuilder.AppendLine("function FindProxyForURL(url, host) {");
-        pacFileContentBuilder.AppendFormat("  if (url.indexOf('{0}') != -1) {{\n", EnvironmentManager.Instance.UrlBuilder.HostName);
+        pacFileContentBuilder.AppendFormat("  if (url.indexOf('{0}') != -1) {{\n", Urls.HostName);
         pacFileContentBuilder.AppendFormat("    return 'PROXY {0}';\n", proxyServer.BaseUrl);
         pacFileContentBuilder.AppendLine("  }");
         pacFileContentBuilder.AppendLine("  return 'DIRECT';");
@@ -136,16 +131,16 @@ public class ProxySettingTests : DriverTestFixture
             Proxy proxyToUse = new Proxy();
             proxyToUse.ProxyAutoConfigUrl = string.Format("http://{0}:{1}/proxy.pac", pacServer.HostName, pacServer.Port);
             InitLocalDriver(proxyToUse);
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html");
+            localDriver.Url = Urls.SimpleTestPage;
             Assert.That(localDriver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Hello, world!"));
-            localDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsViaNonLoopbackAddress("simpleTest.html");
+            localDriver.Url = Urls.WhereIsViaNonLoopbackAddress("simpleTest.html");
             Assert.That(localDriver.FindElement(By.TagName("h1")).Text, Is.EqualTo("Heading"));
         }
     }
 
-    private void EnvironmentManagerDriverStarting(object sender, DriverStartingEventArgs e)
+    protected override void ConfigureDriverOptions(DriverOptions options)
     {
-        if (e.Options is InternetExplorerOptions ieOptions)
+        if (options is InternetExplorerOptions ieOptions)
         {
             ieOptions.EnsureCleanSession = true;
         }
@@ -153,7 +148,7 @@ public class ProxySettingTests : DriverTestFixture
 
     private void InitLocalDriver(Proxy proxy)
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
         if (localDriver != null)
         {
             localDriver.Quit();
@@ -161,7 +156,7 @@ public class ProxySettingTests : DriverTestFixture
 
         ProxyOptions options = new ProxyOptions();
         options.Proxy = proxy;
-        localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        localDriver = CreateDriverInstance(options);
     }
 
     private class ProxyOptions : DriverOptions

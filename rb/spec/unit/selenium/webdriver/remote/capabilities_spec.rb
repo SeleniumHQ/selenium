@@ -29,6 +29,18 @@ module Selenium
           expect(caps.as_json['proxy']['noProxy']).to eq(%w[proxy_url localhost])
         end
 
+        it 'converts noProxy from comma-only separated string to array' do
+          proxy = Proxy.new(no_proxy: 'proxy_url,localhost')
+          caps = described_class.new(proxy: proxy)
+          expect(caps.as_json['proxy']['noProxy']).to eq(%w[proxy_url localhost])
+        end
+
+        it 'trims whitespace around noProxy entries' do
+          proxy = Proxy.new(no_proxy: ' proxy_url , localhost ')
+          caps = described_class.new(proxy: proxy)
+          expect(caps.as_json['proxy']['noProxy']).to eq(%w[proxy_url localhost])
+        end
+
         it 'does not convert noProxy if it is already array' do
           proxy = Proxy.new(no_proxy: ['proxy_url'])
           caps = described_class.new(proxy: proxy)

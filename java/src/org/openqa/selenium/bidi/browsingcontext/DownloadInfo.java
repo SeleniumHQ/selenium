@@ -18,9 +18,11 @@
 package org.openqa.selenium.bidi.browsingcontext;
 
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class DownloadInfo extends NavigationInfo {
 
   private final String suggestedFilename;

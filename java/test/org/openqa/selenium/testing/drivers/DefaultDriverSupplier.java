@@ -45,10 +45,8 @@ class DefaultDriverSupplier implements Supplier<WebDriver> {
           .filter(info -> info.isSupporting(capabilities))
           .filter(WebDriverInfo::isAvailable)
           .findFirst()
-          .orElseThrow(
-              () ->
-                  new RuntimeException(
-                      "No driver can be provided for capabilities " + capabilities))
+          .orElseThrow(() ->
+              new RuntimeException("No driver can be provided for capabilities " + capabilities))
           .createDriver(capabilities, ClientConfig.defaultConfig())
           .orElseThrow(() -> new RuntimeException("Unable to create driver"));
     } else {

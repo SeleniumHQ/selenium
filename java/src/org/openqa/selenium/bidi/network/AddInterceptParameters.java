@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class AddInterceptParameters {
 
   private final List<String> phases = new ArrayList<>();

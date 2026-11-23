@@ -19,6 +19,7 @@ import chromeLogo from '../assets/browsers/chrome.svg'
 import edgeLogo from '../assets/browsers/edge.svg'
 import operaLogo from '../assets/browsers/opera.svg'
 import firefoxLogo from '../assets/browsers/firefox.svg'
+import htmlUnitLogo from '../assets/browsers/htmlunit.png'
 import internetExplorerLogo from '../assets/browsers/internet-explorer.png'
 import safariLogo from '../assets/browsers/safari.svg'
 import safariTechnologyPreviewLogo
@@ -42,6 +43,8 @@ const browserLogo = (browser: string): string => {
       return operaLogo
     case 'firefox':
       return firefoxLogo
+    case 'htmlunit':
+      return htmlUnitLogo
     case 'internet explorer':
       return internetExplorerLogo
     case 'safari':

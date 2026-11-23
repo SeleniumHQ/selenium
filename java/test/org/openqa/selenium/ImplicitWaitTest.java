@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -144,6 +145,7 @@ class ImplicitWaitTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @CloseExtraWindowsAfterTest
   public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
     driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
     driver.get(pages.xhtmlTestPage);

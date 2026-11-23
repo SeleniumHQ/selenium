@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.events.EventBus;
@@ -49,7 +50,6 @@ import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.server.EventBusOptions;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
@@ -101,7 +101,7 @@ public class LocalGridModel extends GridModel {
             && next.getExternalUri().equals(node.getExternalUri())) {
           iterator.remove();
 
-          LOG.log(Debug.getDebugLogLevel(), "Refreshing node with id {0}", node.getNodeId());
+          LOG.log(Level.FINE, "Refreshing node with id {0}", node.getNodeId());
           NodeStatus refreshed = rewrite(node, next.getAvailability());
           nodes.add(refreshed);
           nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());
@@ -140,7 +140,7 @@ public class LocalGridModel extends GridModel {
 
       // Nodes are initially added in the "down" state until something changes their availability
       LOG.log(
-          Debug.getDebugLogLevel(),
+          Level.FINE,
           "Adding node with id {0} and URI {1}",
           new Object[] {node.getNodeId(), node.getExternalUri()});
       NodeStatus refreshed = rewrite(node, DOWN);
@@ -241,7 +241,7 @@ public class LocalGridModel extends GridModel {
           LOG.info(
               String.format(
                   "Removing Node %s (uri: %s), unhealthy threshold has been reached",
-                  node.getNodeId(), node.getExternalUri()));
+                  node.getNodeId(), node.getMaskedUri()));
           toRemove.add(node);
           break;
         }
@@ -258,29 +258,27 @@ public class LocalGridModel extends GridModel {
           LOG.info(
               String.format(
                   "Switching Node %s (uri: %s) from UP to DOWN",
-                  node.getNodeId(), node.getExternalUri()));
+                  node.getNodeId(), node.getMaskedUri()));
           replacements.put(node, rewrite(node, DOWN));
           nodePurgeTimes.put(id, Instant.now());
         } else if (node.getAvailability() == DOWN && deadTime.isBefore(now)) {
           LOG.info(
               String.format(
                   "Removing Node %s (uri: %s), DOWN for too long",
-                  node.getNodeId(), node.getExternalUri()));
+                  node.getNodeId(), node.getMaskedUri()));
           toRemove.add(node);
         }
       }
 
-      replacements.forEach(
-          (before, after) -> {
-            nodes.remove(before);
-            nodes.add(after);
-          });
-      toRemove.forEach(
-          node -> {
-            nodes.remove(node);
-            nodePurgeTimes.remove(node.getNodeId());
-            nodeHealthCount.remove(node.getNodeId());
-          });
+      replacements.forEach((before, after) -> {
+        nodes.remove(before);
+        nodes.add(after);
+      });
+      toRemove.forEach(node -> {
+        nodes.remove(node);
+        nodePurgeTimes.remove(node.getNodeId());
+        nodeHealthCount.remove(node.getNodeId());
+      });
     } finally {
       writeLock.unlock();
     }
@@ -310,7 +308,7 @@ public class LocalGridModel extends GridModel {
         LOG.info(
             String.format(
                 "Switching Node %s (uri: %s) from %s to %s",
-                id, node.getExternalUri(), node.getAvailability(), availability));
+                id, node.getMaskedUri(), node.getAvailability(), availability));
 
         NodeStatus refreshed = rewrite(node, availability);
         nodes.remove(node);

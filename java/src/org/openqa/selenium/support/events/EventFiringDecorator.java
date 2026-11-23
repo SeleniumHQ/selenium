@@ -201,14 +201,13 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
   public Object onError(
       Decorated<?> target, Method method, Object[] args, InvocationTargetException e)
       throws Throwable {
-    listeners.forEach(
-        listener -> {
-          try {
-            listener.onError(target.getOriginal(), method, args, e);
-          } catch (Throwable t) {
-            LOG.log(Level.WARNING, t.getMessage(), t);
-          }
-        });
+    listeners.forEach(listener -> {
+      try {
+        listener.onError(target.getOriginal(), method, args, e);
+      } catch (Throwable t) {
+        LOG.log(Level.WARNING, t.getMessage(), t);
+      }
+    });
     return super.onError(target, method, args, e);
   }
 

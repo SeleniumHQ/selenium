@@ -1,0 +1,12 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "components": [],
+  "properties": [
+    {
+      "name": "selenium:stub",
+      "value": "placeholder SBOM from a --manager=stub or --manager=host build; the --manager=download or --manager=all build carries the real one"
+    }
+  ]
+}

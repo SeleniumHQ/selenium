@@ -17,6 +17,7 @@ java_library(
     name = "annotations",
     testonly = True,
     srcs = [
+        "CloseExtraWindowsAfterTest.java",
         "Ignore.java",
         "IgnoreList.java",
         "NeedsFreshDriver.java",

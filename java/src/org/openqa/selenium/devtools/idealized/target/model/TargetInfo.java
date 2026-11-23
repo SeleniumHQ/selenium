@@ -78,7 +78,7 @@ public class TargetInfo {
     return openerId;
   }
 
-  @Beta()
+  @Beta
   public Optional<BrowserContextID> getBrowserContextId() {
     return browserContextId;
   }

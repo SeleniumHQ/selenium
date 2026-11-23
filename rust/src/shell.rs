@@ -15,86 +15,44 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::{Logger, WINDOWS};
+use crate::Logger;
 use anyhow::Error;
+use std::process::Command as ProcessCommand;
 
 pub const CRLF: &str = "\r\n";
 pub const LF: &str = "\n";
 
 pub struct Command {
-    pub single_arg: Option<String>,
-    pub multiple_args: Option<Vec<&'static str>>,
+    pub program: String,
+    pub args: Vec<String>,
 }
 
 impl Command {
-    pub fn new_single(single_arg: String) -> Self {
+    pub fn new(program: impl Into<String>, args: Vec<String>) -> Self {
         Command {
-            single_arg: Some(single_arg),
-            multiple_args: None,
+            program: program.into(),
+            args,
         }
-    }
-
-    pub fn new_multiple(multiple_args: Vec<&'static str>) -> Self {
-        Command {
-            single_arg: None,
-            multiple_args: Some(multiple_args),
-        }
-    }
-
-    pub fn is_single(&self) -> bool {
-        self.single_arg.is_some()
-    }
-
-    pub fn is_multiple(&self) -> bool {
-        self.multiple_args.is_some()
     }
 
     pub fn display(&self) -> String {
-        if self.is_single() {
-            self.single_arg.clone().unwrap()
-        } else {
-            self.multiple_args
-                .clone()
-                .unwrap()
-                .into_iter()
-                .map(|c| c.to_string())
-                .collect::<Vec<String>>()
-                .join(" ")
-        }
+        std::iter::once(self.program.as_str())
+            .chain(self.args.iter().map(String::as_str))
+            .collect::<Vec<_>>()
+            .join(" ")
     }
 }
 
-pub fn run_shell_command_with_log(
-    log: &Logger,
-    os: &str,
-    command: Command,
-) -> Result<String, Error> {
+pub fn run_shell_command_with_log(log: &Logger, command: Command) -> Result<String, Error> {
     log.debug(format!("Running command: {}", command.display()));
-    let output = run_shell_command_by_os(os, command)?;
+    let output = run_shell_command(command)?;
     log.debug(format!("Output: {:?}", output));
     Ok(output)
 }
 
-pub fn run_shell_command_by_os(os: &str, command: Command) -> Result<String, Error> {
-    let (shell, flag) = if WINDOWS.is(os) {
-        ("cmd", "/c")
-    } else {
-        ("sh", "-c")
-    };
-    run_shell_command(shell, flag, command)
-}
-
-pub fn run_shell_command(shell: &str, flag: &str, command: Command) -> Result<String, Error> {
-    let mut process = std::process::Command::new(shell);
-    process.arg(flag);
-
-    if command.is_single() {
-        process.arg(command.single_arg.unwrap());
-    } else {
-        for arg in command.multiple_args.unwrap().iter() {
-            process.arg(arg);
-        }
-    }
+pub fn run_shell_command(command: Command) -> Result<String, Error> {
+    let mut process = ProcessCommand::new(command.program);
+    process.args(command.args);
     let output = process.output()?;
     Ok(strip_trailing_newline(&String::from_utf8_lossy(&output.stdout)).to_string())
 }

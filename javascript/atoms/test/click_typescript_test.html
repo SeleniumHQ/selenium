@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>click_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/click-global.js"></script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <div id="target" style="width:100px;height:40px;background:#ccc">target</div>
+  <div id="hidden" style="display:none">hidden</div>
+  <div id="transparent" style="opacity:0;width:50px;height:20px">transparent</div>
+  <div id="noPointer" style="pointer-events:none;width:50px;height:20px">no pointer</div>
+  <input id="field">
+  <input id="clicker" type="checkbox">
+  <div id="flat" style="height:0"><span>overflowing text</span></div>
+  <form id="form" target="sink" action="about:blank">
+    <input id="text" name="q">
+    <input type="submit" id="submitInput" value="go">
+    <button id="submitButton">go</button>
+  </form>
+  <form id="inlineForm" target="sink" action="about:blank" onsubmit="window.inlineSubmits++; return false;">
+    <button id="inlineButton">go</button>
+  </form>
+  <iframe name="sink" style="display:none"></iframe>
+  <div id="far" style="margin-top:3000px">far</div>
+  <script type="text/javascript">
+    // Ported from click_test.html and click_submit_test.html. The tap, right
+    // click and double click cases are dropped: the click atom reaches none of
+    // them. The event sequence itself is covered by mouse_typescript_test.html.
+    var click = window.bot.action.typescript.click;
+    var listeners = [];
+    window.inlineSubmits = 0;
+
+    function $(id) { return document.getElementById(id); }
+
+    function on(el, type, fn) {
+      el.addEventListener(type, fn);
+      listeners.push([el, type, fn]);
+    }
+
+    QUnit.testStart(function() {
+      window.scrollTo(0, 0);
+      window.inlineSubmits = 0;
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    });
+
+    QUnit.testDone(function() {
+      listeners.forEach(function(l) { l[0].removeEventListener(l[1], l[2]); });
+      listeners = [];
+    });
+
+    QUnit.test('a hidden element cannot be clicked', function(assert) {
+      assert.throws(function() { click($('hidden')); },
+          function(e) { return e.code === 'element not interactable'; });
+    });
+
+    QUnit.test('clicks the middle of the element by default', function(assert) {
+      var e;
+      on($('target'), 'click', function(ev) { e = ev; });
+      click($('target'));
+      var rect = $('target').getBoundingClientRect();
+      assert.strictEqual(e.clientX, rect.left + rect.width / 2);
+      assert.strictEqual(e.clientY, rect.top + rect.height / 2);
+    });
+
+    QUnit.test('clicks the given coordinate within the element', function(assert) {
+      var e;
+      on($('target'), 'click', function(ev) { e = ev; });
+      click($('target'), {x: 5, y: 7});
+      var rect = $('target').getBoundingClientRect();
+      assert.strictEqual(e.clientX, rect.left + 5);
+      assert.strictEqual(e.clientY, rect.top + 7);
+    });
+
+    QUnit.test('produces a real click sequence', function(assert) {
+      var log = [];
+      ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click'].forEach(function(type) {
+        on($('target'), type, function(e) { log.push(type); });
+      });
+      click($('target'));
+      assert.deepEqual(log, ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click']);
+    });
+
+    // Hiding the element in a handler stops the sequence there, except that a
+    // mouseup still completes its click.
+    QUnit.test('responds correctly if the element is hidden mid click', function(assert) {
+      // Focus events only fire while the window has system focus, which is
+      // why click_test.html skipped the focus cases without it.
+      var types = ['mousemove', 'mousedown', 'focus', 'mouseup', 'click'];
+      if (!document.hasFocus()) {
+        types.splice(2, 1);
+      }
+      types.forEach(function(hideOn, i) {
+        var clicker = $('clicker');
+        clicker.style.display = '';
+        clicker.checked = false;
+        clicker.blur();
+        var log = [];
+        var record = function(e) { log.push(e.type); };
+        var hide = function() { clicker.style.display = 'none'; };
+        types.forEach(function(type) { clicker.addEventListener(type, record); });
+        clicker.addEventListener(hideOn, hide);
+        click(clicker);
+        types.forEach(function(type) { clicker.removeEventListener(type, record); });
+        clicker.removeEventListener(hideOn, hide);
+        clicker.style.display = '';
+        var expected = hideOn === 'mouseup' ? types : types.slice(0, i + 1);
+        assert.deepEqual(log, expected, 'hid on ' + hideOn);
+      });
+    });
+
+    QUnit.test('focuses a field, unless mousedown is cancelled', function(assert) {
+      click($('field'));
+      assert.strictEqual(document.activeElement, $('field'));
+      $('field').blur();
+      on($('field'), 'mousedown', function(e) { e.preventDefault(); });
+      click($('field'));
+      assert.notStrictEqual(document.activeElement, $('field'));
+    });
+
+    QUnit.test('an element with opacity zero can be clicked', function(assert) {
+      var clicked = false;
+      on($('transparent'), 'click', function() { clicked = true; });
+      click($('transparent'));
+      assert.ok(clicked);
+    });
+
+    QUnit.test('an element with pointer-events none gets no click', function(assert) {
+      var clicked = false;
+      on($('noPointer'), 'click', function() { clicked = true; });
+      click($('noPointer'));
+      assert.notOk(clicked);
+    });
+
+    // Shown through its overflowing child, but with no height of its own.
+    QUnit.test('an element without area is aimed at through its offset parent', function(assert) {
+      var e;
+      on($('flat'), 'click', function(ev) { e = ev; });
+      click($('flat'));
+      var parent = $('flat').offsetParent.getBoundingClientRect();
+      var rect = $('flat').getBoundingClientRect();
+      assert.ok(e, 'clicked');
+      // Firefox reports whole pixels.
+      assert.ok(Math.abs(e.clientY - (rect.top + parent.height / 2)) <= 1);
+    });
+
+    QUnit.test('does not scroll an element already in view', function(assert) {
+      click($('target'));
+      assert.strictEqual(window.pageYOffset, 0);
+    });
+
+    QUnit.test('scrolls an element out of view into view', function(assert) {
+      var clicked = false;
+      on($('far'), 'click', function() { clicked = true; });
+      click($('far'));
+      assert.ok(window.pageYOffset > 0);
+      assert.ok(clicked);
+    });
+
+    QUnit.test('a submit input and a submit button submit their form', function(assert) {
+      var submits = [];
+      on($('form'), 'submit', function(e) { submits.push(e.submitter && e.submitter.id); e.preventDefault(); });
+      click($('submitInput'));
+      click($('submitButton'));
+      assert.deepEqual(submits, ['submitInput', 'submitButton']);
+    });
+
+    QUnit.test('a cancelled click does not submit', function(assert) {
+      var submitted = false;
+      on($('form'), 'submit', function(e) { submitted = true; e.preventDefault(); });
+      on($('submitButton'), 'click', function(e) { e.preventDefault(); });
+      click($('submitButton'));
+      assert.notOk(submitted);
+    });
+
+    QUnit.test('an inline onsubmit handler runs and can cancel', function(assert) {
+      click($('inlineButton'));
+      assert.strictEqual(window.inlineSubmits, 1);
+    });
+  </script>
+</body>
+
+</html>

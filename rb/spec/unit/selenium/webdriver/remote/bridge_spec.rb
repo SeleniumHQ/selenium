@@ -23,10 +23,12 @@ module Selenium
   module WebDriver
     module Remote
       describe Bridge do
-        describe '.add_command' do
-          let(:http) { WebDriver::Remote::Http::Default.new }
-          let(:bridge) { described_class.new(http_client: http, url: 'http://localhost') }
+        let(:http) do
+          WebDriver::Remote::Http::Default.new.tap { |client| client.server_url = 'http://localhost' }
+        end
+        let(:bridge) { described_class.new(http_client: http) }
 
+        describe '.add_command' do
           before do
             allow(http).to receive(:request)
               .with(any_args)
@@ -51,15 +53,14 @@ module Selenium
         end
 
         describe '#initialize' do
-          it 'raises ArgumentError if passed invalid options' do
-            expect { described_class.new(foo: 'bar') }.to raise_error(ArgumentError)
+          it 'uses the provided http client' do
+            custom_http = Remote::Http::Default.new
+            bridge = described_class.new(http_client: custom_http)
+            expect(bridge.http).to eq(custom_http)
           end
         end
 
         describe '#create_session' do
-          let(:http) { WebDriver::Remote::Http::Default.new }
-          let(:bridge) { described_class.new(http_client: http, url: 'http://localhost') }
-
           it 'accepts Hash' do
             payload = JSON.generate(
               capabilities: {
@@ -124,28 +125,50 @@ module Selenium
           end
         end
 
-        describe '#upload' do
-          it 'raises WebDriverError if uploading non-files' do
-            expect {
-              bridge = described_class.new(url: 'http://localhost')
-              bridge.extend(WebDriver::Remote::Features)
-              bridge.upload('NotAFile')
-            }.to raise_error(Error::WebDriverError)
+        describe '#upload_if_necessary' do
+          before do
+            bridge.extend(WebDriver::Remote::Features)
+            bridge.file_detector = ->((file)) { file }
+          end
+
+          it 'raises WebDriverError when the detected path is not a file' do
+            expect { bridge.upload_if_necessary(['NotAFile']) }
+              .to raise_error(Error::WebDriverError, /isn't a file/)
+          end
+        end
+
+        describe '#install_web_extension' do
+          context 'when BiDi is not enabled' do
+            it 'raises a helpful error telling the user to enable BiDi' do
+              expect { bridge.install_web_extension('/tmp/ext') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
+
+            it 'raises for a Chromium session, which has no classic install path' do
+              bridge.extend(WebDriver::Chrome::Features)
+              expect { bridge.install_web_extension('/tmp/ext') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
+          end
+        end
+
+        describe '#uninstall_web_extension' do
+          context 'when BiDi is not enabled' do
+            it 'raises a helpful error telling the user to enable BiDi' do
+              expect { bridge.uninstall_web_extension('an-id') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
           end
         end
 
         describe '#quit' do
           it 'respects quit_errors' do
-            bridge = described_class.new(url: 'http://localhost')
             allow(bridge).to receive(:execute).with(:delete_session).and_raise(IOError)
             expect { bridge.quit }.not_to raise_error
           end
         end
 
         describe 'finding elements' do
-          let(:http) { WebDriver::Remote::Http::Default.new }
-          let(:bridge) { described_class.new(http_client: http, url: 'http://localhost') }
-
           before do
             allow(http).to receive(:request)
               .with(:post, URI('http://localhost/session'), any_args)

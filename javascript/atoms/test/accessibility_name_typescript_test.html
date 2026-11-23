@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_name_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <style>
+    .star::before { content: "★ "; }
+    .attr::before { content: attr(data-label) " "; }
+    .attr-missing::before { content: attr(data-missing); }
+    .slash::before { content: "1 / 2 "; }
+    .alt::before { content: "★ " / "star "; }
+    @media (min-width: 1px) { .nested::before { content: "Nested "; } }
+    .more::after { content: " (more)"; }
+    .icon::before { content: url(/testdata/map.png); }
+    .icon-text::before { content: url(/testdata/map.png) "Pic "; }
+    .toggled::before { content: "★ "; display: none; }
+    .invisible-pseudo::before { content: "★ "; visibility: hidden; }
+    #pseudo-part-host::part(b)::before { content: "Part "; }
+    .gone { display: none; }
+    .block { display: block; }
+  </style>
+  <script type="text/javascript">
+    // Accessible name computation (https://w3c.github.io/accname/, 1.2) as the
+    // snapshot atom implements it, with the html-aam element rules. Each
+    // fixture is snapshotted as its own root and only `name` is asserted.
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    function assertNames(assert, expectations) {
+      Object.keys(expectations).forEach(function (id) {
+        assert.strictEqual(snapshot(byId(id)).name, expectations[id], '#' + id);
+      });
+    }
+
+    QUnit.module('aria-labelledby (2B)');
+
+    QUnit.test('references are concatenated in attribute order with single spaces', function (assert) {
+      assertNames(assert, { 'lb-one': 'First', 'lb-two': 'First Second', 'lb-reversed': 'Second First' });
+    });
+
+    QUnit.test('a hidden referenced element still contributes', function (assert) {
+      assertNames(assert, { 'lb-hidden-ref': 'Hidden label', 'lb-aria-hidden-ref': 'Aria hidden label' });
+    });
+
+    QUnit.test('a self reference uses the control value, so "value label" comes out', function (assert) {
+      assertNames(assert, { 'lb-self': 'typed Units' });
+    });
+
+    QUnit.test('references that resolve to nothing fall through to aria-label', function (assert) {
+      assertNames(assert, { 'lb-missing': 'Fallback label' });
+    });
+
+    QUnit.test('aria-labelledby is not followed from a referenced element', function (assert) {
+      // chain-a -> chain-b -> chain-c: a is named by b's content, not by c.
+      assertNames(assert, { 'chain-a': 'B content', 'chain-b': 'C content' });
+    });
+
+    QUnit.test('two descendants that reference the same element both contribute it', function (assert) {
+      // A row named from its cells, each labelled by the same header: the
+      // header is read for each cell, not only for the first.
+      assertNames(assert, { 'shared-ref-row': 'Qty Qty' });
+    });
+
+    QUnit.test('an id listed twice in one attribute contributes once, as Chromium reads it', function (assert) {
+      assertNames(assert, { 'lb-dup': 'First' });
+    });
+
+    QUnit.test('aria-labelledby beats aria-label and content', function (assert) {
+      assertNames(assert, { 'lb-beats-label': 'First' });
+    });
+
+    QUnit.module('aria-label (2C)');
+
+    QUnit.test('aria-label is used as is, trimmed', function (assert) {
+      assertNames(assert, { 'label-plain': 'Close', 'label-padded': 'Close', 'label-on-generic': 'Sidebar' });
+    });
+
+    QUnit.test('a whitespace-only aria-label is ignored', function (assert) {
+      assertNames(assert, { 'label-blank': 'Content' });
+    });
+
+    QUnit.module('native labels (2D)');
+
+    QUnit.test('label for', function (assert) {
+      assertNames(assert, { 'for-input': 'Email', 'for-two-labels': 'First Second', 'for-select': 'Choice', 'for-textarea': 'Notes', 'for-button': 'Act' });
+    });
+
+    QUnit.test('a wrapping label names the control without the control itself', function (assert) {
+      assertNames(assert, { 'wrapped-input': 'Name', 'wrapped-checkbox': 'Agree' });
+    });
+
+    QUnit.test('another control inside the label contributes its value', function (assert) {
+      assertNames(assert, { 'qty-input': 'Quantity 3 units' });
+    });
+
+    QUnit.test('button inputs are named by value, with Submit and Reset defaults', function (assert) {
+      assertNames(assert, { 'submit-value': 'Send', 'submit-default': 'Submit', 'reset-default': 'Reset', 'button-value': 'Go', 'image-alt': 'Picture button' });
+    });
+
+    QUnit.test('a button input takes its label ahead of its value (html-aam)', function (assert) {
+      assertNames(assert, { 'labelled-submit': 'Send the form', 'labelled-reset': 'Start again' });
+    });
+
+    QUnit.test('img and area use alt, then title', function (assert) {
+      assertNames(assert, { 'img-alt': 'Logo', 'img-title': 'Titled', 'area-alt': 'Region' });
+    });
+
+    QUnit.test('a present but empty alt is the final answer: title does not name a decorative image', function (assert) {
+      assertNames(assert, { 'img-empty-alt-title': '' });
+    });
+
+    QUnit.test('fieldset legend, figure figcaption, table caption', function (assert) {
+      assertNames(assert, { 'fieldset': 'Legend text', 'figure': 'Caption text', 'table': 'Table caption' });
+    });
+
+    QUnit.test('options and optgroups', function (assert) {
+      assertNames(assert, { 'option-text': 'Two', 'option-label': 'Labelled', 'optgroup': 'Group' });
+    });
+
+    QUnit.test('svg title, iframe title', function (assert) {
+      assertNames(assert, { 'svg': 'Chart', 'iframe': 'Frame title' });
+    });
+
+    QUnit.test('text inputs: title, then placeholder (pinned: html-aam puts title first)', function (assert) {
+      assertNames(assert, {
+        'input-title': 'Tip', 'input-placeholder': 'Hint', 'input-title-and-placeholder': 'Tip', 'textarea-placeholder': 'Hint',
+        'number-placeholder': 'Age',
+      });
+    });
+
+    QUnit.module('name from content (2F)');
+
+    QUnit.test('roles that take their name from content', function (assert) {
+      assertNames(assert, { 'h': 'Title', 'link': 'Go now', 'button': 'Save', 'cell': 'A', 'row': 'A B', 'tab': 'Tab', 'checkbox': 'Remember me' });
+    });
+
+    QUnit.test('roles that do not, even with content', function (assert) {
+      assertNames(assert, { 'paragraph': '', 'generic-with-text': '', 'dialog': '', 'list': '', 'listitem': '', 'navigation': '', 'table-no-caption': '' });
+    });
+
+    QUnit.test('inline children concatenate without added spaces, block children get them', function (assert) {
+      assertNames(assert, { 'inline-children': 'Savenow', 'block-children': 'A B', 'inline-block-children': 'A B' });
+    });
+
+    QUnit.test('br is a space', function (assert) {
+      assertNames(assert, { 'br': 'Line one Line two' });
+    });
+
+    QUnit.test('hidden children are left out', function (assert) {
+      assertNames(assert, { 'hidden-children': 'Save' });
+    });
+
+    QUnit.test('whitespace is collapsed and trimmed', function (assert) {
+      assertNames(assert, { 'whitespace': 'lots of space' });
+    });
+
+    QUnit.test('descendants contribute through recursion whatever their role', function (assert) {
+      assertNames(assert, { 'nested-span': 'Save', 'nested-img': 'Logo', 'nested-labelled': 'Nested label', 'nested-paragraph': 'Para text' });
+    });
+
+    QUnit.test('an embedded textbox contributes its value, a select its selected option', function (assert) {
+      assertNames(assert, { 'embedded-textbox': 'Count 7 items', 'embedded-select': 'Pick Beta please' });
+    });
+
+    QUnit.test('an embedded control contributes its value even when it has a label of its own', function (assert) {
+      assertNames(assert, { 'outer': 'Count 5' });
+    });
+
+    QUnit.test('two labels wrapping each other\'s control do not recurse forever', function (assert) {
+      assertNames(assert, { 'x1': 'A', 'x2': 'B' });
+    });
+
+    QUnit.test('a custom listbox contributes only its selected options', function (assert) {
+      assertNames(assert, { 'embedded-custom-listbox': 'Pick B now' });
+    });
+
+    QUnit.test('a contenteditable textbox contributes its rendered text only', function (assert) {
+      assertNames(assert, { 'embedded-contenteditable': 'Say hello now' });
+    });
+
+    QUnit.test('an invisible child contributes neither its text nor its label nor generated content, only visible descendants', function (assert) {
+      assertNames(assert, { 'invisible-child-sources': 'Save vis' });
+    });
+
+    QUnit.test('CSS generated content before and after is included', function (assert) {
+      assertNames(assert, { 'pseudo-before': '★ Save', 'pseudo-after': 'Save (more)' });
+    });
+
+    QUnit.test('an attr() in generated content is the attribute of the element, whether or not the engine resolves it first', function (assert) {
+      assertNames(assert, { 'pseudo-attr': 'Star Save', 'pseudo-attr-missing': 'Save' });
+    });
+
+    QUnit.test('a slash inside generated content is text; a bare slash introduces the alternative text', function (assert) {
+      assertNames(assert, { 'pseudo-slash': '1 / 2 Save', 'pseudo-alt': 'star Save' });
+    });
+
+    QUnit.test('generated content is found wherever a sheet can define it', function (assert) {
+      // A rule nested in @media, a shadow sheet styling its host, an adopted
+      // stylesheet, and the UA stylesheet's quotes on q, which no author
+      // sheet mentions.
+      assertNames(assert, { 'pseudo-nested': 'Nested Save', 'pseudo-host': 'Pre Light', 'pseudo-adopted': 'Save (adopted)' });
+    });
+
+    QUnit.test('an image in generated content is not text; a string beside it is', function (assert) {
+      // Chromium serialises the computed value as url("...") with the URL
+      // quoted, which a reader of quoted strings must not take for text.
+      assertNames(assert, { 'pseudo-url': 'Save', 'pseudo-url-text': 'Pic Save' });
+    });
+
+    QUnit.test('generated content of a pseudo-element that is not rendered is left out', function (assert) {
+      assertNames(assert, { 'pseudo-display-none': 'Save', 'pseudo-invisible': 'Save' });
+    });
+
+    QUnit.test('generated content styled through ::part comes from the host\'s scope', function (assert) {
+      var part = byId('pseudo-part-host').shadowRoot.getElementById('pseudo-part');
+      assert.strictEqual(snapshot(part).name, 'Part Save');
+    });
+
+    QUnit.test('UA quotes on q are not text the atom can read (pinned limitation)', function (assert) {
+      // The computed content is the keyword open-quote, not a string, so the
+      // quote marks engines add to the name are absent here.
+      assertNames(assert, { 'pseudo-quote': 'hi' });
+    });
+
+    QUnit.module('tooltip (2I) and the document');
+
+    QUnit.test('title names an element that has nothing else', function (assert) {
+      assertNames(assert, { 'title-only': 'Tip', 'title-abbr': 'World Wide Web' });
+    });
+
+    QUnit.test('title does not override content', function (assert) {
+      assertNames(assert, { 'title-and-content': 'Save' });
+    });
+
+    QUnit.test('the document is named from the title', function (assert) {
+      assert.strictEqual(snapshot().name, 'accessibility_name_typescript_test.html');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <span id="first">First</span><span id="second">Second</span>
+  <div id="lb-one" aria-labelledby="first">x</div>
+  <div id="lb-two" aria-labelledby="first second">x</div>
+  <div id="lb-reversed" aria-labelledby="second first">x</div>
+  <span id="hidden-label" style="display: none">Hidden label</span>
+  <div id="lb-hidden-ref" aria-labelledby="hidden-label">x</div>
+  <span id="aria-hidden-label" aria-hidden="true">Aria hidden label</span>
+  <div id="lb-aria-hidden-ref" aria-labelledby="aria-hidden-label">x</div>
+  <span id="units">Units</span>
+  <input id="lb-self" type="text" value="typed" aria-labelledby="lb-self units">
+  <div id="lb-missing" aria-labelledby="does-not-exist" aria-label="Fallback label">x</div>
+  <div id="chain-a" aria-labelledby="chain-b">A content</div>
+  <div id="chain-b" aria-labelledby="chain-c">B content</div>
+  <div id="chain-c">C content</div>
+  <button id="lb-beats-label" aria-labelledby="first" aria-label="Label">Content</button>
+  <div role="row" id="shared-ref-row"><div role="cell" aria-labelledby="qty-h">1</div><div role="cell" aria-labelledby="qty-h">2</div></div><span id="qty-h">Qty</span>
+  <div id="lb-dup" aria-labelledby="first first">x</div>
+
+  <button id="label-plain" aria-label="Close">X</button>
+  <button id="label-padded" aria-label="  Close  ">X</button>
+  <div id="label-on-generic" aria-label="Sidebar">x</div>
+  <button id="label-blank" aria-label="   ">Content</button>
+
+  <label for="for-input">Email</label><input id="for-input" type="text">
+  <label for="for-two-labels">First</label><label for="for-two-labels">Second</label><input id="for-two-labels" type="text">
+  <label for="for-select">Choice</label><select id="for-select"><option>a</option></select>
+  <label for="for-textarea">Notes</label><textarea id="for-textarea"></textarea>
+  <label for="for-button">Act</label><button id="for-button">Content</button>
+  <label>Name <input id="wrapped-input" type="text" value="Ada"></label>
+  <label><input id="wrapped-checkbox" type="checkbox"> Agree</label>
+  <label for="qty-input">Quantity <input id="other-input" type="text" value="3"> units</label><input id="qty-input" type="text">
+  <input id="submit-value" type="submit" value="Send">
+  <input id="submit-default" type="submit">
+  <input id="reset-default" type="reset">
+  <input id="button-value" type="button" value="Go">
+  <label for="labelled-submit">Send the form</label><input id="labelled-submit" type="submit" value="Send">
+  <label for="labelled-reset">Start again</label><input id="labelled-reset" type="reset">
+  <input id="image-alt" type="image" alt="Picture button" src="/testdata/map.png">
+  <img id="img-alt" src="/testdata/map.png" alt="Logo">
+  <img id="img-title" src="/testdata/map.png" title="Titled">
+  <img id="img-empty-alt-title" src="/testdata/map.png" alt="" title="Tooltip">
+  <map name="m"><area id="area-alt" href="#" shape="rect" coords="0,0,1,1" alt="Region"></map>
+  <fieldset id="fieldset"><legend>Legend text</legend><input type="text"></fieldset>
+  <figure id="figure"><img src="/testdata/map.png" alt="x"><figcaption>Caption text</figcaption></figure>
+  <table id="table"><caption>Table caption</caption><tr><td>x</td></tr></table>
+  <table id="table-no-caption"><tr><td>x</td></tr></table>
+  <select>
+    <option>One</option>
+    <option id="option-text">Two</option>
+    <option id="option-label" label="Labelled">Three</option>
+    <optgroup id="optgroup" label="Group"><option>Four</option></optgroup>
+  </select>
+  <svg id="svg" width="10" height="10"><title>Chart</title><circle cx="5" cy="5" r="4"/></svg>
+  <iframe id="iframe" src="about:blank" title="Frame title"></iframe>
+  <input id="input-title" type="text" title="Tip">
+  <input id="input-placeholder" type="text" placeholder="Hint">
+  <input id="input-title-and-placeholder" type="text" title="Tip" placeholder="Hint">
+  <textarea id="textarea-placeholder" placeholder="Hint"></textarea>
+  <input id="number-placeholder" type="number" placeholder="Age">
+
+  <h1 id="h">Title</h1>
+  <a id="link" href="#">Go <em>now</em></a>
+  <button id="button">Save</button>
+  <table><tr id="row"><td id="cell">A</td><td>B</td></tr></table>
+  <div id="tab" role="tab">Tab</div>
+  <div id="checkbox" role="checkbox" aria-checked="false">Remember <b>me</b></div>
+  <p id="paragraph">Para text</p>
+  <div id="generic-with-text">Generic text</div>
+  <dialog id="dialog" open>Dialog text</dialog>
+  <ul id="list"><li id="listitem">Item</li></ul>
+  <nav id="navigation">Nav text</nav>
+  <button id="inline-children">Save<b>now</b></button>
+  <a id="block-children" href="#"><div>A</div><div>B</div></a>
+  <a id="inline-block-children" href="#"><span class="block">A</span><span>B</span></a>
+  <button id="br">Line one<br>Line two</button>
+  <button id="hidden-children">Save <span aria-hidden="true">x</span><span class="gone">y</span></button>
+  <button id="whitespace">  lots   of
+    space </button>
+  <button id="nested-span"><span>Save</span></button>
+  <a id="nested-img" href="#"><img src="/testdata/map.png" alt="Logo"></a>
+  <button id="nested-labelled"><span aria-label="Nested label">x</span></button>
+  <button id="nested-paragraph"><p>Para text</p></button>
+  <div id="embedded-textbox" role="heading" aria-level="2">Count <input type="text" value="7"> items</div>
+  <div id="embedded-select" role="heading" aria-level="2">Pick <select><option>Alpha</option><option selected>Beta</option></select> please</div>
+  <button id="pseudo-before" class="star">Save</button>
+  <button id="pseudo-attr" class="attr" data-label="Star">Save</button>
+  <button id="pseudo-attr-missing" class="attr-missing">Save</button>
+  <button id="pseudo-slash" class="slash">Save</button>
+  <button id="pseudo-nested" class="nested">Save</button>
+  <div id="pseudo-host" role="heading" aria-level="2">Light</div>
+  <button id="pseudo-adopted" class="adopted">Save</button>
+  <button id="pseudo-quote"><q>hi</q></button>
+  <button id="pseudo-url" class="icon">Save</button>
+  <button id="pseudo-url-text" class="icon-text">Save</button>
+  <button id="pseudo-display-none" class="toggled">Save</button>
+  <button id="pseudo-invisible" class="invisible-pseudo">Save</button>
+  <div id="pseudo-part-host"></div>
+  <script type="text/javascript">
+    document.getElementById('pseudo-host').attachShadow({ mode: 'open' }).innerHTML =
+      '<style>:host::before { content: "Pre "; }</style><slot></slot>';
+    var adopted = new CSSStyleSheet();
+    adopted.replaceSync('.adopted::after { content: " (adopted)"; }');
+    document.adoptedStyleSheets = [adopted];
+    document.getElementById('pseudo-part-host').attachShadow({ mode: 'open' }).innerHTML =
+      '<button part="b" id="pseudo-part">Save</button>';
+  </script>
+  <button id="pseudo-alt" class="alt">Save</button>
+  <label for="outer">Count <input id="inner" type="text" value="5"></label><label for="inner">Inner label</label><input id="outer" type="text">
+  <label for="x1">A <input id="x2" type="text"></label><label for="x2">B <input id="x1" type="text"></label>
+  <div id="embedded-custom-listbox" role="heading" aria-level="2">Pick <div role="listbox"><div role="option" aria-selected="false">A</div><div role="option" aria-selected="true">B</div></div> now</div>
+  <div id="embedded-contenteditable" role="heading" aria-level="2">Say <div role="textbox" contenteditable="true">hello <span style="display: none">secret</span></div> now</div>
+  <button id="invisible-child-sources">Save <span style="visibility: hidden" aria-label="Hidden label" class="star">x <b style="visibility: visible">vis</b></span></button>
+  <button id="pseudo-after" class="more">Save</button>
+
+  <button id="title-only" title="Tip"></button>
+  <abbr id="title-abbr" title="World Wide Web">WWW</abbr>
+  <button id="title-and-content" title="Tip">Save</button>
+</body>
+
+</html>

@@ -22,6 +22,7 @@ import static java.util.Collections.emptySet;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Event;
@@ -30,6 +31,7 @@ import org.openqa.selenium.bidi.speculation.PrefetchStatusUpdatedParameters;
 import org.openqa.selenium.bidi.speculation.Speculation;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class SpeculationInspector implements AutoCloseable {
   private final Event<PrefetchStatusUpdatedParameters> prefetchStatusUpdatedEvent;
   private final Set<String> browsingContextIds;
@@ -57,7 +59,7 @@ public class SpeculationInspector implements AutoCloseable {
     this.prefetchStatusUpdatedEvent = Speculation.prefetchStatusUpdated();
   }
 
-  public long onPrefetchStatusUpdated(Consumer<PrefetchStatusUpdatedParameters> consumer) {
+  public String onPrefetchStatusUpdated(Consumer<PrefetchStatusUpdatedParameters> consumer) {
     if (browsingContextIds.isEmpty()) {
       return this.bidi.addListener(this.prefetchStatusUpdatedEvent, consumer);
     } else {
@@ -65,12 +67,22 @@ public class SpeculationInspector implements AutoCloseable {
     }
   }
 
-  public void removeListener(long subscriptionId) {
+  public void removeListener(String subscriptionId) {
     this.bidi.removeListener(subscriptionId);
+  }
+
+  public void clearListener(String browsingContextId) {
+    Require.nonNull("Browsing context id", browsingContextId);
+    clearListeners(Collections.singleton(browsingContextId));
+  }
+
+  public void clearListeners(Set<String> browsingContextIds) {
+    Require.nonNull("Browsing context id list", browsingContextIds);
+    this.bidi.clearListener(browsingContextIds, this.prefetchStatusUpdatedEvent);
   }
 
   @Override
   public void close() {
-    this.bidi.clearListener(Speculation.prefetchStatusUpdated());
+    this.bidi.clearListener(this.prefetchStatusUpdatedEvent);
   }
 }

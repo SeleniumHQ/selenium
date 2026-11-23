@@ -19,7 +19,9 @@ package org.openqa.selenium.bidi.script;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class EvaluateParameters {
 
   private final Map<String, Object> map = new HashMap<>();

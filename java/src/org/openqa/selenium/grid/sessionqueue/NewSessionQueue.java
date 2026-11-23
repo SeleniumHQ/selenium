@@ -59,14 +59,12 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
     routes =
         combine(
             post("/session")
-                .to(
-                    () ->
-                        req -> {
-                          SessionRequest sessionRequest =
-                              new SessionRequest(
-                                  new RequestId(UUID.randomUUID()), req, Instant.now());
-                          return addToQueue(sessionRequest);
-                        }),
+                .to(() ->
+                    req -> {
+                      SessionRequest sessionRequest =
+                          new SessionRequest(new RequestId(UUID.randomUUID()), req, Instant.now());
+                      return addToQueue(sessionRequest);
+                    }),
             options("/session").to(() -> req -> new HttpResponse()),
             post("/se/grid/newsessionqueue/session")
                 .to(() -> new AddToSessionQueue(tracer, this))

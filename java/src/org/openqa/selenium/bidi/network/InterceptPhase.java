@@ -16,6 +16,9 @@
 // under the License.
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public enum InterceptPhase {
   BEFORE_REQUEST_SENT("beforeRequestSent"),
   RESPONSE_STARTED("responseStarted"),

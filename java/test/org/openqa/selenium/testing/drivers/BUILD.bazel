@@ -57,6 +57,5 @@ java_library(
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.jspecify:jspecify"),
-        "@bazel_tools//tools/java/runfiles",
     ] + JUNIT5_DEPS,
 )

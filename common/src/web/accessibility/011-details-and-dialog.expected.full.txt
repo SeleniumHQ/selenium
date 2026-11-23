@@ -1,0 +1,15 @@
+- document "Details and dialog"
+  - generic
+    - group
+      - button "Settings" [expanded]
+      - paragraph
+        - text: Settings body
+    - dialog "Confirm"
+      - heading "Confirm" [level=2]
+      - paragraph
+        - text: Are you sure?
+      - button "OK"
+    - alert
+      - text: Saved.
+    - status
+      - text: 3 items

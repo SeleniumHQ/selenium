@@ -63,10 +63,9 @@ final class FederatedCredentialManagementTest extends JupiterTestBase {
 
   private void waitForDialog() {
     WebDriverWait wait = new WebDriverWait(localDriver, Duration.ofSeconds(20));
-    wait.until(
-        driver ->
-            ((HasFederatedCredentialManagement) driver).getFederatedCredentialManagementDialog()
-                != null);
+    wait.until(driver ->
+        ((HasFederatedCredentialManagement) driver).getFederatedCredentialManagementDialog()
+            != null);
   }
 
   @Test

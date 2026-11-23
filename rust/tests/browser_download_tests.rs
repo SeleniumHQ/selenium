@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::is_linux_arm64;
 use crate::common::{assert_browser, assert_driver, get_selenium_manager};
 
 use rstest::rstest;
@@ -27,28 +28,33 @@ mod common;
 #[case("firefox")]
 #[case("edge")]
 fn browser_latest_download_test(#[case] browser: String) {
-    if !browser.eq("edge") || !OS.eq("windows") {
-        let mut cmd = get_selenium_manager();
-        cmd.args([
-            "--browser",
-            &browser,
-            "--force-browser-download",
-            "--output",
-            "json",
-            "--debug",
-        ])
-        .assert()
-        .success()
-        .code(0);
-
-        assert_driver(&mut cmd);
-        assert_browser(&mut cmd);
+    if browser.eq("edge") && OS.eq("windows") {
+        return;
+    } else if is_linux_arm64() && browser.eq("edge") {
+        return;
     }
+
+    let mut cmd = get_selenium_manager();
+    cmd.args([
+        "--browser",
+        &browser,
+        "--force-browser-download",
+        "--output",
+        "json",
+        "--debug",
+    ])
+    .assert()
+    .success()
+    .code(0);
+
+    assert_driver(&mut cmd);
+    assert_browser(&mut cmd);
 }
 
 #[rstest]
 #[case("chrome", "131")]
 #[case("chrome", "131.0.6778.264")]
+#[case("chrome", "153")]
 #[case("chrome", "beta")]
 #[case("firefox", "121")]
 #[case("firefox", "121.0.1")]
@@ -60,6 +66,16 @@ fn browser_version_download_test(#[case] browser: String, #[case] browser_versio
     if OS.eq("windows") && browser.eq("edge") {
         println!(
             "Skipping Edge download test on Windows since the installation requires admin privileges"
+        );
+    } else if is_linux_arm64() && browser.eq("edge") {
+        println!("Skipping Edge download test on Linux arm64 since it's not supported yet");
+    } else if is_linux_arm64() && browser.eq("firefox") && browser_version.starts_with("121") {
+        println!(
+            "Skipping Firefox 121 download test on Linux arm64 since arm64 builds are only available from version 136 onwards"
+        );
+    } else if is_linux_arm64() && browser.eq("chrome") && browser_version.starts_with("131") {
+        println!(
+            "Skipping Chrome 131 download test on Linux arm64 since arm64 builds are only available from version 153 onwards"
         );
     } else {
         let mut cmd = get_selenium_manager();

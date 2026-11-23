@@ -21,9 +21,9 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe DevTools, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'},
-                                   {browser: %i[chrome edge]}] do
-      after { |example| reset_driver!(example: example) }
+    describe DevTools, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'},
+                                     {browser_family: :chromium}] do
+      after { |example| quit_driver unless example.skipped? }
 
       it 'sends commands' do
         driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
@@ -206,7 +206,7 @@ module Selenium
         end
       end
 
-      describe '#pin_script', except: {browser: :firefox} do
+      describe '#pin_script', pending_if: {browser: :firefox} do
         before do
           driver.navigate.to url_for('xhtmlTest.html')
         end

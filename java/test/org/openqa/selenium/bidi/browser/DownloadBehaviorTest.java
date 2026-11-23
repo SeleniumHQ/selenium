@@ -27,11 +27,10 @@ import org.junit.jupiter.api.Test;
 class DownloadBehaviorTest {
   @Test
   void allowed_toMap() {
+    String downloads = Path.of("/Downloads").toAbsolutePath().toString();
     assertThat(new DownloadBehavior(true, "/Downloads").toMap())
         .containsExactlyInAnyOrderEntriesOf(
-            Map.of(
-                "type", "allowed",
-                "destinationFolder", "/Downloads"));
+            Map.of("type", "allowed", "destinationFolder", downloads));
   }
 
   @Test
@@ -56,7 +55,8 @@ class DownloadBehaviorTest {
 
   @Test
   void stringRepresentation() {
-    assertThat(DownloadBehavior.allowed(Path.of("/tmp")))
-        .hasToString("DownloadBehavior{allowed=true, destinationFolder=/tmp}");
+    Path tmp = Path.of("/tmp");
+    assertThat(DownloadBehavior.allowed(tmp))
+        .hasToString("DownloadBehavior{allowed=true, destinationFolder=" + tmp + "}");
   }
 }

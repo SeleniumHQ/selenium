@@ -23,14 +23,7 @@ namespace OpenQA.Selenium.BiDi.Log;
 
 public static class LogEvent
 {
-    public static EventDescriptor<EntryAddedEventArgs> EntryAdded { get; } = EventDescriptor<EntryAddedEventArgs>.Create<LogEntry>(
+    public static EventDescriptor<EntryAddedEventArgs> EntryAdded { get; } = EventDescriptor<EntryAddedEventArgs>.Create(
         "log.entryAdded",
-        static (bidi, p) => p switch
-        {
-            ConsoleLogEntry c => new ConsoleEntryAddedEventArgs(bidi, c.Level, c.Source, c.Text, c.Timestamp, c.Method, c.Args) { StackTrace = c.StackTrace },
-            JavascriptLogEntry j => new JavascriptEntryAddedEventArgs(bidi, j.Level, j.Source, j.Text, j.Timestamp) { StackTrace = j.StackTrace },
-            GenericLogEntry g => new GenericEntryAddedEventArgs(bidi, g.Type, g.Level, g.Source, g.Text, g.Timestamp) { StackTrace = g.StackTrace },
-            _ => throw new BiDiException($"Unknown {nameof(LogEntry)} type: {p.GetType()}")
-        },
-        Default.LogEntry);
+        Default.EntryAddedEventArgs);
 }

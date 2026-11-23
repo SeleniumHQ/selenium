@@ -117,18 +117,17 @@ class FirefoxDriverConcurrentTest extends JupiterTestBase {
       for (int i = 0; i < numThreads; ++i) {
         final WebDriver driver = (i == 0 ? super.driver : new WebDriverBuilder().get());
         drivers[i] = driver;
-        workers.add(
-            () -> {
-              driver.get(pages.formPage);
-              WebElement inputField = driver.findElement(By.id("working"));
-              for (int i1 = 0; i1 < numRoundsPerThread; ++i1) {
-                String s = randomString();
-                inputField.clear();
-                inputField.sendKeys(s);
-                String value = inputField.getAttribute("value");
-                assertThat(value).isEqualTo(s);
-              }
-            });
+        workers.add(() -> {
+          driver.get(pages.formPage);
+          WebElement inputField = driver.findElement(By.id("working"));
+          for (int i1 = 0; i1 < numRoundsPerThread; ++i1) {
+            String s = randomString();
+            inputField.clear();
+            inputField.sendKeys(s);
+            String value = inputField.getAttribute("value");
+            assertThat(value).isEqualTo(s);
+          }
+        });
       }
       ParallelTestRunner parallelTestRunner = new ParallelTestRunner(workers);
       parallelTestRunner.run();

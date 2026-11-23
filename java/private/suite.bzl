@@ -1,6 +1,6 @@
 load(":library.bzl", "java_library", "java_test")
 load(":package.bzl", "package_name")
-load(":selenium_test.bzl", "BROWSERS", "selenium_test")
+load(":selenium_test.bzl", "DEFAULT_BROWSERS", "selenium_test")
 
 _test_attrs = [
     "browsers",
@@ -37,7 +37,12 @@ def _generate_test_suite(
         deps,
         tags,
         test_identifiers,
+        extra_tags = {},
         **kwargs):
+    unknown = [src for src in extra_tags if src not in srcs]
+    if unknown:
+        fail("extra_tags keys not in srcs of %s: %s" % (name, unknown))
+
     lib_srcs = [src for src in srcs if not _matches(test_identifiers, src)]
     test_srcs = [src for src in srcs if _matches(test_identifiers, src)]
 
@@ -56,7 +61,6 @@ def _generate_test_suite(
         )
         deps = deps + [":%s-support" % name]
 
-    additional_tags = [] if size == "small" else ["no-sandbox"]
     suite_targets = []
     pkg = package_name()
     for test in test_srcs:
@@ -71,7 +75,7 @@ def _generate_test_suite(
             size = size,
             srcs = [test],
             deps = deps,
-            tags = tags + additional_tags,
+            tags = tags + extra_tags.get(test, []),
             **kwargs
         )
 
@@ -128,13 +132,14 @@ def _create_selenium_test_target(
 
 def java_selenium_test_suite(
         name,
-        browsers = BROWSERS.keys(),
+        browsers = DEFAULT_BROWSERS,
         srcs = None,
         size = None,
         test_identifiers = ["Test.java"],
         deps = None,
         jvm_flags = [],
         tags = [],
+        extra_tags = {},
         **kwargs):
     args = {}
     args.update(kwargs)
@@ -148,5 +153,6 @@ def java_selenium_test_suite(
         deps = deps,
         tags = tags,
         test_identifiers = test_identifiers,
+        extra_tags = extra_tags,
         **args
     )

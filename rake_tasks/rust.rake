@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 def rust_version
-  File.foreach('rust/BUILD.bazel') do |line|
-    return line.split('=').last.strip.tr('",', '') if line.include?('version =')
-  end
+  SeleniumRake.version('rust')
 end
 
 desc 'Build Selenium Manager'
@@ -33,7 +31,7 @@ task :pin do
   Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//...')
 end
 
-desc 'Update Rust dependencies'
+desc 'Update Rust dependencies to latest versions within specified range'
 task :update do
   puts 'updating Cargo.lock'
   manifest = File.expand_path('rust/Cargo.toml')
@@ -63,11 +61,12 @@ task :version, [:version] do |_task, arguments|
   updated = SeleniumRake.updated_version(equivalent_version, arguments[:version], '-nightly')
   new_version = updated.split(/\.|-/).tap { |v| v.delete_at(2) }.unshift('0').join('.').gsub('.nightly', '-nightly')
   puts "Updating Rust from #{old_version} to #{new_version}"
+  SeleniumRake.write_version('rust', new_version)
 
-  # Replace only the selenium-manager package version field, not coincidental
-  # crate-version literals elsewhere (e.g. `tar = "0.4.44"` in Cargo.toml).
-  pattern = /(^\s*version\s*=\s*")#{Regexp.escape(old_version)}(")/
-  ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
+  # Anchor on the package name: other crates in Cargo.lock sit at the same
+  # 0.4.x numbers (e.g. `tar`), as do dependency literals in Cargo.toml.
+  pattern = /(name = "selenium-manager".*?version = ")#{Regexp.escape(old_version)}(")/m
+  ['rust/Cargo.toml', 'rust/Cargo.lock'].each do |file|
     text = File.read(file).sub(pattern, "\\1#{new_version}\\2")
     File.open(file, 'w') { |f| f.puts text }
   end

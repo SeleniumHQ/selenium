@@ -7,25 +7,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/SeleniumHQ/selenium.git"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [],
-    "packageExtensions": {
-      "google-closure-deps": {
-        "dependencies": {
-          "minimatch": "*"
-        }
-      },
-      "minimatch": {
-        "dependencies": {
-          "brace-expansion": "*"
-        }
-      },
-      "brace-expansion": {
-        "dependencies": {
-          "balanced-match": "*"
-        }
-      }
-    }
   }
 }

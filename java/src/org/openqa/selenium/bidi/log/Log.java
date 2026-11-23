@@ -19,10 +19,12 @@ package org.openqa.selenium.bidi.log;
 
 import java.io.StringReader;
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class Log {
 
   private Log() {

@@ -57,16 +57,14 @@ public enum Dialect {
   private static CommandCodec<HttpRequest> bindAdditionalCommands(
       CommandCodec<HttpRequest> toCodec) {
     ServiceLoader.load(AdditionalHttpCommands.class)
-        .forEach(
-            cmds -> {
-              cmds.getAdditionalCommands()
-                  .forEach(
-                      (name, info) -> {
-                        if (!toCodec.isSupported(name)) {
-                          toCodec.defineCommand(name, info.getMethod(), info.getUrl());
-                        }
-                      });
-            });
+        .forEach(cmds -> {
+          cmds.getAdditionalCommands()
+              .forEach((name, info) -> {
+                if (!toCodec.isSupported(name)) {
+                  toCodec.defineCommand(name, info.getMethod(), info.getUrl());
+                }
+              });
+        });
 
     return toCodec;
   }

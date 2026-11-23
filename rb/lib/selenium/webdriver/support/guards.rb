@@ -24,7 +24,8 @@ module Selenium
   module WebDriver
     module Support
       class Guards
-        GUARD_TYPES = %i[except only exclude exclusive flaky].freeze
+        GUARD_TYPES = %i[pending_if pending_unless skip_if skip_unless flaky
+                         except only exclude exclusive].freeze
 
         attr_reader :messages
         attr_accessor :bug_tracker
@@ -40,7 +41,7 @@ module Selenium
         def add_condition(name, condition = false, &block)
           condition = false if condition.nil?
           @guard_conditions << GuardCondition.new(name, condition, &block)
-          WebDriver.logger.debug "Running with Guard '#{name}' set to: #{condition}"
+          WebDriver.logger.debug "Running with Guard '#{name}' set to: #{condition}", id: :guard
         end
 
         def add_message(name, message)
@@ -51,10 +52,16 @@ module Selenium
           if !skipping_guard.nil?
             [:skip, skipping_guard.message]
           elsif !pending_guard.nil? && ENV.fetch('SKIP_PENDING', nil)
-            [:skip, pending_guard.message]
-          elsif !pending_guard.nil?
+            [:skip, "(skipped by SKIP_PENDING) #{pending_guard.message}"]
+          elsif !pending_guard.nil? && !pending_guard.exception?
             [:pending, pending_guard.message]
           end
+        end
+
+        # The deferred `exception:` pending guard, evaluated against the failure after the run, else nil.
+        def pending_exception_guard
+          guard = pending_guard
+          guard if disposition.nil? && guard&.exception?
         end
 
         def satisfied?(guard)

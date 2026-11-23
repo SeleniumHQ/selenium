@@ -1,0 +1,360 @@
+"""Bazel rules for generating WebDriver BiDi TypeScript modules from CDDL specification."""
+
+load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
+load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
+
+# Language bindings consume the generated schema artifact; the ast/model are
+# internal inputs to it (and to the JS generator) and stay package-private.
+_ARTIFACT_VISIBILITY = [
+    "//common/bidi:__pkg__",
+    "//java:__subpackages__",
+    "//py:__subpackages__",
+    "//rb:__subpackages__",
+]
+
+# Output TypeScript file names produced by generate_bidi.mjs, one per domain.
+_DOMAIN_TS_FILES = [
+    "bluetooth.ts",
+    "browser.ts",
+    "browsing_context.ts",
+    "common.ts",
+    "digital_credentials.ts",
+    "emulation.ts",
+    "input.ts",
+    "log.ts",
+    "network.ts",
+    "permissions.ts",
+    "script.ts",
+    "session.ts",
+    "speculation.ts",
+    "storage.ts",
+    "user_agent_client_hints.ts",
+    "webextension.ts",
+]
+
+# Hand-written runtime the generated domain files import by relative path (e.g.
+# '../domain.js', '../serialization/record.js') — package-relative to output_path's
+# parent, so staging them at the matching bin-tree path (see generate_bidi_library)
+# puts them exactly where those imports expect to find them.
+_RUNTIME_FILES = [
+    "domain.js",
+    "domain.d.ts",
+    "serialization/record.js",
+    "serialization/record.d.ts",
+    "serialization/enum.js",
+    "serialization/enum.d.ts",
+    "serialization/union.js",
+    "serialization/union.d.ts",
+    "serialization/registry.js",
+]
+
+def _compile_bidi_ts_impl(ctx):
+    ts_files = ctx.files.srcs
+    runtime_files = ctx.files.runtime_srcs
+    output_subdir = ctx.attr.output_subdir
+    tsc = ctx.executable.tsc
+
+    js_outputs = [
+        ctx.actions.declare_file(output_subdir + "/" + f.basename.replace(".ts", ".js"))
+        for f in ts_files
+    ]
+    dts_outputs = [
+        ctx.actions.declare_file(output_subdir + "/" + f.basename.replace(".ts", ".d.ts"))
+        for f in ts_files
+    ]
+    all_outputs = js_outputs + dts_outputs
+
+    args = ctx.actions.args()
+    args.add("--target", "ES2020")
+    args.add("--module", "NodeNext")
+    args.add("--moduleResolution", "NodeNext")
+    args.add("--declaration")
+    args.add("--outDir", js_outputs[0].dirname)
+    for f in ts_files:
+        args.add(f.path)
+
+    ctx.actions.run(
+        # runtime_files aren't compiled — they're already .js/.d.ts — but tsc's
+        # NodeNext resolver still needs them physically present at the relative
+        # path each generated file's '../domain.js' etc. import expects.
+        inputs = ts_files + runtime_files,
+        outputs = all_outputs,
+        executable = tsc,
+        arguments = [args],
+        env = {
+            "BAZEL_BINDIR": ctx.bin_dir.path,
+            # Prevent the js_binary wrapper from cd-ing to BAZEL_BINDIR.
+            # Without this, all file paths passed to tsc (which start with
+            # bazel-out/..., i.e. relative to the execroot) would be resolved
+            # relative to BAZEL_BINDIR and end up double-prefixed.
+            "JS_BINARY__NO_CD_BINDIR": "1",
+        },
+        mnemonic = "TscCompileBiDi",
+        progress_message = "Compiling WebDriver BiDi TypeScript to JavaScript",
+    )
+
+    return [DefaultInfo(files = depset(all_outputs))]
+
+_compile_bidi_ts = rule(
+    implementation = _compile_bidi_ts_impl,
+    attrs = {
+        "output_subdir": attr.string(mandatory = True),
+        "runtime_srcs": attr.label_list(allow_files = True),
+        "srcs": attr.label_list(allow_files = True, mandatory = True),
+        "tsc": attr.label(
+            executable = True,
+            cfg = "exec",
+            default = "@npm_typescript//:tsc",
+        ),
+    },
+    doc = "Compiles generated BiDi TypeScript files to JavaScript + declaration files",
+)
+
+def generate_bidi_library(
+        name,
+        cddl_file,
+        extra_cddl_files = [],
+        override_cddl_files = [],
+        vendor_cddl_files = {},
+        dfns_files = [],
+        spec_html = None,
+        generator = None,
+        schema_generator = None,
+        anchors_extractor = None,
+        spec_version = "1.0",
+        output_path = "bidi/generated"):
+    """Macro that generates BiDi TypeScript modules from CDDL and compiles them to JS.
+
+    Args:
+        name: Base name for the targets.
+        cddl_file: Primary CDDL spec label (webdriver-bidi-all.cddl).
+        extra_cddl_files: Additional CDDL specs parsed alongside the primary one.
+        override_cddl_files: Selenium overlay CDDL files applied to the parsed AST: any
+            production they define supersedes the identically named upstream one. Overlays
+            are a schema-gen concern only and do not touch other bindings.
+        vendor_cddl_files: Vendor overlay CDDL files keyed by namespace (`{"moz": [...]}`, the
+            wire prefix of the vendor's `moz:` fields and `moz:<module>` methods). A file may
+            extend spec types (`<Type>Extension` groups, spliced into the like-named spec type)
+            or define whole vendor modules. Everything is tagged with provenance, so it resolves
+            against the real spec types but is routed out of the shared schema into a separate
+            `vendor` section. Bindings that read only the spec sections never see it.
+        dfns_files: webref definition-index files (one per merged spec). When given,
+            the schema step joins them by type name to attach a `specHref` spec link
+            to each type. Optional — omitting them yields a schema with no links.
+        spec_html: the pinned rendered core spec HTML. When given, its prose section
+            anchors are extracted and joined, upgrading type links to `#type-*` sections
+            and adding `#command-*` / `#event-*` / `#module-*` links. Optional.
+        generator: The generate_bidi.mjs js_binary label. Defaults to :generate_bidi_script.
+        schema_generator: The project_bidi_schema.mjs js_binary label. Defaults to :project_bidi_schema_script.
+        anchors_extractor: The extract_bidi_anchors.mjs js_binary label. Defaults to :extract_bidi_anchors_script.
+        spec_version: Spec version string passed to the generator.
+        output_path: Output path for generated files within the package (default: bidi/generated).
+    """
+    if generator == None:
+        generator = ":generate_bidi_script"
+    if schema_generator == None:
+        schema_generator = ":project_bidi_schema_script"
+    if anchors_extractor == None:
+        anchors_extractor = ":extract_bidi_anchors_script"
+
+    pkg = native.package_name()
+    ts_src_path = output_path + "_src"
+
+    # Step 1: parse the base specs and spec-shaped overrides into the reusable base AST.
+    # generate_bidi.mjs parses each `--cddl` file and concatenates their definitions (no
+    # separate merge tool), then applies each `--override-cddl` overlay (supersede by name).
+    # Vendor overlays are deliberately NOT applied here: this base AST feeds the model and the
+    # browser-neutral TypeScript binding, which must stay vendor-free (see Step 1b).
+    # js_run_binary copies its srcs to bin and rejects external/cross-package files, so stage
+    # each spec and overlay into the package first (as the dfns/spec_html steps do).
+    staged_specs = []
+    cddl_args = []
+    for i, spec in enumerate([cddl_file] + extra_cddl_files):
+        staged = name + "_cddl_%d.cddl" % i
+        copy_file(name = name + "_cddl_copy_%d" % i, src = spec, out = staged)
+        staged_specs.append(":" + staged)
+        cddl_args += ["--cddl", "$(location :" + staged + ")"]
+    staged_overrides = []
+    override_args = []
+    for i, override in enumerate(override_cddl_files):
+        staged = name + "_override_%d.cddl" % i
+        copy_file(name = name + "_override_copy_%d" % i, src = override, out = staged)
+        staged_overrides.append(":" + staged)
+        override_args += ["--override-cddl", "$(location :" + staged + ")"]
+    ast_target = name + "_ast"
+    ast_out = name + "_ast.json"
+    js_run_binary(
+        name = ast_target,
+        srcs = staged_specs + staged_overrides,
+        outs = [ast_out],
+        args = cddl_args + ["--dump-ast", pkg + "/" + ast_out] + override_args,
+        tool = generator,
+    )
+
+    # Step 1b: the schema-only AST — the base AST plus vendor overlays applied onto it. Kept
+    # separate from the base AST so provenance-tagged vendor fields reach only the schema
+    # projector (which segregates them into `vendor`), never cddl2ts or the model. Only the small
+    # vendor files are (re)parsed here; the base is read back from Step 1. No vendors → reuse base.
+    schema_ast_target = ast_target
+    vendor_model_target = None
+    if vendor_cddl_files:
+        staged_vendors = []
+        vendor_args = []
+        for namespace, files in vendor_cddl_files.items():
+            for i, vendor in enumerate(files):
+                staged = name + "_vendor_%s_%d.cddl" % (namespace, i)
+                copy_file(name = name + "_vendor_copy_%s_%d" % (namespace, i), src = vendor, out = staged)
+                staged_vendors.append(":" + staged)
+                vendor_args += ["--vendor-cddl", namespace + "=$(location :" + staged + ")"]
+        schema_ast_target = name + "_ast_vendor"
+        schema_ast_out = name + "_ast_vendor.json"
+        js_run_binary(
+            name = schema_ast_target,
+            srcs = [":" + ast_target] + staged_vendors,
+            outs = [schema_ast_out],
+            args = ["--ast", "$(location :" + ast_target + ")", "--dump-ast", pkg + "/" + schema_ast_out] + vendor_args,
+            tool = generator,
+        )
+
+        # Step 1c: the vendor model — the model extraction run over the vendor AST, so a vendor
+        # module's commands/events (tagged with their namespace) reach the schema projector
+        # through the same code path as the spec's. Only the projector reads it (Step 3b).
+        vendor_model_target = name + "_model_vendor"
+        vendor_model_out = name + "_model_vendor.json"
+        js_run_binary(
+            name = vendor_model_target,
+            srcs = [":" + schema_ast_target],
+            outs = [vendor_model_out],
+            args = ["--ast", "$(location :" + schema_ast_target + ")", "--dump-model", pkg + "/" + vendor_model_out],
+            tool = generator,
+        )
+
+    # Step 3: extract the binding-neutral command/event model from the AST. Folded
+    # into the schema below; still consumed directly by the JS generator in-package.
+    json_target = name + "_json"
+    model_out = name + "_model.json"
+    js_run_binary(
+        name = json_target,
+        srcs = [":" + ast_target],
+        outs = [model_out],
+        args = [
+            "--ast",
+            "$(location :" + ast_target + ")",
+            "--dump-model",
+            pkg + "/" + model_out,
+        ],
+        tool = generator,
+    )
+
+    # Step 3b: project the normalized, flat schema (commands + events + types) that
+    # the generated Ruby / Java / Python clients consume. The step validates the
+    # schema (referential integrity + input/output completeness) and fails the
+    # build on any error, so a dropped or dangling type cannot ship silently.
+    # Stage each dfns index (often an external @repo//file:dfns.json) into this
+    # package: js_run_binary copies its srcs to bin, which rejects external files
+    # directly, so copy_file brings them to a package-local path first.
+    staged_dfns = []
+    for i, dfns in enumerate(dfns_files):
+        staged = name + "_dfns_%d.json" % i
+        copy_file(
+            name = name + "_dfns_copy_%d" % i,
+            src = dfns,
+            out = staged,
+        )
+        staged_dfns.append(":" + staged)
+
+    # Extract the core spec's prose section anchors from the pinned rendered HTML into
+    # a small index the schema step joins against. The HTML is an external http_file, so
+    # stage it into the package first (js_run_binary rejects external srcs, like dfns).
+    anchors_out = None
+    if spec_html:
+        staged_html = name + "_spec.html"
+        copy_file(name = name + "_spec_html_copy", src = spec_html, out = staged_html)
+        anchors_out = name + "_anchors.json"
+        js_run_binary(
+            name = name + "_anchors",
+            srcs = [":" + staged_html],
+            outs = [anchors_out],
+            args = ["--spec", "$(location :" + staged_html + ")", "--out", pkg + "/" + anchors_out],
+            tool = anchors_extractor,
+        )
+
+    schema_target = name + "_schema"
+    schema_out = name + "_schema.json"
+
+    # The schema is projected from the vendor AST (Step 1b); the shared model comes from the base
+    # AST, and the vendor model (Step 1c) adds the vendor modules' commands and events.
+    schema_srcs = [":" + schema_ast_target, ":" + json_target] + staged_dfns
+    schema_args = [
+        "--ast",
+        "$(location :" + schema_ast_target + ")",
+        "--model",
+        "$(location :" + json_target + ")",
+        "--dump-schema",
+        pkg + "/" + schema_out,
+    ]
+    for staged in staged_dfns:
+        schema_args += ["--dfns", "$(location " + staged + ")"]
+    if anchors_out:
+        schema_srcs.append(":" + anchors_out)
+        schema_args += ["--anchors", "$(location :" + anchors_out + ")"]
+    if vendor_model_target:
+        schema_srcs.append(":" + vendor_model_target)
+        schema_args += ["--vendor-model", "$(location :" + vendor_model_target + ")"]
+    js_run_binary(
+        name = schema_target,
+        srcs = schema_srcs,
+        outs = [schema_out],
+        args = schema_args,
+        tool = schema_generator,
+        visibility = _ARTIFACT_VISIBILITY,
+    )
+
+    # Step 4: generate one .ts module per BiDi domain from the AST + model. Projected from the
+    # same inputs as the schema step (vendor AST + vendor model), so vendor extensions reach the
+    # generator through the schema's `vendor` section, never through the shared domain classes.
+    ts_outs = [ts_src_path + "/" + f for f in _DOMAIN_TS_FILES]
+    gen_srcs = [":" + schema_ast_target, ":" + json_target]
+    gen_args = [
+        "--ast",
+        "$(location :" + schema_ast_target + ")",
+        "--model",
+        "$(location :" + json_target + ")",
+        "--output-dir",
+        pkg + "/" + ts_src_path,
+        "--spec-version",
+        spec_version,
+    ]
+    if vendor_model_target:
+        gen_srcs.append(":" + vendor_model_target)
+        gen_args += ["--vendor-model", "$(location :" + vendor_model_target + ")"]
+
+    ts_target = name + "_ts"
+    js_run_binary(
+        name = ts_target,
+        srcs = gen_srcs,
+        outs = ts_outs,
+        args = gen_args,
+        tool = generator,
+    )
+
+    # Step 5: compile .ts → .js + .d.ts via tsc (custom rule for ctx.bin_dir.path).
+    # Every generated domain file imports the hand-written runtime by relative path
+    # (e.g. '../domain.js', assuming it sits one level up from output_path). tsc's
+    # NodeNext resolver needs those files physically present at that same relative
+    # path in the bin tree — they're source files today, not generated, so mirror
+    # them into the bin tree at their natural path (copy_file's src/out would collide
+    # with the source's own label at an identical package-relative path).
+    runtime_staged = name + "_runtime"
+    copy_to_bin(
+        name = runtime_staged,
+        srcs = ["bidi/" + f for f in _RUNTIME_FILES],
+    )
+
+    _compile_bidi_ts(
+        name = name,
+        srcs = [":" + ts_target],
+        runtime_srcs = [":" + runtime_staged],
+        output_subdir = output_path,
+    )

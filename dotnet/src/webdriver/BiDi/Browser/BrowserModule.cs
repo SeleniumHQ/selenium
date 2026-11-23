@@ -24,58 +24,40 @@ namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class BrowserModule : Module, IBrowserModule
 {
-    private static readonly Command<Parameters, CloseResult> CloseCommand = new(
-        "browser.close", Default.Parameters, Default.CloseResult);
-
-    private static readonly Command<CreateUserContextParameters, CreateUserContextResult> CreateUserContextCommand = new(
-        "browser.createUserContext", Default.CreateUserContextParameters, Default.CreateUserContextResult);
-
-    private static readonly Command<Parameters, GetUserContextsResult> GetUserContextsCommand = new(
-        "browser.getUserContexts", Default.Parameters, Default.GetUserContextsResult);
-
-    private static readonly Command<RemoveUserContextParameters, RemoveUserContextResult> RemoveUserContextCommand = new(
-        "browser.removeUserContext", Default.RemoveUserContextParameters, Default.RemoveUserContextResult);
-
-    private static readonly Command<Parameters, GetClientWindowsResult> GetClientWindowsCommand = new(
-        "browser.getClientWindows", Default.Parameters, Default.GetClientWindowsResult);
-
-    private static readonly Command<SetDownloadBehaviorParameters, SetDownloadBehaviorResult> SetDownloadBehaviorCommand = new(
-        "browser.setDownloadBehavior", Default.SetDownloadBehaviorParameters, Default.SetDownloadBehaviorResult);
-
     public async Task<CloseResult> CloseAsync(CloseOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync(CloseCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browser.close", Parameters.Empty, Default.Parameters, Default.CloseResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CreateUserContextResult> CreateUserContextAsync(CreateUserContextOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CreateUserContextParameters(options?.AcceptInsecureCerts, options?.Proxy, options?.UnhandledPromptBehavior);
 
-        return await ExecuteAsync(CreateUserContextCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browser.createUserContext", @params, Default.CreateUserContextParameters, Default.CreateUserContextResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetUserContextsResult> GetUserContextsAsync(GetUserContextsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync(GetUserContextsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browser.getUserContexts", Parameters.Empty, Default.Parameters, Default.GetUserContextsResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveUserContextResult> RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveUserContextParameters(userContext);
 
-        return await ExecuteAsync(RemoveUserContextCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browser.removeUserContext", @params, Default.RemoveUserContextParameters, Default.RemoveUserContextResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetClientWindowsResult> GetClientWindowsAsync(GetClientWindowsOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync(GetClientWindowsCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browser.getClientWindows", Parameters.Empty, Default.Parameters, Default.GetClientWindowsResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetDownloadBehaviorResult> SetDownloadBehaviorAsync(DownloadBehavior? downloadBehavior, SetDownloadBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetDownloadBehaviorParameters(downloadBehavior, options?.UserContexts);
 
-        return await ExecuteAsync(SetDownloadBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browser.setDownloadBehavior", @params, Default.SetDownloadBehaviorParameters, Default.SetDownloadBehaviorResult, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

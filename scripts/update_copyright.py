@@ -4,24 +4,12 @@ import glob
 import os
 from pathlib import Path
 
+SCRIPT_DIR = Path(os.path.realpath(__file__)).parent
+
 
 class Copyright:
-    NOTICE = """Licensed to the Software Freedom Conservancy (SFC) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The SFC licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License."""
+    # Canonical license body, shared with every generator — see scripts/license_header.txt.
+    NOTICE = (SCRIPT_DIR / "license_header.txt").read_text(encoding="utf-8").rstrip("\n")
 
     def __init__(self, comment_characters="//", prefix=None):
         self._comment_characters = comment_characters
@@ -32,6 +20,10 @@ under the License."""
             with open(file, encoding="utf-8-sig") as f:
                 lines = f.readlines()
 
+            # An interpreter only honours `#!` on the first line, so the notice goes after it.
+            shebang = lines[:1] if lines and lines[0].startswith("#!") else []
+            lines = lines[len(shebang) :]
+
             index = -1
             for i, line in enumerate(lines):
                 if line.startswith(self._comment_characters) or self.valid_copyright_notice_line(line, index, file):
@@ -40,11 +32,11 @@ under the License."""
                     break
 
             if index == -1:
-                self.write_update_notice(file, lines)
+                self.write_update_notice(file, lines, shebang)
             else:
                 current = "".join(lines[: index + 1])
                 if current != self.copyright_notice(file):
-                    self.write_update_notice(file, lines[index + 1 :])
+                    self.write_update_notice(file, lines[index + 1 :], shebang)
 
     def valid_copyright_notice_line(self, line, index, file):
         return index + 1 < len(self.copyright_notice_lines(file)) and line.startswith(
@@ -67,9 +59,9 @@ under the License."""
     def commented_notice_lines(self):
         return [f"{self._comment_characters} {line}".rstrip() + "\n" for line in self.NOTICE.split("\n")]
 
-    def write_update_notice(self, file, lines):
+    def write_update_notice(self, file, lines, shebang=()):
         # Build new content
-        new_content = self.copyright_notice(file) + "\n"
+        new_content = "".join(shebang) + self.copyright_notice(file) + "\n"
         if lines and lines[0] != "\n":
             new_content += "\n"
         new_content += "".join(line.rstrip() + "\n" for line in lines)
@@ -88,17 +80,8 @@ under the License."""
 ROOT = Path(os.path.realpath(__file__)).parent.parent
 
 JS_EXCLUSIONS = [
+    f"{ROOT}/javascript/**/node_modules/**",
     f"{ROOT}/javascript/atoms/test/jquery.min.js",
-    f"{ROOT}/javascript/jsunit/**/*.js",
-    f"{ROOT}/javascript/selenium-webdriver/node_modules/**/*.js",
-    f"{ROOT}/javascript/selenium-core/lib/**/*.js",
-    f"{ROOT}/javascript/selenium-core/scripts/ui-element.js",
-    f"{ROOT}/javascript/selenium-core/scripts/ui-map-sample.js",
-    f"{ROOT}/javascript/selenium-core/scripts/user-extensions.js",
-    f"{ROOT}/javascript/selenium-core/scripts/xmlextras.js",
-    f"{ROOT}/javascript/selenium-core/xpath/**/*.js",
-    f"{ROOT}/javascript/grid-ui/node_modules/**/*.js",
-    f"{ROOT}/javascript/node/selenium-webdriver/node_modules/**/*.js",
 ]
 
 PY_EXCLUSIONS = [
@@ -121,13 +104,34 @@ def update_files(file_pattern, exclusions, comment_characters="//", prefix=None)
 
 if __name__ == "__main__":
     update_files(f"{ROOT}/javascript/**/*.js", JS_EXCLUSIONS)
-    update_files(f"{ROOT}/javascript/**/*.tsx", [])
+    update_files(f"{ROOT}/javascript/**/*.mjs", JS_EXCLUSIONS)
+    update_files(f"{ROOT}/javascript/**/*.cjs", JS_EXCLUSIONS)
+    update_files(f"{ROOT}/javascript/**/*.tsx", JS_EXCLUSIONS)
+    update_files(f"{ROOT}/javascript/**/*.ts", JS_EXCLUSIONS + [f"{ROOT}/javascript/**/*.d.ts"])
     update_files(f"{ROOT}/py/**/*.py", PY_EXCLUSIONS, comment_characters="#")
+    update_files(f"{ROOT}/py/**/*.pyi", PY_EXCLUSIONS, comment_characters="#")
     update_files(
         f"{ROOT}/rb/**/*.rb",
         [],
         comment_characters="#",
         prefix=["# frozen_string_literal: true\n", "\n"],
+    )
+    update_files(
+        f"{ROOT}/rb/**/*.rb.erb",
+        [],
+        comment_characters="#",
+        prefix=["# frozen_string_literal: true\n", "\n"],
+    )
+    update_files(
+        f"{ROOT}/rb/**/*.rbs",
+        [f"{ROOT}/rb/sig/gems/**/*.rbs"],
+        comment_characters="#",
+    )
+    # *.rbs.erb matches neither the *.rb.erb nor the *.rbs pattern, so it needs its own pass.
+    update_files(
+        f"{ROOT}/rb/**/*.rbs.erb",
+        [],
+        comment_characters="#",
     )
     update_files(f"{ROOT}/java/**/*.java", [])
     update_files(f"{ROOT}/rust/**/*.rs", [])

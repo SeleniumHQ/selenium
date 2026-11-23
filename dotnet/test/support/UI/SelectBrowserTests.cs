@@ -18,7 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium.Tests;
 
 namespace OpenQA.Selenium.Support.Tests.UI;
 
@@ -28,13 +27,13 @@ public class SelectBrowserTests : DriverTestFixture
     [SetUp]
     public void Setup()
     {
-        driver.Url = formsPage;
+        Driver.Url = Urls.FormsPage;
     }
 
     [Test]
     public void ShouldThrowAnExceptionIfTheElementIsNotASelectElement()
     {
-        IWebElement element = driver.FindElement(By.Name("checky"));
+        IWebElement element = Driver.FindElement(By.Name("checky"));
         Assert.That(
             () => new SelectElement(element),
             Throws.TypeOf<UnexpectedTagNameException>());
@@ -43,7 +42,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldIndicateThatASelectCanSupportMultipleOptions()
     {
-        IWebElement element = driver.FindElement(By.Name("multi"));
+        IWebElement element = Driver.FindElement(By.Name("multi"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(elementWrapper.IsMultiple, Is.True);
     }
@@ -51,7 +50,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldIndicateThatASelectCanSupportMultipleOptionsWithEmptyMultipleAttribute()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(elementWrapper.IsMultiple, Is.True);
     }
@@ -59,7 +58,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldIndicateThatASelectCanSupportMultipleOptionsWithTrueMultipleAttribute()
     {
-        IWebElement element = driver.FindElement(By.Name("multi_true"));
+        IWebElement element = Driver.FindElement(By.Name("multi_true"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(elementWrapper.IsMultiple, Is.True);
     }
@@ -67,7 +66,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldNotIndicateThatANormalSelectSupportsMulitpleOptions()
     {
-        IWebElement element = driver.FindElement(By.Name("selectomatic"));
+        IWebElement element = Driver.FindElement(By.Name("selectomatic"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(elementWrapper.IsMultiple, Is.False);
     }
@@ -75,7 +74,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldIndicateThatASelectCanSupportMultipleOptionsWithFalseMultipleAttribute()
     {
-        IWebElement element = driver.FindElement(By.Name("multi_false"));
+        IWebElement element = Driver.FindElement(By.Name("multi_false"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(elementWrapper.IsMultiple, Is.True);
     }
@@ -83,7 +82,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldReturnAllOptionsWhenAsked()
     {
-        IWebElement element = driver.FindElement(By.Name("selectomatic"));
+        IWebElement element = Driver.FindElement(By.Name("selectomatic"));
         SelectElement elementWrapper = new SelectElement(element);
         IList<IWebElement> returnedOptions = elementWrapper.Options;
 
@@ -106,7 +105,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldReturnOptionWhichIsSelected()
     {
-        IWebElement element = driver.FindElement(By.Name("selectomatic"));
+        IWebElement element = Driver.FindElement(By.Name("selectomatic"));
         SelectElement elementWrapper = new SelectElement(element);
 
         IList<IWebElement> returnedOptions = elementWrapper.AllSelectedOptions;
@@ -120,7 +119,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldReturnOptionsWhichAreSelected()
     {
-        IWebElement element = driver.FindElement(By.Name("multi"));
+        IWebElement element = Driver.FindElement(By.Name("multi"));
         SelectElement elementWrapper = new SelectElement(element);
 
         IList<IWebElement> returnedOptions = elementWrapper.AllSelectedOptions;
@@ -137,7 +136,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldReturnFirstSelectedOption()
     {
-        IWebElement element = driver.FindElement(By.Name("multi"));
+        IWebElement element = Driver.FindElement(By.Name("multi"));
         SelectElement elementWrapper = new SelectElement(element);
 
         IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
@@ -152,7 +151,7 @@ public class SelectBrowserTests : DriverTestFixture
     // is not a valid test.
     public void ShouldThrowANoSuchElementExceptionIfNothingIsSelected()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
 
         Assert.That(elementWrapper.AllSelectedOptions.Count, Is.Zero);
@@ -161,7 +160,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldAllowOptionsToBeSelectedByVisibleText()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         elementWrapper.SelectByText("select_2");
         IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
@@ -171,7 +170,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldAllowOptionsToBeSelectedByPartialText()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         elementWrapper.SelectByText("4", true);
         IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
@@ -181,7 +180,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnSelectByTextExactMatchIfOptionDoesNotExist()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.SelectByText("4"),
@@ -192,7 +191,7 @@ public class SelectBrowserTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Not working in all bindings.")]
     public void ShouldNotAllowInvisibleOptionsToBeSelectedByVisibleText()
     {
-        IWebElement element = driver.FindElement(By.Name("invisi_select"));
+        IWebElement element = Driver.FindElement(By.Name("invisi_select"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.SelectByText("Apples"),
@@ -202,7 +201,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnSelectByVisibleTextIfOptionDoesNotExist()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.SelectByText("not there"),
@@ -212,7 +211,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnSelectByVisibleTextIfOptionDisabled()
     {
-        IWebElement element = driver.FindElement(By.Name("single_disabled"));
+        IWebElement element = Driver.FindElement(By.Name("single_disabled"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.SelectByText("Disabled"),
@@ -222,7 +221,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldAllowOptionsToBeSelectedByIndex()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         elementWrapper.SelectByIndex(1);
         IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
@@ -232,7 +231,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnSelectByIndexIfOptionDoesNotExist()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.SelectByIndex(10),
@@ -242,7 +241,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnSelectByIndexIfOptionDisabled()
     {
-        IWebElement element = driver.FindElement(By.Name("single_disabled"));
+        IWebElement element = Driver.FindElement(By.Name("single_disabled"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.SelectByIndex(1),
@@ -252,7 +251,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldAllowOptionsToBeSelectedByReturnedValue()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         elementWrapper.SelectByValue("select_2");
         IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
@@ -262,7 +261,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnSelectByReturnedValueIfOptionDoesNotExist()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.SelectByValue("not there"),
@@ -272,7 +271,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnSelectByReturnedValueIfOptionDisabled()
     {
-        IWebElement element = driver.FindElement(By.Name("single_disabled"));
+        IWebElement element = Driver.FindElement(By.Name("single_disabled"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.SelectByValue("disabled"),
@@ -282,7 +281,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections()
     {
-        IWebElement element = driver.FindElement(By.Name("multi"));
+        IWebElement element = Driver.FindElement(By.Name("multi"));
         SelectElement elementWrapper = new SelectElement(element);
         elementWrapper.DeselectAll();
         IList<IWebElement> returnedOptions = elementWrapper.AllSelectedOptions;
@@ -293,7 +292,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections()
     {
-        IWebElement element = driver.FindElement(By.Name("selectomatic"));
+        IWebElement element = Driver.FindElement(By.Name("selectomatic"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.DeselectAll(),
@@ -303,7 +302,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldAllowUserToDeselectOptionsByVisibleText()
     {
-        IWebElement element = driver.FindElement(By.Name("multi"));
+        IWebElement element = Driver.FindElement(By.Name("multi"));
         SelectElement elementWrapper = new SelectElement(element);
         elementWrapper.DeselectByText("Eggs");
         IList<IWebElement> returnedOptions = elementWrapper.AllSelectedOptions;
@@ -315,7 +314,7 @@ public class SelectBrowserTests : DriverTestFixture
     [IgnoreBrowser(Browser.Firefox, "Not working in all bindings.")]
     public void ShouldNotAllowUserToDeselectOptionsByInvisibleText()
     {
-        IWebElement element = driver.FindElement(By.Name("invisi_select"));
+        IWebElement element = Driver.FindElement(By.Name("invisi_select"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.DeselectByText("Apples"),
@@ -325,7 +324,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldAllowOptionsToBeDeselectedByIndex()
     {
-        IWebElement element = driver.FindElement(By.Name("multi"));
+        IWebElement element = Driver.FindElement(By.Name("multi"));
         SelectElement elementWrapper = new SelectElement(element);
         elementWrapper.DeselectByIndex(0);
         IList<IWebElement> returnedOptions = elementWrapper.AllSelectedOptions;
@@ -336,7 +335,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldAllowOptionsToBeDeselectedByReturnedValue()
     {
-        IWebElement element = driver.FindElement(By.Name("multi"));
+        IWebElement element = Driver.FindElement(By.Name("multi"));
         SelectElement elementWrapper = new SelectElement(element);
         elementWrapper.DeselectByValue("eggs");
         IList<IWebElement> returnedOptions = elementWrapper.AllSelectedOptions;
@@ -347,7 +346,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnDeselectByReturnedValueIfOptionDoesNotExist()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.DeselectByValue("not there"),
@@ -357,7 +356,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnDeselectByTextIfOptionDoesNotExist()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.DeselectByText("not there"),
@@ -367,7 +366,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist()
     {
-        IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+        IWebElement element = Driver.FindElement(By.Name("select_empty_multiple"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.DeselectByIndex(10),
@@ -377,7 +376,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldNotAllowUserToDeselectByTextWhenSelectDoesNotSupportMultipleSelections()
     {
-        IWebElement element = driver.FindElement(By.Name("selectomatic"));
+        IWebElement element = Driver.FindElement(By.Name("selectomatic"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.DeselectByText("Four"),
@@ -387,7 +386,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections()
     {
-        IWebElement element = driver.FindElement(By.Name("selectomatic"));
+        IWebElement element = Driver.FindElement(By.Name("selectomatic"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.DeselectByValue("two"),
@@ -397,7 +396,7 @@ public class SelectBrowserTests : DriverTestFixture
     [Test]
     public void ShouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections()
     {
-        IWebElement element = driver.FindElement(By.Name("selectomatic"));
+        IWebElement element = Driver.FindElement(By.Name("selectomatic"));
         SelectElement elementWrapper = new SelectElement(element);
         Assert.That(
             () => elementWrapper.DeselectByIndex(0),

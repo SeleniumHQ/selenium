@@ -127,15 +127,14 @@ class CustomLocatorHandlerTest {
     // CustomLocatorHandler successfully but stopped at the Node because
     // the actually does not exist.
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(
-            () ->
-                handler.execute(
-                    new HttpRequest(POST, "/session/1234/element")
-                        .setContent(
-                            Contents.asJson(
-                                Map.of(
-                                    "using", "cheese",
-                                    "value", "tasty")))));
+        .isThrownBy(() ->
+            handler.execute(
+                new HttpRequest(POST, "/session/1234/element")
+                    .setContent(
+                        Contents.asJson(
+                            Map.of(
+                                "using", "cheese",
+                                "value", "tasty")))));
   }
 
   @Test
@@ -276,6 +275,58 @@ class CustomLocatorHandlerTest {
                         Map.of(
                             "using", "cheese",
                             "value", "tasty"))));
+
+    List<Map<String, Object>> elements =
+        Values.get(res, new TypeToken<List<Map<String, Object>>>() {}.getType());
+    assertThat(elements).hasSize(1);
+    Object seenId = elements.get(0).get(Dialect.W3C.getEncodedElementKey());
+    assertThat(seenId).isEqualTo(elementId);
+  }
+
+  @Test
+  void shouldBeAbleToRootASearchWithinAShadowRoot() {
+    String elementId = UUID.randomUUID().toString();
+
+    Node node = Mockito.mock(Node.class);
+    when(node.executeWebDriverCommand(
+            argThat(matchesUri("/session/{sessionId}/shadow/shadow-1234/elements"))))
+        .thenReturn(
+            new HttpResponse()
+                .addHeader("Content-Type", Json.JSON_UTF_8)
+                .setContent(
+                    Contents.asJson(
+                        singletonMap(
+                            "value",
+                            singletonList(
+                                singletonMap(Dialect.W3C.getEncodedElementKey(), elementId))))));
+
+    CustomLocatorHandler handler =
+        new CustomLocatorHandler(
+            node,
+            registrationSecret,
+            singleton(
+                new CustomLocator() {
+                  @Override
+                  public String getLocatorName() {
+                    return "cheese";
+                  }
+
+                  @Override
+                  public By createBy(Object usingParameter) {
+                    return By.id("brie");
+                  }
+                }));
+
+    HttpRequest request =
+        new HttpRequest(POST, "/session/1234/shadow/shadow-1234/elements")
+            .setContent(
+                Contents.asJson(
+                    Map.of(
+                        "using", "cheese",
+                        "value", "tasty")));
+    assertThat(handler.matches(request)).isTrue();
+
+    HttpResponse res = handler.execute(request);
 
     List<Map<String, Object>> elements =
         Values.get(res, new TypeToken<List<Map<String, Object>>>() {}.getType());

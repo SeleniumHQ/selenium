@@ -18,7 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.Support.Events;
-using OpenQA.Selenium.Tests;
 
 namespace OpenQA.Selenium.Support.Tests.Events;
 
@@ -28,13 +27,13 @@ public class EventFiringWebDriverElementTests : DriverTestFixture
     [SetUp]
     public void Setup()
     {
-        driver.Url = formsPage;
+        Driver.Url = Urls.FormsPage;
     }
 
     [Test]
     public void CanTakeEventFiringWebElementScreenshot()
     {
-        var firingDriver = new EventFiringWebDriver(driver);
+        var firingDriver = new EventFiringWebDriver(Driver);
         IWebElement element = firingDriver.FindElement(By.Name("checky"));
         Screenshot screenshot = ((ITakesScreenshot)element).GetScreenshot();
 

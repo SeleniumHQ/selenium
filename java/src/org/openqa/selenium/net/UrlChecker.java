@@ -46,14 +46,13 @@ public class UrlChecker {
 
   private static final AtomicInteger THREAD_COUNTER = new AtomicInteger(1);
   private static final ExecutorService EXECUTOR =
-      Executors.newCachedThreadPool(
-          r -> {
-            Thread t =
-                new Thread(
-                    r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet()); // Thread safety reviewed
-            t.setDaemon(true);
-            return t;
-          });
+      Executors.newCachedThreadPool(r -> {
+        Thread t =
+            new Thread(
+                r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet()); // Thread safety reviewed
+        t.setDaemon(true);
+        return t;
+      });
 
   public void waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
       throws TimeoutException {
@@ -61,34 +60,32 @@ public class UrlChecker {
     LOG.fine("Waiting for " + Arrays.toString(urls));
     try {
       Future<@Nullable Void> callback =
-          EXECUTOR.submit(
-              () -> {
-                HttpURLConnection connection = null;
+          EXECUTOR.submit(() -> {
+            HttpURLConnection connection = null;
 
-                long sleepMillis = MIN_POLL_INTERVAL_MS;
-                while (!Thread.interrupted()) {
-                  for (URL url : urls) {
-                    try {
-                      LOG.fine("Polling " + url);
-                      connection = connectToUrl(url);
-                      if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        return null;
-                      }
-                    } catch (IOException e) {
-                      // Ok, try again.
-                    } finally {
-                      if (connection != null) {
-                        consume(connection);
-                        connection.disconnect();
-                      }
-                    }
+            long sleepMillis = MIN_POLL_INTERVAL_MS;
+            while (!Thread.interrupted()) {
+              for (URL url : urls) {
+                try {
+                  LOG.fine("Polling " + url);
+                  connection = connectToUrl(url);
+                  if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    return null;
                   }
-                  MILLISECONDS.sleep(sleepMillis);
-                  sleepMillis =
-                      (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
+                } catch (IOException e) {
+                  // Ok, try again.
+                } finally {
+                  if (connection != null) {
+                    consume(connection);
+                    connection.disconnect();
+                  }
                 }
-                throw new InterruptedException();
-              });
+              }
+              MILLISECONDS.sleep(sleepMillis);
+              sleepMillis = (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
+            }
+            throw new InterruptedException();
+          });
       try {
         callback.get(timeout, unit);
       } finally {
@@ -115,33 +112,31 @@ public class UrlChecker {
     LOG.fine("Waiting for " + url);
     try {
       Future<@Nullable Void> callback =
-          EXECUTOR.submit(
-              () -> {
-                HttpURLConnection connection = null;
+          EXECUTOR.submit(() -> {
+            HttpURLConnection connection = null;
 
-                long sleepMillis = MIN_POLL_INTERVAL_MS;
-                while (!Thread.interrupted()) {
-                  try {
-                    LOG.fine("Polling " + url);
-                    connection = connectToUrl(url);
-                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                      return null;
-                    }
-                  } catch (IOException e) {
-                    return null;
-                  } finally {
-                    if (connection != null) {
-                      consume(connection);
-                      connection.disconnect();
-                    }
-                  }
-
-                  MILLISECONDS.sleep(sleepMillis);
-                  sleepMillis =
-                      (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
+            long sleepMillis = MIN_POLL_INTERVAL_MS;
+            while (!Thread.interrupted()) {
+              try {
+                LOG.fine("Polling " + url);
+                connection = connectToUrl(url);
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                  return null;
                 }
-                throw new InterruptedException();
-              });
+              } catch (IOException e) {
+                return null;
+              } finally {
+                if (connection != null) {
+                  consume(connection);
+                  connection.disconnect();
+                }
+              }
+
+              MILLISECONDS.sleep(sleepMillis);
+              sleepMillis = (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
+            }
+            throw new InterruptedException();
+          });
       try {
         callback.get(timeout, unit);
       } finally {

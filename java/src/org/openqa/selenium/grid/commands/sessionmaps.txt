@@ -5,14 +5,14 @@ following types of data store.
 
 ## RedisBackedSessionMap
 
-`RedisBackedSessionMap` uses Redis as datastore for key, value store. To start it, run the following command:
+`RedisBackedSessionMap` uses Redis as datastore for key, value store. It is built-in bundled by default, so no `--ext` flag required. To start it, run the following command:
 
 ```
-SESSIONS_IMPLEMENTATION=org.openqa.selenium.grid.sessionmap.redis.RedisBackedSessionMap \
-SESSIONS_SCHEME=redis \
-java -jar selenium.jar \
-  --ext $(coursier fetch -p org.seleniumhq.selenium:selenium-session-map-redis:latest.release) \
-  sessions --sessions-host "<redis_host>" --sessions-port <redis_port>
+java -jar selenium.jar sessions \
+  --sessions-implementation org.openqa.selenium.grid.sessionmap.redis.RedisBackedSessionMap \
+  --sessions-scheme redis \
+  --sessions-host "<redis_host>" \
+  --sessions-port <redis_port>
 ```
 
 ## JdbcBackedSessionMap

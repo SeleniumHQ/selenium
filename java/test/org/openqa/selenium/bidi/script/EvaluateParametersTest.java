@@ -24,9 +24,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.module.Script;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
+@CloseExtraWindowsAfterTest
 public class EvaluateParametersTest extends JupiterTestBase {
 
   @Test

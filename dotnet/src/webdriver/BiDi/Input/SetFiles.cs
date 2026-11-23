@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-internal sealed record SetFilesParameters(BrowsingContext.BrowsingContext Context, Script.ISharedReference Element, IEnumerable<string> Files) : Parameters;
+internal sealed record SetFilesParameters(BrowsingContext.BrowsingContext Context, Script.ISharedReference Element, ImmutableArray<string> Files) : Parameters;
 
 public sealed record SetFilesOptions : CommandOptions;
 

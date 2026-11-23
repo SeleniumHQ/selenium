@@ -82,14 +82,13 @@ class JdkHttpMessages {
             String.format("Unsupported request method %s: %s", req.getMethod(), req));
     }
 
-    req.forEachHeader(
-        (name, value) -> {
-          // This prevents the IllegalArgumentException that states 'restricted header name: ...'
-          if (IGNORE_HEADERS.contains(name.toLowerCase(Locale.ENGLISH))) {
-            return;
-          }
-          builder.header(name, value);
-        });
+    req.forEachHeader((name, value) -> {
+      // This prevents the IllegalArgumentException that states 'restricted header name: ...'
+      if (IGNORE_HEADERS.contains(name.toLowerCase(Locale.ENGLISH))) {
+        return;
+      }
+      builder.header(name, value);
+    });
 
     if (req.getHeader(UserAgent) == null) {
       builder.header(UserAgent.getName(), AddSeleniumUserAgent.USER_AGENT);
@@ -157,11 +156,8 @@ class JdkHttpMessages {
   private void copyHeaders(java.net.http.HttpResponse<?> from, HttpResponse to) {
     from.headers()
         .map()
-        .forEach(
-            (name, values) ->
-                values.stream()
-                    .filter(Objects::nonNull)
-                    .forEach(value -> to.addHeader(name, value)));
+        .forEach((name, values) ->
+            values.stream().filter(Objects::nonNull).forEach(value -> to.addHeader(name, value)));
   }
 
   private Contents.Supplier extractContent(java.net.http.HttpResponse<InputStream> response) {

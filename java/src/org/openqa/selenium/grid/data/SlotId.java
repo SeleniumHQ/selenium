@@ -25,16 +25,16 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.UUID;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 public class SlotId implements Serializable {
 
   private final NodeId nodeId;
   private final UUID uuid;
 
-  public SlotId(NodeId host, UUID uuid) {
-    this.nodeId = Require.nonNull("Host id", host);
-    this.uuid = Require.nonNull("Actual id", uuid);
+  // Constructor parameter names are used as JSON field names.
+  public SlotId(NodeId hostId, UUID id) {
+    this.nodeId = Require.nonNull("Host id", hostId);
+    this.uuid = Require.nonNull("Actual id", id);
   }
 
   public NodeId getOwningNodeId() {
@@ -69,31 +69,5 @@ public class SlotId implements Serializable {
     toReturn.put("hostId", nodeId);
     toReturn.put("id", uuid);
     return unmodifiableMap(toReturn);
-  }
-
-  @SuppressWarnings({"unused", "DataFlowIssue"})
-  private static SlotId fromJson(JsonInput input) {
-    NodeId nodeId = null;
-    UUID id = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "hostId":
-          nodeId = input.read(NodeId.class);
-          break;
-
-        case "id":
-          id = input.read(UUID.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-
-    return new SlotId(nodeId, id);
   }
 }

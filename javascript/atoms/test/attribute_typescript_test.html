@@ -182,6 +182,18 @@ under the License.
       assertAttributeEquals(assert, 'lovely', byId('cheddar'), 'unknown');
     });
 
+    QUnit.test('boolean property hidden returns true when attribute present', function (assert) {
+      var el = document.createElement('div');
+      el.setAttribute('hidden', '');
+      assertAttributeEquals(assert, 'true', el, 'hidden');
+    });
+
+    QUnit.test('boolean property multiple returns true when attribute present', function (assert) {
+      var el = document.createElement('select');
+      el.setAttribute('multiple', '');
+      assertAttributeEquals(assert, 'true', el, 'multiple');
+    });
+
     // --- event handler attributes ---
 
     QUnit.test('event handler attribute falls back to getAttribute, not function stringification', function (assert) {

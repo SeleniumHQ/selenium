@@ -6,6 +6,7 @@ java_library(
     srcs = glob(["*.java"]),
     visibility = [
         "//java/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/test/org/openqa/selenium/grid/sessionmap/config:__pkg__",
     ],
     deps = [
         "//java:auto-service",

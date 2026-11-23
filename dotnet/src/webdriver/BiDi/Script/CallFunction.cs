@@ -21,11 +21,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed record CallFunctionParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, bool AwaitPromise, Target Target, IEnumerable<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : Parameters;
+internal sealed record CallFunctionParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, bool AwaitPromise, Target Target, ImmutableArray<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : Parameters;
 
 public sealed record CallFunctionOptions : CommandOptions
 {
-    public IEnumerable<LocalValue>? Arguments { get; init; }
+    public ImmutableArray<LocalValue>? Arguments { get; init; }
 
     public ResultOwnership? ResultOwnership { get; init; }
 

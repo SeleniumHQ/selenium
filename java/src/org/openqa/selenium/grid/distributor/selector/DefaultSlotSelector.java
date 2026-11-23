@@ -62,12 +62,11 @@ public class DefaultSlotSelector implements SlotSelector {
                     NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed())
                 // And use the node id as a tie-breaker.
                 .thenComparing(NodeStatus::getNodeId))
-        .flatMap(
-            node ->
-                node.getSlots().stream()
-                    .filter(slot -> slot.getSession() == null)
-                    .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
-                    .map(Slot::getId))
+        .flatMap(node ->
+            node.getSlots().stream()
+                .filter(slot -> slot.getSession() == null)
+                .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
+                .map(Slot::getId))
         .collect(toSequencedSet());
   }
 

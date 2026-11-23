@@ -49,11 +49,10 @@ class RemotableByTest {
     AtomicReference<Map<?, ?>> parameters = new AtomicReference<>();
 
     WebDriver driver =
-        createDriver(
-            cmd -> {
-              parameters.set(cmd.getParameters());
-              return createResponse(new RemoteWebElement());
-            });
+        createDriver(cmd -> {
+          parameters.set(cmd.getParameters());
+          return createResponse(new RemoteWebElement());
+        });
     driver.findElement(By.cssSelector("#foo"));
 
     assertThat(parameters).hasValue(Map.of("using", "css selector", "value", "#foo"));
@@ -64,11 +63,10 @@ class RemotableByTest {
     AtomicReference<Map<?, ?>> parameters = new AtomicReference<>();
 
     WebDriver driver =
-        createDriver(
-            cmd -> {
-              parameters.set(cmd.getParameters());
-              return createResponse(singletonList(new RemoteWebElement()));
-            });
+        createDriver(cmd -> {
+          parameters.set(cmd.getParameters());
+          return createResponse(singletonList(new RemoteWebElement()));
+        });
 
     driver.findElement(
         new By() {
@@ -87,11 +85,10 @@ class RemotableByTest {
     AtomicReference<Map<?, ?>> parameters = new AtomicReference<>();
 
     WebDriver driver =
-        createDriver(
-            cmd -> {
-              parameters.set(cmd.getParameters());
-              return createResponse(new RemoteWebElement());
-            });
+        createDriver(cmd -> {
+          parameters.set(cmd.getParameters());
+          return createResponse(new RemoteWebElement());
+        });
 
     @NullMarked
     class CustomBy extends By implements By.Remotable {
@@ -205,8 +202,7 @@ class RemotableByTest {
 
   private Response createError(Exception e) {
     Response res = new Response();
-    res.setStatus(errorCodes.toStatusCode(e));
-    res.setState(errorCodes.toState(res.getStatus()));
+    res.setState(errorCodes.toState(errorCodes.toStatusCode(e)));
     res.setValue(ErrorCodec.createDefault().encode(e));
     return res;
   }

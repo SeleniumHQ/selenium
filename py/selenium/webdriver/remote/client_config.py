@@ -18,6 +18,7 @@
 import base64
 import os
 import socket
+import warnings
 from enum import Enum
 from urllib import parse
 
@@ -32,6 +33,35 @@ class AuthType(Enum):
     X_API_KEY = "X-API-Key"
 
 
+def _no_proxy_entry_matches(entry: str, hostname: str, netloc: str) -> bool:
+    """Whether one ``no_proxy`` entry covers the host being connected to.
+
+    Follows the semantics of :func:`urllib.request.proxy_bypass_environment`: an
+    entry covers the host itself and any of its sub-domains, compared without
+    regard to case. Empty entries, which a trailing or doubled comma produces,
+    match nothing rather than everything.
+
+    Args:
+        entry: A single entry from ``no_proxy``, either a bare host
+            (optionally with a port, optionally dot-prefixed) or a full URL.
+        hostname: Lower-cased host of the remote server address, without a port.
+        netloc: Lower-cased host of the remote server address, with any port and
+            without the brackets an IPv6 literal is written with.
+
+    Returns:
+        True if the proxy should be bypassed for this host.
+    """
+    # A bare "host:port" entry is not a URL, and parsing it as one would read
+    # the host as a scheme, so only entries that name a scheme are parsed.
+    if "://" in entry:
+        entry = parse.urlparse(entry).netloc
+    # An IPv6 literal is bracketed in a netloc but not in a hostname.
+    entry = entry.strip().lstrip(".").lower().replace("[", "").replace("]", "")
+    if not entry:
+        return False
+    return any(host == entry or host.endswith(f".{entry}") for host in (hostname, netloc))
+
+
 class _ClientConfigDescriptor:
     def __init__(self, name):
         self.name = name
@@ -40,6 +70,12 @@ class _ClientConfigDescriptor:
         return obj.__dict__[self.name]
 
     def __set__(self, obj, value) -> None:
+        if self.name == "_websocket_interval":
+            warnings.warn(
+                "websocket_interval does nothing and will be removed",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         obj.__dict__[self.name] = value
 
 
@@ -73,13 +109,20 @@ class ClientConfig:
     websocket_timeout = _ClientConfigDescriptor("_websocket_timeout")
     """Gets and Sets the WebSocket response wait timeout (in seconds) used for communicating with the browser."""
     websocket_interval = _ClientConfigDescriptor("_websocket_interval")
-    """Gets and Sets the WebSocket response wait interval (in seconds) used for communicating with the browser."""
+    """Does nothing and will be removed."""
+    websocket_max_message_size = _ClientConfigDescriptor("_websocket_max_message_size")
+    """Gets and Sets the maximum WebSocket message size in bytes for CDP connections.
+
+    Only applies to CDP-based connections (``driver.bidi_connection()``). When ``None``
+    the value falls back to the ``SE_CDP_MAX_WS_MESSAGE_SIZE`` environment variable,
+    then to the built-in default of 16 MiB (``2**24``).
+    """
 
     def __init__(
         self,
         remote_server_addr: str,
         keep_alive: bool | None = True,
-        proxy: Proxy | None = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
+        proxy: Proxy | None = None,
         ignore_certificates: bool | None = False,
         init_args_for_pool_manager: dict | None = None,
         timeout: int | None = None,
@@ -91,22 +134,32 @@ class ClientConfig:
         user_agent: str | None = None,
         extra_headers: dict | None = None,
         websocket_timeout: float | None = 30.0,
-        websocket_interval: float | None = 0.1,
+        websocket_interval: float | None = None,
+        websocket_max_message_size: int | None = None,
     ) -> None:
         self.remote_server_addr = remote_server_addr
         self.keep_alive = keep_alive
-        self.proxy = proxy
+        self.proxy = Proxy(raw={"proxyType": ProxyType.SYSTEM}) if proxy is None else proxy
         self.ignore_certificates = ignore_certificates
-        self.init_args_for_pool_manager = init_args_for_pool_manager or {}
+        # Copy caller-owned dicts so two ClientConfigs (or the caller's own dict) can't be
+        # aliased into one another and mutated in place.
+        self.init_args_for_pool_manager = dict(init_args_for_pool_manager or {})
         self.timeout = socket.getdefaulttimeout() if timeout is None else timeout
         self.username = username
         self.password = password
         self.auth_type = auth_type
         self.token = token
         self.user_agent = user_agent
-        self.extra_headers = extra_headers
+        self.extra_headers = dict(extra_headers) if extra_headers is not None else None
         self.websocket_timeout = websocket_timeout
-        self.websocket_interval = websocket_interval
+        if websocket_interval is not None:
+            warnings.warn(
+                "websocket_interval does nothing and will be removed",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        self._websocket_interval = websocket_interval
+        self.websocket_max_message_size = websocket_max_message_size
 
         self.ca_certs = (
             (os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where())
@@ -127,13 +180,12 @@ class ClientConfig:
         if proxy_type is ProxyType.SYSTEM:
             _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
             if _no_proxy:
+                hostname = (remote_add.hostname or "").lower()
+                netloc = remote_add.netloc.lower().replace("[", "").replace("]", "")
                 for entry in map(str.strip, _no_proxy.split(",")):
                     if entry == "*":
                         return None
-                    n_url = parse.urlparse(entry)
-                    if n_url.netloc and remote_add.netloc == n_url.netloc:
-                        return None
-                    if n_url.path in remote_add.netloc:
+                    if _no_proxy_entry_matches(entry, hostname, netloc):
                         return None
             return os.environ.get(
                 "https_proxy" if self.remote_server_addr.startswith("https://") else "http_proxy",

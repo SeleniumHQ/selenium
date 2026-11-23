@@ -63,17 +63,13 @@ def test_remote_webdriver_with_websocket_timeout(clean_options, webserver, serve
     It verifies the websocket times out according to this value.
     """
     websocket_timeout = 2.0
-    websocket_interval = 1.0
 
     server_addr = server.status_url.removesuffix("/status")
-    client_config = ClientConfig(
-        remote_server_addr=server_addr, websocket_timeout=websocket_timeout, websocket_interval=websocket_interval
-    )
+    client_config = ClientConfig(remote_server_addr=server_addr, websocket_timeout=websocket_timeout)
     assert client_config.websocket_timeout == websocket_timeout
     clean_options.enable_bidi = True
     with webdriver.Remote(options=clean_options, client_config=client_config) as driver:
         assert driver._websocket_connection.response_wait_timeout == websocket_timeout
-        assert driver._websocket_connection.response_wait_interval == websocket_interval
         start = time.time()
         driver._websocket_connection.close()
         elapsed = time.time() - start

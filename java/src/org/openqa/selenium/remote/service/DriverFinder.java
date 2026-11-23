@@ -132,8 +132,11 @@ public class DriverFinder {
 
   private List<String> toArguments() {
     List<String> arguments = new ArrayList<>();
+    Object value = options.getCapability("se:browserName");
+    String browserName = value instanceof String ? (String) value : null;
+
     arguments.add("--browser");
-    arguments.add(options.getBrowserName());
+    arguments.add(browserName != null ? browserName : options.getBrowserName());
 
     if (!options.getBrowserVersion().isEmpty()) {
       arguments.add("--browser-version");
@@ -153,14 +156,19 @@ public class DriverFinder {
     Proxy proxy = Proxy.extractFrom(options);
     if (proxy != null
         && proxy.getProxyType() != Proxy.ProxyType.DIRECT
-        && proxy.getProxyType() != Proxy.ProxyType.AUTODETECT) {
-      arguments.add("--proxy");
+        && proxy.getProxyType() != Proxy.ProxyType.AUTODETECT
+        && proxy.getProxyType() != Proxy.ProxyType.SYSTEM) {
+      String proxyUrl = null;
       if (proxy.getSslProxy() != null) {
-        arguments.add(proxy.getSslProxy());
+        proxyUrl = proxy.getSslProxy();
       } else if (proxy.getHttpProxy() != null) {
-        arguments.add(proxy.getHttpProxy());
+        proxyUrl = proxy.getHttpProxy();
       } else if (proxy.getProxyAutoconfigUrl() != null) {
-        arguments.add(proxy.getProxyAutoconfigUrl());
+        proxyUrl = proxy.getProxyAutoconfigUrl();
+      }
+      if (proxyUrl != null) {
+        arguments.add("--proxy");
+        arguments.add(proxyUrl);
       }
     }
     return arguments;

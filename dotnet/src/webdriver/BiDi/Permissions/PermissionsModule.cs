@@ -24,14 +24,11 @@ namespace OpenQA.Selenium.BiDi.Permissions;
 
 internal sealed class PermissionsModule : Module, IPermissionsModule
 {
-    private static readonly Command<SetPermissionCommandParameters, SetPermissionResult> SetPermissionCommand = new(
-        "permissions.setPermission", Default.SetPermissionCommandParameters, Default.SetPermissionResult);
-
     public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor descriptor, PermissionState state, string origin, SetPermissionOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetPermissionCommandParameters(descriptor, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
-        return await ExecuteAsync(SetPermissionCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("permissions.setPermission", @params, Default.SetPermissionCommandParameters, Default.SetPermissionResult, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

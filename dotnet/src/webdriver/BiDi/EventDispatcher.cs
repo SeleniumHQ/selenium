@@ -28,15 +28,15 @@ internal sealed class EventDispatcher : IAsyncDisposable
 {
     private static readonly ILogger _logger = Internal.Logging.Log.GetLogger<EventDispatcher>();
 
-    private readonly Func<IEnumerable<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> _wireSubscribe;
-    private readonly Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> _wireUnsubscribe;
+    private readonly Func<ImmutableArray<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> _wireSubscribe;
+    private readonly Func<ImmutableArray<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> _wireUnsubscribe;
     private readonly IBiDi _bidi;
 
     private readonly ConcurrentDictionary<string, EventSlot> _events = new();
 
     public EventDispatcher(
-        Func<IEnumerable<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> wireSubscribe,
-        Func<IEnumerable<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> wireUnsubscribe,
+        Func<ImmutableArray<string>, Session.SubscribeOptions?, CancellationToken, Task<Session.SubscribeResult>> wireSubscribe,
+        Func<ImmutableArray<Session.Subscription>, Session.UnsubscribeByIdOptions?, CancellationToken, Task<Session.UnsubscribeResult>> wireUnsubscribe,
         IBiDi bidi)
     {
         _wireSubscribe = wireSubscribe;
@@ -47,7 +47,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public Task<ISubscription> SubscribeAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
         Func<TEventArgs, ValueTask> handler,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
@@ -58,7 +58,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
     public async Task<ISubscription> SubscribeAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
         Func<TEventArgs, ValueTask> handler,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
@@ -81,7 +81,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         EventDescriptor<TEventArgs> descriptor,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
@@ -91,7 +91,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     public async Task<EventStream<TEventArgs>> SubscribeReaderAsync<TEventArgs>(
         IEnumerable<EventDescriptor> descriptors,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts = null,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts = null,
         Func<TEventArgs, bool>? filter = null,
         CancellationToken cancellationToken = default)
         where TEventArgs : EventArgs
@@ -101,8 +101,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
         ISubscriptionSink subscription = null!;
         subscription = new EventStream<TEventArgs>(
             ct => UnsubscribeAsync(subscribeResult, slots, subscription, ct),
-            filter,
-            cancellationToken);
+            filter);
 
         foreach (var slot in slots)
         {
@@ -112,32 +111,31 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return (EventStream<TEventArgs>)subscription;
     }
 
-    public bool TryDeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader)
+    public void DeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader, Dictionary<string, JsonElement>? additionalMessageData = null)
     {
-        if (!_events.TryGetValue(method, out var slot))
+        if (_events.TryGetValue(method, out var slot))
         {
-            return false;
-        }
+            var eventArgs = (EventArgs)(JsonSerializer.Deserialize(ref paramsReader, slot.JsonTypeInfo)
+            ?? throw new BiDiException("Remote end returned null event args in the 'params' property."));
 
-        var eventParams = JsonSerializer.Deserialize(ref paramsReader, slot.JsonTypeInfo)
-            ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
+            eventArgs.BiDi = _bidi;
 
-        var eventArgs = slot.ArgsFactory(eventParams);
+            if (additionalMessageData is not null)
+                eventArgs.AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
 
-        foreach (var subscription in slot.GetSnapshot())
-        {
-            try
+            foreach (var subscription in slot.GetSnapshot())
             {
-                subscription.Deliver(eventArgs);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Failed to deliver '{method}' event to subscription: {ex.Message}");
-                subscription.Complete(ex);
+                try
+                {
+                    subscription.Deliver(method, eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Failed to deliver '{method}' event to subscription: {ex.Message}");
+                    subscription.Complete(ex);
+                }
             }
         }
-
-        return true;
     }
 
     public async Task CompleteAllAsync(Exception? error)
@@ -173,8 +171,8 @@ internal sealed class EventDispatcher : IAsyncDisposable
 
     private async Task<(Session.Subscription SubscribeResult, EventSlot[] Slots)> SubscribeCoreAsync(
         IEnumerable<EventDescriptor> descriptors,
-        IEnumerable<BrowsingContext.BrowsingContext>? contexts,
-        IEnumerable<Browser.UserContext>? userContexts,
+        ImmutableArray<BrowsingContext.BrowsingContext>? contexts,
+        ImmutableArray<Browser.UserContext>? userContexts,
         CancellationToken cancellationToken)
     {
         var uniqueNames = new HashSet<string>();
@@ -195,7 +193,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             throw new ArgumentException("At least one event descriptor must be provided.", nameof(descriptors));
         }
 
-        var subscribeResult = await _wireSubscribe(names, new() { Contexts = contexts, UserContexts = userContexts }, cancellationToken)
+        var subscribeResult = await _wireSubscribe([.. names], new() { Contexts = contexts, UserContexts = userContexts }, cancellationToken)
             .ConfigureAwait(false);
 
         return (subscribeResult.Subscription, slots.ToArray());
@@ -205,14 +203,12 @@ internal sealed class EventDispatcher : IAsyncDisposable
     {
         return _events.GetOrAdd(descriptor.Name, _ =>
         {
-            if (descriptor.JsonTypeInfo is null || descriptor.ArgsFactory is null)
+            if (descriptor.JsonTypeInfo is null)
             {
                 throw new InvalidOperationException($"Event '{descriptor.Name}' does not have registration metadata.");
             }
 
-            var bidi = _bidi;
-            var argsFactory = descriptor.ArgsFactory;
-            return new EventSlot(descriptor.JsonTypeInfo, ep => argsFactory(bidi, ep));
+            return new EventSlot(descriptor.JsonTypeInfo);
         });
     }
 
@@ -234,15 +230,13 @@ internal sealed class EventDispatcher : IAsyncDisposable
     private sealed class EventSlot
     {
         public JsonTypeInfo JsonTypeInfo { get; }
-        public Func<object, EventArgs> ArgsFactory { get; }
 
         private readonly object _lock = new();
         private volatile ISubscriptionSink[] _subscriptions = [];
 
-        public EventSlot(JsonTypeInfo jsonTypeInfo, Func<object, EventArgs> argsFactory)
+        public EventSlot(JsonTypeInfo jsonTypeInfo)
         {
             JsonTypeInfo = jsonTypeInfo;
-            ArgsFactory = argsFactory;
         }
 
         public ISubscriptionSink[] GetSnapshot() => _subscriptions;

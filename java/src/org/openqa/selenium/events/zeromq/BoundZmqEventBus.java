@@ -68,12 +68,11 @@ class BoundZmqEventBus implements EventBus {
     xsub.bind(xsubAddr.bindTo);
 
     executor =
-        Executors.newSingleThreadExecutor(
-            r -> {
-              Thread thread = new Thread(r, "Message Bus Proxy");
-              thread.setDaemon(true);
-              return thread;
-            });
+        Executors.newSingleThreadExecutor(r -> {
+          Thread thread = new Thread(r, "Message Bus Proxy");
+          thread.setDaemon(true);
+          return thread;
+        });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
     delegate =
         new UnboundZmqEventBus(

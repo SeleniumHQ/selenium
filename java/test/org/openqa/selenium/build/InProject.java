@@ -43,25 +43,22 @@ public class InProject {
         .filter(Files::exists)
         .findFirst()
         .map(Path::toAbsolutePath)
-        .orElseGet(
-            () -> {
-              Path root = findProjectRoot();
-              return Stream.of(paths)
-                  .map(
-                      path -> {
-                        Path needle = root.resolve(path);
-                        return Files.exists(needle) ? needle : null;
-                      })
-                  .filter(Objects::nonNull)
-                  .findFirst()
-                  .orElseThrow(
-                      () ->
-                          new WebDriverException(
-                              new FileNotFoundException(
-                                  String.format(
-                                      "Could not find any of %s in the project",
-                                      String.join(",", paths)))));
-            });
+        .orElseGet(() -> {
+          Path root = findProjectRoot();
+          return Stream.of(paths)
+              .map(path -> {
+                Path needle = root.resolve(path);
+                return Files.exists(needle) ? needle : null;
+              })
+              .filter(Objects::nonNull)
+              .findFirst()
+              .orElseThrow(() ->
+                  new WebDriverException(
+                      new FileNotFoundException(
+                          String.format(
+                              "Could not find any of %s in the project",
+                              String.join(",", paths)))));
+        });
   }
 
   public static Path findProjectRoot() {

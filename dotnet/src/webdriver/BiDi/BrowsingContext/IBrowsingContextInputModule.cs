@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 public interface IBrowsingContextInputModule
 {
     IEventSource<FileDialogOpenedEventArgs> FileDialogOpened { get; }
-    Task<PerformActionsResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default);
+    Task<PerformActionsResult> PerformActionsAsync(ImmutableArray<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default);
     Task<ReleaseActionsResult> ReleaseActionsAsync(ReleaseActionsOptions? options = null, CancellationToken cancellationToken = default);
-    Task<SetFilesResult> SetFilesAsync(Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default);
+    Task<SetFilesResult> SetFilesAsync(Script.ISharedReference element, ImmutableArray<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default);
 }

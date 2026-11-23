@@ -25,6 +25,7 @@ import java.util.Map;
 import org.htmlunit.corejs.javascript.Context;
 import org.htmlunit.corejs.javascript.ContextFactory;
 import org.htmlunit.corejs.javascript.ScriptableObject;
+import org.htmlunit.corejs.javascript.TopLevel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class CompiledAtomsNotLeakingTest {
 
   private static String fragment;
 
-  private ScriptableObject global;
+  private TopLevel global;
 
   @BeforeAll
   public static void loadFragment() throws IOException {
@@ -46,81 +47,75 @@ class CompiledAtomsNotLeakingTest {
   @BeforeEach
   public void prepareGlobalObject() {
     ContextFactory.getGlobal()
-        .call(
-            context -> {
-              global = context.initStandardObjects();
-              global.defineProperty("_", 1234, ScriptableObject.EMPTY);
-              assertThat(eval(context, "_")).isEqualTo(1234);
+        .call(context -> {
+          global = context.initStandardObjects();
+          global.defineProperty("_", 1234, ScriptableObject.EMPTY);
+          assertThat(eval(context, "_")).isEqualTo(1234);
 
-              // We're using the //javascript/webdriver/atoms:execute_script atom,
-              // which assumes it is used in the context of a browser window, so make
-              // sure the "window" free variable is defined and refers to the global
-              // context.
-              assertThat(eval(context, "this.window=this;")).isEqualTo(global);
-              assertThat(eval(context, "this")).isEqualTo(global);
-              assertThat(eval(context, "window")).isEqualTo(global);
-              assertThat(eval(context, "this === window")).isEqualTo(true);
+          // We're using the //javascript/webdriver/atoms:execute_script atom,
+          // which assumes it is used in the context of a browser window, so make
+          // sure the "window" free variable is defined and refers to the global
+          // context.
+          assertThat(eval(context, "this.window=this;")).isEqualTo(global);
+          assertThat(eval(context, "this")).isEqualTo(global);
+          assertThat(eval(context, "window")).isEqualTo(global);
+          assertThat(eval(context, "this === window")).isEqualTo(true);
 
-              return null;
-            });
+          return null;
+        });
   }
 
   /** <a href="https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1333"></a> */
   @Test
   void fragmentWillNotLeakVariablesToEnclosingScopes() {
     ContextFactory.getGlobal()
-        .call(
-            context -> {
-              eval(context, "(" + fragment + ")()", RESOURCE_PATH);
-              assertThat(eval(context, "_")).isEqualTo(1234);
+        .call(context -> {
+          eval(context, "(" + fragment + ")()", RESOURCE_PATH);
+          assertThat(eval(context, "_")).isEqualTo(1234);
 
-              eval(context, "(" + fragment + ").call(this)", RESOURCE_PATH);
-              assertThat(eval(context, "_")).isEqualTo(1234);
+          eval(context, "(" + fragment + ").call(this)", RESOURCE_PATH);
+          assertThat(eval(context, "_")).isEqualTo(1234);
 
-              eval(context, "(" + fragment + ").apply(this,[])", RESOURCE_PATH);
-              assertThat(eval(context, "_")).isEqualTo(1234);
+          eval(context, "(" + fragment + ").apply(this,[])", RESOURCE_PATH);
+          assertThat(eval(context, "_")).isEqualTo(1234);
 
-              eval(context, "(" + fragment + ").call(null)", RESOURCE_PATH);
-              assertThat(eval(context, "_")).isEqualTo(1234);
+          eval(context, "(" + fragment + ").call(null)", RESOURCE_PATH);
+          assertThat(eval(context, "_")).isEqualTo(1234);
 
-              eval(context, "(" + fragment + ").apply(null,[])", RESOURCE_PATH);
-              assertThat(eval(context, "_")).isEqualTo(1234);
+          eval(context, "(" + fragment + ").apply(null,[])", RESOURCE_PATH);
+          assertThat(eval(context, "_")).isEqualTo(1234);
 
-              eval(context, "(" + fragment + ").call({})", RESOURCE_PATH);
-              assertThat(eval(context, "_")).isEqualTo(1234);
-              return null;
-            });
+          eval(context, "(" + fragment + ").call({})", RESOURCE_PATH);
+          assertThat(eval(context, "_")).isEqualTo(1234);
+          return null;
+        });
   }
 
   @Test
   void nestedFragmentsShouldNotLeakVariables() {
     ContextFactory.getGlobal()
-        .call(
-            context -> {
-              // executeScript atom recursing on itself to execute "return 1+2".
-              // Should result in {status:0,value:{status:0,value:3}}
-              // Global scope should not be modified.
-              String nestedScript =
-                  String.format("(%s).call(null, %s, ['return 1+2;'], true)", fragment, fragment);
+        .call(context -> {
+          // executeScript atom recursing on itself to execute "return 1+2".
+          // Should result in {status:0,value:{status:0,value:3}}
+          // Global scope should not be modified.
+          String nestedScript =
+              String.format("(%s).call(null, %s, ['return 1+2;'], true)", fragment, fragment);
 
-              String jsonResult = (String) eval(context, nestedScript, RESOURCE_PATH);
+          String jsonResult = (String) eval(context, nestedScript, RESOURCE_PATH);
 
-              Map<String, Object> result = new Json().toType(jsonResult, Json.MAP_TYPE);
+          Map<String, Object> result = new Json().toType(jsonResult, Json.MAP_TYPE);
 
-              assertThat(result.get("status"))
-                  .isInstanceOf(Long.class)
-                  .as(jsonResult)
-                  .isEqualTo(0L);
-              assertThat(result.get("value")).isInstanceOf(Map.class);
-              assertThat(result.get("value"))
-                  .asInstanceOf(MAP)
-                  .hasSize(2)
-                  .containsEntry("status", 0L)
-                  .containsEntry("value", 3L);
+          assertThat(result.get("status")).isInstanceOf(Long.class).as(jsonResult).isEqualTo(0L);
+          assertThat(result.get("value")).isInstanceOf(Map.class);
+          assertThat(result.get("value"))
+              .asInstanceOf(MAP)
+              .hasSize(2)
+              .containsEntry("status", 0L)
+              .containsEntry("value", 3L);
 
-              assertThat(eval(context, "_")).isEqualTo(1234);
-              return null;
-            });
+          assertThat(eval(context, "_")).isEqualTo(1234);
+          return null;
+        });
   }
 
   private Object eval(Context context, String script) {

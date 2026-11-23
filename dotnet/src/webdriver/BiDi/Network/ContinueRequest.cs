@@ -19,15 +19,15 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed record ContinueRequestParameters(Request Request, BytesValue? Body, IEnumerable<CookieHeader>? Cookies, IEnumerable<Header>? Headers, string? Method, string? Url) : Parameters;
+internal sealed record ContinueRequestParameters(Request Request, BytesValue? Body, ImmutableArray<CookieHeader>? Cookies, ImmutableArray<Header>? Headers, string? Method, string? Url) : Parameters;
 
 public sealed record ContinueRequestOptions : CommandOptions
 {
     public BytesValue? Body { get; init; }
 
-    public IEnumerable<CookieHeader>? Cookies { get; init; }
+    public ImmutableArray<CookieHeader>? Cookies { get; init; }
 
-    public IEnumerable<Header>? Headers { get; init; }
+    public ImmutableArray<Header>? Headers { get; init; }
 
     public string? Method { get; init; }
 

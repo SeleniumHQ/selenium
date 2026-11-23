@@ -63,7 +63,7 @@ class DecoratedNavigationTest {
 
   @Test
   void toAddressAsUrl() throws MalformedURLException {
-    final URL url = new URL("http://www.selenium2.ru/");
+    final URL url = new URL("http://www.selenium2.test/");
     verifyFunction($ -> $.to(url));
   }
 

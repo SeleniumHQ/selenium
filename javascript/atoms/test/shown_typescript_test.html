@@ -124,6 +124,50 @@
       assert.notOk(isShown(byId('orphanArea')));
     });
 
+    QUnit.test('map with hyphen in name is found via querySelector', function (assert) {
+      var img = document.createElement('img');
+      img.setAttribute('usemap', '#my-map');
+      img.setAttribute('width', '100');
+      img.setAttribute('height', '100');
+      document.body.appendChild(img);
+
+      var map = document.createElement('map');
+      map.setAttribute('name', 'my-map');
+      var area = document.createElement('area');
+      area.setAttribute('shape', 'rect');
+      area.setAttribute('coords', '0,0,50,50');
+      map.appendChild(area);
+      document.body.appendChild(map);
+
+      assert.ok(isShown(map), 'map linked to visible image should be shown');
+      assert.ok(isShown(area), 'area linked to visible image should be shown');
+
+      document.body.removeChild(img);
+      document.body.removeChild(map);
+    });
+
+    QUnit.test('map with double-quote in name is found via querySelector', function (assert) {
+      var img = document.createElement('img');
+      img.setAttribute('width', '100');
+      img.setAttribute('height', '100');
+      document.body.appendChild(img);
+
+      var map = document.createElement('map');
+      map.setAttribute('name', 'my"map');
+      img.setAttribute('usemap', '#my"map');
+
+      var area = document.createElement('area');
+      area.setAttribute('shape', 'rect');
+      area.setAttribute('coords', '0,0,50,50');
+      map.appendChild(area);
+      document.body.appendChild(map);
+
+      assert.ok(isShown(map), 'map with quote in name linked to visible image should be shown');
+
+      document.body.removeChild(img);
+      document.body.removeChild(map);
+    });
+
     QUnit.test('element with nested block level element shown', function (assert) {
       assert.ok(isShown(byId('containsNestedBlock')));
     });
@@ -318,6 +362,21 @@
 
     QUnit.test('nested text node', function (assert) {
       assert.notOk(isShown(byId('nestedTextNode')));
+    });
+
+    // Covers the ModernModalTest scenario: position:fixed overlay with overflow:auto
+    // containing a position:absolute child with explicit dimensions, toggled via display.
+    QUnit.test('child of display:none fixed overlay is not shown', function (assert) {
+      var overlay = byId('fixedOverlay');
+      var box = byId('fixedOverlayContent');
+
+      assert.notOk(isShown(box), 'hidden when overlay is display:none');
+
+      overlay.style.display = 'block';
+      assert.ok(isShown(box), 'shown when overlay is display:block');
+
+      overlay.style.display = 'none';
+      assert.notOk(isShown(box), 'hidden again after overlay is re-hidden');
     });
   </script>
 
@@ -568,6 +627,13 @@
 
   <div id='nestedTextNode' style='width: 0px; overflow: visible'>
     <div style="display: none;">text</div>
+  </div>
+
+  <!-- Fixture for ModernModalTest scenario -->
+  <div id="fixedOverlay" style="display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4);">
+    <div id="fixedOverlayContent" style="position:absolute; background:#fff; padding:20px; border:1px solid #888; width:250px; height:200px; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2;">
+      modal content
+    </div>
   </div>
 
 </body>

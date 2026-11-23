@@ -15,5 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
-__version__ = "4.45.0.202605121853"
+from selenium._version import __version__ as __version__

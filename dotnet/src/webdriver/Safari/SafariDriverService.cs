@@ -48,6 +48,9 @@ public sealed class SafariDriverService : DriverService
     }
 
     /// <inheritdoc />
+    protected override string DriverServiceEnvironmentVariableName => "SE_SAFARIDRIVER";
+
+    /// <inheritdoc />
     protected override DriverOptions GetDefaultDriverOptions()
     {
         return new SafariOptions();
@@ -62,7 +65,7 @@ public sealed class SafariDriverService : DriverService
         {
             StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
 
-            if (this.Diagnose is true)
+            if (this.Diagnose is true || Environment.GetEnvironmentVariable("SE_DEBUG") is not null)
             {
                 argsBuilder.Append(" --diagnose");
             }

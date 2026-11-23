@@ -107,23 +107,20 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
         // Matching of extension capabilities is implementation independent. Skip them
         .filter(name -> !name.contains(":"))
         // Mandatory capabilities match is done at the end
-        .filter(
-            name ->
-                MANDATORY_CAPABILITIES.stream()
-                    .noneMatch(mandatory -> mandatory.equalsIgnoreCase(name)))
-        .map(
-            name -> {
-              if (capabilities.getCapability(name) instanceof String) {
-                return stereotype
-                    .getCapability(name)
-                    .toString()
-                    .equalsIgnoreCase(capabilities.getCapability(name).toString());
-              } else {
-                return capabilities.getCapability(name) == null
-                    || Objects.equals(
-                        stereotype.getCapability(name), capabilities.getCapability(name));
-              }
-            })
+        .filter(name ->
+            MANDATORY_CAPABILITIES.stream()
+                .noneMatch(mandatory -> mandatory.equalsIgnoreCase(name)))
+        .map(name -> {
+          if (capabilities.getCapability(name) instanceof String) {
+            return stereotype
+                .getCapability(name)
+                .toString()
+                .equalsIgnoreCase(capabilities.getCapability(name).toString());
+          } else {
+            return capabilities.getCapability(name) == null
+                || Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
+          }
+        })
         .reduce(Boolean::logicalAnd)
         .orElse(true);
   }
@@ -149,11 +146,10 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     */
     return capabilities.getCapabilityNames().stream()
         .filter(name -> name.contains("platformVersion"))
-        .map(
-            platformVersionCapName ->
-                Objects.equals(
-                    stereotype.getCapability(platformVersionCapName),
-                    capabilities.getCapability(platformVersionCapName)))
+        .map(platformVersionCapName ->
+            Objects.equals(
+                stereotype.getCapability(platformVersionCapName),
+                capabilities.getCapability(platformVersionCapName)))
         .reduce(Boolean::logicalAnd)
         .orElse(true);
   }
@@ -171,19 +167,17 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
         .filter(name -> !name.toLowerCase().contains("options"))
         .filter(name -> capabilities.asMap().containsKey(name))
         .filter(name -> EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains))
-        .map(
-            name -> {
-              if (capabilities.getCapability(name) instanceof String) {
-                return stereotype
-                    .getCapability(name)
-                    .toString()
-                    .equalsIgnoreCase(capabilities.getCapability(name).toString());
-              } else {
-                return capabilities.getCapability(name) == null
-                    || Objects.equals(
-                        stereotype.getCapability(name), capabilities.getCapability(name));
-              }
-            })
+        .map(name -> {
+          if (capabilities.getCapability(name) instanceof String) {
+            return stereotype
+                .getCapability(name)
+                .toString()
+                .equalsIgnoreCase(capabilities.getCapability(name).toString());
+          } else {
+            return capabilities.getCapability(name) == null
+                || Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
+          }
+        })
         .reduce(Boolean::logicalAnd)
         .orElse(true);
   }
@@ -197,9 +191,8 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     - If both (app and appPackage) or (app and bundleId). This will then save some small-time for the driver as by default it tries to autodetect these values anyway by analyzing the fetched package’s manifest
      */
     return SPECIFIC_RELAY_CAPABILITIES_APP.stream()
-        .anyMatch(
-            name ->
-                capabilities.getCapability(name) != null
-                    && !capabilities.getCapability(name).toString().isEmpty());
+        .anyMatch(name ->
+            capabilities.getCapability(name) != null
+                && !capabilities.getCapability(name).toString().isEmpty());
   }
 }

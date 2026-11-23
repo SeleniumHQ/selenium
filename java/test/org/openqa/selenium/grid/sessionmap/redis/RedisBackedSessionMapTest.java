@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.sessionmap.redis;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
@@ -36,6 +37,8 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
@@ -44,6 +47,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -236,6 +240,77 @@ class RedisBackedSessionMapTest {
         Instant.now());
   }
 
+  @Test
+  void addReturnsTrue() throws URISyntaxException {
+    Session session = createSession(new URI("http://example.com/foo"));
+    assertThat(sessions.add(session)).isTrue();
+  }
+
+  @Test
+  void getUriThrowsForMalformedUriStoredInRedis() {
+    SessionId id = new SessionId(randomUUID());
+    sessions.getRedisClient().mset(Map.of("session:" + id + ":uri", "not a valid uri"));
+    assertThatThrownBy(() -> sessions.getUri(id))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageContaining(id.toString());
+  }
+
+  @Test
+  void getSucceedsWhenStartKeyIsMissing() throws URISyntaxException {
+    Session expected = createSession(new URI("http://example.com/foo"));
+    sessions.add(expected);
+    sessions.getRedisClient().del("session:" + expected.getId() + ":start");
+
+    Session seen = sessions.get(expected.getId());
+
+    assertThat(seen.getId()).isEqualTo(expected.getId());
+    assertThat(seen.getUri()).isEqualTo(expected.getUri());
+    assertThat(seen.getStartTime()).isEqualTo(Instant.EPOCH);
+  }
+
+  @Test
+  void removeIsIdempotent() {
+    SessionId id = new SessionId(randomUUID());
+    assertThatNoException().isThrownBy(() -> sessions.remove(id));
+  }
+
+  @Test
+  void removeByUriIsNoOpWhenRedisIsEmpty() throws URISyntaxException {
+    assertThatNoException()
+        .isThrownBy(() -> sessions.removeByUri(new URI("http://example.com/foo")));
+  }
+
+  @Test
+  void nodeRemovedEventIgnoresSlotsWithNullSession() throws URISyntaxException {
+    URI nodeUri = new URI("http://example.com/node");
+    Session activeSession = createSession(nodeUri);
+    sessions.add(activeSession);
+
+    bus.fire(new NodeRemovedEvent(createNodeStatusWithNullSlot(nodeUri, activeSession)));
+
+    assertThatThrownBy(() -> sessions.get(activeSession.getId()))
+        .isInstanceOf(NoSuchSessionException.class);
+  }
+
+  @Test
+  void createFromConfigBuildsWorkingSessionMap() throws URISyntaxException {
+    Config config =
+        new MapConfig(
+            Map.of(
+                "sessions", Map.of("host", redisUri.toString()),
+                "events",
+                    Map.of("implementation", "org.openqa.selenium.events.local.GuavaEventBus")));
+
+    SessionMap sessionMap = RedisBackedSessionMap.create(config);
+    try {
+      Session expected = createSession(new URI("http://example.com/foo"));
+      sessionMap.add(expected);
+      assertThat(((RedisBackedSessionMap) sessionMap).get(expected.getId())).isEqualTo(expected);
+    } finally {
+      ((RedisBackedSessionMap) sessionMap).getRedisClient().close();
+    }
+  }
+
   private org.openqa.selenium.grid.data.NodeStatus createNodeStatus(URI nodeUri, Session session) {
     NodeId nodeId = new NodeId(UUID.randomUUID());
     return new org.openqa.selenium.grid.data.NodeStatus(
@@ -248,6 +323,31 @@ class RedisBackedSessionMapTest {
                 new ImmutableCapabilities("browserName", "cheese"),
                 Instant.now(),
                 session)),
+        Availability.UP,
+        Duration.ofSeconds(30),
+        Duration.ofSeconds(30),
+        "test",
+        Map.of());
+  }
+
+  private org.openqa.selenium.grid.data.NodeStatus createNodeStatusWithNullSlot(
+      URI nodeUri, Session activeSession) {
+    NodeId nodeId = new NodeId(UUID.randomUUID());
+    return new org.openqa.selenium.grid.data.NodeStatus(
+        nodeId,
+        nodeUri,
+        2,
+        Set.of(
+            new Slot(
+                new SlotId(nodeId, UUID.randomUUID()),
+                new ImmutableCapabilities("browserName", "cheese"),
+                Instant.now(),
+                activeSession),
+            new Slot(
+                new SlotId(nodeId, UUID.randomUUID()),
+                new ImmutableCapabilities("browserName", "cheese"),
+                Instant.now(),
+                null)),
         Availability.UP,
         Duration.ofSeconds(30),
         Duration.ofSeconds(30),

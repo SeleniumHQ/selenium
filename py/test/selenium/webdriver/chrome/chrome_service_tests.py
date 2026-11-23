@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
 import subprocess
 import sys
 from unittest.mock import patch
@@ -27,8 +26,8 @@ from selenium.webdriver.chrome.service import Service
 
 
 @pytest.mark.no_driver_after_test
-def test_reuses_chromedriver_log(clean_driver, clean_options, driver_executable) -> None:
-    log_file = "chromedriver.log"
+def test_reuses_chromedriver_log(clean_driver, clean_options, driver_executable, tmp_path) -> None:
+    log_file = str(tmp_path / "chromedriver.log")
 
     service1 = Service(
         log_output=log_file,
@@ -56,28 +55,26 @@ def test_reuses_chromedriver_log(clean_driver, clean_options, driver_executable)
     finally:
         if driver:
             driver.quit()
-        os.remove(log_file)
 
 
 @pytest.mark.no_driver_after_test
-def test_log_output_as_filename(clean_driver, clean_options, driver_executable) -> None:
-    log_file = "chromedriver.log"
+def test_log_output_as_filename(clean_driver, clean_options, driver_executable, tmp_path) -> None:
+    log_file = str(tmp_path / "chromedriver.log")
     service = Service(log_output=log_file, executable_path=driver_executable)
+    assert f"--log-path={log_file}" in service.service_args
+    driver = clean_driver(options=clean_options, service=service)
     try:
-        assert "--log-path=chromedriver.log" in service.service_args
-        driver = clean_driver(options=clean_options, service=service)
         with open(log_file) as fp:
             out = fp.read()
         assert "Starting" in out
         assert "started successfully" in out
     finally:
         driver.quit()
-        os.remove(log_file)
 
 
 @pytest.mark.no_driver_after_test
-def test_log_output_as_file(clean_driver, clean_options, driver_executable) -> None:
-    log_name = "chromedriver.log"
+def test_log_output_as_file(clean_driver, clean_options, driver_executable, tmp_path) -> None:
+    log_name = tmp_path / "chromedriver.log"
     log_file = open(log_name, "w", encoding="utf-8")
     service = Service(log_output=log_file, executable_path=driver_executable)
     try:
@@ -89,7 +86,6 @@ def test_log_output_as_file(clean_driver, clean_options, driver_executable) -> N
     finally:
         driver.quit()
         log_file.close()
-        os.remove(log_name)
 
 
 @pytest.mark.no_driver_after_test
@@ -152,10 +148,8 @@ class TestChromeDriverService:
     service_path = "/path/to/chromedriver"
 
     @pytest.fixture(autouse=True)
-    def setup_and_teardown(self):
-        os.environ["SE_CHROMEDRIVER"] = self.service_path
-        yield
-        os.environ.pop("SE_CHROMEDRIVER", None)
+    def pin_driver_env(self, monkeypatch):
+        monkeypatch.setenv("SE_CHROMEDRIVER", self.service_path)
 
     def test_uses_path_from_env_variable(self, service):
         assert "chromedriver" in service.path

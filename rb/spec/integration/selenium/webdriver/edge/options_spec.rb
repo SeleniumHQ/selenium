@@ -22,29 +22,26 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-      describe Options, exclusive: {browser: :edge} do
+      describe Options, skip_unless: {browser: :edge} do
         it 'passes emulated device correctly' do
-          reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to include('Nexus 5')
-          end
+          driver = local_driver(emulation: {device_name: 'Pixel 10'})
+          ua = driver.execute_script 'return window.navigator.userAgent'
+          expect(ua).to include('Pixel 10')
         end
 
         it 'passes emulated user agent correctly' do
-          reset_driver!(emulation: {user_agent: 'foo;bar'}) do |driver|
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to eq('foo;bar')
-          end
+          driver = local_driver(emulation: {user_agent: 'foo;bar'})
+          ua = driver.execute_script 'return window.navigator.userAgent'
+          expect(ua).to eq('foo;bar')
         end
 
         it 'passes args correctly' do
-          reset_driver!(args: ['--user-agent=foo;bar']) do |driver|
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to eq('foo;bar')
-          end
+          driver = local_driver(args: ['--user-agent=foo;bar'])
+          ua = driver.execute_script 'return window.navigator.userAgent'
+          expect(ua).to eq('foo;bar')
         end
 
-        it 'enables bidi', exclusive: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
+        it 'enables bidi', skip_unless: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
           quit_driver
 
           options = Selenium::WebDriver::Options.chrome
@@ -63,7 +60,7 @@ module Selenium
         end
 
         it 'enables BiDi on initialization',
-           exclusive: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
+           skip_unless: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
           quit_driver
 
           options = Selenium::WebDriver::Options.edge(bidi: true)

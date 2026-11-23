@@ -11,6 +11,7 @@ def java_test_suite(
         deps = None,
         runtime_deps = [],
         size = None,
+        tags = [],
         **kwargs):
     create_jvm_test_suite(
         name,
@@ -22,5 +23,6 @@ def java_test_suite(
         deps = deps,
         runtime_deps = runtime_deps,
         size = size,
+        tags = tags + (["unit"] if size == "small" else []),
         **kwargs
     )

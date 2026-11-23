@@ -163,35 +163,33 @@ class HandleSession implements HttpHandler, Closeable {
           // Use removeIf for safe and efficient removal from ConcurrentHashMap
           httpClients
               .entrySet()
-              .removeIf(
-                  entry -> {
-                    CacheEntry cacheEntry = entry.getValue();
-                    if (cacheEntry.inUse.get() != 0) {
-                      // the client is currently in use
-                      return false;
-                    }
-                    if (!cacheEntry.lastUse.isBefore(staleBefore)) {
-                      // the client was recently used
-                      return false;
-                    }
-                    // the client has not been used for a while, close and remove it
-                    try {
-                      cacheEntry.httpClient.close();
-                    } catch (Exception ex) {
-                      LOG.log(Level.WARNING, "failed to close a stale httpclient", ex);
-                    }
-                    return true;
-                  });
+              .removeIf(entry -> {
+                CacheEntry cacheEntry = entry.getValue();
+                if (cacheEntry.inUse.get() != 0) {
+                  // the client is currently in use
+                  return false;
+                }
+                if (!cacheEntry.lastUse.isBefore(staleBefore)) {
+                  // the client was recently used
+                  return false;
+                }
+                // the client has not been used for a while, close and remove it
+                try {
+                  cacheEntry.httpClient.close();
+                } catch (Exception ex) {
+                  LOG.log(Level.WARNING, "failed to close a stale httpclient", ex);
+                }
+                return true;
+              });
         };
 
     this.cleanUpHttpClientsCacheService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("HandleSession - Clean up http clients cache");
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("HandleSession - Clean up http clients cache");
+          return thread;
+        });
     cleanUpHttpClientsCacheService.scheduleAtFixedRate(
         GuardedRunnable.guard(cleanUpHttpClients), 1, 1, TimeUnit.MINUTES);
   }
@@ -208,18 +206,16 @@ class HandleSession implements HttpHandler, Closeable {
       SessionId id =
           getSessionId(req.getUri())
               .map(SessionId::new)
-              .orElseThrow(
-                  () -> {
-                    NoSuchSessionException exception =
-                        new NoSuchSessionException("Cannot find session: " + req);
-                    EXCEPTION.accept(attributeMap, exception);
-                    attributeMap.put(
-                        AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                        "Unable to execute request for an existing session: "
-                            + exception.getMessage());
-                    span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-                    return exception;
-                  });
+              .orElseThrow(() -> {
+                NoSuchSessionException exception =
+                    new NoSuchSessionException("Cannot find session: " + req);
+                EXCEPTION.accept(attributeMap, exception);
+                attributeMap.put(
+                    AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                    "Unable to execute request for an existing session: " + exception.getMessage());
+                span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+                return exception;
+              });
 
       SESSION_ID.accept(span, id);
       SESSION_ID_EVENT.accept(attributeMap, id);
@@ -266,68 +262,64 @@ class HandleSession implements HttpHandler, Closeable {
 
   private Callable<UsageCountingReverseProxyHandler> loadSessionId(
       Tracer tracer, Span span, SessionId id) {
-    return span.wrap(
-        () -> {
-          // Retrieve the full Session so we can read the WebDriver timeouts from capabilities.
-          // SessionMap.get() is the same call that getUri() delegates to internally, so there is
-          // no extra network round-trip compared to the previous getUri()-only approach.
-          Session session = sessions.get(id);
-          URI sessionUri = session.getUri();
+    return span.wrap(() -> {
+      // Retrieve the full Session so we can read the WebDriver timeouts from capabilities.
+      // SessionMap.get() is the same call that getUri() delegates to internally, so there is
+      // no extra network round-trip compared to the previous getUri()-only approach.
+      Session session = sessions.get(id);
+      URI sessionUri = session.getUri();
 
-          // Use the pageLoad timeout (plus a buffer) so the Router never cuts off a legitimate
-          // long-running navigation. Fall back to the Node's own sessionTimeout when it is larger,
-          // as it represents the Grid operator's upper bound for command duration.
-          Duration pageLoadTimeout = sessionReadTimeout(session.getCapabilities());
-          // Only cache successful fetches so that a transient error on the first command
-          // does not permanently lock in the fallback default for the node's timeout.
-          // computeIfAbsent skips storing when the mapping function returns null, so a
-          // failed fetch is retried on the next command rather than cached forever.
-          Duration fetchedNodeTimeout =
-              nodeTimeoutCache.computeIfAbsent(
-                  sessionUri, uri -> fetchNodeTimeout(uri).orElse(null));
-          Duration nodeTimeout =
-              fetchedNodeTimeout != null
-                  ? fetchedNodeTimeout
-                  : ClientConfig.defaultConfig().readTimeout();
-          Duration base =
-              pageLoadTimeout.compareTo(nodeTimeout) >= 0 ? pageLoadTimeout : nodeTimeout;
-          Duration effectiveTimeout = base.plus(READ_TIMEOUT_BUFFER);
+      // Use the pageLoad timeout (plus a buffer) so the Router never cuts off a legitimate
+      // long-running navigation. Fall back to the Node's own sessionTimeout when it is larger,
+      // as it represents the Grid operator's upper bound for command duration.
+      Duration pageLoadTimeout = sessionReadTimeout(session.getCapabilities());
+      // Only cache successful fetches so that a transient error on the first command
+      // does not permanently lock in the fallback default for the node's timeout.
+      // computeIfAbsent skips storing when the mapping function returns null, so a
+      // failed fetch is retried on the next command rather than cached forever.
+      Duration fetchedNodeTimeout =
+          nodeTimeoutCache.computeIfAbsent(sessionUri, uri -> fetchNodeTimeout(uri).orElse(null));
+      Duration nodeTimeout =
+          fetchedNodeTimeout != null
+              ? fetchedNodeTimeout
+              : ClientConfig.defaultConfig().readTimeout();
+      Duration base = pageLoadTimeout.compareTo(nodeTimeout) >= 0 ? pageLoadTimeout : nodeTimeout;
+      Duration effectiveTimeout = base.plus(READ_TIMEOUT_BUFFER);
 
-          LOG.fine(
-              () ->
-                  String.format(
-                      "Session %s: pageLoad=%ds, node=%ds → read timeout=%ds",
-                      id,
-                      pageLoadTimeout.toSeconds(),
-                      nodeTimeout.toSeconds(),
-                      effectiveTimeout.toSeconds()));
+      LOG.fine(() ->
+          String.format(
+              "Session %s: pageLoad=%ds, node=%ds → read timeout=%ds",
+              id,
+              pageLoadTimeout.toSeconds(),
+              nodeTimeout.toSeconds(),
+              effectiveTimeout.toSeconds()));
 
-          NodeClientKey key = new NodeClientKey(sessionUri, effectiveTimeout);
-          CacheEntry cacheEntry =
-              httpClients.compute(
-                  key,
-                  (k, entry) -> {
-                    if (entry != null) {
-                      entry.inUse.incrementAndGet();
-                      return entry;
-                    }
+      NodeClientKey key = new NodeClientKey(sessionUri, effectiveTimeout);
+      CacheEntry cacheEntry =
+          httpClients.compute(
+              key,
+              (k, entry) -> {
+                if (entry != null) {
+                  entry.inUse.incrementAndGet();
+                  return entry;
+                }
 
-                    ClientConfig config =
-                        ClientConfig.defaultConfig()
-                            .baseUri(sessionUri)
-                            .readTimeout(effectiveTimeout)
-                            .withRetries();
-                    return new CacheEntry(httpClientFactory.createClient(config), 1);
-                  });
+                ClientConfig config =
+                    ClientConfig.defaultConfig()
+                        .baseUri(sessionUri)
+                        .readTimeout(effectiveTimeout)
+                        .withRetries();
+                return new CacheEntry(httpClientFactory.createClient(config), 1);
+              });
 
-          try {
-            return new UsageCountingReverseProxyHandler(tracer, cacheEntry.httpClient, cacheEntry);
-          } catch (Throwable t) {
-            // ensure we do not keep the http client when an unexpected throwable is raised
-            cacheEntry.inUse.decrementAndGet();
-            throw t;
-          }
-        });
+      try {
+        return new UsageCountingReverseProxyHandler(tracer, cacheEntry.httpClient, cacheEntry);
+      } catch (Throwable t) {
+        // ensure we do not keep the http client when an unexpected throwable is raised
+        cacheEntry.inUse.decrementAndGet();
+        throw t;
+      }
+    });
   }
 
   /**
@@ -378,10 +370,9 @@ class HandleSession implements HttpHandler, Closeable {
         "HandleSession - Clean up http clients cache", cleanUpHttpClientsCacheService);
     httpClients
         .values()
-        .removeIf(
-            (entry) -> {
-              entry.httpClient.close();
-              return true;
-            });
+        .removeIf(entry -> {
+          entry.httpClient.close();
+          return true;
+        });
   }
 }

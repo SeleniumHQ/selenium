@@ -20,11 +20,13 @@ package org.openqa.selenium.bidi.script;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-scriptcallfunctionparameters">BiDi
  *     spec</a>
  */
+@Beta
 public class CallFunctionParameters {
 
   private final Map<String, Object> map = new HashMap<>();

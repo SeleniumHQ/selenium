@@ -20,6 +20,7 @@
 require 'erb'
 require 'fileutils'
 require 'json'
+require_relative '../../../../support/generated_note'
 
 module Selenium
   module DevTools
@@ -31,6 +32,13 @@ module Selenium
         LOADER_TEMPLATE_PATH = File.expand_path('cdp/loader.rb.erb', DIR)
 
         RESERVED_KEYWORDS = %w[end].freeze
+
+        # Renders the standard two-line "generated, DO NOT EDIT" marker — see
+        # rb/support/generated_note.rb and scripts/generated_note_template.txt.
+        def generated_note
+          GeneratedNote.render('#', 'rb/lib/selenium/devtools/support/cdp_client_generator.rb',
+                               'bazel build //rb/lib/selenium/devtools:all')
+        end
 
         def call(output_dir:, version:, **opts)
           @domain_template = ERB.new(File.read(DOMAIN_TEMPLATE_PATH))

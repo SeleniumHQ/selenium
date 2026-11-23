@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>top_left_coordinates_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/get-top-left-coordinates-global.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    #far-down {
+      position: absolute;
+      left: 30px;
+      top: 4000px;
+      width: 100px;
+      height: 50px;
+    }
+
+    #in-view {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: 60px;
+      height: 20px;
+    }
+
+    #scroller {
+      position: absolute;
+      left: 0;
+      top: 200px;
+      width: 200px;
+      height: 100px;
+      overflow: scroll;
+    }
+
+    #inside-scroller {
+      position: absolute;
+      left: 0;
+      top: 600px;
+      width: 50px;
+      height: 25px;
+    }
+
+    #tall {
+      height: 5000px;
+    }
+  </style>
+  <script type="text/javascript">
+    // getTopLeftCoordinates is webdriver.atoms.element.getLocationInView. It
+    // scrolls, so every test here asserts the resulting scroll position as
+    // well as the returned coordinate -- the scrolling is the half a caller
+    // depends on and the half a pure-function test would miss entirely.
+    var getTopLeftCoordinates = window.bot.dom.typescript.getTopLeftCoordinates;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no such element: ' + id);
+      }
+      return element;
+    }
+
+    function assertClose(assert, actual, expected, message) {
+      assert.ok(Math.abs(actual - expected) < 1.01,
+        message + ' (expected about ' + expected + ', got ' + actual + ')');
+    }
+
+    QUnit.testStart(function () {
+      window.scrollTo(0, 0);
+      byId('scroller').scrollTop = 0;
+    });
+
+    QUnit.test('scrolls an out-of-view element into the viewport', function (assert) {
+      var element = byId('far-down');
+      assert.strictEqual(window.pageYOffset, 0, 'precondition: page is unscrolled');
+
+      var coordinates = getTopLeftCoordinates(element);
+
+      assert.ok(window.pageYOffset > 0, 'the page must actually have scrolled');
+      assert.ok(coordinates.y >= 0 && coordinates.y < window.innerHeight,
+        'the element should now sit inside the viewport (y=' + coordinates.y + ')');
+    });
+
+    // Client space, not page space: the returned coordinate is what the
+    // element's rect reports after the scroll, which is what distinguishes
+    // this atom from get_location.
+    QUnit.test('returns client-space coordinates after scrolling', function (assert) {
+      var element = byId('far-down');
+      var coordinates = getTopLeftCoordinates(element);
+      var rect = element.getBoundingClientRect();
+
+      assertClose(assert, coordinates.x, rect.left, 'x matches the client rect');
+      assertClose(assert, coordinates.y, rect.top, 'y matches the client rect');
+      assert.notStrictEqual(coordinates.y, 4000, 'a page-space answer would be 4000');
+    });
+
+    QUnit.test('leaves an already-visible element where it is', function (assert) {
+      var coordinates = getTopLeftCoordinates(byId('in-view'));
+
+      assert.strictEqual(window.pageYOffset, 0, 'no scrolling was needed');
+      assertClose(assert, coordinates.x, 10, 'x');
+      assertClose(assert, coordinates.y, 10, 'y');
+    });
+
+    QUnit.test('scrolls a scrollable container, not just the document', function (assert) {
+      var scroller = byId('scroller');
+      assert.strictEqual(scroller.scrollTop, 0, 'precondition: container is unscrolled');
+
+      var coordinates = getTopLeftCoordinates(byId('inside-scroller'));
+
+      assert.ok(scroller.scrollTop > 0, 'the container must have scrolled');
+      var scrollerRect = scroller.getBoundingClientRect();
+      assert.ok(coordinates.y >= scrollerRect.top - 1 && coordinates.y <= scrollerRect.bottom + 1,
+        'the element should now sit within the container (y=' + coordinates.y + ')');
+    });
+
+    // The region parameter is what callers use to scroll a specific point of a
+    // large element into view; it is also the parameter the earlier ports
+    // dropped from getClientRegion and getOverflowState.
+    QUnit.test('honours a sub-region of the element', function (assert) {
+      var element = byId('far-down');
+      var whole = getTopLeftCoordinates(element);
+      window.scrollTo(0, 0);
+      var offset = getTopLeftCoordinates(element, { left: 10, top: 20, width: 5, height: 5 });
+
+      assertClose(assert, offset.x, whole.x + 10, 'x is offset into the element');
+      assertClose(assert, offset.y, whole.y + 20, 'y is offset into the element');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="in-view"></div>
+  <div id="scroller">
+    <div id="inside-scroller"></div>
+  </div>
+  <div id="far-down"></div>
+  <div id="tall"></div>
+</body>
+
+</html>

@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.bidi.network;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class AuthChallenge {
 
   private final String scheme;
@@ -28,29 +28,6 @@ public class AuthChallenge {
   private AuthChallenge(String scheme, String realm) {
     this.scheme = scheme;
     this.realm = realm;
-  }
-
-  public static AuthChallenge fromJson(JsonInput input) {
-    String scheme = null;
-    String realm = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "scheme":
-          scheme = input.read(String.class);
-          break;
-        case "realm":
-          realm = input.read(String.class);
-          break;
-        default:
-          input.skipValue();
-      }
-    }
-
-    input.endObject();
-
-    return new AuthChallenge(Require.nonNull("scheme", scheme), Require.nonNull("realm", realm));
   }
 
   public String getScheme() {

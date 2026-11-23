@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public class ContextTarget extends Target {
   public ContextTarget(String id) {
     super.map.put("context", id);

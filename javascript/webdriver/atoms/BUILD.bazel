@@ -88,18 +88,6 @@ closure_fragment(
 )
 
 closure_fragment(
-    name = "get-appcache-status",
-    function = "webdriver.atoms.storage.appcache.getStatus",
-    module = "webdriver.atoms.storage.appcache",
-    visibility = [
-        "//javascript/chrome-driver:__pkg__",
-    ],
-    deps = [
-        "//javascript/webdriver/atoms:atoms-lib",
-    ],
-)
-
-closure_fragment(
     name = "get-attribute",
     function = "webdriver.atoms.element.attribute.get",
     module = "webdriver.atoms.element.attribute",

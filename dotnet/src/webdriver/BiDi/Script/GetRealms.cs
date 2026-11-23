@@ -36,8 +36,9 @@ public sealed record ContextGetRealmsOptions : CommandOptions
     {
         Context = context,
         Type = options?.Type,
-        Timeout = options?.Timeout
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 
-public sealed record GetRealmsResult(IReadOnlyList<RealmInfo> Realms) : EmptyResult;
+public sealed record GetRealmsResult(ImmutableArray<RealmInfo> Realms) : EmptyResult;

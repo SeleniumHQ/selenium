@@ -17,8 +17,9 @@
 // under the License.
 // </copyright>
 
+#if NET462
 using System.Diagnostics;
-using System.Globalization;
+#endif
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -29,88 +30,24 @@ namespace OpenQA.Selenium.Internal;
 /// </summary>
 internal static partial class ResourceUtilities
 {
-    private static string? productVersion;
-    private static string? platformFamily;
+    private static readonly Lazy<string> _productVersion = new(() =>
+    {
+        Assembly executingAssembly = Assembly.GetExecutingAssembly();
+        var assemblyInformationalVersionAttribute = executingAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+        return assemblyInformationalVersionAttribute?.InformationalVersion ?? "Unknown";
+    });
+
+    private static readonly Lazy<string> _platformFamily = new(GetPlatformString);
 
     /// <summary>
     /// Gets a string representing the informational version of the Selenium product.
     /// </summary>
-    public static string ProductVersion
-    {
-        get
-        {
-            if (productVersion == null)
-            {
-                Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                var assemblyInformationalVersionAttribute = executingAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-                if (assemblyInformationalVersionAttribute == null)
-                {
-                    productVersion = "Unknown";
-                }
-                else
-                {
-                    productVersion = assemblyInformationalVersionAttribute.InformationalVersion;
-                }
-            }
-
-            return productVersion;
-        }
-    }
+    public static string ProductVersion => _productVersion.Value;
 
     /// <summary>
     /// Gets a string representing the platform family on which the Selenium assembly is executing.
     /// </summary>
-    public static string PlatformFamily => platformFamily ??= GetPlatformString();
-
-    /// <summary>
-    /// Gets a <see cref="Stream"/> that contains the resource to use.
-    /// </summary>
-    /// <param name="fileName">A file name in the file system containing the resource to use.</param>
-    /// <param name="resourceId">A string representing the resource name embedded in the
-    /// executing assembly, if it is not found in the file system.</param>
-    /// <returns>A Stream from which the resource can be read.</returns>
-    /// <exception cref="WebDriverException">Thrown if neither the file nor the embedded resource can be found.</exception>
-    /// <remarks>
-    /// The GetResourceStream method searches for the specified resource using the following
-    /// algorithm:
-    /// <para>
-    /// <list type="numbered">
-    /// <item>In the same directory as the calling assembly.</item>
-    /// <item>In the full path specified by the <paramref name="fileName"/> argument.</item>
-    /// <item>Inside the calling assembly as an embedded resource.</item>
-    /// </list>
-    /// </para>
-    /// </remarks>
-    public static Stream GetResourceStream(string fileName, string resourceId)
-    {
-        Stream? resourceStream;
-        string resourceFilePath = Path.Combine(FileUtilities.GetCurrentDirectory(), Path.GetFileName(fileName));
-        if (File.Exists(resourceFilePath))
-        {
-            resourceStream = new FileStream(resourceFilePath, FileMode.Open, FileAccess.Read);
-        }
-        else if (File.Exists(fileName))
-        {
-            resourceStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-        }
-        else
-        {
-            if (string.IsNullOrEmpty(resourceId))
-            {
-                throw new WebDriverException("The file specified does not exist, and you have specified no internal resource ID");
-            }
-
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            resourceStream = executingAssembly.GetManifestResourceStream(resourceId);
-        }
-
-        if (resourceStream == null)
-        {
-            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot find a file named '{0}' or an embedded resource with the id '{1}'.", resourceFilePath, resourceId));
-        }
-
-        return resourceStream;
-    }
+    public static string PlatformFamily => _platformFamily.Value;
 
     private static string GetPlatformString()
     {

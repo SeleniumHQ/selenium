@@ -1,4 +1,4 @@
-name: Commit Changes
+name: Shared - Commit Changes
 
 on:
   workflow_call:
@@ -17,7 +17,7 @@ on:
         type: string
         default: ''
       push-branch:
-        description: Branch to push to (defaults to current branch); always force-pushes
+        description: Branch to force push to; if unset, pushes to the checked-out branch without force
         required: false
         type: string
         default: ''
@@ -41,19 +41,28 @@ jobs:
       - name: Download patch
         uses: actions/download-artifact@v8
         with:
-          name: ${{ inputs.artifact-name }}
-        continue-on-error: true
+          pattern: ${{ inputs.artifact-name }}
+          merge-multiple: true
       - name: Apply and commit
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           if [ -s changes.patch ]; then
+            if git apply --reverse --check changes.patch 2>/dev/null; then
+              echo "::notice::Patch already applied on this branch; skipping commit and push."
+              exit 0
+            fi
             git apply --index changes.patch
+            rm -f changes.patch
             git commit -m "$COMMIT_MESSAGE"
-            git push --force origin HEAD:"$PUSH_BRANCH"
+            if [ -n "$PUSH_BRANCH" ]; then
+              git push --force origin HEAD:"$PUSH_BRANCH"
+            else
+              git push
+            fi
           else
             echo "::notice::No changes.patch found or patch is empty; skipping commit and push."
           fi
         env:
           COMMIT_MESSAGE: ${{ inputs.commit-message }}
-          PUSH_BRANCH: ${{ inputs.push-branch || inputs.ref || github.ref_name }}
+          PUSH_BRANCH: ${{ inputs.push-branch }}

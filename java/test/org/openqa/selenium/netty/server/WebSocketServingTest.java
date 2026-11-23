@@ -82,17 +82,15 @@ class WebSocketServingTest {
     BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> factory =
         (str, sink) -> {
           if ("/foo".equals(str)) {
-            return Optional.of(
-                msg -> {
-                  foo.set(true);
-                  sink.accept(new TextMessage("Foo called"));
-                });
+            return Optional.of(msg -> {
+              foo.set(true);
+              sink.accept(new TextMessage("Foo called"));
+            });
           } else {
-            return Optional.of(
-                msg -> {
-                  bar.set(true);
-                  sink.accept(new TextMessage("Bar called"));
-                });
+            return Optional.of(msg -> {
+              bar.set(true);
+              sink.accept(new TextMessage("Bar called"));
+            });
           }
         };
 
@@ -165,11 +163,10 @@ class WebSocketServingTest {
                 defaultOptions(),
                 req -> new HttpResponse(),
                 (uri, sink) ->
-                    Optional.of(
-                        msg -> {
-                          sink.accept(new TextMessage("beyaz peynir"));
-                          sink.accept(new TextMessage("cheddar"));
-                        }))
+                    Optional.of(msg -> {
+                      sink.accept(new TextMessage("beyaz peynir"));
+                      sink.accept(new TextMessage("cheddar"));
+                    }))
             .start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());

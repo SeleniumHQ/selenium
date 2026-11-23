@@ -16,10 +16,16 @@
 # under the License.
 
 import pytest
+from urllib3.exceptions import MaxRetryError
+
+from selenium.common.exceptions import InvalidSessionIdException
 
 
 @pytest.mark.no_driver_after_test
 def test_quit(driver, pages):
     driver.quit()
-    with pytest.raises(Exception):
+    # Which error surfaces depends on what is left listening: against a local
+    # driver the process is gone, so urllib3 fails to connect; against a Grid the
+    # server is still up but the session has been removed.
+    with pytest.raises((InvalidSessionIdException, MaxRetryError)):
         pages.load("simpleTest.html")

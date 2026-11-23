@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>clear_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/clear-global.js"></script>
+  <script src="../typescript/type-global.js"></script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <form action="javascript:void(0)">
+    <input type="text" id="textField">
+    <textarea id="textArea"></textarea>
+    <input type="password" id="passwordField">
+    <input type="file" id="fileField">
+    <input type="number" id="numberField">
+    <input type="checkbox" id="checkbox">
+  </form>
+  <div id="content-editable" contenteditable="true">This is a contentEditable area
+    <div id="child-content-editable">child content editable</div>
+  </div>
+  <div id="not-content-editable" contenteditable="false">This is not a contentEditable area
+    <div id="child-not-content-editable">child not content editable</div>
+  </div>
+  <iframe id="iframe" src="testdata/trusted_types_iframe.html"></iframe>
+  <script type="text/javascript">
+    // Ported from the clear cases of action_test.html. Changes, per the
+    // modernisation review: input fires before change, focus leaves the
+    // field, and the errors carry W3C codes.
+    var clear = window.bot.action.typescript.clear;
+    var type = window.bot.action.typescript.type;
+    var CONTENT_EDITABLE_HTML = $('content-editable').innerHTML;
+    var listeners = [];
+
+    function $(id) { return document.getElementById(id); }
+
+    function record(el, types) {
+      var log = [];
+      types.forEach(function(t) {
+        var fn = function(e) { log.push(e.type + (e.inputType ? ':' + e.inputType : '')); };
+        el.addEventListener(t, fn);
+        listeners.push([el, t, fn]);
+      });
+      return log;
+    }
+
+    function codeIs(code) {
+      return function(e) { return e.code === code; };
+    }
+
+    function forEachClearable(fn) {
+      ['textField', 'textArea', 'passwordField'].forEach(function(id) { fn($(id)); });
+    }
+
+    QUnit.testDone(function() {
+      listeners.forEach(function(l) { l[0].removeEventListener(l[1], l[2]); });
+      listeners = [];
+      $('content-editable').innerHTML = CONTENT_EDITABLE_HTML;
+      forEachClearable(function(e) { e.disabled = false; e.readOnly = false; e.value = ''; });
+    });
+
+    QUnit.test('clearing a non textual element throws', function(assert) {
+      assert.throws(function() { clear($('checkbox')); }, codeIs('invalid element state'));
+    });
+
+    QUnit.test('clearing an empty element is a no-op', function(assert) {
+      forEachClearable(function(e) {
+        var log = record(e, ['input', 'change']);
+        clear(e);
+        assert.strictEqual(e.value, '');
+        assert.deepEqual(log, [], e.id);
+      });
+    });
+
+    QUnit.test('clearing a non-empty element fires input then change and blurs', function(assert) {
+      forEachClearable(function(e) {
+        e.value = 'foobar';
+        var log = record(e, ['focus', 'input', 'change', 'blur']);
+        clear(e);
+        assert.strictEqual(e.value, '');
+        // Focus events only fire while the window has system focus.
+        var expected = document.hasFocus() ? ['focus', 'input:deleteContentBackward', 'change', 'blur']
+            : ['input:deleteContentBackward', 'change'];
+        assert.deepEqual(log, expected, e.id);
+        assert.notStrictEqual(document.activeElement, e);
+      });
+    });
+
+    QUnit.test('clearing a disabled element throws', function(assert) {
+      forEachClearable(function(e) {
+        e.value = 'foobar';
+        e.disabled = true;
+        assert.throws(function() { clear(e); }, codeIs('element not interactable'));
+        assert.strictEqual(e.value, 'foobar');
+      });
+    });
+
+    QUnit.test('clearing a read-only element throws', function(assert) {
+      forEachClearable(function(e) {
+        e.value = 'foobar';
+        e.readOnly = true;
+        assert.throws(function() { clear(e); }, codeIs('invalid element state'));
+        assert.strictEqual(e.value, 'foobar');
+      });
+    });
+
+    QUnit.test('clearing a contenteditable area', function(assert) {
+      var e = $('content-editable');
+      var log = record(e, ['input']);
+      clear(e);
+      assert.strictEqual(e.textContent, '');
+      assert.deepEqual(log, ['input:deleteContentBackward']);
+    });
+
+    QUnit.test('clearing a child of a contenteditable area', function(assert) {
+      var e = $('child-content-editable');
+      clear(e);
+      assert.strictEqual(e.textContent, '');
+    });
+
+    QUnit.test('clearing a non-editable area throws', function(assert) {
+      assert.throws(function() { clear($('not-content-editable')); }, codeIs('invalid element state'));
+      assert.throws(function() { clear($('child-not-content-editable')); }, codeIs('invalid element state'));
+    });
+
+    QUnit.test('clearing an empty file input is a no-op', function(assert) {
+      var log = record($('fileField'), ['change']);
+      clear($('fileField'));
+      assert.strictEqual($('fileField').value, '');
+      assert.deepEqual(log, []);
+    });
+
+    QUnit.test('clearing a number input holding unparseable text', function(assert) {
+      var e = $('numberField');
+      // Script cannot put unparseable text into a number field, so this only
+      // checks that clearing one leaves it typeable, as action_test.html did.
+      type(e, ['e']);
+      clear(e);
+      type(e, ['3']);
+      assert.strictEqual(e.value, '3');
+    });
+
+    QUnit.test('clearing a contenteditable area in an iframe', function(assert) {
+      var e = $('iframe').contentDocument.getElementById('content-editable');
+      clear(e);
+      assert.strictEqual(e.textContent, '');
+    });
+  </script>
+</body>
+
+</html>

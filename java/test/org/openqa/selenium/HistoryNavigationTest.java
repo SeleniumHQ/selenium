@@ -25,6 +25,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
@@ -34,6 +35,7 @@ public class HistoryNavigationTest extends JupiterTestBase {
   @NeedsFreshDriver
   @Test
   @Ignore(value = SAFARI, reason = "Hanging")
+  @CloseExtraWindowsAfterTest
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     ((JavascriptExecutor) driver).executeScript("window.open('', 'newWindow')");
     wait.until(windowToBeSwitchedToWithName("newWindow"));

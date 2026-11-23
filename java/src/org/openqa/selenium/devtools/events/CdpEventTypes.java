@@ -91,29 +91,28 @@ public class CdpEventTypes {
         tools
             .getDomains()
             .javascript()
-            .addBindingCalledListener(
-                json -> {
-                  Map<String, Object> values = JSON.toType(json, MAP_TYPE);
-                  String id = (String) values.get("target");
+            .addBindingCalledListener(json -> {
+              Map<String, Object> values = JSON.toType(json, MAP_TYPE);
+              String id = (String) values.get("target");
 
-                  List<WebElement> elements;
+              List<WebElement> elements;
 
-                  synchronized (this) {
-                    elements =
-                        driver.findElements(
-                            By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
-                  }
+              synchronized (this) {
+                elements =
+                    driver.findElements(
+                        By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
+              }
 
-                  if (!elements.isEmpty()) {
-                    DomMutationEvent event =
-                        new DomMutationEvent(
-                            elements.get(0),
-                            String.valueOf(values.get("name")),
-                            String.valueOf(values.get("value")),
-                            String.valueOf(values.get("oldValue")));
-                    handler.accept(event);
-                  }
-                });
+              if (!elements.isEmpty()) {
+                DomMutationEvent event =
+                    new DomMutationEvent(
+                        elements.get(0),
+                        String.valueOf(values.get("name")),
+                        String.valueOf(values.get("value")),
+                        String.valueOf(values.get("oldValue")));
+                handler.accept(event);
+              }
+            });
       }
     };
   }

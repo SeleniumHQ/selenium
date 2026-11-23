@@ -21,10 +21,7 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Script, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
-                     only: {browser: %i[chrome edge firefox]} do
-      after { |example| reset_driver!(example: example) }
-
+    describe Script, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
       # Helper to match the expected pattern of `script.StackFrame` objects.
       # https://w3c.github.io/webdriver-bidi/#type-script-StackFrame
       #
@@ -40,109 +37,124 @@ module Selenium
       end
 
       it 'errors when bidi not enabled' do
-        reset_driver!(web_socket_url: false) do |driver|
-          msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
-          expect { driver.script }.to raise_error(WebDriver::Error::WebDriverError, msg)
+        driver = local_driver(web_socket_url: false)
+        msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
+        expect { driver.script }.to raise_error(WebDriver::Error::WebDriverError, msg)
+      end
+
+      context 'with log handlers' do
+        after do
+          driver.bidi.callbacks['log.entryAdded'].map(&:object_id).each do |id|
+            driver.script.remove_console_message_handler(id)
+          end
         end
-      end
 
-      it 'logs console messages' do
-        driver.navigate.to url_for('bidi/logEntryAdded.html')
+        it 'logs console messages',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not deliver BiDi log entries for console messages'} do
+          driver.navigate.to url_for('bidi/logEntryAdded.html')
 
-        log_entries = []
-        driver.script.add_console_message_handler { |log| log_entries << log }
+          log_entries = []
+          driver.script.add_console_message_handler { |log| log_entries << log }
 
-        driver.find_element(id: 'jsException').click
-        driver.find_element(id: 'consoleLog').click
+          driver.find_element(id: 'jsException').click
+          driver.find_element(id: 'consoleLog').click
 
-        wait.until { log_entries.any? }
-        expect(log_entries.size).to eq(1)
-        log_entry = log_entries.first
-        expect(log_entry).to be_a BiDi::LogHandler::ConsoleLogEntry
-        expect(log_entry.type).to eq 'console'
-        expect(log_entry.level).to eq 'info'
-        expect(log_entry.method).to eq 'log'
-        expect(log_entry.text).to eq 'Hello, world!'
-        expect(log_entry.args).to eq [
-          {'type' => 'string', 'value' => 'Hello, world!'}
-        ]
-        expect(log_entry.timestamp).to be_an_integer
-        expect(log_entry.source).to match(
-          'context' => an_instance_of(String),
-          'realm' => an_instance_of(String)
-        )
-        # Stack traces on console messages are optional.
-        expect(log_entry.stack_trace).to be_nil.or match(
-          # Some browsers include stack traces from parts of the runtime, and
-          # Firefox beta may only report the first user-code frame here.
-          'callFrames' => start_with(
-            a_stack_frame('functionName' => 'helloWorld')
+          wait.until { log_entries.any? }
+          expect(log_entries.size).to eq(1)
+          log_entry = log_entries.first
+          expect(log_entry).to be_a BiDi::LogHandler::ConsoleLogEntry
+          expect(log_entry.type).to eq 'console'
+          expect(log_entry.level).to eq 'info'
+          expect(log_entry.method).to eq 'log'
+          expect(log_entry.text).to eq 'Hello, world!'
+          expect(log_entry.args).to eq [
+            {'type' => 'string', 'value' => 'Hello, world!'}
+          ]
+          expect(log_entry.timestamp).to be_an_integer
+          expect(log_entry.source).to include(
+            'context' => an_instance_of(String),
+            'realm' => an_instance_of(String)
           )
-        )
-      end
-
-      it 'logs multiple console messages' do
-        driver.navigate.to url_for('bidi/logEntryAdded.html')
-
-        log_entries = []
-        driver.script.add_console_message_handler { |log| log_entries << log }
-        driver.script.add_console_message_handler { |log| log_entries << log }
-
-        driver.find_element(id: 'jsException').click
-        driver.find_element(id: 'consoleLog').click
-
-        wait.until { log_entries.size > 1 }
-        expect(log_entries.size).to eq(2)
-      end
-
-      it 'removes console message handler' do
-        driver.navigate.to url_for('bidi/logEntryAdded.html')
-
-        log_entries = []
-        id = driver.script.add_console_message_handler { |log| log_entries << log }
-        driver.script.add_console_message_handler { |log| log_entries << log }
-
-        driver.find_element(id: 'consoleLog').click
-
-        wait.until { log_entries.size > 1 }
-
-        driver.script.remove_console_message_handler(id)
-
-        driver.find_element(id: 'consoleLog').click
-
-        wait.until { log_entries.size > 2 }
-        expect(log_entries.size).to eq(3)
-      end
-
-      it 'logs javascript errors' do
-        driver.navigate.to url_for('bidi/logEntryAdded.html')
-
-        log_entries = []
-        driver.script.add_javascript_error_handler { |log| log_entries << log }
-
-        driver.find_element(id: 'consoleLog').click
-        driver.find_element(id: 'jsException').click
-
-        wait.until { log_entries.any? }
-        expect(log_entries.size).to eq(1)
-        log_entry = log_entries.first
-        expect(log_entry).to be_a BiDi::LogHandler::JavaScriptLogEntry
-        expect(log_entry.type).to eq 'javascript'
-        expect(log_entry.level).to eq 'error'
-        expect(log_entry.text).to eq 'Error: Not working'
-        expect(log_entry.timestamp).to be_an_integer
-        expect(log_entry.source).to match(
-          'context' => an_instance_of(String),
-          'realm' => an_instance_of(String)
-        )
-        expect(log_entry.stack_trace).to match(
-          # Some browsers include stack traces from parts of the runtime, so we
-          # just check the first frames that come from user code.
-          'callFrames' => start_with(
-            a_stack_frame('functionName' => 'createError'),
-            a_stack_frame('functionName' => 'onclick')
+          # Stack traces on console messages are optional.
+          expect(log_entry.stack_trace).to be_nil.or match(
+            # Some browsers include stack traces from parts of the runtime, and
+            # Firefox beta may only report the first user-code frame here.
+            'callFrames' => start_with(
+              a_stack_frame('functionName' => 'helloWorld')
+            )
           )
-        )
+        end
+
+        it 'logs multiple console messages',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not deliver BiDi log entries for console messages'} do
+          driver.navigate.to url_for('bidi/logEntryAdded.html')
+
+          log_entries = []
+          driver.script.add_console_message_handler { |log| log_entries << log }
+          driver.script.add_console_message_handler { |log| log_entries << log }
+
+          driver.find_element(id: 'jsException').click
+          driver.find_element(id: 'consoleLog').click
+
+          wait.until { log_entries.size > 1 }
+          expect(log_entries.size).to eq(2)
+        end
+
+        it 'removes console message handler',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not deliver BiDi log entries for console messages'} do
+          driver.navigate.to url_for('bidi/logEntryAdded.html')
+
+          log_entries = []
+          id = driver.script.add_console_message_handler { |log| log_entries << log }
+          driver.script.add_console_message_handler { |log| log_entries << log }
+
+          driver.find_element(id: 'consoleLog').click
+
+          wait.until { log_entries.size > 1 }
+
+          driver.script.remove_console_message_handler(id)
+
+          driver.find_element(id: 'consoleLog').click
+
+          wait.until { log_entries.size > 2 }
+          expect(log_entries.size).to eq(3)
+        end
+
+        it 'logs javascript errors',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not deliver BiDi log entries for console messages'} do
+          driver.navigate.to url_for('bidi/logEntryAdded.html')
+
+          log_entries = []
+          driver.script.add_javascript_error_handler { |log| log_entries << log }
+
+          driver.find_element(id: 'consoleLog').click
+          driver.find_element(id: 'jsException').click
+
+          wait.until { log_entries.any? }
+          expect(log_entries.size).to eq(1)
+          log_entry = log_entries.first
+          expect(log_entry).to be_a BiDi::LogHandler::JavaScriptLogEntry
+          expect(log_entry.type).to eq 'javascript'
+          expect(log_entry.level).to eq 'error'
+          expect(log_entry.text).to eq 'Error: Not working'
+          expect(log_entry.timestamp).to be_an_integer
+          expect(log_entry.source).to include(
+            'context' => an_instance_of(String),
+            'realm' => an_instance_of(String)
+          )
+          expect(log_entry.stack_trace).to match(
+            # Some browsers include stack traces from parts of the runtime, so we
+            # just check the first frames that come from user code.
+            'callFrames' => start_with(
+              a_stack_frame('functionName' => 'createError'),
+              a_stack_frame('functionName' => 'onclick')
+            )
+          )
+        end
       end
 
       it 'errors removing non-existent handler' do

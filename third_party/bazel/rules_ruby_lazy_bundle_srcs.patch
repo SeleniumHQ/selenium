@@ -1,0 +1,402 @@
+diff --git a/ruby/extensions.bzl b/ruby/extensions.bzl
+index 8507e76b..d1d32dfc 100644
+--- a/ruby/extensions.bzl
++++ b/ruby/extensions.bzl
+@@ -37,6 +37,7 @@ ruby_bundle = tag_class(attrs = {
+ ruby_bundle_fetch = tag_class(attrs = {
+     "name": attr.string(doc = "Resulting repository name for the bundle"),
+     "srcs": attr.label_list(),
++    "generated_srcs": attr.label_list(doc = "Build outputs the Gemfile needs, staged at build time. See `rb_bundle_fetch`."),
+     "env": attr.string_dict(),
+     "extra_args": attr.string_list(doc = "Extra arguments appended to `bundle install`. Supports `$(location ...)` against `data`."),
+     "data": attr.label_list(doc = "Files referenced from `extra_args` via `$(location ...)`."),
+@@ -101,6 +102,7 @@ def _ruby_module_extension(module_ctx):
+             rb_bundle_fetch(
+                 name = bundle_fetch.name,
+                 srcs = bundle_fetch.srcs,
++                generated_srcs = bundle_fetch.generated_srcs,
+                 env = bundle_fetch.env,
+                 extra_args = bundle_fetch.extra_args,
+                 data = [str(label) for label in bundle_fetch.data],
+diff --git a/ruby/private/BUILD b/ruby/private/BUILD
+index b0cd9446..882a1527 100644
+--- a/ruby/private/BUILD
++++ b/ruby/private/BUILD
+@@ -110,6 +110,7 @@ bzl_library(
+         ":gem_install",
+         ":providers",
+         ":utils",
++        "@bazel_skylib//lib:paths",
+     ],
+ )
+ 
+diff --git a/ruby/private/bundle_fetch.bzl b/ruby/private/bundle_fetch.bzl
+index ccbf1192..f50793cc 100644
+--- a/ruby/private/bundle_fetch.bzl
++++ b/ruby/private/bundle_fetch.bzl
+@@ -133,23 +133,19 @@ def _rb_bundle_fetch_impl(repository_ctx):
+         repository_ctx.file(rel_path, repository_ctx.read(path))
+         return rel_path
+ 
+-    # Copy all necessary inputs to the repository.
+-    gemfile_path = repository_ctx.path(repository_ctx.attr.gemfile)
+-    gemfile_rel_path = _copy_file(gemfile_path)
++    gemfile_ref = _copy_file(repository_ctx.attr.gemfile)
+     gemfile_lock_path = repository_ctx.path(repository_ctx.attr.gemfile_lock)
+-    gemfile_lock_rel_path = _copy_file(gemfile_lock_path)
++    gemfile_lock_ref = _copy_file(repository_ctx.attr.gemfile_lock)
++    srcs = [_copy_file(src) for src in repository_ctx.attr.srcs]
++
++    # Generated files are never read here; rb_bundle_install() stages them at build time.
++    srcs.extend([str(src) for src in repository_ctx.attr.generated_srcs])
+ 
+     # Define vendor/cache relative to the location of Gemfile.
+     # This is expected by Bundler to operate correctly.
+-    cache_path = paths.join(paths.dirname(gemfile_rel_path), "vendor/cache")
+-    jars_path = paths.join(paths.dirname(gemfile_rel_path), "vendor/jars")
+-
+-    srcs = []
+-    for src in repository_ctx.attr.srcs:
+-        # Create the source files in the same shape that they exist in the
+-        # source tree. Otherwise, the relative_requires may not work.
+-        rel_path = _copy_file(src)
+-        srcs.append(rel_path)
++    gemfile_dir = paths.dirname(_relativize(repository_ctx.path(repository_ctx.attr.gemfile)))
++    cache_path = paths.join(gemfile_dir, "vendor/cache")
++    jars_path = paths.join(gemfile_dir, "vendor/jars")
+ 
+     # We insert our default value here, not on the attribute's default, so it
+     # isn't documented. # The BUNDLER_CHECKSUMS value is huge and not useful to
+@@ -240,8 +236,8 @@ def _rb_bundle_fetch_impl(repository_ctx):
+         substitutions = {
+             "{name}": repository_name,
+             "{srcs}": _join_and_indent(srcs),
+-            "{gemfile_path}": gemfile_rel_path,
+-            "{gemfile_lock_path}": gemfile_lock_rel_path,
++            "{gemfile}": gemfile_ref,
++            "{gemfile_lock}": gemfile_lock_ref,
+             "{jars_path}": jars_path,
+             "{gems}": _join_and_indent(gem_full_names),
+             "{gem_fragments}": "".join(gem_fragments),
+@@ -260,6 +256,7 @@ def _rb_bundle_fetch_impl(repository_ctx):
+             "gemfile": repository_ctx.attr.gemfile,
+             "gemfile_lock": repository_ctx.attr.gemfile_lock,
+             "srcs": repository_ctx.attr.srcs,
++            "generated_srcs": repository_ctx.attr.generated_srcs,
+             "env": repository_ctx.attr.env,
+             "extra_args": repository_ctx.attr.extra_args,
+             "data": repository_ctx.attr.data,
+@@ -302,7 +299,19 @@ rb_bundle_fetch = repository_rule(
+         ),
+         "srcs": attr.label_list(
+             allow_files = True,
+-            doc = "List of Ruby source files necessary during installation.",
++            doc = "Source files the Gemfile needs besides Gemfile.lock, typically the " +
++                  "gemspec and the files it requires. They are copied into the " +
++                  "repository at fetch time.",
++        ),
++        "generated_srcs": attr.label_list(
++            allow_files = True,
++            doc = "Files the Gemfile needs that the build produces, such as a `version.rb` " +
++                  "generated by `expand_template`. They are staged next to the copied " +
++                  "`srcs` at build time instead of being read at fetch time, so they must " +
++                  "be visible to the bundle repository. " +
++                  "The bundle's copy of Gemfile.lock then has its path gem versions " +
++                  "rewritten to match their gemspecs. " +
++                  "See `examples/stamped_gem`.",
+         ),
+         "env": attr.string_dict(
+             doc = "Environment variables to use during installation. Values support " +
+diff --git a/ruby/private/bundle_fetch/BUILD.tpl b/ruby/private/bundle_fetch/BUILD.tpl
+index 9537cf29..43e38e8d 100644
+--- a/ruby/private/bundle_fetch/BUILD.tpl
++++ b/ruby/private/bundle_fetch/BUILD.tpl
+@@ -11,8 +11,8 @@ rb_bundle_install(
+     env = {env},
+     extra_args = {extra_args},
+     binstubs = {binstubs},
+-    gemfile = "{gemfile_path}",
+-    gemfile_lock = "{gemfile_lock_path}",
++    gemfile = "{gemfile}",
++    gemfile_lock = "{gemfile_lock}",
+     jars = glob(["{jars_path}/**/*.jar"], allow_empty = True),
+     jars_path = "{jars_path}",
+     gems = {gems},
+diff --git a/ruby/private/bundle_install.bzl b/ruby/private/bundle_install.bzl
+index 121b0740..38f89828 100644
+--- a/ruby/private/bundle_install.bzl
++++ b/ruby/private/bundle_install.bzl
+@@ -1,5 +1,6 @@
+ "Implementation details for rb_bundle_install"
+ 
++load("@bazel_skylib//lib:paths.bzl", "paths")
+ load("//ruby/private:bundle_fetch.bzl", "BINSTUBS_LOCATION")
+ load("//ruby/private:providers.bzl", "BundlerInfo", "GemInfo", "RubyFilesInfo")
+ load(
+@@ -10,6 +11,10 @@ load(
+     _to_rlocation_path = "to_rlocation_path",
+ )
+ 
++# Keeps staged copies from colliding with the source files rb_bundle_fetch
++# copied into the same package.
++_STAGE_DIR = "staged"
++
+ def _jars_home(ctx, jars, jars_path):
+     # Runtime environment includes JARS_HOME for JRuby to find pre-downloaded JARs,
+     # but it needs to be an rlocation path that can be resolved at runtime.
+@@ -36,6 +41,68 @@ def _jars_home(ctx, jars, jars_path):
+ 
+     return struct(env = {}, strip = "")
+ 
++def _staged_path(ctx, file):
++    own_prefix = "../{}/".format(ctx.label.workspace_name)
++    if file.short_path.startswith(own_prefix):
++        return paths.join(_STAGE_DIR, file.short_path[len(own_prefix):])
++    if file.short_path.startswith("../"):
++        fail("{}: {} is in another repository; only main repository files can be staged".format(
++            ctx.label,
++            file.owner,
++        ))
++    return paths.join(_STAGE_DIR, file.short_path)
++
++def _stage(ctx, file, staged):
++    """Copies a Gemfile input into one tree at its workspace-relative path.
++
++    Inputs come either from this repository (copied by rb_bundle_fetch) or from
++    the main repository (generated files), and Bundler needs the gemspec and the
++    files it requires side by side. A copy rather than a symlink is required:
++    `__dir__` and `File.realpath` resolve symlinks and would escape the tree.
++    """
++    path = _staged_path(ctx, file)
++    if path not in staged:
++        output = ctx.actions.declare_file(path)
++        ctx.actions.expand_template(template = file, output = output, substitutions = {})
++        staged[path] = output
++    return staged[path]
++
++def _normalize_lock(ctx, toolchain, gemfile, srcs):
++    """Stages Gemfile.lock with path gem versions taken from the staged gemspecs.
++
++    When the gemspec's version is generated, the checked-in lock can keep the
++    real version: unstamped builds then still produce a byte-identical staged
++    lock, so the install action and every test stay cached across version bumps.
++    """
++
++    # Bundler only looks for the lock next to the Gemfile.
++    output = ctx.actions.declare_file(_staged_path(ctx, ctx.file.gemfile) + ".lock")
++    env = dict(toolchain.env)
++    tools = list(toolchain.files)
++    if toolchain.version.startswith("jruby"):
++        java_runtime = ctx.toolchains["@bazel_tools//tools/jdk:runtime_toolchain_type"].java_runtime
++        env["JAVA_HOME"] = java_runtime.java_home
++        tools.extend(java_runtime.files.to_list())
++        if _is_windows(ctx):
++            env["PATH"] = _normalize_path(ctx, toolchain.ruby.dirname)
++
++    args = ctx.actions.args()
++    args.add(ctx.file._normalize_lock)
++    args.add(ctx.file.gemfile_lock)
++    args.add(gemfile)
++    args.add(output)
++    ctx.actions.run(
++        executable = toolchain.ruby,
++        arguments = [args],
++        inputs = [ctx.file._normalize_lock, ctx.file.gemfile_lock, gemfile] + srcs,
++        outputs = [output],
++        env = env,
++        tools = tools,
++        mnemonic = "BundleLockNormalize",
++        progress_message = "Normalizing path gem versions in Gemfile.lock (%{label})",
++    )
++    return output
++
+ def _rb_bundle_install_impl(ctx):
+     toolchain = ctx.toolchains["@rules_ruby//ruby:toolchain_type"]
+     if ctx.attr.ruby != None:
+@@ -55,6 +122,26 @@ def _rb_bundle_install_impl(ctx):
+     binstubs = ctx.actions.declare_directory(BINSTUBS_LOCATION)
+     bundle_path = ctx.actions.declare_directory("vendor/bundle")
+ 
++    # Bundler resolves BUNDLE_BIN, BUNDLE_PATH and BUNDLE_CACHE_PATH relative
++    # to the Gemfile, so walk back up to the execroot first.
++    cache_env = {}
++    own_prefix = "../{}/".format(ctx.label.workspace_name)
++    inputs = [ctx.file.gemfile, ctx.file.gemfile_lock] + ctx.files.srcs
++    if any([not (f.is_source and f.short_path.startswith(own_prefix)) for f in inputs]):
++        staged = {}
++        gemfile = _stage(ctx, ctx.file.gemfile, staged)
++        srcs = [_stage(ctx, src, staged) for src in ctx.files.srcs]
++        gemfile_lock = _normalize_lock(ctx, toolchain, gemfile, srcs)
++        relative_dir = "../" * len(gemfile.dirname.split("/"))
++        cache_path = [gem.dirname for gem in ctx.files.gems if gem.basename.endswith(".gem")][0]
++        # Kept with forward slashes: Bundler globs this path, and Ruby globs treat backslashes as escapes.
++        cache_env["BUNDLE_CACHE_PATH"] = relative_dir + cache_path
++    else:
++        gemfile = ctx.file.gemfile
++        gemfile_lock = ctx.file.gemfile_lock
++        srcs = ctx.files.srcs
++        relative_dir = "../../" + "../" * len(gemfile.short_path.split("/")[2:-1])
++
+     jar_files = ctx.files.jars if ctx.attr.jars else []
+ 
+     attr_env = {
+@@ -93,18 +180,14 @@ def _rb_bundle_install_impl(ctx):
+         path = attr_env.get("PATH", "$PATH")
+         env.update({"PATH": toolchain.ruby.dirname + ":" + path})
+ 
+-    # Calculate relative location between BUNDLE_GEMFILE and BUNDLE_PATH.
+-    relative_dir = "../../"
+-    for _ in ctx.file.gemfile.short_path.split("/")[2:-1]:
+-        relative_dir += "../"
+-
+     # See https://bundler.io/v2.5/man/bundle-config.1.html for confiugration keys.
++    env.update(cache_env)
+     env.update({
+         "BUNDLE_BIN": "".join([relative_dir, binstubs.path]),
+         "BUNDLE_DEPLOYMENT": "1",
+         "BUNDLE_DISABLE_SHARED_GEMS": "1",
+         "BUNDLE_DISABLE_VERSION_CHECK": "1",
+-        "BUNDLE_GEMFILE": _normalize_path(ctx, ctx.file.gemfile.path),
++        "BUNDLE_GEMFILE": _normalize_path(ctx, gemfile.path),
+         "BUNDLE_IGNORE_CONFIG": "1",
+         "BUNDLE_PATH": _normalize_path(ctx, "".join([relative_dir, bundle_path.path])),
+         "BUNDLE_SHEBANG": _normalize_path(ctx, toolchain.ruby.short_path),
+@@ -142,7 +225,7 @@ def _rb_bundle_install_impl(ctx):
+ 
+     ctx.actions.run(
+         executable = script,
+-        inputs = depset([ctx.file.gemfile, ctx.file.gemfile_lock] + ctx.files.srcs + ctx.files.data + ctx.files.gems + jar_files),
++        inputs = depset([gemfile, gemfile_lock] + srcs + ctx.files.data + ctx.files.gems + jar_files),
+         outputs = [binstubs, bundle_path],
+         mnemonic = "BundleInstall",
+         progress_message = "Running bundle install (%{label})",
+@@ -151,11 +234,11 @@ def _rb_bundle_install_impl(ctx):
+     )
+ 
+     files = [
+-        ctx.file.gemfile,
+-        ctx.file.gemfile_lock,
++        gemfile,
++        gemfile_lock,
+         binstubs,
+         bundle_path,
+-    ] + ctx.files.srcs + jar_files
++    ] + srcs + jar_files
+ 
+     return [
+         DefaultInfo(
+@@ -169,7 +252,7 @@ def _rb_bundle_install_impl(ctx):
+         OutputGroupInfo(gems = depset([bundle_path])),
+         RubyFilesInfo(
+             binary = None,
+-            transitive_srcs = depset([ctx.file.gemfile, ctx.file.gemfile_lock] + ctx.files.srcs),
++            transitive_srcs = depset([gemfile, gemfile_lock] + srcs),
+             transitive_deps = depset(),
+             transitive_data = depset(),
+             bundle_env = {},
+@@ -177,7 +260,7 @@ def _rb_bundle_install_impl(ctx):
+         BundlerInfo(
+             bin = binstubs,
+             env = bundler_env,
+-            gemfile = ctx.file.gemfile,
++            gemfile = gemfile,
+             jars_home_strip_suffix = jars_home_strip_suffix,
+             path = bundle_path,
+         ),
+@@ -189,12 +272,17 @@ rb_bundle_install = rule(
+         "gemfile": attr.label(
+             allow_single_file = ["Gemfile"],
+             mandatory = True,
+-            doc = "Gemfile to install dependencies from.",
++            doc = "Gemfile to install dependencies from. If it, `gemfile_lock` or any of " +
++                  "`srcs` comes from outside this target's repository, such as a generated " +
++                  "file, all of them are copied into one tree at their workspace-relative " +
++                  "paths before installation, with `gemfile_lock` placed next to the Gemfile.",
+         ),
+         "gemfile_lock": attr.label(
+             allow_single_file = ["Gemfile.lock"],
+             mandatory = True,
+-            doc = "Gemfile.lock to install dependencies from.",
++            doc = "Gemfile.lock to install dependencies from. When inputs are staged " +
++                  "(see `gemfile`), the versions of path gems in the staged copy are " +
++                  "rewritten to match their gemspecs.",
+         ),
+         "gems": attr.label_list(
+             allow_files = [".gem"],
+@@ -210,7 +298,9 @@ rb_bundle_install = rule(
+         ),
+         "srcs": attr.label_list(
+             allow_files = True,
+-            doc = "List of Ruby source files used to build the library.",
++            doc = "Files the Gemfile needs besides Gemfile.lock, typically the gemspec " +
++                  "and the version file it requires. They may be generated files " +
++                  "(see `gemfile`).",
+         ),
+         "env": attr.string_dict(
+             doc = "Environment variables to use during installation. Values support " +
+@@ -244,6 +334,10 @@ rb_bundle_install = rule(
+             allow_single_file = True,
+             default = "@rules_ruby//ruby/private/bundle_install:bundle_install.sh.tpl",
+         ),
++        "_normalize_lock": attr.label(
++            allow_single_file = True,
++            default = "@rules_ruby//ruby/private/bundle_install:normalize_lock.rb",
++        ),
+         "_bundle_install_cmd_tpl": attr.label(
+             allow_single_file = True,
+             default = "@rules_ruby//ruby/private/bundle_install:bundle_install.cmd.tpl",
+diff --git a/ruby/private/bundle_install/BUILD b/ruby/private/bundle_install/BUILD
+index 61e222e4..ae73bfc9 100644
+--- a/ruby/private/bundle_install/BUILD
++++ b/ruby/private/bundle_install/BUILD
+@@ -1,4 +1,5 @@
+ exports_files([
+     "bundle_install.cmd.tpl",
+     "bundle_install.sh.tpl",
++    "normalize_lock.rb",
+ ])
+diff --git a/ruby/private/bundle_install/normalize_lock.rb b/ruby/private/bundle_install/normalize_lock.rb
+new file mode 100644
+index 00000000..16480159
+--- /dev/null
++++ b/ruby/private/bundle_install/normalize_lock.rb
+@@ -0,0 +1,39 @@
++# frozen_string_literal: true
++
++# Rewrites the versions of path gems in a Gemfile.lock to match their gemspecs,
++# so a gemspec whose version is generated at build time still passes Bundler's
++# deployment-mode check without the checked-in lock having to agree with it.
++
++source_lock, gemfile, output_lock = ARGV
++lock = File.binread(source_lock)
++crlf = lock.include?("\r\n")
++lock = lock.gsub("\r\n", "\n")
++gemfile_dir = File.dirname(File.expand_path(gemfile))
++
++# Matches Bundler::Source::Path#to_lock, including its default glob.
++path_source = /^PATH\n  remote: (.+)\n(?:  glob: (.+)\n)?  specs:\n((?:    .+\n)+)/
++default_glob = '{,*,*/*}.gemspec'
++
++versions = {}
++lock.scan(path_source) do |remote, glob, specs|
++  dir = File.expand_path(remote, gemfile_dir)
++  gemspecs = Dir.glob(glob || default_glob, base: dir).to_h do |file|
++    path = File.join(dir, file)
++    spec = Dir.chdir(File.dirname(path)) { Gem::Specification.load(path) } or abort "Cannot load #{path}"
++    [spec.name, spec]
++  end
++  specs.scan(/^    (\S+) \(([^)]+)\)$/) do |name, locked|
++    next unless gemspecs.key?(name)
++
++    versions[name] = [locked.split('-', 2).first, gemspecs[name].version.to_s]
++  end
++end
++
++versions.each do |name, (locked, actual)|
++  lock = lock.gsub(/^(  |    )#{Regexp.escape(name)} \(#{Regexp.escape(locked)}(-[^)]*)?\)/) do
++    "#{Regexp.last_match(1)}#{name} (#{actual}#{Regexp.last_match(2)})"
++  end
++end
++
++lock = lock.gsub("\n", "\r\n") if crlf
++File.binwrite(output_lock, lock)

@@ -19,9 +19,11 @@ package org.openqa.selenium.bidi.network;
 
 import java.io.StringReader;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class FetchError extends BaseParameters {
   private static final Json JSON = new Json();
 

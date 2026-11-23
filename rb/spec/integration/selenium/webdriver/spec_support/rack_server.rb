@@ -17,83 +17,51 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'openssl'
 require 'rack'
+require 'rack/handler/webrick'
+require 'webrick/https'
 
 module Selenium
   module WebDriver
     module SpecSupport
       class RackServer
-        START_TIMEOUT = 30
-
-        def initialize(path, port)
-          @path = path
-          @app  = TestApp.new(path)
-
+        def initialize(path, certificates:)
+          @app = TestApp.new(path)
           @host = ENV.fetch('localhost', 'localhost')
-          @port = port
+          @certificates = certificates
         end
 
         def start
-          if Platform.jruby? || Platform.windows? || Platform.truffleruby?
-            start_threaded
-          else
-            start_forked
-          end
-
-          return if SocketPoller.new(@host, @port, START_TIMEOUT).connected?
-
-          raise "rack server not launched in #{START_TIMEOUT} seconds"
+          @servers = [server, server(**ssl_options)]
+          @port, @secure_port = @servers.map { |server| server.listeners.first.addr[1] }
+          @threads = @servers.map { |server| Thread.new { server.start } }
         end
 
-        def run
-          handler.run @app, Host: @host, Port: @port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)
-        end
-
-        def where_is(file)
-          "http://#{@host}:#{@port}/#{file}"
+        def where_is(file, secure: false)
+          secure ? "https://#{@host}:#{@secure_port}/#{file}" : "http://#{@host}:#{@port}/#{file}"
         end
 
         def stop
-          if defined?(@thread) && @thread
-            @thread.kill
-          elsif defined?(@pid) && @pid
-            Process.kill('KILL', @pid)
-            Process.waitpid(@pid)
-          elsif defined?(@process) && @process
-            @process.stop
-          end
+          @servers&.each(&:shutdown)
+          @threads&.each(&:join)
         end
 
         private
 
-        def handler
-          # can't use Platform here since it's being run as a file on Windows + IE.
-          handlers = if RUBY_PLATFORM.match?(/mswin|msys|mingw32/)
-                       %w[mongrel webrick]
-                     else
-                       %w[thin mongrel webrick]
-                     end
-
-          handler = handlers.find { |h| load_handler h }
-          constant = handler == 'webrick' ? 'WEBrick' : handler.capitalize
-          Rack::Handler.const_get constant
+        def server(**ssl)
+          options = {BindAddress: @host, Port: 0, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)}
+          server = WEBrick::HTTPServer.new(**options, **ssl)
+          server.mount '/', Rack::Handler::WEBrick, @app
+          server
         end
 
-        def load_handler(handler)
-          require handler
-          true
-        rescue LoadError
-          false
-        end
-
-        def start_forked
-          @pid = fork { run }
-        end
-
-        def start_threaded
-          Thread.abort_on_exception = true
-          @thread = Thread.new { run }
-          sleep 0.5
+        def ssl_options
+          {
+            SSLEnable: true,
+            SSLCertificate: OpenSSL::X509::Certificate.new(File.read(File.join(@certificates, 'localhost.crt'))),
+            SSLPrivateKey: OpenSSL::PKey.read(File.read(File.join(@certificates, 'localhost.key')))
+          }
         end
 
         class TestApp

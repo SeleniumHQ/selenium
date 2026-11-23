@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
 from collections.abc import Mapping, Sequence
 
 from selenium.webdriver.common import service
@@ -49,7 +50,7 @@ class Service(service.Service):
         self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_SAFARIDRIVER"
 
-        if enable_logging:
+        if (enable_logging or os.environ.get("SE_DEBUG")) and "--diagnose" not in self._service_args:
             self._service_args.append("--diagnose")
 
         self.reuse_service = reuse_service

@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal sealed record SetDownloadBehaviorParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] DownloadBehavior? DownloadBehavior, IEnumerable<UserContext>? UserContexts) : Parameters;
+internal sealed record SetDownloadBehaviorParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] DownloadBehavior? DownloadBehavior, ImmutableArray<UserContext>? UserContexts) : Parameters;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(DownloadBehaviorAllowed), "allowed")]
@@ -37,7 +37,7 @@ public sealed record DownloadBehaviorDenied : DownloadBehavior;
 
 public sealed record SetDownloadBehaviorOptions : CommandOptions
 {
-    public IEnumerable<UserContext>? UserContexts { get; init; }
+    public ImmutableArray<UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetDownloadBehaviorResult : EmptyResult;

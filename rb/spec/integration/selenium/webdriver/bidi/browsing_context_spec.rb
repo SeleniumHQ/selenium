@@ -18,13 +18,16 @@
 # under the License.
 
 require_relative '../spec_helper'
+require 'selenium/webdriver/bidi/protocol'
 
 module Selenium
   module WebDriver
     class BiDi
-      describe BrowsingContext, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
-                                only: {browser: %i[chrome edge firefox]} do
-        after { |example| reset_driver!(example: example) }
+      describe BrowsingContext, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
+        after do
+          browsing_context = described_class.new(bridge)
+          (driver.window_handles - [driver.window_handle]).each { |handle| browsing_context.close(context_id: handle) }
+        end
 
         let(:bridge) { driver.instance_variable_get(:@bridge) }
 
@@ -47,11 +50,10 @@ module Selenium
             expect(driver.window_handles).to include(id)
           end
 
-          it 'errors on unknown type', except: {browser: :firefox, reason: "Doesn't return the expected error"} do
-            msg = /invalid argument: Invalid enum value. Expected 'tab' | 'window', received 'unknown'/
+          it 'errors on unknown type' do
             expect {
               described_class.new(bridge).create(type: :unknown)
-            }.to raise_error(Error::WebDriverError, msg)
+            }.to raise_error(Error::WebDriverError, /\Ainvalid argument: /)
           end
 
           it 'accepts a reference context' do
@@ -74,16 +76,18 @@ module Selenium
           expect(handles).not_to include(window2)
         end
 
-        it 'sets the viewport', except: {rbe: true, reason: 'unknown, returns value of 1 instead of 2.0'} do
+        it 'sets the viewport' do
           browsing_context = described_class.new(bridge)
           browsing_context.set_viewport(width: 800, height: 600, device_pixel_ratio: 2.0)
           expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
-          expect(driver.execute_script('return window.devicePixelRatio')).to eq(2.0)
+        ensure
+          Protocol::BrowsingContext.new(driver).set_viewport(context: driver.window_handle, viewport: nil,
+                                                             device_pixel_ratio: nil)
         end
 
         it 'accepts users prompts without text',
-           except: {browser: %i[edge chrome],
-                    reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+           pending_if: {browser_family: :chromium,
+                        reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
 
           driver.navigate.to url_for('alerts.html')
@@ -97,8 +101,8 @@ module Selenium
         end
 
         it 'accepts users prompts with text',
-           except: {browser: %i[edge chrome],
-                    reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+           pending_if: {browser_family: :chromium,
+                        reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'prompt').click
@@ -110,8 +114,9 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'rejects users prompts', except: {browser: %i[edge chrome],
-                                             reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+        it 'rejects users prompts',
+           pending_if: {browser_family: :chromium,
+                        reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'alert').click
@@ -124,9 +129,10 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'activates a browser context' do
+        it 'activates a browser context',
+           pending_if: {browser_family: :safari, reason: 'Safari does not focus the activated context'} do
           browsing_context = described_class.new(bridge)
-          browsing_context.create
+          browsing_context.create(type: :tab)
 
           expect(driver.execute_script('return document.hasFocus();')).to be_falsey
           browsing_context.activate

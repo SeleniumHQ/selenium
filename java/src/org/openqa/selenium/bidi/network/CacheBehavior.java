@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.network;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public enum CacheBehavior {
   DEFAULT("default"),
   BYPASS("bypass");

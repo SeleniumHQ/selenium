@@ -1,0 +1,57 @@
+load("@aspect_bazel_lib//lib:jq.bzl", "jq")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("//common:defs.bzl", "copy_file")
+load("//javascript/selenium-manager:version.bzl", "SM_VERSION")
+
+copy_file(
+    name = "manager-binary",
+    src = "//common/manager:selenium-manager-macos",
+    out = "bin/selenium-manager",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "bin/selenium-manager-THIRD-PARTY-NOTICES.txt",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "bin/selenium-manager.cdx.json",
+)
+
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    cmd = "cp $(locations //:license) $(@D)",
+)
+
+# The source manifest carries no version; it comes from the root version.bzl.
+jq(
+    name = "package-json-stamped",
+    srcs = ["package.json"],
+    out = "stamped/package.json",
+    filter = '.version = "%s"' % SM_VERSION,
+)
+
+npm_package(
+    name = "selenium-manager-darwin",
+    srcs = [
+        ":license",
+        ":manager-binary",
+        ":manager-notice",
+        ":manager-sbom",
+        ":package-json-stamped",
+    ],
+    package = "@selenium/manager-darwin",
+    publishable = True,
+    replace_prefixes = {"stamped/": ""},
+    tags = ["release-artifact"],
+    version = SM_VERSION,
+    visibility = ["//visibility:public"],
+)

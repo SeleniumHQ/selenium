@@ -25,8 +25,10 @@ module Selenium
 
         # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
         CAPABILITIES = {automatic_inspection: 'safari:automaticInspection',
-                        automatic_profiling: 'safari:automaticProfiling'}.freeze
-        BROWSER = Selenium::WebDriver::Safari.technology_preview? ? 'Safari Technology Preview' : 'safari'
+                        automatic_profiling: 'safari:automaticProfiling',
+                        experimental_web_socket_url: 'safari:experimentalWebSocketUrl'}.freeze
+        BROWSER = 'safari'
+        TECHNOLOGY_PREVIEW = 'Safari Technology Preview'
 
         def add_option(name, value = nil)
           key = name.is_a?(Hash) ? name.keys.first : name
@@ -35,9 +37,26 @@ module Selenium
           super
         end
 
-        def as_json(*)
-          @options[:browser_name] = Safari.technology_preview? ? 'Safari Technology Preview' : 'safari'
+        def browser_name=(value)
+          @options[:browser_name] = value
+        end
+
+        def browser_name
+          @options[:browser_name] = Safari.technology_preview? ? TECHNOLOGY_PREVIEW : BROWSER
+        end
+
+        #
+        # Enables WebDriver BiDi for Safari, which also requires the experimental capability, and
+        # warns that Safari's BiDi support is experimental.
+        #
+        # @return [Boolean]
+        #
+
+        def enable_bidi!
           super
+          WebDriver.logger.warn("Safari's WebDriver BiDi support is experimental and may be incomplete",
+                                id: :safari_bidi)
+          @options[:experimental_web_socket_url] = true
         end
       end # Options
     end # Safari

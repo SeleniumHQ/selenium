@@ -22,7 +22,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed record PrintParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : Parameters;
+internal sealed record PrintParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, ImmutableArray<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : Parameters;
 
 public sealed record PrintOptions : CommandOptions
 {
@@ -34,7 +34,7 @@ public sealed record PrintOptions : CommandOptions
 
     public PrintPage? Page { get; init; }
 
-    public IEnumerable<PrintPageRange>? PageRanges { get; init; }
+    public ImmutableArray<PrintPageRange>? PageRanges { get; init; }
 
     public double? Scale { get; init; }
 

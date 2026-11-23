@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
 import subprocess
 import sys
 from unittest.mock import patch
@@ -24,52 +23,54 @@ import pytest
 
 from selenium.common.exceptions import SessionNotCreatedException
 from selenium.webdriver import Firefox
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 
 
-def test_log_output_as_filename(recwarn) -> None:
-    log_file = "geckodriver.log"
+@pytest.fixture(autouse=True)
+def _skip_on_grid(request):
+    if request.config.getoption("remote"):
+        pytest.skip("driver-service behaviour is only exercised with a local driver")
+
+
+def test_log_output_as_filename(recwarn, clean_options, tmp_path) -> None:
+    log_file = str(tmp_path / "geckodriver.log")
     service = Service(log_output=log_file)
     try:
-        driver = Firefox(service=service)
+        driver = Firefox(service=service, options=clean_options)
         assert len(recwarn) == 0
         with open(log_file) as fp:
             assert "geckodriver\tINFO\tListening" in fp.readline()
     finally:
         driver.quit()
-        os.remove(log_file)
 
 
-def test_log_output_as_file() -> None:
-    log_name = "geckodriver.log"
+def test_log_output_as_file(clean_options, tmp_path) -> None:
+    log_name = tmp_path / "geckodriver.log"
     log_file = open(log_name, "w", encoding="utf-8")
     service = Service(log_output=log_file)
     try:
-        driver = Firefox(service=service)
+        driver = Firefox(service=service, options=clean_options)
         with open(log_name) as fp:
             assert "geckodriver\tINFO\tListening" in fp.readline()
     finally:
         driver.quit()
         log_file.close()
-        os.remove(log_name)
 
 
-def test_log_output_as_stdout(capfd) -> None:
+def test_log_output_as_stdout(capfd, clean_options) -> None:
     service = Service(log_output=subprocess.STDOUT)
-    driver = Firefox(service=service)
+    driver = Firefox(service=service, options=clean_options)
 
     out, err = capfd.readouterr()
     assert "geckodriver\tINFO\tListening" in out
     driver.quit()
 
 
-def test_driver_is_stopped_if_browser_cant_start(clean_driver) -> None:
-    options = Options()
-    options.add_argument("-profile=/no/such/location")
+def test_driver_is_stopped_if_browser_cant_start(clean_driver, clean_options) -> None:
+    clean_options.add_argument("-profile=/no/such/location")
     service = Service()
     with pytest.raises(SessionNotCreatedException):
-        clean_driver(options=options, service=service)
+        clean_driver(options=clean_options, service=service)
     assert not service.is_connectable()
     assert service.process.poll() is not None
 
@@ -103,10 +104,8 @@ class TestGeckoDriverService:
     service_path = "/path/to/geckodriver"
 
     @pytest.fixture(autouse=True)
-    def setup_and_teardown(self):
-        os.environ["SE_GECKODRIVER"] = self.service_path
-        yield
-        os.environ.pop("SE_GECKODRIVER", None)
+    def pin_driver_env(self, monkeypatch):
+        monkeypatch.setenv("SE_GECKODRIVER", self.service_path)
 
     def test_uses_path_from_env_variable(self, service):
         assert "geckodriver" in service.path

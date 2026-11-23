@@ -21,6 +21,7 @@ import importlib
 import itertools
 import json
 import logging
+import os
 import pathlib
 from collections import defaultdict
 from collections.abc import AsyncGenerator, AsyncIterator, Generator
@@ -35,6 +36,17 @@ from trio_websocket import connect_websocket_url
 logger = logging.getLogger("trio_cdp")
 T = TypeVar("T")
 MAX_WS_MESSAGE_SIZE = 2**24
+
+
+def _resolve_max_message_size(explicit=None):
+    """Return the WebSocket max message size to use.
+
+    Priority: explicit argument > ``SE_CDP_MAX_WS_MESSAGE_SIZE`` env var > ``MAX_WS_MESSAGE_SIZE``.
+    """
+    if explicit is not None:
+        return explicit
+    return int(os.environ.get("SE_CDP_MAX_WS_MESSAGE_SIZE", MAX_WS_MESSAGE_SIZE))
+
 
 devtools = None
 version = None
@@ -78,7 +90,7 @@ def get_connection_context(fn_name):
     try:
         return _connection_context.get()
     except LookupError:
-        raise RuntimeError(f"{fn_name}() must be called in a connection context.")
+        raise RuntimeError(f"{fn_name}() must be called in a connection context.") from None
 
 
 def get_session_context(fn_name):
@@ -90,7 +102,7 @@ def get_session_context(fn_name):
     try:
         return _session_context.get()
     except LookupError:
-        raise RuntimeError(f"{fn_name}() must be called in a session context.")
+        raise RuntimeError(f"{fn_name}() must be called in a session context.") from None
 
 
 @contextmanager
@@ -163,8 +175,6 @@ class CdpConnectionClosed(WsConnectionClosed):
 
 class InternalError(Exception):
     """This exception is only raised when there is faulty logic in TrioCDP or the integration with PyCDP."""
-
-    pass
 
 
 @dataclass
@@ -450,39 +460,39 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
                 break
             try:
                 data = json.loads(message)
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as err:
                 raise BrowserError(
                     {
                         "code": -32700,
                         "message": "Client received invalid JSON",
                         "data": message,
                     }
-                )
+                ) from err
             logger.debug("Received message %r", data)
             if "sessionId" in data:
                 session_id = devtools.target.SessionID(data["sessionId"])
                 try:
                     session = self.sessions[session_id]
-                except KeyError:
+                except KeyError as err:
                     raise BrowserError(
                         {
                             "code": -32700,
                             "message": "Browser sent a message for an invalid session",
                             "data": f"{session_id!r}",
                         }
-                    )
+                    ) from err
                 session._handle_data(data)
             else:
                 self._handle_data(data)
 
-        for _, session in self.sessions.items():
-            for _, senders in session.channels.items():
+        for session in self.sessions.values():
+            for senders in session.channels.values():
                 for sender in senders:
                     sender.close()
 
 
 @asynccontextmanager
-async def open_cdp(url) -> AsyncIterator[CdpConnection]:
+async def open_cdp(url, max_message_size=None) -> AsyncIterator[CdpConnection]:
     """Async context manager opens a connection to the browser then closes the connection when the block exits.
 
     The context manager also sets the connection as the default
@@ -490,9 +500,14 @@ async def open_cdp(url) -> AsyncIterator[CdpConnection]:
     target.get_targets()`` will run on this connection automatically. If
     you want to use multiple connections concurrently, it is recommended
     to open each on in a separate task.
+
+    Args:
+        url: WebSocket URL of the browser's CDP endpoint.
+        max_message_size: Maximum WebSocket message size in bytes. Defaults to the
+            ``SE_CDP_MAX_WS_MESSAGE_SIZE`` environment variable, or 16 MiB if unset.
     """
     async with trio.open_nursery() as nursery:
-        conn = await connect_cdp(nursery, url)
+        conn = await connect_cdp(nursery, url, max_message_size=max_message_size)
         try:
             with connection_context(conn):
                 yield conn
@@ -500,7 +515,7 @@ async def open_cdp(url) -> AsyncIterator[CdpConnection]:
             await conn.aclose()
 
 
-async def connect_cdp(nursery, url) -> CdpConnection:
+async def connect_cdp(nursery, url, max_message_size=None) -> CdpConnection:
     """Connect to the browser specified by ``url`` and spawn a background task in the specified nursery.
 
     The ``open_cdp()`` context manager is preferred in most situations.
@@ -512,8 +527,14 @@ async def connect_cdp(nursery, url) -> CdpConnection:
     connection will be installed as the default connection for the
     current task. This argument is for unusual use cases, such as
     running inside of a notebook.
+
+    Args:
+        nursery: Trio nursery to spawn the reader task in.
+        url: WebSocket URL of the browser's CDP endpoint.
+        max_message_size: Maximum WebSocket message size in bytes. Defaults to the
+            ``SE_CDP_MAX_WS_MESSAGE_SIZE`` environment variable, or 16 MiB if unset.
     """
-    ws = await connect_websocket_url(nursery, url, max_message_size=MAX_WS_MESSAGE_SIZE)
+    ws = await connect_websocket_url(nursery, url, max_message_size=_resolve_max_message_size(max_message_size))
     cdp_conn = CdpConnection(ws)
     nursery.start_soon(cdp_conn._reader_task)
     return cdp_conn

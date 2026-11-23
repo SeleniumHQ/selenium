@@ -24,10 +24,12 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 class CleanSessionTest extends JupiterTestBase {
 
@@ -36,7 +38,7 @@ class CleanSessionTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void shouldClearCookiesWhenStartingWithACleanSession() {
-    SafariDriver firstDriver = new SafariDriver();
+    WebDriver firstDriver = new WebDriverBuilder().get();
     firstDriver.get(pages.alertsPage);
 
     assertThat(firstDriver.manage().getCookies()).isEmpty();
@@ -45,7 +47,7 @@ class CleanSessionTest extends JupiterTestBase {
     assertThat(firstDriver.manage().getCookies()).contains(COOKIE);
     firstDriver.quit();
 
-    localDriver = new SafariDriver();
+    localDriver = new WebDriverBuilder().get();
     localDriver.get(pages.alertsPage);
     assertThat(localDriver.manage().getCookies()).isEmpty();
   }

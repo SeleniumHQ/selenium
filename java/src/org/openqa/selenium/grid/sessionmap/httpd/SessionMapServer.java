@@ -92,20 +92,16 @@ public class SessionMapServer extends TemplateGridServerCommand {
         Route.combine(
             sessions,
             get("/status")
-                .to(
-                    () ->
-                        req ->
-                            new HttpResponse()
-                                .addHeader("Content-Type", JSON_UTF_8)
-                                .setContent(
-                                    asJson(
+                .to(() ->
+                    req ->
+                        new HttpResponse()
+                            .addHeader("Content-Type", JSON_UTF_8)
+                            .setContent(
+                                asJson(
+                                    Map.of(
+                                        "value",
                                         Map.of(
-                                            "value",
-                                            Map.of(
-                                                "ready",
-                                                true,
-                                                "message",
-                                                "Session map is ready."))))),
+                                            "ready", true, "message", "Session map is ready."))))),
             get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))),
         null) {
       @Override
@@ -126,14 +122,13 @@ public class SessionMapServer extends TemplateGridServerCommand {
 
     config
         .get("server", "max-threads")
-        .ifPresent(
-            value ->
-                LOG.log(
-                    Level.WARNING,
-                    () ->
-                        "Support for max-threads flag is deprecated. The intent of the flag is to"
-                            + " set the thread pool size in the Distributor. Please use"
-                            + " newsession-threadpool-size flag instead."));
+        .ifPresent(value ->
+            LOG.log(
+                Level.WARNING,
+                () ->
+                    "Support for max-threads flag is deprecated. The intent of the flag is to"
+                        + " set the thread pool size in the Distributor. Please use"
+                        + " newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config);
     server.start();

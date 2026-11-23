@@ -169,11 +169,10 @@ public class DistributorDrainingTest extends DistributorTestBase {
     new FluentWait<>(distributor)
         .withTimeout(Duration.ofSeconds(60))
         .pollingEvery(Duration.ofMillis(100))
-        .until(
-            d -> {
-              Set<NodeStatus> nodes = d.getStatus().getNodes();
-              return nodes.isEmpty();
-            });
+        .until(d -> {
+          Set<NodeStatus> nodes = d.getStatus().getNodes();
+          return nodes.isEmpty();
+        });
   }
 
   @Test

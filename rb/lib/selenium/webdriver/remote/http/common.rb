@@ -31,15 +31,32 @@ module Selenium
           BINARY_ENCODINGS = [Encoding::BINARY, Encoding::ASCII_8BIT].freeze
 
           class << self
-            attr_accessor :extra_headers
-            attr_writer :user_agent
-
             def user_agent
-              @user_agent ||= "selenium/#{WebDriver::VERSION} (ruby #{Platform.os})"
+              ClientConfig.default_user_agent
+            end
+
+            def user_agent=(value)
+              ClientConfig.default_user_agent = value
+            end
+
+            def extra_headers
+              ClientConfig.default_extra_headers
+            end
+
+            def extra_headers=(value)
+              ClientConfig.default_extra_headers = value
             end
           end
 
-          attr_writer :server_url
+          attr_reader :client_config
+
+          def initialize(client_config: nil)
+            @client_config = client_config || ClientConfig.new
+          end
+
+          def server_url=(url)
+            client_config.server_url = url
+          end
 
           def quit_errors
             [IOError]
@@ -76,17 +93,13 @@ module Selenium
           def common_headers
             @common_headers ||= begin
               headers = DEFAULT_HEADERS.dup
-              headers['User-Agent'] = Common.user_agent
-              headers = headers.merge(Common.extra_headers || {})
-
-              headers
+              headers['User-Agent'] = client_config.user_agent
+              headers.merge(client_config.extra_headers || {})
             end
           end
 
           def server_url
-            return @server_url if @server_url
-
-            raise Error::WebDriverError, 'server_url not set'
+            client_config.server_url || raise(Error::WebDriverError, 'server_url not set')
           end
 
           def request(*)

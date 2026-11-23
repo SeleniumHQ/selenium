@@ -94,11 +94,9 @@ class WebDriverWaitTest {
   void shouldThrowAnExceptionFromCorrectThreadIfTheTimerRunsOut() {
     WebDriverWait wait = new WebDriverWait(mockDriver, Duration.ofSeconds(1));
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(
-            () ->
-                wait.until(
-                    ExpectedConditions.presenceOfAllElementsLocatedBy(
-                        By.cssSelector(".doesntexist"))))
+        .isThrownBy(() ->
+            wait.until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".doesntexist"))))
         .withStackTraceContaining(this.getClass().getName());
   }
 

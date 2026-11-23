@@ -96,4 +96,15 @@ class UrlTemplateTest {
     assertThat(new UrlTemplate("/session").match("/session-no")).isNull();
     assertThat(new UrlTemplate("/session").match("/no-session-no")).isNull();
   }
+
+  @Test
+  void shouldNotThrowWhenPrefixContainsRegexMetacharacters() {
+    // The prefix contains '(', a regex metacharacter; stripping it must treat it literally
+    // rather than as a pattern (which would throw PatternSyntaxException).
+    UrlTemplate.Match match =
+        new UrlTemplate("/session/{id}").match("/wd(hub/session/1234", "/wd(hub");
+
+    assertThat(match).isNotNull();
+    assertThat(match.getParameters()).containsExactlyInAnyOrderEntriesOf(Map.of("id", "1234"));
+  }
 }

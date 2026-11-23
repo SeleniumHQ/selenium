@@ -269,7 +269,7 @@ class ActionChains:
 
         return self
 
-    def pause(self, seconds: float | int) -> ActionChains:
+    def pause(self, seconds: float) -> ActionChains:
         """Pause all inputs for the specified duration in seconds."""
         self.w3c_actions.pointer_action.pause(seconds)
         self.w3c_actions.key_action.pause(int(seconds))

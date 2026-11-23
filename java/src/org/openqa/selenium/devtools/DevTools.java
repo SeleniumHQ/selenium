@@ -193,11 +193,10 @@ public class DevTools implements Closeable {
               // Clear the existing logs
               connection
                   .send(cdpSession, getDomains().log().clear())
-                  .exceptionally(
-                      t -> {
-                        LOG.log(Level.SEVERE, t.getMessage(), t);
-                        return null;
-                      }))
+                  .exceptionally(t -> {
+                    LOG.log(Level.SEVERE, t.getMessage(), t);
+                    return null;
+                  }))
           .get(timeout.toMillis(), MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();

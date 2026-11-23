@@ -3,3 +3,23 @@ packages:
   - 'javascript/grid-ui'
   - 'javascript/private'
   - 'javascript/selenium-webdriver'
+
+onlyBuiltDependencies: []
+
+# packageExtensions are declared here rather than in the "pnpm" field of
+# package.json because pnpm v11+ no longer reads that field. The Bazel build
+# currently uses pnpm v10 (bundled by aspect_rules_js), but pnpm-workspace.yaml
+# is honoured by both v10 and v11, making this the forward-compatible location.
+packageExtensions:
+  google-closure-deps:
+    dependencies:
+      minimatch: '*'
+  minimatch:
+    dependencies:
+      brace-expansion: '*'
+  brace-expansion:
+    dependencies:
+      balanced-match: '*'
+  recast:
+    dependencies:
+      '@babel/parser': '*'

@@ -139,18 +139,15 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     assertThat(result)
         .asInstanceOf(LIST)
         .hasSize(2)
-        .satisfies(
-            list -> {
-              assertThat(list.get(0))
-                  .asInstanceOf(type(WebElement.class))
-                  .satisfies(
-                      element -> assertThat(element.getTagName()).isEqualToIgnoringCase("body"));
-              assertThat(list.get(1))
-                  .asInstanceOf(type(WebElement.class))
-                  .satisfies(
-                      element -> assertThat(element.getTagName()).isEqualToIgnoringCase("body"));
-              assertThat(list.get(1)).isEqualTo(list.get(0));
-            });
+        .satisfies(list -> {
+          assertThat(list.get(0))
+              .asInstanceOf(type(WebElement.class))
+              .satisfies(element -> assertThat(element.getTagName()).isEqualToIgnoringCase("body"));
+          assertThat(list.get(1))
+              .asInstanceOf(type(WebElement.class))
+              .satisfies(element -> assertThat(element.getTagName()).isEqualToIgnoringCase("body"));
+          assertThat(list.get(1)).isEqualTo(list.get(0));
+        });
   }
 
   @Test
@@ -185,11 +182,10 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.manage().timeouts().scriptTimeout(Duration.ofMillis(500));
     driver.get(pages.ajaxyPage);
     assertThatExceptionOfType(ScriptTimeoutException.class)
-        .isThrownBy(
-            () ->
-                executor.executeAsyncScript(
-                    "var callback = arguments[arguments.length - 1];"
-                        + "window.setTimeout(callback, 1500);"));
+        .isThrownBy(() ->
+            executor.executeAsyncScript(
+                "var callback = arguments[arguments.length - 1];"
+                    + "window.setTimeout(callback, 1500);"));
   }
 
   @Test
@@ -237,14 +233,13 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> executor.executeAsyncScript(js))
         .withMessageContaining("errormessage")
-        .satisfies(
-            t -> {
-              Throwable rootCause = getRootCause(t);
-              assertThat(rootCause).hasMessageContaining("errormessage");
-              assertThat(List.of(rootCause.getStackTrace()))
-                  .extracting(StackTraceElement::getMethodName)
-                  .contains("functionB");
-            });
+        .satisfies(t -> {
+          Throwable rootCause = getRootCause(t);
+          assertThat(rootCause).hasMessageContaining("errormessage");
+          assertThat(List.of(rootCause.getStackTrace()))
+              .extracting(StackTraceElement::getMethodName)
+              .contains("functionB");
+        });
   }
 
   @Test
@@ -330,11 +325,10 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().scriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(
-            () ->
-                executor.executeAsyncScript(
-                    "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An"
-                        + " alert!'); }, 50);"));
+        .isThrownBy(() ->
+            executor.executeAsyncScript(
+                "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An"
+                    + " alert!'); }, 50);"));
     // Shouldn't throw
     driver.getTitle();
   }
@@ -364,10 +358,9 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().scriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(
-            () ->
-                executor.executeAsyncScript(
-                    "setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
+        .isThrownBy(() ->
+            executor.executeAsyncScript(
+                "setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
     // Shouldn't throw
     driver.getTitle();
   }
@@ -397,12 +390,11 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.manage().timeouts().scriptTimeout(Duration.ofMillis(5000));
     String alertText = "Look! An alert!";
     assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(
-            () ->
-                executor.executeAsyncScript(
-                    "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('"
-                        + alertText
-                        + "'); }, 50);"))
+        .isThrownBy(() ->
+            executor.executeAsyncScript(
+                "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('"
+                    + alertText
+                    + "'); }, 50);"))
         .satisfies(t -> assertThat(t.getAlertText()).isEqualTo(alertText));
   }
 

@@ -107,6 +107,18 @@ class SafariDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
+  void stoppingServiceDoesNotWaitForShutdownEndpoint() throws IOException {
+    SafariDriverService service = SafariDriverService.createDefaultService();
+    service.start();
+
+    long start = System.nanoTime();
+    service.stop();
+
+    assertThat(Duration.ofNanos(System.nanoTime() - start)).isLessThan(Duration.ofSeconds(5));
+  }
+
+  @Test
+  @NoDriverBeforeTest
   public void canStartTechnologyPreview() {
     assumeTrue(technologyPreviewInstalled());
 

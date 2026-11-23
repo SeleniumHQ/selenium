@@ -134,13 +134,12 @@ class DragAndDropTest extends JupiterTestBase {
     driver.get(pages.dragAndDropPage);
     WebElement img = wait.until(visibilityOfElementLocated(By.id("test1")));
 
-    assertThatThrownBy(
-            () ->
-                inputModule.perform(
-                    windowHandle,
-                    new Actions(driver)
-                        .dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE)
-                        .getSequences()))
+    assertThatThrownBy(() ->
+            inputModule.perform(
+                windowHandle,
+                new Actions(driver)
+                    .dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE)
+                    .getSequences()))
         .as("These coordinates are outside the page - expected to fail.")
         .isInstanceOf(BiDiException.class)
         .hasMessageContaining("Move target (2147483664, 2147483664) is out of bounds");

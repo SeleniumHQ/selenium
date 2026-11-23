@@ -43,7 +43,7 @@ import org.openqa.selenium.remote.SessionId;
 @Tag("UnitTests")
 class DriverCommandExecutorTest {
 
-  private static final String DRIVER_SERVER_URL = "http://a.base.url:3000";
+  private static final String DRIVER_SERVER_URL = "http://a.base.test:3000";
 
   @Test
   void shouldStartDriverServerOnTheNewSession() throws IOException {
@@ -67,7 +67,7 @@ class DriverCommandExecutorTest {
         new Command(new SessionId("some id"), DriverCommand.GET("https://example.com"));
     Response response = new Response();
     DriverService service = mock(DriverService.class);
-    when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
+    when(service.getUrl()).thenReturn(new URL("http://a.base.test:3000"));
 
     DriverCommandExecutor executor = spy(new DriverCommandExecutor(service));
     doReturn(response).when(executor).invokeExecute(any(Command.class));
@@ -82,7 +82,7 @@ class DriverCommandExecutorTest {
   void shouldStopDriverServerOnExceptionForTheNewSessionCommand() throws IOException {
     Command command = new Command(null, DriverCommand.NEW_SESSION(new ImmutableCapabilities()));
     DriverService service = mock(DriverService.class);
-    when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
+    when(service.getUrl()).thenReturn(new URL("http://a.base.test:3000"));
     when(service.isRunning()).thenReturn(false, true);
 
     DriverCommandExecutor executor = spy(new DriverCommandExecutor(service));
@@ -98,7 +98,7 @@ class DriverCommandExecutorTest {
     Command command =
         new Command(new SessionId("some id"), DriverCommand.GET("https://example.com"));
     DriverService service = mock(DriverService.class);
-    when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
+    when(service.getUrl()).thenReturn(new URL("http://a.base.test:3000"));
 
     DriverCommandExecutor executor = spy(new DriverCommandExecutor(service));
     doThrow(WebDriverException.class).when(executor).invokeExecute(any(Command.class));
@@ -114,7 +114,7 @@ class DriverCommandExecutorTest {
       throws IOException {
     Command command = new Command(null, DriverCommand.NEW_SESSION(new ImmutableCapabilities()));
     DriverService service = mock(DriverService.class);
-    when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
+    when(service.getUrl()).thenReturn(new URL("http://a.base.test:3000"));
     when(service.isRunning()).thenReturn(true);
 
     DriverCommandExecutor executor = spy(new DriverCommandExecutor(service));
@@ -129,7 +129,7 @@ class DriverCommandExecutorTest {
   void shouldNotStopDriverServerOnExceptionForTheNewSessionCommandIfItDied() throws IOException {
     Command command = new Command(null, DriverCommand.NEW_SESSION(new ImmutableCapabilities()));
     DriverService service = mock(DriverService.class);
-    when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
+    when(service.getUrl()).thenReturn(new URL("http://a.base.test:3000"));
     when(service.isRunning()).thenReturn(false);
 
     DriverCommandExecutor executor = spy(new DriverCommandExecutor(service));

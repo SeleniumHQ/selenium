@@ -34,6 +34,26 @@ Selenium Manager automatically handles browser driver installation — no manual
 - [Selenium Manager](https://www.selenium.dev/documentation/selenium_manager/)
 - [Selenium Grid](https://www.selenium.dev/documentation/grid/)
 
+## Using a Local Checkout
+
+To try unreleased changes from another project:
+
+1. Install [Bazelisk](https://github.com/bazelbuild/bazelisk) and the other [build requirements](https://github.com/SeleniumHQ/selenium#installing)
+2. Navigate to the root of your `selenium` checkout
+3. Run `./go rb:local_dev` (`go.bat rb:local_dev` on Windows); rerun it after pulling changes
+
+Point the project's Gemfile at the checkout:
+
+```ruby
+gem 'selenium-webdriver', path: '/path/to/selenium/rb'
+```
+
+Then require `local_dev` in place of `selenium-webdriver`, so the atoms, CDP code, and Selenium Manager come from what Bazel built:
+
+```ruby
+require 'selenium/webdriver/local_dev'
+```
+
 ## Support
 
 - [Selenium Chat](https://www.selenium.dev/support/#ChatRoom)

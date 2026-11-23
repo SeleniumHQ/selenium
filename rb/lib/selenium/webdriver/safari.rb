@@ -33,7 +33,6 @@ module Selenium
         end
 
         def technology_preview!
-          Service.driver_path = technology_preview
           @use_technology_preview = true
         end
 
@@ -47,11 +46,7 @@ module Selenium
         end
 
         def path
-          @path ||= '/Applications/Safari.app/Contents/MacOS/Safari'
-          return @path if File.file?(@path) && File.executable?(@path)
-          raise Error::WebDriverError, 'Safari is only supported on Mac' unless Platform.os.mac?
-
-          raise Error::WebDriverError, 'Unable to find Safari'
+          @path ||= nil
         end
       end
     end # Safari

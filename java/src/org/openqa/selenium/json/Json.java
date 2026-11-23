@@ -17,12 +17,9 @@
 
 package org.openqa.selenium.json;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +40,12 @@ import org.openqa.selenium.internal.Require;
  *         <li>Classes that declare a {@code fromJson(JsonInput)} static method.<br>
  *             <b>NOTE</b>: Objects deserialized via a {@code fromJson} static method can be
  *             immutable.
+ *         <li>Classes that declare a constructor whose parameter names are available at runtime.
+ *             <br>
+ *             <b>NOTE</b>: Constructor parameter names are only available if they are present in
+ *             the class file, such as when the class is compiled with {@code javac -parameters}.
+ *             Constructor parameter names must match the corresponding JSON field names. Parameters
+ *             of type {@link java.util.Optional Optional} are not required.
  *         <li>Classes that declare setter methods adhering to the <a
  *             href="https://docs.oracle.com/javase/tutorial/javabeans/writing/index.html">JavaBean</a>
  *             specification.<br>
@@ -67,12 +70,13 @@ import org.openqa.selenium.internal.Require;
  *       Float}, {@link java.lang.Integer Integer}, {@link java.lang.Long Long}, {@link
  *       java.lang.Short Short}
  *   <li><b>Collection Types</b>:<br>
- *       {@link java.util.List List}, {@link java.util.Set Set}
+ *       {@link java.util.Collection Collection}, {@link java.util.List List}, {@link java.util.Set
+ *       Set}
  *   <li><b>Standard Java Types</b>:<br>
  *       {@link java.util.Map Map}, {@link java.lang.Boolean Boolean}, {@link java.lang.String
  *       String}, {@link java.lang.Enum Enum}, {@link java.net.URI URI}, {@link java.net.URL URL},
- *       {@link java.util.UUID UUID}, {@link java.time.Instant Instant}, {@link java.lang.Object
- *       Object}
+ *       {@link java.util.UUID UUID}, {@link java.time.Instant Instant}, {@link java.util.Optional
+ *       Optional}, {@link java.lang.Object Object}
  * </ul>
  *
  * You can serialize objects for which no explicit coercer has been specified, and the <b>Json</b>
@@ -84,8 +88,8 @@ import org.openqa.selenium.internal.Require;
  * <p>You can deserialize objects for which no explicit handling has been defined. Note that the
  * data type of the result will be {@code Map<String,?>}, which means that you'll need to perform
  * type checking and casting every time you extract an entry value from the result. For this reason,
- * it's best to declare a type-specific {@code fromJson()} method in every type you need to
- * deserialize.
+ * it's best to declare either a type-specific {@code fromJson()} method or a constructor with
+ * runtime-visible parameter names in every type you need to deserialize.
  *
  * @see JsonTypeCoercer
  * @see JsonInput
@@ -107,7 +111,31 @@ public class Json {
   /** Specifier for {@code Object} input/output type */
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
 
-  private final JsonTypeCoercer fromJson = new JsonTypeCoercer();
+  /**
+   * The default coercer is stateless apart from its cache of resolved coercion functions, so a
+   * single shared instance lets that cache accumulate across the many short-lived {@code Json}
+   * instances created throughout the codebase.
+   */
+  private static final JsonTypeCoercer DEFAULT_COERCER = JsonTypeCoercer.createShared();
+
+  /** Strings longer than this are parsed through a {@link StringReader} instead of copied. */
+  private static final int MAX_DIRECT_PARSE_LENGTH = 1024 * 1024;
+
+  private final JsonTypeCoercer fromJson;
+
+  public Json() {
+    this.fromJson = DEFAULT_COERCER;
+  }
+
+  /**
+   * @param extraCoercers Additional {@link TypeCoercer}s, tried in the given order before the
+   *     built-in ones — lets a caller customize how a particular type is converted to or from JSON
+   *     (a stricter check, a different wire representation, support for a type the built-in
+   *     coercers don't handle, etc.) for just this {@code Json} instance.
+   */
+  public Json(Iterable<TypeCoercer<?>> extraCoercers) {
+    this.fromJson = new JsonTypeCoercer(DEFAULT_COERCER, extraCoercers);
+  }
 
   /**
    * Serialize the specified object to JSON string representation.<br>
@@ -130,13 +158,12 @@ public class Json {
    * @throws JsonException if an I/O exception is encountered
    */
   public String toJson(@Nullable Object toConvert, int maxDepth) {
-    try (Writer writer = new StringWriter();
-        JsonOutput jsonOutput = newOutput(writer)) {
+    // A StringBuilder rather than a StringWriter: the latter synchronizes every append.
+    StringBuilder builder = new StringBuilder();
+    try (JsonOutput jsonOutput = newOutput(builder)) {
       jsonOutput.write(toConvert, maxDepth);
-      return writer.toString();
-    } catch (IOException e) {
-      throw new JsonException("Cannot convert " + toConvert + " to json", e);
     }
+    return builder.toString();
   }
 
   /**
@@ -165,11 +192,28 @@ public class Json {
    * @throws JsonException if an I/O exception is encountered
    */
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
-    try (StringReader reader = new StringReader(source)) {
-      return toType(reader, typeOfT, setter);
+    Require.nonNull("Mechanism for setting properties", setter);
+
+    // Read small strings directly rather than through a StringReader: string-backed input skips
+    // the Reader indirection and the large read buffer, which dominate the cost of parsing the
+    // small payloads typical of WebDriver commands and responses. Large strings are streamed, as
+    // the string-backed input copies the whole source and would double its memory footprint.
+    try (JsonInput json =
+        source.length() <= MAX_DIRECT_PARSE_LENGTH
+            ? new JsonInput(source, fromJson, PropertySetting.BY_NAME)
+            : new JsonInput(new StringReader(source), fromJson, PropertySetting.BY_NAME)) {
+      return fromJson.coerce(json, typeOfT, setter);
     } catch (JsonException e) {
-      throw new JsonException("Unable to parse: " + source, e);
+      throw new JsonException("Unable to parse: " + abbreviate(source), e);
     }
+  }
+
+  /**
+   * Limit how much of the source is echoed into an exception message; sources can be many
+   * megabytes, and the parse position is already reported by the underlying cause.
+   */
+  private static String abbreviate(String text) {
+    return text.length() <= 512 ? text : text.substring(0, 512) + "...";
   }
 
   /**
@@ -205,6 +249,34 @@ public class Json {
     try (JsonInput json = newInput(source)) {
       return fromJson.coerce(json, typeOfT, setter);
     }
+  }
+
+  /**
+   * Deserialize an already-parsed JSON value into an object of the specified type. The source is
+   * the {@link java.util.Map}/{@link java.util.List}/{@link String}/{@link Number}/{@link
+   * Boolean}/{@code null} structure that {@link #toType(String, Type)} returns for {@link
+   * #MAP_TYPE} or {@link #OBJECT_TYPE} - not a JSON string.
+   *
+   * <p>This is the object-input counterpart of {@link #toType(String, Type)}. Use it when a value
+   * has already been parsed out of a larger document - typically one field of a {@code Map<String,
+   * Object>} - so that the surrounding document does not have to be parsed a second time to reach
+   * it. The value itself is still round-tripped once, via {@link #toJson(Object)} then {@link
+   * #toType(String, Type)}, and therefore inherits {@link JsonOutput#MAX_DEPTH} - a source nested
+   * deeper than that limit is rejected. A {@code null} source yields {@code null}.
+   *
+   * @param source an already-parsed JSON value ({@code Map}, {@code List}, {@code String}, {@code
+   *     Number}, {@code Boolean}, or {@code null})
+   * @param typeOfT data type for deserialization (class or {@link TypeToken})
+   * @return object of the specified type, or {@code null} if {@code source} is {@code null}
+   * @param <T> result type (as specified by [typeOfT])
+   * @throws JsonException if the source cannot be coerced to the specified type, or is nested
+   *     deeper than {@link JsonOutput#MAX_DEPTH}
+   */
+  public <T> @Nullable T convert(@Nullable Object source, Type typeOfT) {
+    if (source == null) {
+      return null;
+    }
+    return toType(toJson(source), typeOfT);
   }
 
   /**

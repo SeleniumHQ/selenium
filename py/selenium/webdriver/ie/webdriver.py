@@ -41,8 +41,8 @@ class WebDriver(LocalWebDriver):
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-        self.service = service if service else Service()
-        self.options = options if options else Options()
+        self.service = service or Service()
+        self.options = options or Options()
 
         self.service.path = self.service.env_path() or DriverFinder(self.service, self.options).get_driver_path()
         self.service.start()

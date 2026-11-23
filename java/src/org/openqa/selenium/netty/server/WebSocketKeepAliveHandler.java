@@ -51,17 +51,16 @@ class WebSocketKeepAliveHandler extends ChannelInboundHandlerAdapter {
     if (evt instanceof IdleStateEvent && ((IdleStateEvent) evt).state() == IdleState.WRITER_IDLE) {
       LOG.log(Level.FINE, "Sending WebSocket ping keepalive on {0}", ctx.channel());
       ctx.writeAndFlush(new PingWebSocketFrame())
-          .addListener(
-              future -> {
-                if (!future.isSuccess()) {
-                  // Channel is gone; close it so the session slot is released.
-                  LOG.log(
-                      Level.FINE,
-                      "WebSocket ping failed on " + ctx.channel() + ", closing channel",
-                      future.cause());
-                  ctx.close();
-                }
-              });
+          .addListener(future -> {
+            if (!future.isSuccess()) {
+              // Channel is gone; close it so the session slot is released.
+              LOG.log(
+                  Level.FINE,
+                  "WebSocket ping failed on " + ctx.channel() + ", closing channel",
+                  future.cause());
+              ctx.close();
+            }
+          });
       return;
     }
     super.userEventTriggered(ctx, evt);

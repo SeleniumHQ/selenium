@@ -5,6 +5,7 @@ load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 SMALL_TESTS = [
     "ChromeDriverServiceTest.java",
     "ChromeOptionsTest.java",
+    "ElectronOptionsTest.java",
 ]
 
 java_test_suite(

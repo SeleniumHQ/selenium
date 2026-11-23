@@ -178,10 +178,9 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     List<String> options = List.of("Apples", "Pears", "Oranges", "Lemons");
-    options.forEach(
-        option ->
-            assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> select.selectByVisibleText(option)));
+    options.forEach(option ->
+        assertThatExceptionOfType(NoSuchElementException.class)
+            .isThrownBy(() -> select.selectByVisibleText(option)));
   }
 
   @Test
@@ -208,10 +207,9 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     List<String> options = List.of("Apples", "Pears", "Oranges", "Lemons");
-    options.forEach(
-        option ->
-            assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> select.selectByVisibleText(option)));
+    options.forEach(option ->
+        assertThatExceptionOfType(NoSuchElementException.class)
+            .isThrownBy(() -> select.selectByVisibleText(option)));
   }
 
   @Test

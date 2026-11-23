@@ -43,8 +43,8 @@ class ChromiumDriver(LocalWebDriver):
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-        self.service = service if service else ChromiumService()
-        self.options = options if options else ChromiumOptions()
+        self.service = service or ChromiumService()
+        self.options = options or ChromiumOptions()
 
         finder = DriverFinder(self.service, self.options)
         if finder.get_browser_path():

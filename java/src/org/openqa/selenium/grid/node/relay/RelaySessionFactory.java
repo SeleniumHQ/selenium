@@ -49,7 +49,6 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CapabilityType;
@@ -112,30 +111,28 @@ public class RelaySessionFactory implements SessionFactory {
     boolean platformVersionMatch =
         capabilities.getCapabilityNames().stream()
             .filter(name -> name.contains("platformVersion"))
-            .map(
-                platformVersionCapName ->
-                    Objects.equals(
-                        stereotype.getCapability(platformVersionCapName),
-                        capabilities.getCapability(platformVersionCapName)))
+            .map(platformVersionCapName ->
+                Objects.equals(
+                    stereotype.getCapability(platformVersionCapName),
+                    capabilities.getCapability(platformVersionCapName)))
             .reduce(Boolean::logicalAnd)
             .orElse(true);
 
     return platformVersionMatch
         && stereotype.getCapabilityNames().stream()
             .filter(name -> capabilities.asMap().containsKey(name))
-            .map(
-                name -> {
-                  if (capabilities.getCapability(name) instanceof String) {
-                    return stereotype
-                        .getCapability(name)
-                        .toString()
-                        .equalsIgnoreCase(capabilities.getCapability(name).toString());
-                  } else {
-                    return capabilities.getCapability(name) == null
-                        || Objects.equals(
-                            stereotype.getCapability(name), capabilities.getCapability(name));
-                  }
-                })
+            .map(name -> {
+              if (capabilities.getCapability(name) instanceof String) {
+                return stereotype
+                    .getCapability(name)
+                    .toString()
+                    .equalsIgnoreCase(capabilities.getCapability(name).toString());
+              } else {
+                return capabilities.getCapability(name) == null
+                    || Objects.equals(
+                        stereotype.getCapability(name), capabilities.getCapability(name));
+              }
+            })
             .reduce(Boolean::logicalAnd)
             .orElse(false);
   }
@@ -183,7 +180,10 @@ public class RelaySessionFactory implements SessionFactory {
       }
       HttpClient client = clientFactory.createClient(clientConfig);
 
-      Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
+      Command command =
+          new Command(
+              null,
+              DriverCommand.NEW_SESSION(SessionFactory.stripPerHopCapabilities(capabilities)));
       try {
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
         Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
@@ -213,7 +213,16 @@ public class RelaySessionFactory implements SessionFactory {
                 upstream,
                 stereotype,
                 mergedCapabilities,
-                Instant.now()) {});
+                Instant.now()) {
+              @Override
+              public boolean isRemoteFileSystem() {
+                // The relay forwards the session to an external endpoint (for example a cloud
+                // provider or an Appium device farm) that does not share the Node's filesystem, so
+                // file upload and download commands must be forwarded to that endpoint rather than
+                // handled on the Node's own filesystem.
+                return true;
+              }
+            });
       } catch (Exception e) {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
@@ -244,7 +253,7 @@ public class RelaySessionFactory implements SessionFactory {
     try (HttpClient client = clientFactory.createClient(clientConfig)) {
       HttpResponse response =
           client.execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
-      LOG.log(Debug.getDebugLogLevel(), response::contentAsString);
+      LOG.log(Level.FINE, response::contentAsString);
       return response.getStatus() == 200;
     } catch (Exception e) {
       LOG.log(
@@ -252,7 +261,7 @@ public class RelaySessionFactory implements SessionFactory {
           () ->
               String.format(
                   "Error checking service status %s. %s", serviceStatusUrl, e.getMessage()));
-      LOG.log(Debug.getDebugLogLevel(), "Error checking service status " + serviceStatusUrl, e);
+      LOG.log(Level.FINE, "Error checking service status " + serviceStatusUrl, e);
     }
     return false;
   }

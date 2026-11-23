@@ -20,10 +20,12 @@ package org.openqa.selenium.bidi.browsingcontext;
 import java.lang.reflect.Type;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+@Beta
 public class BrowsingContextInfo {
 
   private static final Type LIST_OF_BROWSING_CONTEXT_INFO =

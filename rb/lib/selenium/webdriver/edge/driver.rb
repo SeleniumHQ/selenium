@@ -30,9 +30,9 @@ module Selenium
       class Driver < Chromium::Driver
         include LocalDriver
 
-        def initialize(options: nil, service: nil, url: nil, **)
-          initialize_local_driver(options, service, url) do |caps, driver_url|
-            super(caps: caps, url: driver_url, **)
+        def initialize(options: nil, service: nil, url: nil, http_client: nil, client_config: nil, **)
+          initialize_local_driver(options, service, url, http_client, client_config) do |caps, client|
+            super(caps: caps, http_client: client, **)
           end
         end
 

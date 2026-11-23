@@ -23,28 +23,23 @@ namespace OpenQA.Selenium.BiDi.Network;
 
 public static class NetworkEvent
 {
-    public static EventDescriptor<BeforeRequestSentEventArgs> BeforeRequestSent { get; } = EventDescriptor<BeforeRequestSentEventArgs>.Create<BeforeRequestSentParameters>(
+    public static EventDescriptor<BeforeRequestSentEventArgs> BeforeRequestSent { get; } = EventDescriptor<BeforeRequestSentEventArgs>.Create(
         "network.beforeRequestSent",
-        static (bidi, p) => new BeforeRequestSentEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Initiator, p.UserContext, p.Intercepts),
-        Default.BeforeRequestSentParameters);
+        Default.BeforeRequestSentEventArgs);
 
-    public static EventDescriptor<ResponseStartedEventArgs> ResponseStarted { get; } = EventDescriptor<ResponseStartedEventArgs>.Create<ResponseStartedParameters>(
+    public static EventDescriptor<ResponseStartedEventArgs> ResponseStarted { get; } = EventDescriptor<ResponseStartedEventArgs>.Create(
         "network.responseStarted",
-        static (bidi, p) => new ResponseStartedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
-        Default.ResponseStartedParameters);
+        Default.ResponseStartedEventArgs);
 
-    public static EventDescriptor<ResponseCompletedEventArgs> ResponseCompleted { get; } = EventDescriptor<ResponseCompletedEventArgs>.Create<ResponseCompletedParameters>(
+    public static EventDescriptor<ResponseCompletedEventArgs> ResponseCompleted { get; } = EventDescriptor<ResponseCompletedEventArgs>.Create(
         "network.responseCompleted",
-        static (bidi, p) => new ResponseCompletedEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.Response, p.UserContext, p.Intercepts),
-        Default.ResponseCompletedParameters);
+        Default.ResponseCompletedEventArgs);
 
-    public static EventDescriptor<FetchErrorEventArgs> FetchError { get; } = EventDescriptor<FetchErrorEventArgs>.Create<FetchErrorParameters>(
+    public static EventDescriptor<FetchErrorEventArgs> FetchError { get; } = EventDescriptor<FetchErrorEventArgs>.Create(
         "network.fetchError",
-        static (bidi, p) => new FetchErrorEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.ErrorText, p.UserContext, p.Intercepts),
-        Default.FetchErrorParameters);
+        Default.FetchErrorEventArgs);
 
-    public static EventDescriptor<AuthRequiredEventArgs> AuthRequired { get; } = EventDescriptor<AuthRequiredEventArgs>.Create<AuthRequiredParameters>(
+    public static EventDescriptor<AuthRequiredEventArgs> AuthRequired { get; } = EventDescriptor<AuthRequiredEventArgs>.Create(
         "network.authRequired",
-        static (bidi, p) => new AuthRequiredEventArgs(bidi, p.Context, p.IsBlocked, p.Navigation, p.RedirectCount, p.Request, p.Timestamp, p.UserContext, p.Intercepts, p.Response),
-        Default.AuthRequiredParameters);
+        Default.AuthRequiredEventArgs);
 }

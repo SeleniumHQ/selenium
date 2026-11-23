@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.bidi.speculation;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.Event;
 
+@Beta
 public class Speculation {
   public static Event<PrefetchStatusUpdatedParameters> prefetchStatusUpdated() {
     return new Event<>(

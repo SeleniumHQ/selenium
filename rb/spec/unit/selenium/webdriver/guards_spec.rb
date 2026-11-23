@@ -33,12 +33,12 @@ module Selenium
         end
 
         context 'with single guard' do
-          describe '#exclude' do
+          describe '#skip_if' do
             it 'ignores an unrecognized guard parameter', invalid: {condition: :guarded} do
               # pass
             end
 
-            it 'skips without running', exclude: {condition: :guarded} do
+            it 'skips without running', skip_if: {condition: :guarded} do
               raise 'This code will not get executed so it will not fail'
             end
           end
@@ -49,66 +49,110 @@ module Selenium
             end
           end
 
-          describe '#exclusive' do
-            it 'skips without running if it does not match', exclusive: {condition: :not_guarded} do
+          describe '#skip_unless' do
+            it 'skips without running if it does not match', skip_unless: {condition: :not_guarded} do
               raise 'This code will not get executed so it will not fail'
             end
 
-            it 'does not guard if it does match', exclusive: {condition: :guarded} do
+            it 'does not guard if it does match', skip_unless: {condition: :guarded} do
               # pass
             end
           end
 
-          describe '#only' do
-            it 'guards when value does not match', only: {condition: :not_guarded} do
+          describe '#pending_unless' do
+            it 'guards when value does not match', pending_unless: {condition: :not_guarded} do
               raise 'This code is executed but expected to fail'
             end
 
-            it 'does not guard when value matches', only: {condition: :guarded} do
+            it 'does not guard when value matches', pending_unless: {condition: :guarded} do
               # pass
             end
           end
 
-          describe '#except' do
-            it 'guards when value matches and test fails', except: {condition: :guarded} do
+          describe '#pending_if' do
+            it 'guards when value matches and test fails', pending_if: {condition: :guarded} do
               raise 'This code is executed but expected to fail'
             end
 
-            it 'does not guard when value does not match and test passes', except: {condition: :not_guarded} do
+            it 'does not guard when value does not match and test passes', pending_if: {condition: :not_guarded} do
               # pass
             end
           end
         end
 
-        context 'when multiple guards' do
-          it 'guards if neither only nor except match and test fails', except: {condition: :not_guarded},
-                                                                       only: {condition: :not_guarded} do
+        context 'with multiple guards' do
+          it 'guards if neither pending_unless nor pending_if match and test fails',
+             pending_if: {condition: :not_guarded},
+             pending_unless: {condition: :not_guarded} do
             raise 'This code is executed but expected to fail'
           end
 
-          it 'guards if both only and except match', except: {condition: :guarded}, only: {condition: :guarded} do
+          it 'guards if both pending_unless and pending_if match', pending_if: {condition: :guarded},
+                                                                   pending_unless: {condition: :guarded} do
             raise 'This code is executed but expected to fail'
           end
 
-          it 'guards if except matches and only does not', except: {condition: :guarded},
-                                                           only: {condition: :not_guarded} do
+          it 'guards if pending_if matches and pending_unless does not', pending_if: {condition: :guarded},
+                                                                         pending_unless: {condition: :not_guarded} do
             raise 'This code is executed but expected to fail'
           end
 
-          it 'does not guard if only matches and except does not', except: {condition: :not_guarded},
-                                                                   only: {condition: :guarded} do
+          it 'does not guard if pending_unless matches and pending_if does not',
+             pending_if: {condition: :not_guarded},
+             pending_unless: {condition: :guarded} do
             # pass
           end
 
-          it 'gives correct reason', except: [{condition: :guarded, reason: 'bug1'},
-                                              {condition: :not_guarded, reason: 'bug2'}] do
+          it 'gives correct reason', pending_if: [{condition: :guarded, reason: 'bug1'},
+                                                  {condition: :not_guarded, reason: 'bug2'}] do
             raise 'This code is executed but expected to fail'
           end
         end
 
-        context 'when array of hashes' do
-          it 'guards if any Hash value is satisfied', only: [{condition: :guarded}, {condition: :not_guarded}] do
+        context 'with array of hashes' do
+          it 'guards if any Hash value is satisfied',
+             pending_unless: [{condition: :guarded}, {condition: :not_guarded}] do
             raise 'This code is executed but expected to fail'
+          end
+        end
+
+        context 'with backwards-compatible aliases' do
+          it 'skips with #exclude', exclude: {condition: :guarded} do
+            raise 'This code will not get executed so it will not fail'
+          end
+
+          it 'skips with #exclusive when it does not match', exclusive: {condition: :not_guarded} do
+            raise 'This code will not get executed so it will not fail'
+          end
+
+          it 'is pending with #only when value does not match', only: {condition: :not_guarded} do
+            raise 'This code is executed but expected to fail'
+          end
+
+          it 'is pending with #except when value matches', except: {condition: :guarded} do
+            raise 'This code is executed but expected to fail'
+          end
+        end
+
+        context 'with guards on enclosing groups' do
+          describe 'guard on the describe block', skip_if: {condition: :guarded} do
+            it 'applies to an example without its own guard' do
+              raise 'This code will not get executed so it will not fail'
+            end
+          end
+
+          context 'with a guard on the context block', skip_unless: {condition: :not_guarded} do
+            it 'applies to an example without its own guard' do
+              raise 'This code will not get executed so it will not fail'
+            end
+          end
+
+          describe 'guard on an outer group', pending_if: {condition: :guarded} do
+            context 'with a nested inner group' do
+              it 'still inherits the outer guard' do
+                raise 'This code is executed but expected to fail'
+              end
+            end
           end
         end
       end

@@ -238,24 +238,21 @@ class DefaultSlotSelectorTest {
     URI uri = createUri();
 
     Set<Slot> slots = new HashSet<>();
-    stereotypes.forEach(
-        stereotype -> {
-          for (int i = 0; i < currentLoad; i++) {
-            Instant now = Instant.now();
-            slots.add(
-                new Slot(
-                    new SlotId(nodeId, UUID.randomUUID()),
-                    stereotype,
-                    now,
-                    new Session(
-                        new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now)));
-          }
+    stereotypes.forEach(stereotype -> {
+      for (int i = 0; i < currentLoad; i++) {
+        Instant now = Instant.now();
+        slots.add(
+            new Slot(
+                new SlotId(nodeId, UUID.randomUUID()),
+                stereotype,
+                now,
+                new Session(new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now)));
+      }
 
-          for (int i = 0; i < count - currentLoad; i++) {
-            slots.add(
-                new Slot(new SlotId(nodeId, UUID.randomUUID()), stereotype, Instant.EPOCH, null));
-          }
-        });
+      for (int i = 0; i < count - currentLoad; i++) {
+        slots.add(new Slot(new SlotId(nodeId, UUID.randomUUID()), stereotype, Instant.EPOCH, null));
+      }
+    });
 
     return new NodeStatus(
         nodeId,
@@ -279,11 +276,10 @@ class DefaultSlotSelectorTest {
     nodeBuilder.maximumConcurrentSessions(browsers.length);
 
     Stream.of(browsers)
-        .forEach(
-            browser -> {
-              Capabilities caps = new ImmutableCapabilities("browserName", browser);
-              nodeBuilder.add(caps, new TestSessionFactory((id, c) -> new Handler(c)));
-            });
+        .forEach(browser -> {
+          Capabilities caps = new ImmutableCapabilities("browserName", browser);
+          nodeBuilder.add(caps, new TestSessionFactory((id, c) -> new Handler(c)));
+        });
 
     Node myNode = nodeBuilder.build();
     return myNode.getStatus();
@@ -294,11 +290,10 @@ class DefaultSlotSelectorTest {
     LocalNode.Builder nodeBuilder =
         LocalNode.builder(tracer, bus, uri, uri, new Secret("cornish yarg"));
     nodeBuilder.maximumConcurrentSessions(stereotypes.size());
-    stereotypes.forEach(
-        stereotype -> {
-          Capabilities caps = new ImmutableCapabilities(stereotype);
-          nodeBuilder.add(caps, new TestSessionFactory((id, c) -> new Handler(c)));
-        });
+    stereotypes.forEach(stereotype -> {
+      Capabilities caps = new ImmutableCapabilities(stereotype);
+      nodeBuilder.add(caps, new TestSessionFactory((id, c) -> new Handler(c)));
+    });
     Node myNode = nodeBuilder.build();
     return myNode.getStatus();
   }

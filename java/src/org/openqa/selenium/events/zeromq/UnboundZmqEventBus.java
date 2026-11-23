@@ -89,22 +89,20 @@ class UnboundZmqEventBus implements EventBus {
     this.encodedSecret = builder.toString();
 
     this.socketPollingExecutor =
-        Executors.newSingleThreadExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setName("Event Bus Poller");
-              thread.setDaemon(true);
-              return thread;
-            });
+        Executors.newSingleThreadExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setName("Event Bus Poller");
+          thread.setDaemon(true);
+          return thread;
+        });
 
     this.socketPublishingExecutor =
-        Executors.newSingleThreadExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setName("Event Bus Publisher");
-              thread.setDaemon(true);
-              return thread;
-            });
+        Executors.newSingleThreadExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setName("Event Bus Publisher");
+          thread.setDaemon(true);
+          return thread;
+        });
 
     this.listenerNotificationExecutor =
         Executors.newFixedThreadPool(
@@ -126,32 +124,29 @@ class UnboundZmqEventBus implements EventBus {
             .withDelay(5, 10, ChronoUnit.SECONDS)
             .onFailedAttempt(
                 e -> LOG.log(Level.WARNING, String.format("%s failed", connectionMessage)))
-            .onRetry(
-                e ->
-                    LOG.log(
-                        Level.WARNING,
-                        String.format("Failure #%s. Retrying.", e.getAttemptCount())))
+            .onRetry(e ->
+                LOG.log(
+                    Level.WARNING, String.format("Failure #%s. Retrying.", e.getAttemptCount())))
             .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."))
             .build();
 
     // Access to the zmq socket is safe here: no threads.
     ZMQ.Socket[] pubSub =
         Failsafe.with(retryPolicy)
-            .get(
-                () -> {
-                  ZMQ.Socket sub = context.createSocket(SocketType.SUB);
-                  sub.setIPv6(isSubAddressIPv6(publishConnection));
-                  ZmqUtils.configureHeartbeat(sub, heartbeatPeriod, "SUB");
-                  sub.connect(publishConnection);
-                  sub.subscribe(new byte[0]);
+            .get(() -> {
+              ZMQ.Socket sub = context.createSocket(SocketType.SUB);
+              sub.setIPv6(isSubAddressIPv6(publishConnection));
+              ZmqUtils.configureHeartbeat(sub, heartbeatPeriod, "SUB");
+              sub.connect(publishConnection);
+              sub.subscribe(new byte[0]);
 
-                  ZMQ.Socket pub = context.createSocket(SocketType.PUB);
-                  pub.setIPv6(isSubAddressIPv6(subscribeConnection));
-                  ZmqUtils.configureHeartbeat(pub, heartbeatPeriod, "PUB");
-                  pub.connect(subscribeConnection);
+              ZMQ.Socket pub = context.createSocket(SocketType.PUB);
+              pub.setIPv6(isSubAddressIPv6(subscribeConnection));
+              ZmqUtils.configureHeartbeat(pub, heartbeatPeriod, "PUB");
+              pub.connect(subscribeConnection);
 
-                  return new ZMQ.Socket[] {pub, sub};
-                });
+              return new ZMQ.Socket[] {pub, sub};
+            });
     this.pub = pubSub[0];
     this.sub = pubSub[1];
 
@@ -215,13 +210,12 @@ class UnboundZmqEventBus implements EventBus {
   public void fire(Event event) {
     Require.nonNull("Event to send", event);
 
-    socketPublishingExecutor.execute(
-        () -> {
-          pub.sendMore(event.getType().getName().getBytes(UTF_8));
-          pub.sendMore(encodedSecret.getBytes(UTF_8));
-          pub.sendMore(event.getId().toString().getBytes(UTF_8));
-          pub.send(event.getRawData().getBytes(UTF_8));
-        });
+    socketPublishingExecutor.execute(() -> {
+      pub.sendMore(event.getType().getName().getBytes(UTF_8));
+      pub.sendMore(encodedSecret.getBytes(UTF_8));
+      pub.sendMore(event.getId().toString().getBytes(UTF_8));
+      pub.send(event.getRawData().getBytes(UTF_8));
+    });
   }
 
   @Override
@@ -324,17 +318,14 @@ class UnboundZmqEventBus implements EventBus {
 
     private void notifyListeners(EventName eventName, Event event) {
       List<Consumer<Event>> eventListeners = listeners.getOrDefault(eventName, new ArrayList<>());
-      eventListeners.forEach(
-          listener ->
-              listenerNotificationExecutor.submit(
-                  () -> {
-                    try {
-                      listener.accept(event);
-                    } catch (Exception e) {
-                      LOG.log(
-                          Level.WARNING, e, () -> "Caught exception from listener: " + listener);
-                    }
-                  }));
+      eventListeners.forEach(listener ->
+          listenerNotificationExecutor.submit(() -> {
+            try {
+              listener.accept(event);
+            } catch (Exception e) {
+              LOG.log(Level.WARNING, e, () -> "Caught exception from listener: " + listener);
+            }
+          }));
     }
   }
 }

@@ -63,7 +63,7 @@ def _dist_aspect_impl(target, ctx):
         fail("Unsure how to handle expanding source jars for " + target)
 
     current = DistInfo(
-        target = str(target.label),
+        target = target.label,
         name = name,
         binary_jars = depset(binary_jars),
         source_jars = depset(source_jars),
@@ -88,13 +88,14 @@ dist_aspect = aspect(
     ],
 )
 
-def _is_third_party(prefixes, target):
+def _is_third_party(prefixes, label):
     for prefix in prefixes:
-        if target.startswith(prefix):
+        if label.repo_name == prefix.repo_name and label.package.startswith(prefix.package):
             return True
     return False
 
 def separate_first_and_third_party(third_party_prefixes, dist_zip_infos):
+    prefixes = [Label(prefix + ":__pkg__") for prefix in third_party_prefixes]
     combined = depset(transitive = [i.dist_infos for i in dist_zip_infos])
 
     first_party = []
@@ -103,7 +104,7 @@ def separate_first_and_third_party(third_party_prefixes, dist_zip_infos):
     for dist_zip_info in combined.to_list():
         if not dist_zip_info.name:
             continue
-        if _is_third_party(third_party_prefixes, dist_zip_info.target):
+        if _is_third_party(prefixes, dist_zip_info.target):
             third_party.append(dist_zip_info)
         else:
             first_party.append(dist_zip_info)

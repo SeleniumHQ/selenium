@@ -20,20 +20,19 @@
 using System.IO;
 
 using OpenQA.Selenium.BiDi.WebExtension;
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Tests.BiDi.WebExtension;
 
-[IgnoreBrowser(Infrastructure.Browser.Chrome, ChromiumIgnoreReason)]
-[IgnoreBrowser(Infrastructure.Browser.Edge, ChromiumIgnoreReason)]
 internal class WebExtensionTests : BiDiTestFixture
 {
-    private const string ChromiumIgnoreReason = """
-        The following test suite wants to set driver arguments via Options, but it breaks CDP/DevTools tests.
-        The desired arguments (for Chromium only?):
-        --enable-unsafe-extension-debugging
-        --remote-debugging-pipe
-        Ignoring these tests for now. Hopefully https://github.com/SeleniumHQ/selenium/issues/15536 will be resolved soon.
-        """;
+    protected override void ConfigureDriverOptions(DriverOptions options)
+    {
+        if (options is ChromiumOptions chromiumOptions)
+        {
+            chromiumOptions.AddArguments("--enable-unsafe-extension-debugging", "--remote-debugging-pipe");
+        }
+    }
 
     [Test]
     public async Task CanInstallPathWebExtension()
@@ -47,8 +46,8 @@ internal class WebExtensionTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Archived and Base64 extensions are not supported?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Archived and Base64 extensions are not supported?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Archived and Base64 extensions are not supported?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Archived and Base64 extensions are not supported?")]
     public async Task CanInstallArchiveWebExtension()
     {
         string path = LocateRelativePath("common/extensions/webextensions-selenium-example.zip");
@@ -60,8 +59,8 @@ internal class WebExtensionTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Archived and Base64 extensions are not supported?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Archived and Base64 extensions are not supported?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Archived and Base64 extensions are not supported?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Archived and Base64 extensions are not supported?")]
     public async Task CanInstallBase64WebExtension()
     {
         var path = LocateRelativePath("common/extensions/webextensions-selenium-example.zip");

@@ -36,6 +36,14 @@ suite(
     })
 
     describe('script()', function () {
+      async function waitForLogEntry(getLogEntry, message) {
+        await driver.wait(() => getLogEntry() != null, 5000, message)
+      }
+
+      async function waitForLogText(logs, text) {
+        await driver.wait(() => logs.includes(text), 5000, `Timed out waiting for console log "${text}"`)
+      }
+
       it('can listen to console log', async function () {
         let log = null
         const handler = await driver.script().addConsoleMessageHandler((logEntry) => {
@@ -44,6 +52,7 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         await driver.findElement({ id: 'consoleLog' }).click()
+        await waitForLogEntry(() => log, 'Timed out waiting for console log entry')
 
         assert.equal(log.text, 'Hello, world!')
         assert.equal(log.realm, null)
@@ -62,6 +71,7 @@ suite(
 
         await driver.get(Pages.logEntryAdded)
         await driver.findElement({ id: 'jsException' }).click()
+        await waitForLogEntry(() => log, 'Timed out waiting for JavaScript error log entry')
 
         assert.equal(log.text, 'Error: Not working')
         assert.equal(log.type, 'javascript')
@@ -80,9 +90,9 @@ suite(
       })
 
       it('can listen to dom mutations', async function () {
-        let message = null
+        const mutations = []
         await driver.script().addDomMutationHandler((m) => {
-          message = m
+          mutations.push(m)
         })
 
         await driver.get(fileServer.Pages.dynamicPage)
@@ -91,6 +101,18 @@ suite(
         await element.click()
         let revealed = driver.findElement({ id: 'revealed' })
         await driver.wait(until.elementIsVisible(revealed), 5000)
+
+        // Firefox's click also mutates the clicked button's style, so the last mutation may not be the reveal.
+        const revealedId = await revealed.getId()
+        const message = await driver.wait(
+          async () => {
+            for (const m of mutations) {
+              if ((await m.element.getId()) === revealedId) return m
+            }
+          },
+          5000,
+          'Timed out waiting for DOM mutation on revealed element',
+        )
 
         assert.strictEqual(message['attribute_name'], 'style')
         assert.strictEqual(message['current_value'], '')
@@ -124,6 +146,7 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
+        await waitForLogEntry(() => log, 'Timed out waiting for pinned script log entry')
 
         assert.equal(log.text, 'Hello!')
       })
@@ -138,6 +161,8 @@ suite(
         })
 
         await driver.get(Pages.logEntryAdded)
+        await waitForLogText(logs, 'Hello')
+        await waitForLogText(logs, 'World')
         assert.ok(logs.includes('Hello'), `[${logs}] should contain "Hello"`)
         assert.ok(logs.includes('World'), `[${logs}] should contain "World"`)
 
@@ -145,6 +170,7 @@ suite(
 
         logs.length = 0
         await driver.get(Pages.logEntryAdded)
+        await waitForLogText(logs, 'World')
         assert.ok(logs.includes('World'), `[${logs}] should contain "World"`)
         assert.ok(!logs.includes('Hello'), `[${logs}] should not contain "Hello"`)
       })

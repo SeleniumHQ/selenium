@@ -18,12 +18,14 @@
 package org.openqa.selenium.bidi.webextension;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class WebExtension {
   private final BiDi bidi;
 

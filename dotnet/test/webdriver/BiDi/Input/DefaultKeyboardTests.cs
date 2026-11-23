@@ -24,7 +24,7 @@
 //    [Test]
 //    public async Task TestBasicKeyboardInput()
 //    {
-//        driver.Url = UrlBuilder.WhereIs("single_text_input.html");
+//        driver.Url = Urls.WhereIs("single_text_input.html");
 
 //        var input = (await context.LocateNodesAsync(new Locator.Css("#textInput")))[0];
 
@@ -40,7 +40,7 @@
 //    [Test]
 //    public async Task TestSendingKeyDownOnly()
 //    {
-//        driver.Url = UrlBuilder.WhereIs("key_logger.html");
+//        driver.Url = Urls.WhereIs("key_logger.html");
 
 //        var input = (await context.LocateNodesAsync(new Locator.Css("#theworks")))[0];
 
@@ -56,7 +56,7 @@
 //    [Test]
 //    public async Task TestSendingKeyUp()
 //    {
-//        driver.Url = UrlBuilder.WhereIs("key_logger.html");
+//        driver.Url = Urls.WhereIs("key_logger.html");
 
 //        var input = (await context.LocateNodesAsync(new Locator.Css("#theworks")))[0];
 
@@ -73,7 +73,7 @@
 //    [Test]
 //    public async Task TestSendingKeysWithShiftPressed()
 //    {
-//        driver.Url = UrlBuilder.WhereIs("key_logger.html");
+//        driver.Url = Urls.WhereIs("key_logger.html");
 
 //        var input = (await context.LocateNodesAsync(new Locator.Css("#theworks")))[0];
 
@@ -92,7 +92,7 @@
 //    [Test]
 //    public async Task TestSendingKeysToActiveElement()
 //    {
-//        driver.Url = UrlBuilder.WhereIs("bodyTypingTest.html");
+//        driver.Url = Urls.BodyTypingPage;
 
 //        await context.Input.PerformActionsAsync(new SequentialSourceActions().Type("ab"));
 

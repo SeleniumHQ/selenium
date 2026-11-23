@@ -89,6 +89,12 @@ public class ShadowRoot : ISearchContext, IWrapsDriver, IWebDriverObjectReferenc
             throw new ArgumentNullException(nameof(by), "by cannot be null");
         }
 
+        // Relative locators are resolved by a script, not by a find command.
+        if (by is RelativeBy)
+        {
+            return by.FindElement(this);
+        }
+
         Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("id", this.shadowRootId);
         parameters.Add("using", by.Mechanism);
@@ -111,6 +117,12 @@ public class ShadowRoot : ISearchContext, IWrapsDriver, IWebDriverObjectReferenc
         if (by is null)
         {
             throw new ArgumentNullException(nameof(by), "by cannot be null");
+        }
+
+        // Relative locators are resolved by a script, not by a find command.
+        if (by is RelativeBy)
+        {
+            return by.FindElements(this);
         }
 
         Dictionary<string, object?> parameters = new Dictionary<string, object?>();

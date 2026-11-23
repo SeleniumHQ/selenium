@@ -50,7 +50,6 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   public static void shouldTestBeRunAtAll() {
     // Until Firefox can initialise the Fetch domain, we need this check
     assumeThat(Browser.detect()).isNotEqualTo(Browser.FIREFOX);
-    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
 
   @BeforeEach
@@ -63,14 +62,12 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
 
     Route route =
         Route.matching(req -> req.getMethod() == HttpMethod.OPTIONS)
-            .to(
-                () ->
-                    req ->
-                        new HttpResponse()
-                            .addHeader(
-                                "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH")
-                            .addHeader("Access-Control-Allow-Origin", "*")
-                            .addHeader("Access-Control-Allow-Headers", "*"));
+            .to(() ->
+                req ->
+                    new HttpResponse()
+                        .addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH")
+                        .addHeader("Access-Control-Allow-Origin", "*")
+                        .addHeader("Access-Control-Allow-Headers", "*"));
 
     appServer = new NettyAppServer(route);
     appServer.start();
@@ -88,23 +85,21 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
             localDriver,
             Route.matching(
                     req -> req.getMethod() == method || req.getMethod() == HttpMethod.OPTIONS)
-                .to(
-                    () ->
-                        req -> {
-                          if (req.getMethod() == HttpMethod.OPTIONS) {
-                            return new HttpResponse()
-                                .setStatus(200)
-                                .addHeader("Access-Control-Allow-Origin", "*")
-                                .addHeader(
-                                    "Access-Control-Allow-Methods",
-                                    "GET, POST, PUT, DELETE, PATCH");
-                          }
-                          seen.set(true);
-                          return new HttpResponse()
-                              .setStatus(200)
-                              .addHeader("Access-Control-Allow-Origin", "*")
-                              .setContent(utf8String("Received response for " + method));
-                        }));
+                .to(() ->
+                    req -> {
+                      if (req.getMethod() == HttpMethod.OPTIONS) {
+                        return new HttpResponse()
+                            .setStatus(200)
+                            .addHeader("Access-Control-Allow-Origin", "*")
+                            .addHeader(
+                                "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH");
+                      }
+                      seen.set(true);
+                      return new HttpResponse()
+                          .setStatus(200)
+                          .addHeader("Access-Control-Allow-Origin", "*")
+                          .setContent(utf8String("Received response for " + method));
+                    }));
 
     JavascriptExecutor js = (JavascriptExecutor) localDriver;
     String script =

@@ -26,7 +26,7 @@ public interface IScriptModule
     Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax("javascript")] string functionDeclaration, AddPreloadScriptOptions? options = null, CancellationToken cancellationToken = default);
     Task<EvaluateResult> CallFunctionAsync([StringSyntax("javascript")] string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null, CancellationToken cancellationToken = default);
     Task<TResult?> CallFunctionAsync<TResult>([StringSyntax("javascript")] string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null, CancellationToken cancellationToken = default);
-    Task<DisownResult> DisownAsync(IEnumerable<Handle> handles, Target target, DisownOptions? options = null, CancellationToken cancellationToken = default);
+    Task<DisownResult> DisownAsync(ImmutableArray<Handle> handles, Target target, DisownOptions? options = null, CancellationToken cancellationToken = default);
     Task<EvaluateResult> EvaluateAsync([StringSyntax("javascript")] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default);
     Task<TResult?> EvaluateAsync<TResult>([StringSyntax("javascript")] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default);
     Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null, CancellationToken cancellationToken = default);

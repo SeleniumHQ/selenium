@@ -53,6 +53,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -110,23 +111,20 @@ public class GraphqlHandler implements HttpHandler, AutoCloseable {
 
     graphQl =
         GraphQL.newGraphQL(schema)
-            .preparsedDocumentProvider(
-                (executionInput, computeFunction) -> {
-                  String query = executionInput.getQuery();
+            .preparsedDocumentProvider((executionInput, computeFunction) -> {
+              String query = executionInput.getQuery();
 
-                  // Query size validation with bypass for oversized queries
-                  if (query.getBytes(StandardCharsets.UTF_8).length > MAX_QUERY_SIZE_BYTES) {
-                    // Bypass cache for oversized queries to prevent cache pollution
-                    return CompletableFuture.supplyAsync(
-                        () -> computeFunction.apply(executionInput));
-                  }
+              // Query size validation with bypass for oversized queries
+              if (query.getBytes(StandardCharsets.UTF_8).length > MAX_QUERY_SIZE_BYTES) {
+                // Bypass cache for oversized queries to prevent cache pollution
+                return CompletableFuture.supplyAsync(() -> computeFunction.apply(executionInput));
+              }
 
-                  return cache.get(
-                      query,
-                      key ->
-                          CompletableFuture.supplyAsync(
-                              () -> computeFunction.apply(executionInput)));
-                })
+              return cache.get(
+                  query,
+                  key ->
+                      CompletableFuture.supplyAsync(() -> computeFunction.apply(executionInput)));
+            })
             .build();
   }
 
@@ -179,7 +177,7 @@ public class GraphqlHandler implements HttpHandler, AutoCloseable {
         response =
             new HttpResponse()
                 .addHeader("Content-Type", JSON_UTF_8)
-                .setContent(utf8String(JSON.toJson(result.toSpecification())));
+                .setContent(utf8String(toCompactJson(result.toSpecification())));
 
         HTTP_RESPONSE.accept(span, response);
         HTTP_RESPONSE_EVENT.accept(attributeMap, response);
@@ -191,7 +189,7 @@ public class GraphqlHandler implements HttpHandler, AutoCloseable {
       response =
           new HttpResponse()
               .setStatus(HTTP_INTERNAL_ERROR)
-              .setContent(utf8String(JSON.toJson(result.getErrors())));
+              .setContent(utf8String(toCompactJson(result.getErrors())));
       HTTP_RESPONSE.accept(span, response);
       HTTP_RESPONSE_EVENT.accept(attributeMap, response);
 
@@ -211,12 +209,11 @@ public class GraphqlHandler implements HttpHandler, AutoCloseable {
     cache
         .asMap()
         .values()
-        .forEach(
-            future -> {
-              if (!future.isDone()) {
-                future.cancel(true);
-              }
-            });
+        .forEach(future -> {
+          if (!future.isDone()) {
+            future.cancel(true);
+          }
+        });
 
     // Invalidate and clean cache
     cache.invalidateAll();
@@ -270,5 +267,13 @@ public class GraphqlHandler implements HttpHandler, AutoCloseable {
       long boundedWeight = Math.min(totalWeight, maxSingleEntryWeight);
       return (int) Math.min(boundedWeight, Integer.MAX_VALUE);
     }
+  }
+
+  private static String toCompactJson(Object value) {
+    StringBuilder json = new StringBuilder();
+    try (JsonOutput out = JSON.newOutput(json)) {
+      out.setPrettyPrint(false).write(value);
+    }
+    return json.toString();
   }
 }

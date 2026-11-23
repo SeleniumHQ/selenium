@@ -126,14 +126,13 @@ class SessionMapTest {
     bus.fire(new SessionClosedEvent(expected.getId()));
 
     Wait<SessionMap> wait = new FluentWait<>(local).withTimeout(ofSeconds(2));
-    wait.until(
-        sessions -> {
-          try {
-            sessions.get(expected.getId());
-            return false;
-          } catch (NoSuchSessionException e) {
-            return true;
-          }
-        });
+    wait.until(sessions -> {
+      try {
+        sessions.get(expected.getId());
+        return false;
+      } catch (NoSuchSessionException e) {
+        return true;
+      }
+    });
   }
 }

@@ -29,6 +29,7 @@ mod common;
 #[case("../テスト")]
 fn cache_path_test(#[case] tmp_cache_folder_name: String) {
     let mut cmd = get_selenium_manager();
+    cmd.env_remove("SE_CACHE_PATH");
     cmd.args([
         "--browser",
         "chrome",

@@ -49,11 +49,10 @@ class LoggingTest extends JupiterTestBase {
     AtomicReference<ConsoleEvent> seen = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
     logger.onLogEvent(
-        consoleEvent(
-            entry -> {
-              seen.set(entry);
-              latch.countDown();
-            }));
+        consoleEvent(entry -> {
+          seen.set(entry);
+          latch.countDown();
+        }));
 
     driver.get(pages.javascriptPage);
     ((JavascriptExecutor) driver).executeScript("console.log('I like cheese');");
@@ -69,11 +68,10 @@ class LoggingTest extends JupiterTestBase {
     AtomicReference<DomMutationEvent> seen = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
     logger.onLogEvent(
-        domMutation(
-            mutation -> {
-              seen.set(mutation);
-              latch.countDown();
-            }));
+        domMutation(mutation -> {
+          seen.set(mutation);
+          latch.countDown();
+        }));
 
     driver.get(pages.simpleTestPage);
     WebElement span = driver.findElement(By.id("span"));

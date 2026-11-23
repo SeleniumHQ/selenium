@@ -167,12 +167,10 @@ class GraphqlHandlerTest {
     new Thread(() -> queue.addToQueue(request)).start();
     new FluentWait<>(request)
         .withTimeout(Duration.ofSeconds(5))
-        .until(
-            r ->
-                queue.getQueueContents().stream()
-                    .anyMatch(
-                        sessionRequestCapability ->
-                            sessionRequestCapability.getRequestId().equals(r.getRequestId())));
+        .until(r ->
+            queue.getQueueContents().stream()
+                .anyMatch(sessionRequestCapability ->
+                    sessionRequestCapability.getRequestId().equals(r.getRequestId())));
   }
 
   @Test
@@ -303,10 +301,9 @@ class GraphqlHandlerTest {
         LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new org.openqa.selenium.grid.data.Session(
-                            id, nodeUri, stereotype, caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new org.openqa.selenium.grid.data.Session(
+                        id, nodeUri, stereotype, caps, Instant.now())))
             .build();
 
     distributor =
@@ -353,10 +350,9 @@ class GraphqlHandlerTest {
         LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new org.openqa.selenium.grid.data.Session(
-                            id, nodeUri, stereotype, caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new org.openqa.selenium.grid.data.Session(
+                        id, nodeUri, stereotype, caps, Instant.now())))
             .build();
 
     distributor =
@@ -431,10 +427,9 @@ class GraphqlHandlerTest {
         LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new org.openqa.selenium.grid.data.Session(
-                            id, nodeUri, stereotype, caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new org.openqa.selenium.grid.data.Session(
+                        id, nodeUri, stereotype, caps, Instant.now())))
             .build();
 
     distributor =
@@ -507,10 +502,9 @@ class GraphqlHandlerTest {
         LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new org.openqa.selenium.grid.data.Session(
-                            id, nodeUri, stereotype, caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new org.openqa.selenium.grid.data.Session(
+                        id, nodeUri, stereotype, caps, Instant.now())))
             .build();
 
     distributor =
@@ -591,10 +585,9 @@ class GraphqlHandlerTest {
         LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new org.openqa.selenium.grid.data.Session(
-                            id, nodeUri, stereotype, caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new org.openqa.selenium.grid.data.Session(
+                        id, nodeUri, stereotype, caps, Instant.now())))
             .build();
 
     distributor =
@@ -652,10 +645,9 @@ class GraphqlHandlerTest {
         LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new org.openqa.selenium.grid.data.Session(
-                            id, nodeUri, stereotype, caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new org.openqa.selenium.grid.data.Session(
+                        id, nodeUri, stereotype, caps, Instant.now())))
             .build();
 
     distributor.add(node);
@@ -691,10 +683,9 @@ class GraphqlHandlerTest {
         LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new org.openqa.selenium.grid.data.Session(
-                            id, nodeUri, stereotype, caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new org.openqa.selenium.grid.data.Session(
+                        id, nodeUri, stereotype, caps, Instant.now())))
             .build();
 
     distributor.add(node);

@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Refresh pinned browsers/drivers; when a new stable Chrome major has no checked-in DevTools
+# version, regenerate CDP so the two never drift. Writes the job "output" as the PR title suffix:
+# "(major)" on a Chrome/Firefox major bump (CI then runs the full Ruby matrix) and "with CDP" when
+# DevTools was regenerated. Both compare against trunk, not HEAD, so an update stacked on the open
+# PR branch keeps the suffix an earlier run set.
+#
+# set -e is load-bearing: if update_cdp fails the job fails before "output" is written, so the
+# PR is not published and a Chrome bump can never land ahead of its CDP.
+set -euo pipefail
+
+git fetch --no-tags --depth=1 origin trunk:refs/remotes/origin/trunk
+old="$RUNNER_TEMP/repositories-old.bzl"
+git show origin/trunk:common/repositories.bzl > "$old"
+
+bazel run //scripts:pinned_browsers
+
+# Stable major version of one family in a repositories.bzl; $1 = file, $2 = ERE matching
+# "<download-url marker><major digits>". Stable is the lowest pinned major (beta runs ahead), so a
+# beta-only bump never counts.
+stable_major_for() { grep -oE "$2" "$1" | grep -oE '[0-9]+$' | sort -un | head -n1; }
+
+# Only Chrome and Firefox majors warrant the full matrix: they ship ~monthly and are the likeliest
+# to break the bindings. Edge tracks Chromium; driver-only and build/patch bumps do not count. Each
+# ERE matches the marker preceding the major in the download URLs pinned in repositories.bzl.
+declare -A families=(
+  [chrome]='chrome-for-testing-public/[0-9]+'
+  [firefox]='(firefox/releases/|Firefox%20)[0-9]+'
+)
+
+# Tolerate a no-match (|| true) so a marker/format change in repositories.bzl fails with a clear
+# message, not a bare pipefail exit.
+chrome=$(stable_major_for common/repositories.bzl "${families[chrome]}") || true
+if [ -z "$chrome" ]; then
+  echo "::error::Could not parse a stable Chrome major from common/repositories.bzl (pattern: ${families[chrome]})" >&2
+  exit 1
+fi
+echo "Stable Chrome major: v${chrome}"
+
+# Regenerate CDP when the stable Chrome major has no checked-in devtools dir.
+if [ -d "common/devtools/chromium/v${chrome}" ]; then
+  echo "DevTools for Chrome v${chrome} already present; skipping CDP regeneration"
+else
+  echo "No DevTools for Chrome v${chrome}; regenerating CDP"
+  bazel run //scripts:update_cdp -- --chrome_channel=Stable
+  # update_cdp resolves the Stable channel itself; verify it produced this major's dir so a Stable
+  # release mid-run can't leave us pinning Chrome ahead of its DevTools (blocks the PR if it did).
+  if [ ! -d "common/devtools/chromium/v${chrome}" ]; then
+    echo "::error::CDP regeneration did not produce common/devtools/chromium/v${chrome}; refusing to pin Chrome ahead of its DevTools" >&2
+    exit 1
+  fi
+  # the selenium-devtools version has updated, need to re-resolve the lockfile
+  bazel run //rb:bundle-lock
+fi
+
+major=false
+for pattern in "${families[@]}"; do
+  if [ "$(stable_major_for "$old" "$pattern")" != "$(stable_major_for common/repositories.bzl "$pattern")" ]; then
+    major=true
+    break
+  fi
+done
+
+output=""
+[ "$major" = true ] && output="(major)"
+git cat-file -e "origin/trunk:common/devtools/chromium/v${chrome}" 2>/dev/null || output="${output:+$output }with CDP"
+echo "Title suffix: ${output:-none}"
+echo "output=$output" >> "$GITHUB_OUTPUT"

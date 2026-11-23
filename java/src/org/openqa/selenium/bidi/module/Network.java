@@ -23,10 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.ConverterFunctions;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
@@ -39,6 +41,7 @@ import org.openqa.selenium.bidi.network.ProvideResponseParameters;
 import org.openqa.selenium.bidi.network.ResponseDetails;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class Network implements AutoCloseable {
 
   private final Set<String> browsingContextIds;
@@ -85,7 +88,7 @@ public class Network implements AutoCloseable {
         new Command<>(
             "network.addIntercept",
             parameters.toMap(),
-            jsonInput -> jsonInput.readMapElement("intercept")));
+            ConverterFunctions.map("intercept", String.class)));
   }
 
   public void removeIntercept(String interceptId) {
@@ -184,7 +187,7 @@ public class Network implements AutoCloseable {
     }
   }
 
-  public long onAuthRequired(Consumer<ResponseDetails> consumer) {
+  public String onAuthRequired(Consumer<ResponseDetails> consumer) {
     if (browsingContextIds.isEmpty()) {
       return this.bidi.addListener(authRequired, consumer);
     } else {
@@ -195,6 +198,7 @@ public class Network implements AutoCloseable {
   @Override
   public void close() {
     this.bidi.clearListener(beforeRequestSentEvent);
+    this.bidi.clearListener(fetchErrorEvent);
     this.bidi.clearListener(responseStarted);
     this.bidi.clearListener(responseCompleted);
     this.bidi.clearListener(authRequired);

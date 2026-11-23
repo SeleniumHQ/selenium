@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.browser;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public enum ClientWindowState {
   FULLSCREEN("fullscreen"),
   MAXIMIZED("maximized"),

@@ -10,7 +10,7 @@ csharp_library(
             "obj/**",
         ],
     ),
-    out = "Testing.WebServer",
+    out = "Selenium.Testing.WebServer",
     data = [
         "//common/src/web",
     ],

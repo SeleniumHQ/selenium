@@ -1,0 +1,151 @@
+{
+  "role": "document",
+  "name": "Hidden content",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "shown",
+      "children": [
+        {
+          "role": "text",
+          "name": "Shown",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "visible-again",
+      "children": [
+        {
+          "role": "text",
+          "name": "visible again",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "offscreen",
+      "children": [
+        {
+          "role": "text",
+          "name": "Off-screen but rendered",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "clip",
+      "children": [
+        {
+          "role": "text",
+          "name": "Visually hidden text",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "transparent",
+      "children": [
+        {
+          "role": "text",
+          "name": "Transparent but rendered",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "group",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "closed",
+      "children": [
+        {
+          "role": "button",
+          "name": "More",
+          "description": "",
+          "states": {
+            "expanded": false
+          },
+          "element": "closed-summary",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "group",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "open",
+      "children": [
+        {
+          "role": "button",
+          "name": "Less",
+          "description": "",
+          "states": {
+            "expanded": true
+          },
+          "element": "open-summary",
+          "children": []
+        },
+        {
+          "role": "paragraph",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "expanded-para",
+          "children": [
+            {
+              "role": "text",
+              "name": "Expanded",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "region",
+      "name": "Skipped",
+      "description": "",
+      "states": {},
+      "element": "cv",
+      "children": []
+    }
+  ]
+}

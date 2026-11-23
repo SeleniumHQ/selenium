@@ -114,15 +114,14 @@ public class Bootstrap {
 
     URL[] jarUrls =
         jars.stream()
-            .map(
-                file -> {
-                  try {
-                    return file.toURI().toURL();
-                  } catch (MalformedURLException e) {
-                    LOG.log(Level.SEVERE, "Unable to find JAR file " + file, e);
-                    throw new UncheckedIOException(e);
-                  }
-                })
+            .map(file -> {
+              try {
+                return file.toURI().toURL();
+              } catch (MalformedURLException e) {
+                LOG.log(Level.SEVERE, "Unable to find JAR file " + file, e);
+                throw new UncheckedIOException(e);
+              }
+            })
             .toArray(URL[]::new);
 
     return AccessController.doPrivileged(

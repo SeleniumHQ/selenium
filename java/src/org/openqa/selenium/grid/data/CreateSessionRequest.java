@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.data;
 
 import static java.util.Collections.unmodifiableSet;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -26,8 +25,6 @@ import java.util.Set;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.Dialect;
 
 public class CreateSessionRequest {
@@ -36,11 +33,15 @@ public class CreateSessionRequest {
   private final Capabilities capabilities;
   private final Map<String, Object> metadata;
 
+  // Constructor parameter names are used as JSON field names.
   public CreateSessionRequest(
-      Set<Dialect> downstreamDialects, Capabilities capabilities, Map<String, Object> metadata) {
+      Set<Dialect> downstreamDialects,
+      Capabilities desiredCapabilities,
+      Map<String, Object> metadata) {
     this.downstreamDialects =
         unmodifiableSet(new HashSet<>(Require.nonNull("Downstream dialects", downstreamDialects)));
-    this.capabilities = ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities));
+    this.capabilities =
+        ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", desiredCapabilities));
     this.metadata = Map.copyOf(Require.nonNull("Metadata", metadata));
   }
 
@@ -54,36 +55,6 @@ public class CreateSessionRequest {
 
   public Map<String, Object> getMetadata() {
     return metadata;
-  }
-
-  @SuppressWarnings({"unused", "DataFlowIssue"})
-  private static CreateSessionRequest fromJson(JsonInput input) {
-    Set<Dialect> downstreamDialects = null;
-    Capabilities capabilities = null;
-    Map<String, Object> metadata = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "desiredCapabilities":
-          capabilities = input.read(Capabilities.class);
-          break;
-
-        case "downstreamDialects":
-          downstreamDialects = input.read(new TypeToken<Set<Dialect>>() {}.getType());
-          break;
-
-        case "metadata":
-          metadata = input.read(MAP_TYPE);
-          break;
-
-        default:
-          input.skipValue();
-      }
-    }
-    input.endObject();
-
-    return new CreateSessionRequest(downstreamDialects, capabilities, metadata);
   }
 
   public String toString() {

@@ -484,12 +484,11 @@ class TracerTest {
     try (Span parent = tracer.getCurrentContext().createSpan("parent")) {
       Future<?> future =
           Executors.newSingleThreadExecutor()
-              .submit(
-                  () -> {
-                    try (Span child = parent.createSpan("child")) {
-                      child.setAttribute("cheese", "gruyere");
-                    }
-                  });
+              .submit(() -> {
+                try (Span child = parent.createSpan("child")) {
+                  child.setAttribute("cheese", "gruyere");
+                }
+              });
       future.get();
     }
 
@@ -534,23 +533,22 @@ class TracerTest {
 
       Future<?> future =
           Executors.newSingleThreadExecutor()
-              .submit(
-                  () -> {
-                    Span child = null;
-                    try {
-                      child = parent.createSpan("child");
-                      assertThat(child.getId()).isEqualTo(tracer.getCurrentContext().getId());
-                    } finally {
-                      assert child != null;
-                      child.close();
-                    }
+              .submit(() -> {
+                Span child = null;
+                try {
+                  child = parent.createSpan("child");
+                  assertThat(child.getId()).isEqualTo(tracer.getCurrentContext().getId());
+                } finally {
+                  assert child != null;
+                  child.close();
+                }
 
-                    // At this point, the parent span is undefined, but shouldn't be null
+                // At this point, the parent span is undefined, but shouldn't be null
 
-                    assertThat(parent.getId()).isNotEqualTo(tracer.getCurrentContext().getId());
-                    assertThat(child.getId()).isNotEqualTo(tracer.getCurrentContext().getId());
-                    assertThat(tracer.getCurrentContext().getId()).isNotNull();
-                  });
+                assertThat(parent.getId()).isNotEqualTo(tracer.getCurrentContext().getId());
+                assertThat(child.getId()).isNotEqualTo(tracer.getCurrentContext().getId());
+                assertThat(tracer.getCurrentContext().getId()).isNotNull();
+              });
 
       future.get();
 
@@ -568,42 +566,39 @@ class TracerTest {
 
     handler.addHandler(
         Route.get("/status")
-            .to(
-                () ->
-                    req -> {
-                      try (Span span = HttpTracing.newSpanAsChildOf(tracer, req, "status")) {
-                        executors.submit(span.wrap(() -> Set.of("cheese", "peas"))).get();
+            .to(() ->
+                req -> {
+                  try (Span span = HttpTracing.newSpanAsChildOf(tracer, req, "status")) {
+                    executors.submit(span.wrap(() -> Set.of("cheese", "peas"))).get();
 
-                        CompletableFuture<String> toReturn = new CompletableFuture<>();
-                        executors.submit(
-                            () -> {
-                              try {
-                                HttpRequest cheeseReq = new HttpRequest(GET, "/cheeses");
-                                HttpTracing.inject(tracer, span, cheeseReq);
+                    CompletableFuture<String> toReturn = new CompletableFuture<>();
+                    executors.submit(() -> {
+                      try {
+                        HttpRequest cheeseReq = new HttpRequest(GET, "/cheeses");
+                        HttpTracing.inject(tracer, span, cheeseReq);
 
-                                handler.execute(cheeseReq);
-                                toReturn.complete("nom, nom, nom");
-                              } catch (RuntimeException e) {
-                                toReturn.completeExceptionally(e);
-                              }
-                            });
-                        toReturn.get();
-                      } catch (InterruptedException | ExecutionException e) {
-                        throw new RuntimeException(e);
+                        handler.execute(cheeseReq);
+                        toReturn.complete("nom, nom, nom");
+                      } catch (RuntimeException e) {
+                        toReturn.completeExceptionally(e);
                       }
-                      return new HttpResponse();
-                    }));
+                    });
+                    toReturn.get();
+                  } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                  }
+                  return new HttpResponse();
+                }));
 
     handler.addHandler(Route.get("/cheeses").to(() -> req -> new HttpResponse()));
 
     Routable routable =
-        handler.with(
-            delegate ->
-                req -> {
-                  try (Span span = newSpanAsChildOf(tracer, req, "httpclient.execute")) {
-                    return delegate.execute(req);
-                  }
-                });
+        handler.with(delegate ->
+            req -> {
+              try (Span span = newSpanAsChildOf(tracer, req, "httpclient.execute")) {
+                return delegate.execute(req);
+              }
+            });
 
     routable.execute(new HttpRequest(GET, "/"));
   }

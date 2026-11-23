@@ -36,9 +36,7 @@ goog.require('goog.userAgent.product');
  * @enum {string}
  */
 bot.html5.API = {
-  APPCACHE: 'appcache',
   BROWSER_CONNECTION: 'browser_connection',
-  DATABASE: 'database',
   GEOLOCATION: 'location',
   LOCAL_STORAGE: 'local_storage',
   SESSION_STORAGE: 'session_storage',
@@ -55,24 +53,6 @@ bot.html5.API = {
  */
 bot.html5.IS_IE8_OR_EARLIER_ = goog.userAgent.IE &&
     !bot.userAgent.isEngineVersion(9);
-
-
-/**
- * True if the current browser is Safari version 4 or earlier.
- * @private {boolean}
- * @const
- */
-bot.html5.IS_SAFARI4_OR_EARLIER_ = goog.userAgent.product.SAFARI &&
-    !bot.userAgent.isProductVersion(5);
-
-
-/**
- * True if the browser is Android version 2.2 (Froyo) or earlier.
- * @private {boolean}
- * @const
- */
-bot.html5.IS_ANDROID_FROYO_OR_EARLIER_ = goog.userAgent.product.ANDROID &&
-    !bot.userAgent.isProductVersion(2.3);
 
 
 /**
@@ -98,27 +78,9 @@ bot.html5.isSupported = function(api, opt_window) {
   var win = opt_window || bot.getWindow();
 
   switch (api) {
-    case bot.html5.API.APPCACHE:
-      // IE8 does not support application cache, though the APIs exist.
-      if (bot.html5.IS_IE8_OR_EARLIER_) {
-        return false;
-      }
-      return win.applicationCache != null;
-
     case bot.html5.API.BROWSER_CONNECTION:
       return win.navigator != null &&
           win.navigator.onLine != null;
-
-    case bot.html5.API.DATABASE:
-      // Safari4 database API does not allow writes.
-      if (bot.html5.IS_SAFARI4_OR_EARLIER_) {
-        return false;
-      }
-      // Android Froyo does not support database, though the APIs exist.
-      if (bot.html5.IS_ANDROID_FROYO_OR_EARLIER_) {
-        return false;
-      }
-      return win.openDatabase != null;
 
     case bot.html5.API.GEOLOCATION:
       // Safari 4,5 on Windows do not support geolocation, see:

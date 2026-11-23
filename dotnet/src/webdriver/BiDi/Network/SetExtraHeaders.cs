@@ -19,13 +19,13 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed record SetExtraHeadersParameters(IEnumerable<Header> Headers, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+internal sealed record SetExtraHeadersParameters(ImmutableArray<Header> Headers, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : Parameters;
 
 public sealed record SetExtraHeadersOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 }
 
 public sealed record SetExtraHeadersResult : EmptyResult;

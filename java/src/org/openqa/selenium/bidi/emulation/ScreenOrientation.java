@@ -18,8 +18,10 @@
 package org.openqa.selenium.bidi.emulation;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class ScreenOrientation {
   private final ScreenOrientationNatural natural;
   private final ScreenOrientationType type;

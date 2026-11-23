@@ -75,6 +75,8 @@ module Selenium
 
         @options = opts
         @options[:browser_name] = self.class::BROWSER
+
+        enable_bidi! if @options[:web_socket_url]
       end
 
       #
@@ -92,6 +94,12 @@ module Selenium
         name, value = name.first if value.nil? && name.is_a?(Hash)
         @options[name] = value
       end
+
+      #
+      # Enables WebDriver BiDi by requesting the W3C webSocketUrl capability.
+      #
+      # @return [Boolean]
+      #
 
       def enable_bidi!
         @options[:web_socket_url] = true
@@ -130,10 +138,22 @@ module Selenium
         browser_options = {self.class::KEY => browser_options} if defined?(self.class::KEY)
 
         process_browser_options(browser_options)
-        generate_as_json(w3c_options.merge(browser_options))
+        generate_as_json(merge_browser_options(w3c_options, browser_options))
       end
 
       private
+
+      # Preserve a hand-built vendor options hash (e.g. passed through #add_option) by merging it
+      # with the binding's own, rather than letting one silently overwrite the other.
+      def merge_browser_options(w3c_options, browser_options)
+        w3c_options.merge(browser_options) do |_key, w3c_value, browser_value|
+          if w3c_value.is_a?(Hash) && browser_value.is_a?(Hash)
+            browser_value.merge(w3c_value)
+          else
+            browser_value
+          end
+        end
+      end
 
       def w3c?(key)
         W3C_OPTIONS.include?(key) || key.to_s.include?(':')

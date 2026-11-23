@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>events_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/testing/events-global.js"></script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <form id="form" onsubmit="return false">
+    <input id="target" type="text">
+  </form>
+  <iframe id="frame" src="testdata/blank_page.html"></iframe>
+  <script type="text/javascript">
+    // Assertions ported from events_test.html. core/events.ts has no atom of
+    // its own -- click, type, clear and submit reach it in tranche 5e -- so it
+    // is loaded through a test-only bundle that is never published.
+    //
+    // Not ported, because the event types are not ported: touch (only the
+    // touchscreen reaches it), MSGesture / MSPointer (Internet Explorer), and
+    // the mouse wheel / MozMousePixelScroll cases (only scrolling reaches them).
+    //
+    // Added: the constructor-built shapes -- key/code, inputType/data,
+    // pointer fields, buttons and click count, composed, and the realm the
+    // event comes from -- which are what real input gives listeners.
+    var events = window.bot.events.typescript;
+    var EventType = events.EventType;
+    var target = document.getElementById('target');
+
+    function fireAndTest(assert, type, opt_args, opt_listener, opt_target) {
+      var on = opt_target || target;
+      var fired = false, exception = null;
+      on.addEventListener(type.toString(), function listener(event) {
+        on.removeEventListener(type.toString(), listener);
+        fired = true;
+        try {
+          assert.strictEqual(event.target, on);
+          if (opt_listener) {
+            opt_listener(event);
+          }
+        } catch (e) {
+          exception = e;
+        }
+      });
+      var result = events.fire(on, type, opt_args);
+      assert.ok(fired, 'Event was not fired');
+      if (exception) {
+        throw exception;
+      }
+      return result;
+    }
+
+    var mouseArgs = {clientX: 0, clientY: 0};
+
+    QUnit.test('can fire event', function(assert) {
+      fireAndTest(assert, EventType.FOCUS);
+    });
+
+    QUnit.test('can fire mouse event', function(assert) {
+      fireAndTest(assert, EventType.MOUSEMOVE, mouseArgs, function(event) {
+        assert.ok(event instanceof MouseEvent);
+      });
+    });
+
+    QUnit.test('can fire keyboard event', function(assert) {
+      fireAndTest(assert, EventType.KEYDOWN, {key: 'a', code: 'KeyA', keyCode: 65}, function(event) {
+        assert.ok(event instanceof KeyboardEvent);
+      });
+    });
+
+    QUnit.test('is synthetic', function(assert) {
+      fireAndTest(assert, EventType.CHANGE, undefined, function(event) {
+        assert.ok(events.isSynthetic(event));
+      });
+    });
+
+    QUnit.test('related target correctly set', function(assert) {
+      var args = {clientX: 0, clientY: 0, relatedTarget: document.body};
+      fireAndTest(assert, EventType.MOUSEOUT, args, function(event) {
+        assert.strictEqual(event.relatedTarget, document.body);
+      });
+      fireAndTest(assert, EventType.MOUSEOVER, args, function(event) {
+        assert.strictEqual(event.relatedTarget, document.body);
+      });
+    });
+
+    QUnit.test('mouse event carries position, buttons, modifiers and click count', function(assert) {
+      var args = {clientX: 12, clientY: 34, button: 0, buttons: 1, detail: 2, shiftKey: true, metaKey: true};
+      fireAndTest(assert, EventType.MOUSEDOWN, args, function(event) {
+        assert.strictEqual(event.clientX, 12);
+        assert.strictEqual(event.clientY, 34);
+        assert.strictEqual(event.screenX, 12, 'screen mirrors client');
+        assert.strictEqual(event.screenY, 34);
+        assert.strictEqual(event.button, 0);
+        assert.strictEqual(event.buttons, 1);
+        assert.strictEqual(event.detail, 2);
+        assert.strictEqual(event.shiftKey, true);
+        assert.strictEqual(event.metaKey, true);
+        assert.strictEqual(event.altKey, false);
+        assert.strictEqual(event.view, window);
+        assert.ok(event.getModifierState('Shift'));
+      });
+    });
+
+    QUnit.test('pointer events are a primary mouse pointer', function(assert) {
+      fireAndTest(assert, EventType.POINTERDOWN, {clientX: 1, clientY: 2, buttons: 1}, function(event) {
+        assert.ok(event instanceof PointerEvent);
+        assert.strictEqual(event.pointerId, 1);
+        assert.strictEqual(event.pointerType, 'mouse');
+        assert.strictEqual(event.isPrimary, true);
+        assert.strictEqual(event.pressure, 0.5, 'half pressure while a button is held');
+      });
+      fireAndTest(assert, EventType.POINTERUP, {clientX: 1, clientY: 2, buttons: 0}, function(event) {
+        assert.strictEqual(event.pressure, 0);
+      });
+    });
+
+    QUnit.test('keyboard event carries key, code, legacy codes and modifiers', function(assert) {
+      var args = {key: 'a', code: 'KeyA', keyCode: 97, charCode: 97, ctrlKey: true, altKey: true};
+      fireAndTest(assert, EventType.KEYPRESS, args, function(event) {
+        assert.strictEqual(event.key, 'a');
+        assert.strictEqual(event.code, 'KeyA');
+        assert.strictEqual(event.keyCode, 97);
+        assert.strictEqual(event.charCode, 97);
+        assert.strictEqual(event.which, 97);
+        assert.strictEqual(event.ctrlKey, true);
+        assert.strictEqual(event.altKey, true);
+        assert.strictEqual(event.shiftKey, false);
+        assert.ok(event.getModifierState('Control'));
+      });
+    });
+
+    QUnit.test('input events carry inputType and data', function(assert) {
+      fireAndTest(assert, EventType.BEFOREINPUT, {inputType: 'insertText', data: 'x'}, function(event) {
+        assert.ok(event instanceof InputEvent);
+        assert.strictEqual(event.inputType, 'insertText');
+        assert.strictEqual(event.data, 'x');
+        assert.strictEqual(event.cancelable, true);
+      });
+      fireAndTest(assert, EventType.INPUT, {inputType: 'deleteContentBackward'}, function(event) {
+        assert.strictEqual(event.inputType, 'deleteContentBackward');
+        assert.strictEqual(event.data, null);
+        assert.strictEqual(event.cancelable, false);
+      });
+    });
+
+    QUnit.test('textInput carries its data', function(assert) {
+      fireAndTest(assert, EventType.TEXTINPUT, {data: 'q'}, function(event) {
+        assert.strictEqual(event.data, 'q');
+      });
+    });
+
+    QUnit.test('focus events carry relatedTarget', function(assert) {
+      fireAndTest(assert, EventType.FOCUSOUT, {relatedTarget: document.body}, function(event) {
+        assert.ok(event instanceof FocusEvent);
+        assert.strictEqual(event.relatedTarget, document.body);
+      });
+    });
+
+    QUnit.test('submit is a SubmitEvent', function(assert) {
+      var form = document.getElementById('form');
+      fireAndTest(assert, EventType.SUBMIT, undefined, function(event) {
+        assert.ok(event instanceof SubmitEvent);
+        assert.strictEqual(event.submitter, null);
+      }, form);
+    });
+
+    QUnit.test('bubbles, cancelable and composed follow the real event', function(assert) {
+      function check(type, args, bubbles, cancelable, composed) {
+        fireAndTest(assert, type, args, function(event) {
+          assert.deepEqual([event.bubbles, event.cancelable, event.composed],
+              [bubbles, cancelable, composed], String(type));
+        });
+      }
+      check(EventType.BLUR, undefined, false, false, true);
+      check(EventType.CHANGE, undefined, true, false, false);
+      check(EventType.MOUSEMOVE, mouseArgs, true, true, true);
+      check(EventType.MOUSEENTER, mouseArgs, false, false, false);
+      check(EventType.POINTERLEAVE, mouseArgs, false, false, false);
+      check(EventType.KEYUP, {key: 'a', code: 'KeyA'}, true, true, true);
+      check(EventType.INPUT, {inputType: 'insertText', data: 'a'}, true, false, true);
+    });
+
+    QUnit.test('a click inside a shadow root reaches the document', function(assert) {
+      var host = document.createElement('div');
+      document.body.appendChild(host);
+      var inner = document.createElement('span');
+      host.attachShadow({mode: 'open'}).appendChild(inner);
+      var seen = null;
+      function onClick(e) { seen = e.target; }
+      document.addEventListener('click', onClick);
+      events.fire(inner, EventType.CLICK, mouseArgs);
+      document.removeEventListener('click', onClick);
+      document.body.removeChild(host);
+      assert.strictEqual(seen, host, 'retargeted to the host');
+    });
+
+    QUnit.test('events come from the target frame', function(assert) {
+      var frameWin = document.getElementById('frame').contentWindow;
+      var inFrame = frameWin.document.body;
+      var seen = null;
+      inFrame.addEventListener('mousedown', function(e) { seen = e; });
+      events.fire(inFrame, EventType.MOUSEDOWN, mouseArgs);
+      assert.ok(seen instanceof frameWin.MouseEvent, "the frame's own MouseEvent");
+      assert.strictEqual(seen.view, frameWin);
+    });
+
+    QUnit.test('fire reports whether the event was cancelled', function(assert) {
+      function cancel(e) { e.preventDefault(); }
+      target.addEventListener('click', cancel);
+      assert.strictEqual(events.fire(target, EventType.CLICK, mouseArgs), false);
+      target.removeEventListener('click', cancel);
+      assert.strictEqual(events.fire(target, EventType.CLICK, mouseArgs), true);
+    });
+
+    QUnit.test('event types stringify to their DOM name', function(assert) {
+      assert.strictEqual(String(EventType.CLICK), 'click');
+      assert.strictEqual(String(EventType.TEXTINPUT), 'textInput');
+      assert.strictEqual(String(EventType.POINTERDOWN), 'pointerdown');
+    });
+  </script>
+</body>
+
+</html>

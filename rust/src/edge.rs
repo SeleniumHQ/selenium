@@ -19,21 +19,24 @@ use crate::config::ARCH::{ARM64, X32};
 use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{BrowserPath, compose_driver_path_in_cache};
+use crate::files::{BrowserPath, compose_driver_path_in_cache, first_existing_path};
 use crate::metadata::{
-    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata,
+    should_cache_driver_version, write_metadata,
 };
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, Logger, NIGHTLY,
     OFFLINE_REQUEST_ERR_MSG, REG_PV_ARG, REG_VERSION_ARG, STABLE, SeleniumManager,
-    create_http_client, get_binary_extension, path_to_string,
+    get_binary_extension, path_to_string,
 };
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -45,10 +48,23 @@ pub const EDGE_NAMES: &[&str] = &[
 ];
 pub const EDGEDRIVER_NAME: &str = "msedgedriver";
 pub const WEBVIEW2_NAME: &str = "webview2";
+
+// Directories and names msedgedriver (a chromedriver fork) searches to locate Edge on Linux.
+pub const EDGE_KNOWN_DIRS: &[&str] = &[
+    "/usr/local/sbin",
+    "/usr/local/bin",
+    "/usr/sbin",
+    "/usr/bin",
+    "/sbin",
+    "/bin",
+    "/opt/microsoft/msedge",
+];
+pub const EDGE_KNOWN_NAMES: &[&str] = &["msedge", "microsoft-edge", "microsoft-edge-stable"];
 const DRIVER_URL: &str = "https://msedgedriver.microsoft.com/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
 const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products/";
+const EDGE_VERSIONS_URL: &str = "https://developer.microsoft.com/microsoft-edge/webdriver/";
 const MIN_EDGE_VERSION_DOWNLOAD: i32 = 113;
 const EDGE_WINDOWS_AND_LINUX_APP_NAME: &str = "msedge";
 const EDGE_MACOS_APP_NAME: &str = "Microsoft Edge.app/Contents/MacOS/Microsoft Edge";
@@ -61,7 +77,7 @@ pub struct EdgeManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
-    pub http_client: Client,
+    pub http_client: OnceLock<Client>,
     pub log: Logger,
     pub tx: Sender<String>,
     pub rx: Receiver<String>,
@@ -78,13 +94,11 @@ impl EdgeManager {
         let static_browser_name: &str = Box::leak(browser_name.into_boxed_str());
         let driver_name = EDGEDRIVER_NAME;
         let config = ManagerConfig::default(static_browser_name, driver_name);
-        let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(EdgeManager {
             browser_name: static_browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: OnceLock::new(),
             config,
             log: Logger::new(),
             tx,
@@ -101,15 +115,32 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn get_browser_names_in_path(&self) -> Vec<&str> {
-        vec![self.get_browser_name()]
+        // WebView2 is not the Edge browser, so it must not inherit Edge's executable names.
+        if self.is_webview2() {
+            return vec![self.get_browser_name()];
+        }
+        vec![
+            self.get_browser_name(),
+            "microsoft-edge",
+            "microsoft-edge-stable",
+        ]
     }
 
-    fn get_http_client(&self) -> &Client {
+    fn detect_browser_in_known_locations(&self) -> Option<PathBuf> {
+        // msedgedriver is built from chromedriver and searches the same fixed directories (Linux-only);
+        // WebView2 is a different runtime, so it must not resolve to an Edge browser binary.
+        if self.is_webview2() || !LINUX.is(self.get_os()) {
+            return None;
+        }
+        first_existing_path(EDGE_KNOWN_DIRS, EDGE_KNOWN_NAMES)
+    }
+
+    fn get_http_client_cell(&self) -> &OnceLock<Client> {
         &self.http_client
     }
 
-    fn set_http_client(&mut self, http_client: Client) {
-        self.http_client = http_client;
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client> {
+        &mut self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -226,7 +257,7 @@ impl SeleniumManager for EdgeManager {
                         &self.driver_name, latest_stable_url
                     ));
                     let latest_driver_version = read_version_from_link(
-                        self.get_http_client(),
+                        self.get_http_client()?,
                         &latest_stable_url,
                         self.get_logger(),
                     )?;
@@ -247,11 +278,18 @@ impl SeleniumManager for EdgeManager {
                     "Reading {} version from {}",
                     &self.driver_name, driver_url
                 ));
-                let driver_version =
-                    read_version_from_link(self.get_http_client(), &driver_url, self.get_logger())?;
+                let driver_version = read_version_from_link(
+                    self.get_http_client()?,
+                    &driver_url,
+                    self.get_logger(),
+                )?;
 
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 && !major_browser_version.is_empty() {
+                if should_cache_driver_version(
+                    driver_ttl,
+                    major_browser_version.as_str(),
+                    &driver_version,
+                ) {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version.as_str(),
                         self.driver_name,
@@ -284,6 +322,10 @@ impl SeleniumManager for EdgeManager {
             }
         } else if MACOS.is(os) {
             if ARM64.is(arch) { "mac64_m1" } else { "mac64" }
+        } else if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(
+                "Linux arm64 is not supported yet by Microsoft Edge. Please try another browser."
+            ));
         } else {
             "linux64"
         };
@@ -356,6 +398,14 @@ impl SeleniumManager for EdgeManager {
         browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if LINUX.is(os) && ARM64.is(arch) {
+            return Err(anyhow!(format!(
+                "Linux arm64 is not supported yet by {}. Please try another browser.",
+                browser_name
+            )));
+        }
         let is_fixed_browser_version = !self.is_empty(browser_version)
             && !self.is_stable(browser_version)
             && !self.is_unstable(browser_version);
@@ -371,7 +421,7 @@ impl SeleniumManager for EdgeManager {
         ));
 
         let edge_products =
-            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), &edge_updates_url)?;
+            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client()?, &edge_updates_url)?;
 
         let edge_channel = if self.is_beta(browser_version) {
             "Beta"
@@ -538,6 +588,10 @@ impl SeleniumManager for EdgeManager {
             "msedge"
         };
         Ok(Some(browser_label))
+    }
+
+    fn get_browser_versions_url(&self) -> &str {
+        EDGE_VERSIONS_URL
     }
 
     fn is_download_browser(&self) -> bool {

@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.internal.Css;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -150,7 +151,7 @@ public abstract class By {
   protected JavascriptExecutor getJavascriptExecutor(SearchContext context) {
     WebDriver driver = getWebDriver(context);
 
-    if (!(context instanceof JavascriptExecutor)) {
+    if (!(driver instanceof JavascriptExecutor)) {
       throw new IllegalArgumentException(
           "Context does not provide a mechanism to execute JS: " + context);
     }
@@ -242,7 +243,7 @@ public abstract class By {
       super(
           "name",
           Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
-          String.format("*[name='%s']", name.replace("'", "\\'")));
+          "*[name='" + name.replace("\\", "\\\\").replace("'", "\\'").replace("%", "%%") + "']");
 
       this.name = name;
     }
@@ -417,14 +418,12 @@ public abstract class By {
   }
 
   private abstract static class PreW3CLocator extends By implements Remotable {
-    private static final Pattern CSS_ESCAPE =
-        Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
     private final Parameters remoteParams;
     private final ByCssSelector fallback;
 
     private PreW3CLocator(String using, String value, String formatString) {
       this.remoteParams = new Remotable.Parameters(using, value);
-      this.fallback = new ByCssSelector(String.format(formatString, cssEscape(value)));
+      this.fallback = new ByCssSelector(String.format(formatString, Css.escape(value)));
     }
 
     @Override
@@ -444,14 +443,6 @@ public abstract class By {
 
     protected final Map<String, @Nullable Object> toJson() {
       return fallback.toJson();
-    }
-
-    private String cssEscape(String using) {
-      using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
-      if (!using.isEmpty() && Character.isDigit(using.charAt(0))) {
-        using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
-      }
-      return using;
     }
   }
 }

@@ -97,14 +97,13 @@ class VersionCommand {
       Version minVersion = new Version((String) raw.get("MinAPIVersion"));
 
       return SUPPORTED_VERSIONS.entrySet().stream()
-          .filter(
-              entry -> {
-                Version version = entry.getKey();
-                if (version.equalTo(maxVersion) || version.equalTo(minVersion)) {
-                  return true;
-                }
-                return version.isLessThan(maxVersion) && version.isGreaterThan(minVersion);
-              })
+          .filter(entry -> {
+            Version version = entry.getKey();
+            if (version.equalTo(maxVersion) || version.equalTo(minVersion)) {
+              return true;
+            }
+            return version.isLessThan(maxVersion) && version.isGreaterThan(minVersion);
+          })
           .map(Map.Entry::getValue)
           .map(func -> func.apply(handler))
           .findFirst();

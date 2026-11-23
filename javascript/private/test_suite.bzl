@@ -13,6 +13,7 @@ def closure_test_suite(name, data = [], browsers = None):
 
     kwargs = {
         "name": name,
+        "size": "large",
         "test_class": "org.openqa.selenium.javascript.ClosureTestSuite",
         "jvm_flags": [
             "-Djs.test.timeout=20",

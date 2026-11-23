@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public enum ResultOwnership {
   ROOT("root"),
   NONE("none");

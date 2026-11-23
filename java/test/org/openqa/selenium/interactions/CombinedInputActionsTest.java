@@ -167,6 +167,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(SAFARI)
   public void testControlClickingOnCustomMultiSelectionList() {
     driver.get(pages.selectableItemsPage);
     Keys key = getEffectivePlatform(driver).is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
@@ -200,6 +201,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(SAFARI)
   public void testControlClickingWithMultiplePointers() {
     driver.get(pages.selectableItemsPage);
 
@@ -368,7 +370,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(SAFARI)
   public void testHoldingDownShiftKeyWhileClicking() {
     driver.get(pages.clickEventPage);
 

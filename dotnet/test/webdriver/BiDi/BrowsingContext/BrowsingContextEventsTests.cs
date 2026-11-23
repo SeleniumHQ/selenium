@@ -26,7 +26,7 @@ internal class BrowsingContextEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenDownloadWillBeginEvent()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
 
         TaskCompletionSource<DownloadWillBeginEventArgs> tcs = new();
 
@@ -45,7 +45,7 @@ internal class BrowsingContextEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenDownloadEndEvent()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
 
         TaskCompletionSource<DownloadEndEventArgs> tcs = new();
 

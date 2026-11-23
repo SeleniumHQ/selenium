@@ -57,13 +57,14 @@ module Selenium
           expect(finder).to have_received(:driver_path)
         end
 
-        it 'does not use DriverFinder when provided Service with path' do
+        it 'does not call Selenium Manager when Service has executable_path set' do
           expect_request
-          allow(DriverFinder).to receive(:new).and_return(finder)
+          allow(SeleniumManager).to receive(:binary_paths)
           allow(service).to receive(:executable_path).and_return('path')
+          allow(Platform).to receive(:assert_executable).with('path').and_return(true)
 
           described_class.new(service: service)
-          expect(finder).not_to have_received(:driver_path)
+          expect(SeleniumManager).not_to have_received(:binary_paths)
         end
 
         it 'does not require any parameters' do
@@ -85,6 +86,15 @@ module Selenium
                                                              },
                                                              'moz:debuggerAddress': true}}})
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
+        end
+
+        it 'stops the driver service when starting the session times out' do
+          allow(DriverFinder).to receive(:new).and_return(finder)
+          allow(service_manager).to receive(:stop)
+          stub_request(:post, "#{service_manager.uri}/session").to_raise(Net::ReadTimeout)
+
+          expect { described_class.new }.to raise_exception(Net::ReadTimeout)
+          expect(service_manager).to have_received(:stop)
         end
 
         it 'does not accept Options of the wrong class' do

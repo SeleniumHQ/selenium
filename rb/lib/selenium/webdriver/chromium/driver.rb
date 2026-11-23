@@ -27,7 +27,6 @@ module Selenium
 
       class Driver < WebDriver::Driver
         EXTENSIONS = [DriverExtensions::HasCDP,
-                      DriverExtensions::HasBiDi,
                       DriverExtensions::HasCasting,
                       DriverExtensions::HasFedCmDialog,
                       DriverExtensions::HasNetworkConditions,

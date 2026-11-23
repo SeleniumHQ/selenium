@@ -24,8 +24,10 @@ module Selenium
     module Remote
       module Http
         describe Common do
+          let(:client_config) { ClientConfig.new }
+
           subject(:common) do
-            common = described_class.new
+            common = described_class.new(client_config: client_config)
             common.server_url = URI.parse('http://server')
             allow(common).to receive(:request)
 
@@ -33,8 +35,8 @@ module Selenium
           end
 
           after do
-            described_class.extra_headers = nil
-            described_class.user_agent = nil
+            ClientConfig.default_extra_headers = nil
+            ClientConfig.default_user_agent = nil
           end
 
           it 'sends non-empty body header for POST requests without command data' do
@@ -55,17 +57,31 @@ module Selenium
                     hash_including('User-Agent' => a_string_matching(user_agent_regexp)), '{}')
           end
 
-          it 'allows registering extra headers' do
-            described_class.extra_headers = {'Foo' => 'bar'}
+          context 'when the client config registers extra headers' do
+            let(:client_config) { ClientConfig.new(extra_headers: {'Foo' => 'bar'}) }
 
-            common.call(:post, 'session', nil)
+            it 'sends them' do
+              common.call(:post, 'session', nil)
 
-            expect(common).to have_received(:request)
-              .with(:post, URI.parse('http://server/session'),
-                    hash_including('Foo' => 'bar'), '{}')
+              expect(common).to have_received(:request)
+                .with(:post, URI.parse('http://server/session'),
+                      hash_including('Foo' => 'bar'), '{}')
+            end
           end
 
-          it 'allows overriding default User-Agent' do
+          context 'when the client config overrides the User-Agent' do
+            let(:client_config) { ClientConfig.new(user_agent: 'rspec/1.0 (ruby 3.2)') }
+
+            it 'uses it' do
+              common.call(:post, 'session', nil)
+
+              expect(common).to have_received(:request)
+                .with(:post, URI.parse('http://server/session'),
+                      hash_including('User-Agent' => 'rspec/1.0 (ruby 3.2)'), '{}')
+            end
+          end
+
+          it 'still honors the Http::Common.user_agent= setter' do
             described_class.user_agent = 'rspec/1.0 (ruby 3.2)'
 
             common.call(:post, 'session', nil)

@@ -45,11 +45,10 @@ class CdpFacadeTest extends DevToolsTestBase {
     server =
         new NettyAppServer(
             new BasicAuthenticationFilter("test", "test")
-                .andFinally(
-                    req ->
-                        new HttpResponse()
-                            .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
-                            .setContent(Contents.string("<h1>authorized</h1>", UTF_8))));
+                .andFinally(req ->
+                    new HttpResponse()
+                        .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
+                        .setContent(Contents.string("<h1>authorized</h1>", UTF_8))));
     server.start();
   }
 

@@ -95,7 +95,7 @@ class WebDriverWait(Generic[D]):
 
         Example:
             >>> from selenium.webdriver.common.by import By
-            >>> from selenium.webdriver.support.ui import WebDriverWait
+            >>> from selenium.webdriver.support.wait import WebDriverWait
             >>> from selenium.webdriver.support import expected_conditions as EC
             >>>
             >>> # Wait until an element is visible on the page
@@ -140,7 +140,7 @@ class WebDriverWait(Generic[D]):
 
         Example:
             >>> from selenium.webdriver.common.by import By
-            >>> from selenium.webdriver.support.ui import WebDriverWait
+            >>> from selenium.webdriver.support.wait import WebDriverWait
             >>> from selenium.webdriver.support import expected_conditions as EC
             >>>
             >>> # Wait until an element is no longer visible on the page

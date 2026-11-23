@@ -83,10 +83,8 @@ class CrossDomainTest extends JupiterTestBase {
     setupCrossDomainFrameTest();
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                ((JavascriptExecutor) driver)
-                    .executeScript("return window.top.document.body.tagName"));
+        .isThrownBy(() ->
+            ((JavascriptExecutor) driver).executeScript("return window.top.document.body.tagName"));
 
     // Make sure we can recover from the above.
     assertThat(

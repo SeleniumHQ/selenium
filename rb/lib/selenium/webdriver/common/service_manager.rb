@@ -42,6 +42,7 @@ module Selenium
         @port = config.port
         @io = config.log
         @extra_args = config.args
+        @env = config.env
         @shutdown_supported = config.shutdown_supported
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
@@ -56,6 +57,9 @@ module Selenium
           find_free_port
           start_process
           connect_until_stable
+        rescue StandardError
+          stop_process
+          raise
         end
       end
 
@@ -65,7 +69,8 @@ module Selenium
 
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
-      rescue ChildProcess::TimeoutError, Errno::ECONNREFUSED
+      rescue ChildProcess::TimeoutError, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EPIPE,
+             Net::OpenTimeout, Net::ReadTimeout, EOFError
         nil # noop
       ensure
         stop_process
@@ -80,12 +85,15 @@ module Selenium
       def build_process(*command)
         WebDriver.logger.debug("Executing Process #{command}", id: :driver_service)
         @process = ChildProcess.build(*command)
+        @process.env = @env
         if ENV.key?('SE_DEBUG')
           if @io && @io != WebDriver.logger.io
             WebDriver.logger.warn('SE_DEBUG is set; overriding user-specified driver log output to use stderr',
                                   id: :se_debug)
           end
           @io = WebDriver.logger.io
+        elsif WebDriver.logger.debug?
+          @io ||= WebDriver.logger.io
         end
         @process.io = @io if @io
 
@@ -136,6 +144,11 @@ module Selenium
         deadline = current_time + START_TIMEOUT
 
         loop do
+          if process_exited?
+            raise Error::WebDriverError,
+                  "#{cannot_connect_error_text}: process exited (#{@process.status || 'status unknown'})"
+          end
+
           error = check_connection_error
           return unless error
 
@@ -156,7 +169,7 @@ module Selenium
         ready = status['ready'] || status.dig('value', 'ready')
         "driver not ready: #{response.body}" unless ready
       rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EPIPE, Errno::ETIMEDOUT,
-             Errno::EADDRNOTAVAIL, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
+             Errno::EADDRINUSE, Errno::EADDRNOTAVAIL, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
              EOFError, SocketError, Net::HTTPBadResponse, JSON::ParserError => e
         "#{e.class}: #{e.message}"
       end

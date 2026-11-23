@@ -26,7 +26,7 @@ test.suite(function (env) {
   // Logging API not supported in Marionette.
   // Logging API not supported in Safari.
   test
-    .ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.FIREFOX, Browser.CHROME))
+    .ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.FIREFOX, Browser.CHROME, Browser.EDGE))
     .describe('logging', function () {
       var driver
 

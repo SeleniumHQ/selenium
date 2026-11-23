@@ -2,9 +2,13 @@ load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
     "chrome_beta_data",
+    "chrome_beta_version_env",
     "chrome_data",
+    "chrome_version_env",
     "edge_data",
+    "edge_version_env",
     "firefox_data",
+    "firefox_version_env",
 )
 
 headless_args = select({
@@ -72,31 +76,43 @@ BROWSERS = {
     "chrome": {
         "args": ["--driver=chrome"] + chrome_args,
         "data": chrome_data,
+        "env": chrome_version_env,
         "tags": COMMON_TAGS + ["chrome"],
+        "target_compatible_with": [],
     },
     "chrome-beta": {
         "args": ["--driver=chrome"] + chrome_beta_args,
         "data": chrome_beta_data,
+        "env": chrome_beta_version_env,
         "tags": COMMON_TAGS + ["chrome"],
+        "target_compatible_with": [],
     },
     "edge": {
         "args": ["--driver=edge"] + edge_args,
         "data": edge_data,
+        "env": edge_version_env,
         "tags": COMMON_TAGS + ["edge"],
+        "target_compatible_with": [],
     },
     "firefox": {
         "args": ["--driver=firefox"] + firefox_args,
         "data": firefox_data,
+        "env": firefox_version_env,
         "tags": COMMON_TAGS + ["firefox"],
+        "target_compatible_with": [],
     },
     "ie": {
         "args": ["--driver=ie"],
         "data": [],
-        "tags": COMMON_TAGS + ["ie", "skip-rbe"],
+        "env": {},
+        "tags": COMMON_TAGS + ["ie"],
+        "target_compatible_with": ["@platforms//os:windows"],
     },
     "safari": {
         "args": ["--driver=safari"],
         "data": [],
-        "tags": COMMON_TAGS + ["safari", "skip-rbe"],
+        "env": {},
+        "tags": COMMON_TAGS + ["exclusive-if-local", "safari"],
+        "target_compatible_with": ["@platforms//os:macos"],
     },
 }

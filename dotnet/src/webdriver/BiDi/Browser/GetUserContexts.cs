@@ -21,4 +21,4 @@ namespace OpenQA.Selenium.BiDi.Browser;
 
 public record GetUserContextsOptions : CommandOptions;
 
-public sealed record GetUserContextsResult(IReadOnlyList<UserContextInfo> UserContexts) : EmptyResult;
+public sealed record GetUserContextsResult(ImmutableArray<UserContextInfo> UserContexts) : EmptyResult;

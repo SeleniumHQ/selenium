@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed record UnsubscribeByIdParameters(IEnumerable<Subscription> Subscriptions) : Parameters;
+internal sealed record UnsubscribeByIdParameters(ImmutableArray<Subscription> Subscriptions) : Parameters;
 
 public sealed record UnsubscribeByIdOptions : CommandOptions;
 

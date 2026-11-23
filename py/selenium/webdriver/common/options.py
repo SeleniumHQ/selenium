@@ -344,7 +344,7 @@ class BaseOptions(metaclass=ABCMeta):
     def capabilities(self):
         return self._caps
 
-    def set_capability(self, name, value) -> None:
+    def set_capability(self, name: str, value: object) -> None:
         """Sets a capability."""
         self._caps[name] = value
 

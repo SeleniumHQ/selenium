@@ -1,0 +1,37 @@
+- document "Form controls"
+  - text: Name
+  - textbox "Name": Ada
+  - text: Email
+  - textbox "Email"
+  - checkbox "I agree" [checked]
+  - text: I agree
+  - checkbox "Partial"
+  - group "Size"
+    - text: Size
+    - radio "Small" [checked]
+    - text: Small
+    - radio "Large"
+    - text: Large
+  - text: Notes
+  - textbox "Notes": Some notes
+  - text: Choice
+  - combobox "Choice": Beta
+    - option "Alpha"
+    - option "Beta" [selected]
+  - text: Many
+  - listbox "Many"
+    - option "One" [selected]
+    - option "Two"
+  - text: Volume
+  - slider "Volume": 7
+  - text: Count
+  - spinbutton "Count": 3
+  - text: Progress
+  - progressbar "Progress": 2
+  - text: Level
+  - meter "Level": 0.25
+  - text: Secret
+  - textbox "Secret": •••••••
+  - group "Off"
+    - text: Off
+    - textbox "Off field" [disabled]

@@ -1,9 +1,8 @@
-# Configuration for Stale - https://github.com/actions/stale
-name: 'Close stale issues'
+name: Scheduled - Close Stale and Lock Issues
 on:
   workflow_dispatch:
   schedule:
-    - cron: '15 10,20 * * *'
+    - cron: '15 10 * * 6'
 
 permissions:
   contents: read
@@ -25,6 +24,7 @@ jobs:
           days-before-stale: 180
           days-before-close: 14
           exempt-all-milestones: true
+          operations-per-run: 100
       - uses: actions/stale@v10
         with:
           close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
@@ -46,3 +46,19 @@ jobs:
           days-before-stale: -1
           days-before-close: 14
           labels-to-add-when-unstale: 'A-needs-triaging'
+
+  lock:
+    if: github.event.repository.fork == false
+    permissions:
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/lock-threads@v6
+        with:
+          process-only: 'issues'
+          issue-inactive-days: '30'
+          issue-lock-reason: ''
+          issue-comment: >
+            This issue has been automatically locked since there
+            has not been any recent activity since it was closed.
+            Please open a new issue for related bugs.

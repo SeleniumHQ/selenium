@@ -60,19 +60,18 @@ class RemoteNetwork implements Network {
   private void interceptAuthTraffic() {
     this.network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
 
-    network.onAuthRequired(
-        responseDetails -> {
-          String requestId = responseDetails.getRequest().getRequestId();
+    network.onAuthRequired(responseDetails -> {
+      String requestId = responseDetails.getRequest().getRequestId();
 
-          URI uri = URI.create(responseDetails.getRequest().getUrl());
-          Optional<UsernameAndPassword> authCredentials = getAuthCredentials(uri);
-          if (authCredentials.isPresent()) {
-            network.continueWithAuth(requestId, authCredentials.get());
-            return;
-          }
+      URI uri = URI.create(responseDetails.getRequest().getUrl());
+      Optional<UsernameAndPassword> authCredentials = getAuthCredentials(uri);
+      if (authCredentials.isPresent()) {
+        network.continueWithAuth(requestId, authCredentials.get());
+        return;
+      }
 
-          network.continueWithAuthNoCredentials(requestId);
-        });
+      network.continueWithAuthNoCredentials(requestId);
+    });
   }
 
   private Optional<UsernameAndPassword> getAuthCredentials(URI uri) {
@@ -85,59 +84,55 @@ class RemoteNetwork implements Network {
   private void interceptRequest() {
     this.network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT));
 
-    this.network.onBeforeRequestSent(
-        beforeRequestSent -> {
-          String requestId = beforeRequestSent.getRequest().getRequestId();
-          URI uri = URI.create(beforeRequestSent.getRequest().getUrl());
+    this.network.onBeforeRequestSent(beforeRequestSent -> {
+      String requestId = beforeRequestSent.getRequest().getRequestId();
+      URI uri = URI.create(beforeRequestSent.getRequest().getUrl());
 
-          ContinueRequestParameters continueRequestParameters =
-              new ContinueRequestParameters(requestId);
+      ContinueRequestParameters continueRequestParameters =
+          new ContinueRequestParameters(requestId);
 
-          Optional<UnaryOperator<HttpRequest>> requestHandler = getRequestHandler(uri);
+      Optional<UnaryOperator<HttpRequest>> requestHandler = getRequestHandler(uri);
 
-          if (requestHandler.isPresent()) {
-            RequestData interceptedRequest = beforeRequestSent.getRequest();
+      if (requestHandler.isPresent()) {
+        RequestData interceptedRequest = beforeRequestSent.getRequest();
 
-            // Build the originalRequest object from the intercepted request details.
-            HttpRequest originalRequest =
-                new HttpRequest(
-                    HttpMethod.getHttpMethod(interceptedRequest.getMethod()),
-                    interceptedRequest.getUrl());
+        // Build the originalRequest object from the intercepted request details.
+        HttpRequest originalRequest =
+            new HttpRequest(
+                HttpMethod.getHttpMethod(interceptedRequest.getMethod()),
+                interceptedRequest.getUrl());
 
-            // Populate the headers of the original request.
-            interceptedRequest
-                .getHeaders()
-                .forEach(
-                    header ->
-                        originalRequest.addHeader(header.getName(), header.getValue().getValue()));
+        // Populate the headers of the original request.
+        interceptedRequest
+            .getHeaders()
+            .forEach(header ->
+                originalRequest.addHeader(header.getName(), header.getValue().getValue()));
 
-            HttpRequest modifiedRequest = requestHandler.get().apply(originalRequest);
+        HttpRequest modifiedRequest = requestHandler.get().apply(originalRequest);
 
-            continueRequestParameters.method(modifiedRequest.getMethod());
+        continueRequestParameters.method(modifiedRequest.getMethod());
 
-            if (!uri.toString().equals(modifiedRequest.getUri())) {
-              continueRequestParameters.url(modifiedRequest.getUri());
-            }
+        if (!uri.toString().equals(modifiedRequest.getUri())) {
+          continueRequestParameters.url(modifiedRequest.getUri());
+        }
 
-            List<Header> headerList = new ArrayList<>();
-            modifiedRequest.forEachHeader(
-                (name, value) ->
-                    headerList.add(
-                        new Header(name, new BytesValue(BytesValue.Type.STRING, value))));
+        List<Header> headerList = new ArrayList<>();
+        modifiedRequest.forEachHeader((name, value) ->
+            headerList.add(new Header(name, new BytesValue(BytesValue.Type.STRING, value))));
 
-            if (!headerList.isEmpty()) {
-              continueRequestParameters.headers(headerList);
-            }
+        if (!headerList.isEmpty()) {
+          continueRequestParameters.headers(headerList);
+        }
 
-            Contents.Supplier content = modifiedRequest.getContent();
+        Contents.Supplier content = modifiedRequest.getContent();
 
-            if (content.length() > 0) {
-              continueRequestParameters.body(
-                  new BytesValue(BytesValue.Type.STRING, Contents.utf8String(content)));
-            }
-          }
-          network.continueRequest(continueRequestParameters);
-        });
+        if (content.length() > 0) {
+          continueRequestParameters.body(
+              new BytesValue(BytesValue.Type.STRING, Contents.utf8String(content)));
+        }
+      }
+      network.continueRequest(continueRequestParameters);
+    });
   }
 
   private Optional<UnaryOperator<HttpRequest>> getRequestHandler(URI uri) {

@@ -2,7 +2,7 @@
 
 ## Running tests locally
 
-- Update `common\appconfig.json` : <br>
+- Update `testing.nunit\appconfig.json` : <br>
   A. Set 'DriverServiceLocation' property value to your local folder of webdrivers. <br>
   B. If you would like to run other drivers beside 'Chrome', Set 'ActiveDriverConfig' to one of the other drivers names, i.e. 'Firefox'. 
 - Drivers can be downloaded from [Here](https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/#quick-reference).

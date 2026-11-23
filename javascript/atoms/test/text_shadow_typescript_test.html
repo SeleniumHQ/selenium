@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>text_shadow_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/get-text-global.js"></script>
+  <script type="text/javascript">
+    // Assertions ported from text_shadow_test.html, which is the behaviour
+    // spec for getVisibleText over a shadow tree. That page is entirely
+    // Shadow DOM v1 -- attachShadow and <slot> -- so all six cases carry over
+    // unchanged despite the TypeScript port dropping the v0 APIs.
+    //
+    // This is the composed-DOM path, which is the most rewritten part of the
+    // port: getDestinationInsertionPoints, <content>, <shadow> and
+    // olderShadowRoot are gone, leaving assignedNodes and assignedSlot.
+    //
+    // The Closure page reached its elements through bot.locators.findElement;
+    // plain DOM queries do the same job without coupling this page to the
+    // locator atom.
+    var getText = window.bot.dom.typescript.getText;
+
+    customElements.define('open-shadow-element',
+      class extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: 'open' });
+        }
+      }
+    );
+
+    customElements.define('closed-shadow-element',
+      class extends HTMLElement {
+        constructor() {
+          super();
+          this._shadowRoot = this.attachShadow({ mode: 'closed' });
+        }
+      }
+    );
+
+    function setCustomElement(html, type) {
+      if (type === 'closed') {
+        document.querySelector('closed-shadow-element')._shadowRoot.innerHTML = html;
+      } else {
+        // Every open host gets the same shadow content; which host a test then
+        // queries is what decides whether a slot has assigned nodes.
+        document.querySelectorAll('open-shadow-element').forEach(function (elem) {
+          elem.shadowRoot.innerHTML = html;
+        });
+      }
+    }
+
+    QUnit.testDone(function () {
+      document.querySelectorAll('open-shadow-element').forEach(function (elem) {
+        elem.shadowRoot.innerHTML = '';
+      });
+      document.querySelector('closed-shadow-element')._shadowRoot.innerHTML = '';
+    });
+
+    QUnit.test('text in shadow DOM', function (assert) {
+      setCustomElement('<div><a href=# id=linkText>full link text</a></div>');
+
+      var customEl = document.querySelector('open-shadow-element');
+      assert.strictEqual(getText(customEl), 'full link text');
+    });
+
+    // The host carries light DOM text, so the slot renders its assigned nodes
+    // and its own children are fallback content that never shows.
+    QUnit.test('text for slot value in shadow DOM', function (assert) {
+      setCustomElement('<slot><span>full</span></slot>');
+
+      var customEl = document.getElementById('custom-text');
+      assert.strictEqual(getText(customEl), 'custom');
+    });
+
+    QUnit.test('text for slot and extra value in shadow DOM', function (assert) {
+      setCustomElement('<slot><span>full</span></slot> text');
+
+      var customEl = document.getElementById('custom-text');
+      assert.strictEqual(getText(customEl), 'custom text');
+    });
+
+    // The first host has no light DOM, so the same slot falls back to its own
+    // children instead.
+    QUnit.test('text for default slot value in shadow DOM', function (assert) {
+      setCustomElement('<slot><span>full</span></slot> text');
+
+      var customEl = document.querySelector('open-shadow-element');
+      assert.strictEqual(getText(customEl), 'full text');
+    });
+
+    QUnit.test('hidden text in shadow DOM', function (assert) {
+      setCustomElement(
+        '<div><a href=# id=linkText>full <div style="display:none">link</div> text</a></div>'
+      );
+
+      var customEl = document.querySelector('open-shadow-element');
+      assert.strictEqual(getText(customEl), 'full text');
+    });
+
+    // A closed root is unreachable through elem.shadowRoot, so the traversal
+    // has to start from an element already inside it.
+    QUnit.test('text for element within closed shadow DOM', function (assert) {
+      setCustomElement('<a href=# id=linkText>full link text</a>', 'closed');
+
+      var customEl = document.querySelector('closed-shadow-element');
+      var innerEl = customEl._shadowRoot.querySelector('a');
+      assert.strictEqual(getText(innerEl), 'full link text');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <open-shadow-element></open-shadow-element>
+  <open-shadow-element id="custom-text">custom</open-shadow-element>
+  <closed-shadow-element></closed-shadow-element>
+</body>
+
+</html>

@@ -9,6 +9,9 @@ def _sphinx_docs_impl(ctx):
     args = ctx.actions.args()
     args.add("-b", "html")
     args.add("-d", doctrees_dir.path)
+    if ctx.attr.release:
+        args.add("-D", "release=" + ctx.attr.release)
+        args.add("-D", "version=" + ".".join(ctx.attr.release.split(".")[:2]))
     args.add(config_dir)
     args.add(html_dir.path)
 
@@ -30,6 +33,9 @@ sphinx_docs = rule(
             allow_single_file = True,
             mandatory = True,
             doc = "Sphinx configuration file (conf.py)",
+        ),
+        "release": attr.string(
+            doc = "Full project version; sets conf.py's `release`, with `version` as its X.Y prefix",
         ),
         "sphinx": attr.label(
             executable = True,

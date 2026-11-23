@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_states_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script type="text/javascript">
+    // The `states` map of ADR 18205 §2. Each test asserts the whole map, so a
+    // key that should be absent is caught as well as a wrong value.
+    //
+    //   checked   whenever the role supports it (checkbox, radio, switch,
+    //             menuitemcheckbox, menuitemradio); "mixed" where the role allows
+    //   pressed   when the element sets aria-pressed; a button without it is
+    //             not a toggle button (pinned)
+    //   expanded  when the element sets it, and on a summary from its details
+    //   selected  always on option, tab and treeitem; on gridcell, row and
+    //             headers when the element sets aria-selected (pinned)
+    //   level     always on headings (tag, aria-level or the ARIA default 2);
+    //             elsewhere when the element sets aria-level
+    //   disabled  true only when disabled, natively or through aria-disabled
+    //             on the element, or on an ancestor when the element can take
+    //             focus (WAI-ARIA 1.2)
+    //   focused   true only on the focused element
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    function assertStates(assert, expectations) {
+      Object.keys(expectations).forEach(function (id) {
+        assert.deepEqual(snapshot(byId(id)).states, expectations[id], '#' + id);
+      });
+    }
+
+    QUnit.module('checked');
+
+    QUnit.test('native checkboxes and radios report checked, with indeterminate as mixed', function (assert) {
+      assertStates(assert, {
+        'cb-checked': { checked: true }, 'cb-unchecked': { checked: false },
+        'radio-checked': { checked: true }, 'radio-unchecked': { checked: false },
+      });
+      var cb = byId('cb-indeterminate');
+      cb.indeterminate = true;
+      assert.deepEqual(snapshot(cb).states, { checked: 'mixed' });
+    });
+
+    QUnit.test('ARIA checkboxes, switches and menu items report aria-checked, false when absent', function (assert) {
+      assertStates(assert, {
+        'aria-cb-true': { checked: true }, 'aria-cb-false': { checked: false }, 'aria-cb-mixed': { checked: 'mixed' },
+        'aria-cb-absent': { checked: false }, 'aria-switch-on': { checked: true }, 'aria-radio': { checked: false },
+        'aria-menuitemcheckbox': { checked: true }, 'aria-menuitemradio': { checked: false },
+      });
+    });
+
+    QUnit.test('mixed is only valid where the role allows it', function (assert) {
+      assertStates(assert, { 'aria-switch-mixed': { checked: false }, 'aria-radio-mixed': { checked: false } });
+    });
+
+    QUnit.test('a native switch takes checked from the input', function (assert) {
+      assertStates(assert, { 'native-switch': { checked: true } });
+    });
+
+    QUnit.module('pressed and expanded');
+
+    QUnit.test('pressed is reported only when aria-pressed is set', function (assert) {
+      assertStates(assert, {
+        'pressed-true': { pressed: true }, 'pressed-false': { pressed: false }, 'pressed-mixed': { pressed: 'mixed' },
+        'plain-button': {},
+      });
+    });
+
+    QUnit.test('expanded is reported only when aria-expanded is set', function (assert) {
+      assertStates(assert, { 'expanded-true': { expanded: true }, 'expanded-false': { expanded: false }, 'plain-button': {} });
+    });
+
+    QUnit.test('a summary reports expanded from its details', function (assert) {
+      assertStates(assert, { 'summary-open': { expanded: true }, 'summary-closed': { expanded: false } });
+    });
+
+    QUnit.module('selected');
+
+    QUnit.test('options always report selected, native or ARIA', function (assert) {
+      assertStates(assert, {
+        'option-selected': { selected: true }, 'option-unselected': { selected: false },
+        'aria-option-true': { selected: true }, 'aria-option-absent': { selected: false },
+      });
+    });
+
+    QUnit.test('tabs and treeitems always report selected', function (assert) {
+      assertStates(assert, { 'tab-selected': { selected: true }, 'tab-absent': { selected: false }, 'treeitem-absent': { selected: false } });
+    });
+
+    QUnit.test('grid cells, rows and headers report selected only when they set it', function (assert) {
+      assertStates(assert, { 'gridcell-selected': { selected: true }, 'gridcell-plain': {}, 'row-plain': {}, 'row-selected': { selected: true } });
+    });
+
+    QUnit.module('level');
+
+    QUnit.test('headings report their level from the tag', function (assert) {
+      assertStates(assert, { h1: { level: 1 }, h2: { level: 2 }, h3: { level: 3 }, h4: { level: 4 }, h5: { level: 5 }, h6: { level: 6 } });
+    });
+
+    QUnit.test('aria-level wins, and an ARIA heading without one is level 2', function (assert) {
+      assertStates(assert, { 'h2-level-4': { level: 4 }, 'aria-heading-3': { level: 3 }, 'aria-heading-default': { level: 2 } });
+    });
+
+    QUnit.test('an invalid aria-level is ignored', function (assert) {
+      assertStates(assert, { 'h3-bad-level': { level: 3 }, 'aria-heading-zero': { level: 2 } });
+    });
+
+    QUnit.test('other roles report a level only when they set one', function (assert) {
+      assertStates(assert, { 'treeitem-level': { level: 2, selected: false }, 'listitem-plain': {} });
+    });
+
+    QUnit.module('disabled');
+
+    QUnit.test('natively disabled controls report disabled; enabled ones have no key', function (assert) {
+      assertStates(assert, { 'disabled-button': { disabled: true }, 'plain-button': {}, 'in-disabled-fieldset': { disabled: true } });
+    });
+
+    QUnit.test('aria-disabled applies to the element and its focusable descendants', function (assert) {
+      assertStates(assert, { 'aria-disabled-link': { disabled: true }, 'in-aria-disabled': { disabled: true }, 'aria-disabled-false': {} });
+    });
+
+    QUnit.test('an ancestor\'s aria-disabled does not reach content that cannot take focus (WAI-ARIA 1.2)', function (assert) {
+      assertStates(assert, {
+        'heading-in-aria-disabled': { level: 2 },
+        'menuitem-in-aria-disabled': {},
+        'focusable-menuitem-in-aria-disabled': { disabled: true },
+      });
+    });
+
+    QUnit.test('aria-expanded, aria-pressed and aria-selected set to undefined or empty count as absent', function (assert) {
+      assertStates(assert, { 'pressed-undefined': {}, 'expanded-empty': {}, 'gridcell-selected-undefined': {} });
+    });
+
+    QUnit.test('an option element with another role does not report selected', function (assert) {
+      assertStates(assert, { 'option-as-link': {} });
+    });
+
+    QUnit.module('focused');
+
+    QUnit.test('only the focused element reports focused', function (assert) {
+      var input = byId('focus-me');
+      input.focus();
+      assert.deepEqual(snapshot(input).states, { focused: true });
+      assert.deepEqual(snapshot(byId('plain-button')).states, {});
+      input.blur();
+      assert.deepEqual(snapshot(input).states, {});
+    });
+
+    QUnit.test('the document root and text leaves have no states', function (assert) {
+      assert.deepEqual(snapshot().states, {});
+      var h = snapshot(byId('h1-text'));
+      assert.deepEqual(h.states, { level: 1 });
+      assert.deepEqual(snapshot(byId('para')).children[0].states, {});
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <input id="cb-checked" type="checkbox" checked>
+  <input id="cb-unchecked" type="checkbox">
+  <input id="cb-indeterminate" type="checkbox">
+  <input id="radio-checked" type="radio" name="r" checked>
+  <input id="radio-unchecked" type="radio" name="r">
+  <div id="aria-cb-true" role="checkbox" aria-checked="true">a</div>
+  <div id="aria-cb-false" role="checkbox" aria-checked="false">b</div>
+  <div id="aria-cb-mixed" role="checkbox" aria-checked="mixed">c</div>
+  <div id="aria-cb-absent" role="checkbox">d</div>
+  <div id="aria-switch-on" role="switch" aria-checked="true">e</div>
+  <div id="aria-switch-mixed" role="switch" aria-checked="mixed">f</div>
+  <div id="aria-radio" role="radio">g</div>
+  <div id="aria-radio-mixed" role="radio" aria-checked="mixed">h</div>
+  <div id="aria-menuitemcheckbox" role="menuitemcheckbox" aria-checked="true">i</div>
+  <div id="aria-menuitemradio" role="menuitemradio">j</div>
+  <input id="native-switch" type="checkbox" role="switch" checked>
+
+  <button id="pressed-true" aria-pressed="true">p</button>
+  <button id="pressed-false" aria-pressed="false">p</button>
+  <button id="pressed-mixed" aria-pressed="mixed">p</button>
+  <button id="plain-button">p</button>
+  <button id="expanded-true" aria-expanded="true">e</button>
+  <button id="expanded-false" aria-expanded="false">e</button>
+  <details open><summary id="summary-open">open</summary>x</details>
+  <details><summary id="summary-closed">closed</summary>x</details>
+
+  <select><option id="option-unselected">u</option><option id="option-selected" selected>s</option></select>
+  <div role="listbox"><div id="aria-option-true" role="option" aria-selected="true">a</div><div id="aria-option-absent" role="option">b</div></div>
+  <div role="tablist"><div id="tab-selected" role="tab" aria-selected="true">t</div><div id="tab-absent" role="tab">t</div></div>
+  <div role="tree"><div id="treeitem-absent" role="treeitem">t</div><div id="treeitem-level" role="treeitem" aria-level="2">t</div></div>
+  <table role="grid"><tr id="row-plain"><td id="gridcell-selected" aria-selected="true">a</td><td id="gridcell-plain">b</td></tr><tr id="row-selected" aria-selected="true"><td>c</td></tr></table>
+
+  <h1 id="h1">1</h1><h2 id="h2">2</h2><h3 id="h3">3</h3><h4 id="h4">4</h4><h5 id="h5">5</h5><h6 id="h6">6</h6>
+  <h2 id="h2-level-4" aria-level="4">4</h2>
+  <div id="aria-heading-3" role="heading" aria-level="3">3</div>
+  <div id="aria-heading-default" role="heading">2</div>
+  <h3 id="h3-bad-level" aria-level="abc">3</h3>
+  <div id="aria-heading-zero" role="heading" aria-level="0">2</div>
+  <ul><li id="listitem-plain">li</li></ul>
+
+  <button id="disabled-button" disabled>d</button>
+  <fieldset disabled><input id="in-disabled-fieldset" type="text"></fieldset>
+  <a id="aria-disabled-link" href="#" aria-disabled="true">d</a>
+  <div aria-disabled="true"><button id="in-aria-disabled">d</button></div>
+  <button id="aria-disabled-false" aria-disabled="false">d</button>
+  <div aria-disabled="true">
+    <h2 id="heading-in-aria-disabled">h</h2>
+    <div role="menuitem" id="menuitem-in-aria-disabled">m</div>
+    <div role="menuitem" tabindex="-1" id="focusable-menuitem-in-aria-disabled">m</div>
+  </div>
+  <button id="pressed-undefined" aria-pressed="undefined">p</button>
+  <button id="expanded-empty" aria-expanded="">e</button>
+  <div role="grid"><div role="row"><div role="gridcell" id="gridcell-selected-undefined" aria-selected="undefined">c</div></div></div>
+  <select><option id="option-as-link" role="link" selected>x</option></select>
+
+  <input id="focus-me" type="text">
+  <h1 id="h1-text">Heading text</h1>
+  <p id="para">para text</p>
+</body>
+
+</html>

@@ -224,19 +224,18 @@ class RedisBackedGridModelTest {
     ExecutorService executor = Executors.newFixedThreadPool(threads);
 
     for (int i = 0; i < threads; i++) {
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              if (model.reserve(slotId)) {
-                wins.incrementAndGet();
-              }
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              doneLatch.countDown();
-            }
-          });
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          if (model.reserve(slotId)) {
+            wins.incrementAndGet();
+          }
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          doneLatch.countDown();
+        }
+      });
     }
 
     startLatch.countDown();

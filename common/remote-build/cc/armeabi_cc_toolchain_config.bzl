@@ -15,12 +15,12 @@
 """A Starlark cc_toolchain configuration rule"""
 
 load(
-    "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
+    "@rules_cc//cc:cc_toolchain_config_lib.bzl",
     "feature",
     "tool_path",
 )
 load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
-load("@rules_cc//cc/private/toolchain_config:cc_toolchain_config_info.bzl", "CcToolchainConfigInfo")
+load("@rules_cc//cc/toolchains:cc_toolchain_config_info.bzl", "CcToolchainConfigInfo")
 
 def _impl(ctx):
     toolchain_identifier = "stub_armeabi-v7a"
@@ -45,6 +45,7 @@ def _impl(ctx):
 
     tool_paths = [
         tool_path(name = "ar", path = "/bin/false"),
+        tool_path(name = "compat-ld", path = "/bin/false"),
         tool_path(name = "cpp", path = "/bin/false"),
         tool_path(name = "dwp", path = "/bin/false"),
         tool_path(name = "gcc", path = "/bin/false"),

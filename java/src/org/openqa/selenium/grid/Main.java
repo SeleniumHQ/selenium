@@ -134,12 +134,8 @@ public class Main {
         PrintWriter indented = new WrappedPrintWriter(out, 72, indent);
         commands.stream()
             .filter(CliCommand::isShown)
-            .forEach(
-                cmd ->
-                    indented
-                        .format(format, cmd.getName())
-                        .append(cmd.getDescription())
-                        .append("\n"));
+            .forEach(cmd ->
+                indented.format(format, cmd.getName()).append(cmd.getDescription()).append("\n"));
 
         outWriter.write("\nFor each command, run with `--help` for command-specific help\n");
         outWriter.write(

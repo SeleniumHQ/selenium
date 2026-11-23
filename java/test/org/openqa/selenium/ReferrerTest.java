@@ -285,16 +285,14 @@ class ReferrerTest extends JupiterTestBase {
 
     public ProxyServer() {
       server =
-          new NettyAppServer(
-              req -> {
-                if (pacFileContents != null && req.getUri().endsWith("/pac.js")) {
-                  return new HttpResponse()
-                      .setHeader(
-                          "Content-Type", "application/x-javascript-config; charset=us-ascii")
-                      .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII)));
-                }
-                return handler.execute(req);
-              });
+          new NettyAppServer(req -> {
+            if (pacFileContents != null && req.getUri().endsWith("/pac.js")) {
+              return new HttpResponse()
+                  .setHeader("Content-Type", "application/x-javascript-config; charset=us-ascii")
+                  .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII)));
+            }
+            return handler.execute(req);
+          });
       server.start();
     }
 

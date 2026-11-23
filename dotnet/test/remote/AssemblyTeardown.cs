@@ -17,27 +17,16 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
 using NUnit.Framework;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit;
+
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: SingleSessionBrowser(Browser.Safari, Browser.IE)]
 
 [SetUpFixture]
 #pragma warning disable // Outside a namespace to affect the entire assembly
-public class AssemblyTeardown
+public class AssemblyTeardown : AssemblyFixtureBase
 #pragma warning restore
 {
-    [OneTimeSetUp]
-    public async Task RunBeforeAnyTestAsync()
-    {
-        await EnvironmentManager.Instance.WebServer.StartAsync();
-        await EnvironmentManager.Instance.RemoteServer.StartAsync();
-    }
-
-    [OneTimeTearDown]
-    public async Task RunAfterAnyTestsAsync()
-    {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        await EnvironmentManager.Instance.WebServer.StopAsync();
-        await EnvironmentManager.Instance.RemoteServer.StopAsync();
-    }
+    protected override bool StartRemoteServer => true;
 }

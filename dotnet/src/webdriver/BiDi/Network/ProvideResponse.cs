@@ -19,15 +19,15 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed record ProvideResponseParameters(Request Request, BytesValue? Body, IEnumerable<SetCookieHeader>? Cookies, IEnumerable<Header>? Headers, string? ReasonPhrase, long? StatusCode) : Parameters;
+internal sealed record ProvideResponseParameters(Request Request, BytesValue? Body, ImmutableArray<SetCookieHeader>? Cookies, ImmutableArray<Header>? Headers, string? ReasonPhrase, long? StatusCode) : Parameters;
 
 public sealed record ProvideResponseOptions : CommandOptions
 {
     public BytesValue? Body { get; init; }
 
-    public IEnumerable<SetCookieHeader>? Cookies { get; init; }
+    public ImmutableArray<SetCookieHeader>? Cookies { get; init; }
 
-    public IEnumerable<Header>? Headers { get; init; }
+    public ImmutableArray<Header>? Headers { get; init; }
 
     public string? ReasonPhrase { get; init; }
 

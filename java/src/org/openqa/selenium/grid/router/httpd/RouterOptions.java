@@ -33,18 +33,17 @@ public class RouterOptions {
   public String subPath() {
     return config
         .get(NETWORK_SECTION, "sub-path")
-        .map(
-            prefix -> {
-              prefix = prefix.trim();
-              if (!prefix.startsWith("/")) {
-                prefix = "/" + prefix; // Prefix with a '/' if absent.
-              }
-              if (prefix.endsWith("/")) {
-                prefix =
-                    prefix.substring(0, prefix.length() - 1); // Remove the trailing '/' if present.
-              }
-              return prefix;
-            })
+        .map(prefix -> {
+          prefix = prefix.trim();
+          if (!prefix.startsWith("/")) {
+            prefix = "/" + prefix; // Prefix with a '/' if absent.
+          }
+          if (prefix.endsWith("/")) {
+            prefix =
+                prefix.substring(0, prefix.length() - 1); // Remove the trailing '/' if present.
+          }
+          return prefix;
+        })
         .orElse("");
   }
 

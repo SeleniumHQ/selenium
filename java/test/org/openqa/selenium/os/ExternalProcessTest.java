@@ -22,8 +22,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
+import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
 
@@ -111,6 +116,114 @@ class ExternalProcessTest {
 
     assertThat(process.waitFor(Duration.ofSeconds(20))).isTrue();
     assertThat(process.exitValue()).isNotEqualTo(0);
+  }
+
+  @Test
+  @DisabledOnOs(OS.WINDOWS)
+  void waitForReturnsWhenAChildKeepsTheOutputOpen() throws InterruptedException {
+    // the child inherits stdout and outlives the process, like a browser started by a driver
+    ExternalProcess process =
+        ExternalProcess.builder()
+            .command("/bin/sh", List.of("-c", "echo parent; sleep 12 & sleep 1"))
+            .start();
+
+    long start = System.nanoTime();
+    assertThat(process.waitFor(Duration.ofSeconds(20))).isTrue();
+    Duration waited = Duration.ofNanos(System.nanoTime() - start);
+
+    assertThat(waited).isLessThan(Duration.ofSeconds(5));
+    assertThat(process.getOutput()).contains("parent");
+  }
+
+  @Test
+  @DisabledOnOs(OS.WINDOWS)
+  void shutdownReturnsWhenAChildKeepsTheOutputOpen() throws InterruptedException {
+    ExternalProcess process =
+        ExternalProcess.builder()
+            .command("/bin/sh", List.of("-c", "echo parent; sleep 12 & sleep 30"))
+            .start();
+    // wait until the worker is reading, the stall only happens when it is blocked in a read
+    long deadline = System.nanoTime() + Duration.ofSeconds(10).toNanos();
+    while (!process.getOutput().contains("parent") && System.nanoTime() < deadline) {
+      Thread.sleep(10);
+    }
+
+    long start = System.nanoTime();
+    process.shutdown();
+    Duration waited = Duration.ofNanos(System.nanoTime() - start);
+
+    assertThat(process.isAlive()).isFalse();
+    assertThat(waited).isLessThan(Duration.ofSeconds(5));
+  }
+
+  @Test
+  @DisabledOnOs(OS.WINDOWS)
+  void waitForKeepsWaitingWhileASlowCopyIsInProgress() throws InterruptedException {
+    OutputStream slow =
+        new OutputStream() {
+          private boolean first = true;
+
+          @Override
+          public void write(int b) {}
+
+          @Override
+          public void write(byte[] b, int off, int len) {
+            if (first) {
+              first = false;
+              sleep(3000);
+            }
+          }
+        };
+    String script = "echo first; sleep 12 & sleep 0.5; echo second; sleep 0.5";
+    ExternalProcess process =
+        ExternalProcess.builder()
+            .command("/bin/sh", List.of("-c", script))
+            .copyOutputTo(slow)
+            .start();
+
+    assertThat(process.waitFor(Duration.ofSeconds(20))).isTrue();
+    assertThat(process.getOutput()).contains("first").contains("second");
+  }
+
+  @Test
+  @DisabledOnOs(OS.WINDOWS)
+  void outputIsStillReadWhenTheCopyFails() throws InterruptedException {
+    OutputStream failing =
+        new OutputStream() {
+          @Override
+          public void write(int b) throws IOException {
+            throw new IOException("closed");
+          }
+
+          @Override
+          public void write(byte[] b, int off, int len) throws IOException {
+            throw new IOException("closed");
+          }
+        };
+    // more than a pipe buffer holds, so the process blocks unless its output is read
+    ExternalProcess process =
+        ExternalProcess.builder()
+            .command("/bin/sh", List.of("-c", "head -c 1000000 /dev/zero"))
+            .copyOutputTo(failing)
+            .start();
+
+    assertThat(process.waitFor(Duration.ofSeconds(20))).isTrue();
+  }
+
+  /** Blocks like a slow stream does: an interrupt does not end it early. */
+  private static void sleep(long millis) {
+    long deadline = System.nanoTime() + Duration.ofMillis(millis).toNanos();
+    boolean interrupted = false;
+    while (System.nanoTime() < deadline) {
+      try {
+        Thread.sleep(Math.max(1, Duration.ofNanos(deadline - System.nanoTime()).toMillis()));
+      } catch (InterruptedException e) {
+        interrupted = true;
+      }
+    }
+    if (interrupted) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   private static String findExecutable(String relativePath) {

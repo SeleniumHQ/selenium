@@ -33,7 +33,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
         var realmsResult = await bidi.Script.GetRealmsAsync();
 
         Assert.That(realmsResult, Is.Not.Null);
-        Assert.That(realmsResult.Realms, Has.Count.EqualTo(2));
+        Assert.That(realmsResult.Realms, Has.Length.EqualTo(2));
 
         Assert.That(realmsResult.Realms[0], Is.AssignableFrom<WindowRealmInfo>());
         Assert.That(realmsResult.Realms[0].Realm, Is.Not.Null);
@@ -50,7 +50,7 @@ internal class ScriptCommandsTests : BiDiTestFixture
         var realmsResult = await bidi.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
         Assert.That(realmsResult, Is.Not.Null);
-        Assert.That(realmsResult.Realms, Has.Count.EqualTo(2));
+        Assert.That(realmsResult.Realms, Has.Length.EqualTo(2));
 
         Assert.That(realmsResult.Realms[0], Is.AssignableFrom<WindowRealmInfo>());
         Assert.That(realmsResult.Realms[0].Realm, Is.Not.Null);

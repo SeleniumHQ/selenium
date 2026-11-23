@@ -25,6 +25,9 @@ def _closure_lang_file_impl(ctx):
     args.add(ctx.outputs.out)
     args.add(ctx.attr.preamble)
     args.add(ctx.attr.utf8)
+
+    # Label of this target, so the generated marker names the exact command that rebuilds it.
+    args.add("//%s:%s" % (ctx.label.package, ctx.label.name))
     for key in sorted(binaries.keys()):
         args.add(key)
         args.add(binaries[key])

@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.script;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public class RealmTarget extends Target {
 
   public RealmTarget(String id) {

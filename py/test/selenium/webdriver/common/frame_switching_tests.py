@@ -17,7 +17,12 @@
 
 import pytest
 
-from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException, WebDriverException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    NoSuchFrameException,
+    NoSuchWindowException,
+    WebDriverException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -277,7 +282,9 @@ def test_should_be_able_to_click_in_aframe_that_rewrites_top_window_location(dri
     driver.switch_to.frame(driver.find_element(By.ID, "search"))
     driver.find_element(By.ID, "submit").click()
     driver.switch_to.default_content()
-    WebDriverWait(driver, 3).until(EC.title_is("Target page for issue 5237"))
+    WebDriverWait(driver, 3, ignored_exceptions=[NoSuchWindowException]).until(
+        EC.title_is("Target page for issue 5237")
+    )
 
 
 def test_should_be_able_to_click_in_asub_frame(driver, pages):

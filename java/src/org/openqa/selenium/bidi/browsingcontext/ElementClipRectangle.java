@@ -18,7 +18,9 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class ElementClipRectangle extends ClipRectangle {
   private final Map<String, Object> map = new HashMap<>();
 

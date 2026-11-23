@@ -22,6 +22,7 @@ import io.fabric8.kubernetes.api.model.LocalObjectReference;
 import io.fabric8.kubernetes.api.model.PodDNSConfig;
 import io.fabric8.kubernetes.api.model.PodSecurityContext;
 import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.SecurityContext;
 import io.fabric8.kubernetes.api.model.Toleration;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +48,7 @@ public class InheritedPodSpec {
   private final @Nullable String assetsClaimName;
   private final @Nullable String nodePodName;
   private final @Nullable String nodePodUid;
+  private final @Nullable SecurityContext containerSecurityContext;
 
   public InheritedPodSpec(
       @Nullable List<Toleration> tolerations,
@@ -81,6 +83,7 @@ public class InheritedPodSpec {
         resourceLimits,
         assetsClaimName,
         null,
+        null,
         null);
   }
 
@@ -102,6 +105,46 @@ public class InheritedPodSpec {
       @Nullable String assetsClaimName,
       @Nullable String nodePodName,
       @Nullable String nodePodUid) {
+    this(
+        tolerations,
+        affinity,
+        imagePullSecrets,
+        dnsPolicy,
+        dnsConfig,
+        securityContext,
+        priorityClassName,
+        nodeSelector,
+        serviceAccountName,
+        labels,
+        annotations,
+        imagePullPolicy,
+        resourceRequests,
+        resourceLimits,
+        assetsClaimName,
+        nodePodName,
+        nodePodUid,
+        null);
+  }
+
+  public InheritedPodSpec(
+      @Nullable List<Toleration> tolerations,
+      @Nullable Affinity affinity,
+      @Nullable List<LocalObjectReference> imagePullSecrets,
+      @Nullable String dnsPolicy,
+      @Nullable PodDNSConfig dnsConfig,
+      @Nullable PodSecurityContext securityContext,
+      @Nullable String priorityClassName,
+      @Nullable Map<String, String> nodeSelector,
+      @Nullable String serviceAccountName,
+      @Nullable Map<String, String> labels,
+      @Nullable Map<String, String> annotations,
+      @Nullable String imagePullPolicy,
+      @Nullable Map<String, Quantity> resourceRequests,
+      @Nullable Map<String, Quantity> resourceLimits,
+      @Nullable String assetsClaimName,
+      @Nullable String nodePodName,
+      @Nullable String nodePodUid,
+      @Nullable SecurityContext containerSecurityContext) {
     this.tolerations = tolerations != null ? List.copyOf(tolerations) : List.of();
     this.affinity = affinity;
     this.imagePullSecrets = imagePullSecrets != null ? List.copyOf(imagePullSecrets) : List.of();
@@ -121,6 +164,7 @@ public class InheritedPodSpec {
     this.assetsClaimName = assetsClaimName;
     this.nodePodName = nodePodName;
     this.nodePodUid = nodePodUid;
+    this.containerSecurityContext = containerSecurityContext;
   }
 
   public static InheritedPodSpec empty() {
@@ -144,6 +188,7 @@ public class InheritedPodSpec {
         || !resourceRequests.isEmpty()
         || !resourceLimits.isEmpty()
         || assetsClaimName != null
+        || containerSecurityContext != null
         || hasNodePodOwnerReference();
   }
 
@@ -173,6 +218,11 @@ public class InheritedPodSpec {
   @Nullable
   public PodSecurityContext getSecurityContext() {
     return securityContext;
+  }
+
+  @Nullable
+  public SecurityContext getContainerSecurityContext() {
+    return containerSecurityContext;
   }
 
   @Nullable

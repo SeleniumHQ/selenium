@@ -1,0 +1,61 @@
+name: Scheduled - Update Bazel Cache
+
+on:
+  push:
+    branches: [trunk]
+    # Keep in sync with the repository-cache key files in bazel.yml.
+    paths:
+      - 'MODULE.bazel'
+      - 'multitool.lock.json'
+      - 'pnpm-lock.yaml'
+      - 'rust/Cargo.lock'
+      - 'java/maven_install.json'
+      - 'py/requirements_lock.txt'
+      - 'rb/Gemfile.lock'
+      - 'dotnet/paket.lock'
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: gh-cache-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  populate:
+    name: Populate Cache
+    permissions:
+      contents: read
+      actions: write
+    strategy:
+      fail-fast: false
+      # One OS at a time, so the repo holds at most one extra copy and stays under the 10 GB limit
+      max-parallel: 1
+      matrix:
+        os: [ubuntu, macos, windows, ubuntu-24.04-arm]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: ${{ matrix.os }}
+      os: ${{ matrix.os }}
+      cache-save: true
+      run: ./scripts/github-actions/populate-repository-cache.sh
+
+  on-failure:
+    name: On Cache Update Failure
+    runs-on: ubuntu-latest
+    needs: populate
+    if: failure() && github.event_name == 'schedule'
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_MESSAGE: "Needs investigation: the daily Bazel cache update failed. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

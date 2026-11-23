@@ -48,12 +48,11 @@ public class HandlersForTests implements Routable {
     Route route =
         Route.combine(
             Route.get("/basicAuth")
-                .to(
-                    () ->
-                        req ->
-                            new HttpResponse()
-                                .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
-                                .setContent(Contents.string("<h1>authorized</h1>", UTF_8)))
+                .to(() ->
+                    req ->
+                        new HttpResponse()
+                            .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
+                            .setContent(Contents.string("<h1>authorized</h1>", UTF_8)))
                 .with(new BasicAuthenticationFilter("test", "test")),
             Route.get("/.well-known/web-identity").to(WellKnownWebIdentityHandler::new),
             Route.get("/fedcm/config.json").to(FedCmConfigHandler::new),
@@ -73,12 +72,11 @@ public class HandlersForTests implements Routable {
                 .to(() -> new Utf8Handler(webSrc, "/utf8/")),
             Route.prefix(TEMP_SRC_CONTEXT_PATH).to(Route.combine(generatedPages)),
             Route.get("/quitquitquit")
-                .to(
-                    () ->
-                        req -> {
-                          System.exit(0);
-                          return new HttpResponse();
-                        }),
+                .to(() ->
+                    req -> {
+                      System.exit(0);
+                      return new HttpResponse();
+                    }),
             new CommonWebResources());
 
     delegate = Route.combine(route, Route.prefix("/common").to(route));

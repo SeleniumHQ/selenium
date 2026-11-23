@@ -70,11 +70,11 @@ public class Either<A extends @Nullable Object, B extends @Nullable Object> impl
 
   @Override
   public Iterator<B> iterator() {
-    return Collections.singleton(right()).iterator();
+    return isRight() ? Collections.singleton(right()).iterator() : Collections.emptyIterator();
   }
 
   public Stream<B> stream() {
-    return Stream.of(right());
+    return isRight() ? Stream.of(right()) : Stream.empty();
   }
 
   @Override

@@ -23,6 +23,7 @@ import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodSpec;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirements;
+import io.fabric8.kubernetes.api.model.SecurityContext;
 import io.fabric8.kubernetes.api.model.VolumeMount;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.Config;
@@ -101,11 +102,10 @@ public class KubernetesOptions {
     String imagePullPolicy =
         config
             .get(K8S_SECTION, "image-pull-policy")
-            .orElseGet(
-                () ->
-                    inheritedPodSpec.getImagePullPolicy() != null
-                        ? inheritedPodSpec.getImagePullPolicy()
-                        : DEFAULT_IMAGE_PULL_POLICY);
+            .orElseGet(() ->
+                inheritedPodSpec.getImagePullPolicy() != null
+                    ? inheritedPodSpec.getImagePullPolicy()
+                    : DEFAULT_IMAGE_PULL_POLICY);
 
     String serviceAccount =
         config
@@ -146,7 +146,8 @@ public class KubernetesOptions {
         throw new ConfigException("Unable to find JSON config for: " + configKey);
       }
       Capabilities caps =
-          options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
+          options.enhanceStereotype(
+              parseStereotype(allConfigs.get(i), "kubernetes config '" + configKey + "'"));
 
       if (configKey.startsWith(CONFIGMAP_PREFIX)) {
         // Template mode: load Job template from ConfigMap
@@ -292,11 +293,8 @@ public class KubernetesOptions {
 
     boolean hasBrowserContainer =
         containers.stream()
-            .anyMatch(
-                c ->
-                    "browser".equals(c.getName())
-                        && c.getImage() != null
-                        && !c.getImage().isEmpty());
+            .anyMatch(c ->
+                "browser".equals(c.getName()) && c.getImage() != null && !c.getImage().isEmpty());
     if (!hasBrowserContainer) {
       throw new ConfigException(
           String.format(
@@ -327,21 +325,20 @@ public class KubernetesOptions {
     // in-cluster service account namespace file, and KUBERNETES_NAMESPACE env var.
     return config
         .get(K8S_SECTION, "namespace")
-        .orElseGet(
-            () -> {
-              if (kubeClient != null) {
-                try {
-                  String clientNamespace = kubeClient.getNamespace();
-                  if (clientNamespace != null && !clientNamespace.isEmpty()) {
-                    LOG.info("Auto-detected K8s namespace from client: " + clientNamespace);
-                    return clientNamespace;
-                  }
-                } catch (RuntimeException e) {
-                  LOG.warning("Failed to read namespace from Kubernetes client: " + e.getMessage());
-                }
+        .orElseGet(() -> {
+          if (kubeClient != null) {
+            try {
+              String clientNamespace = kubeClient.getNamespace();
+              if (clientNamespace != null && !clientNamespace.isEmpty()) {
+                LOG.info("Auto-detected K8s namespace from client: " + clientNamespace);
+                return clientNamespace;
               }
-              return "default";
-            });
+            } catch (RuntimeException e) {
+              LOG.warning("Failed to read namespace from Kubernetes client: " + e.getMessage());
+            }
+          }
+          return "default";
+        });
   }
 
   private Duration getServerStartTimeout() {
@@ -432,11 +429,13 @@ public class KubernetesOptions {
       String containerImagePullPolicy = null;
       Map<String, Quantity> containerResourceRequests = null;
       Map<String, Quantity> containerResourceLimits = null;
+      SecurityContext containerSecurityContext = null;
       String assetsClaimName = null;
       List<Container> containers = spec.getContainers();
       if (containers != null && !containers.isEmpty()) {
         Container firstContainer = containers.get(0);
         containerImagePullPolicy = firstContainer.getImagePullPolicy();
+        containerSecurityContext = firstContainer.getSecurityContext();
         ResourceRequirements resources = firstContainer.getResources();
         if (resources != null) {
           containerResourceRequests = resources.getRequests();
@@ -489,7 +488,8 @@ public class KubernetesOptions {
               containerResourceLimits,
               assetsClaimName,
               nodePodName,
-              nodePodUid);
+              nodePodUid,
+              containerSecurityContext);
 
       LOG.info(String.format("Inspected Node Pod '%s' for inheritable spec fields", podName));
       return inherited;
@@ -541,5 +541,14 @@ public class KubernetesOptions {
       }
     }
     return result;
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 }

@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-internal sealed record PerformActionsParameters(BrowsingContext.BrowsingContext Context, IEnumerable<SourceActions> Actions) : Parameters;
+internal sealed record PerformActionsParameters(BrowsingContext.BrowsingContext Context, ImmutableArray<SourceActions> Actions) : Parameters;
 
 public sealed record PerformActionsOptions : CommandOptions;
 

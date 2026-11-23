@@ -18,7 +18,9 @@
 package org.openqa.selenium.bidi.storage;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public abstract class PartitionDescriptor {
 
   enum Type {

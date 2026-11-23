@@ -22,24 +22,23 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed record AddInterceptParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : Parameters;
+internal sealed record AddInterceptParameters(ImmutableArray<InterceptPhase> Phases, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<UrlPattern>? UrlPatterns) : Parameters;
 
 public record AddInterceptOptions() : CommandOptions
 {
     internal AddInterceptOptions(ContextAddInterceptOptions? options) : this()
     {
         UrlPatterns = options?.UrlPatterns;
-        Timeout = options?.Timeout;
     }
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
+    public ImmutableArray<UrlPattern>? UrlPatterns { get; init; }
 }
 
 public record ContextAddInterceptOptions : CommandOptions
 {
-    public IEnumerable<UrlPattern>? UrlPatterns { get; init; }
+    public ImmutableArray<UrlPattern>? UrlPatterns { get; init; }
 }
 
 public sealed record AddInterceptResult(Intercept Intercept) : EmptyResult;

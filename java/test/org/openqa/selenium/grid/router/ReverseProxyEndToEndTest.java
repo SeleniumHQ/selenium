@@ -120,12 +120,11 @@ class ReverseProxyEndToEndTest {
       new FluentWait<>(client)
           .withTimeout(duration)
           .pollingEvery(Duration.ofSeconds(1))
-          .until(
-              c -> {
-                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-                Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return status != null && Boolean.parseBoolean(status.get("ready").toString());
-              });
+          .until(c -> {
+            HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+            Map<String, Object> status = Values.get(response, MAP_TYPE);
+            return status != null && Boolean.parseBoolean(status.get("ready").toString());
+          });
     }
   }
 

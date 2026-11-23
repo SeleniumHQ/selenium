@@ -24,34 +24,25 @@ namespace OpenQA.Selenium.BiDi.Storage;
 
 internal sealed class StorageModule : Module, IStorageModule
 {
-    private static readonly Command<GetCookiesParameters, GetCookiesResult> GetCookiesCommand = new(
-        "storage.getCookies", Default.GetCookiesParameters, Default.GetCookiesResult);
-
-    private static readonly Command<DeleteCookiesParameters, DeleteCookiesResult> DeleteCookiesCommand = new(
-        "storage.deleteCookies", Default.DeleteCookiesParameters, Default.DeleteCookiesResult);
-
-    private static readonly Command<SetCookieParameters, SetCookieResult> SetCookieCommand = new(
-        "storage.setCookie", Default.SetCookieParameters, Default.SetCookieResult);
-
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
 
-        return await ExecuteAsync(GetCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("storage.getCookies", @params, Default.GetCookiesParameters, Default.GetCookiesResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new DeleteCookiesParameters(options?.Filter, options?.Partition);
 
-        return await ExecuteAsync(DeleteCookiesCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("storage.deleteCookies", @params, Default.DeleteCookiesParameters, Default.DeleteCookiesResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
-        return await ExecuteAsync(SetCookieCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("storage.setCookie", @params, Default.SetCookieParameters, Default.SetCookieResult, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

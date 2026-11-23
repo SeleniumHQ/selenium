@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
-
 namespace OpenQA.Selenium.Tests;
 
 [TestFixture]
@@ -36,15 +34,15 @@ public class I18Tests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToReadChinese()
     {
-        driver.Url = chinesePage;
-        driver.FindElement(By.LinkText(linkText)).Click();
+        Driver.Url = Urls.ChinesePage;
+        Driver.FindElement(By.LinkText(linkText)).Click();
     }
 
     [Test]
     public void ShouldBeAbleToEnterHebrewTextFromLeftToRight()
     {
-        driver.Url = chinesePage;
-        IWebElement input = driver.FindElement(By.Name("i18n"));
+        Driver.Url = Urls.ChinesePage;
+        IWebElement input = Driver.FindElement(By.Name("i18n"));
 
         input.SendKeys(shalom);
 
@@ -54,8 +52,8 @@ public class I18Tests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToEnterHebrewTextFromRightToLeft()
     {
-        driver.Url = chinesePage;
-        IWebElement input = driver.FindElement(By.Name("i18n"));
+        Driver.Url = Urls.ChinesePage;
+        IWebElement input = Driver.FindElement(By.Name("i18n"));
 
         input.SendKeys(tmunot);
 
@@ -67,13 +65,13 @@ public class I18Tests : DriverTestFixture
     [IgnoreBrowser(Browser.Edge, "EdgeDriver only supports characters in the BMP")]
     public void ShouldBeAbleToEnterSupplementaryCharacters()
     {
-        if (TestUtilities.IsOldIE(driver))
+        if (TestUtilities.IsOldIE(Driver))
         {
             // IE: versions less thank 10 have issue 5069
             return;
         }
 
-        driver.Url = chinesePage;
+        Driver.Url = Urls.ChinesePage;
 
         string input = string.Empty;
         input += char.ConvertFromUtf32(0x20000);
@@ -82,7 +80,7 @@ public class I18Tests : DriverTestFixture
         input += char.ConvertFromUtf32(0x2A190);
         input += char.ConvertFromUtf32(0x2A6B2);
 
-        IWebElement el = driver.FindElement(By.Name("i18n"));
+        IWebElement el = Driver.FindElement(By.Name("i18n"));
         el.SendKeys(input);
 
         Assert.That(el.GetAttribute("value"), Is.EqualTo(input));
@@ -92,10 +90,10 @@ public class I18Tests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedBeforeTest = true)]
     public void ShouldBeAbleToReturnTheTextInAPage()
     {
-        string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("encoding");
-        driver.Url = url;
+        string url = Urls.WhereIs("encoding");
+        Driver.Url = url;
 
-        string text = driver.FindElement(By.TagName("body")).Text;
+        string text = Driver.FindElement(By.TagName("body")).Text;
 
         Assert.That(text, Is.EqualTo(shalom));
     }

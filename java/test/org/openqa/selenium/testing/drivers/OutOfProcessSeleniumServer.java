@@ -19,23 +19,25 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.devtools.build.runfiles.Runfiles;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.firefox.GeckoDriverService;
@@ -48,6 +50,8 @@ import org.openqa.selenium.remote.service.DriverService;
 class OutOfProcessSeleniumServer {
 
   private static final Logger LOG = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
+  private static final Set<Browser> GRID_BROWSERS =
+      EnumSet.of(Browser.CHROME, Browser.EDGE, Browser.FIREFOX, Browser.SAFARI);
 
   private @Nullable String baseUrl = null;
   private @Nullable ExternalProcess process = null;
@@ -80,14 +84,12 @@ class OutOfProcessSeleniumServer {
     // Make sure we inherit system properties.
     Stream<String> javaFlags =
         System.getProperties().entrySet().stream()
-            .filter(
-                entry -> {
-                  String key = String.valueOf(entry.getKey());
-                  return key.startsWith("selenium") || key.startsWith("webdriver");
-                })
+            .filter(entry -> {
+              String key = String.valueOf(entry.getKey());
+              return key.startsWith("selenium") || key.startsWith("webdriver");
+            })
             .map(entry -> "--jvm_flag=-D" + entry.getKey() + "=" + entry.getValue());
 
-    // Only use Selenium Manager if we're not running with pinned browsers.
     boolean driverProvided =
         Stream.of(
                 GeckoDriverService.createDefaultService(),
@@ -105,8 +107,7 @@ class OutOfProcessSeleniumServer {
     startupArgs.add("--port");
     startupArgs.add(String.valueOf(port));
     if (!driverProvided) {
-      startupArgs.add("--selenium-manager");
-      startupArgs.add("true");
+      startupArgs.addAll(unpinnedDriverArgs(Browser.detect()));
     }
 
     ExternalProcess.Builder builder =
@@ -149,6 +150,32 @@ class OutOfProcessSeleniumServer {
     return this;
   }
 
+  // A slot for only the browser under test, so the node doesn't run Selenium Manager for every
+  // browser at startup. A config file, since Java doesn't escape a stereotype's quotes on Windows.
+  private static List<String> unpinnedDriverArgs(@Nullable Browser browser) {
+    if (browser == null || !GRID_BROWSERS.contains(browser)) {
+      return List.of("--selenium-manager", "true");
+    }
+
+    String config =
+        String.join(
+            "\n",
+            "[node]",
+            "detect-drivers = false",
+            "[[node.driver-configuration]]",
+            "display-name = \"" + browser.displayName() + "\"",
+            "[node.driver-configuration.stereotype]",
+            "browserName = \"" + browser.getCapabilities().getBrowserName() + "\"");
+    try {
+      Path configFile = Files.createTempFile("selenium-node", ".toml");
+      configFile.toFile().deleteOnExit();
+      Files.writeString(configFile, config);
+      return List.of("--config", configFile.toString());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
   private File findBinRoot(File dir) {
     if ("bin".equals(dir.getName())) {
       return dir;
@@ -168,26 +195,14 @@ class OutOfProcessSeleniumServer {
   }
 
   private String buildServerAndClasspath() {
-    try {
-      Runfiles.Preloaded runfiles = Runfiles.preload();
-      String location =
-          runfiles.unmapped().rlocation("_main/java/src/org/openqa/selenium/grid/selenium_server");
-      System.err.println("Location found is: " + location);
-      Path path = Paths.get(location);
-      if (Files.exists(path)) {
-        return location;
-      }
-    } catch (IOException e) {
-      LOG.log(Level.SEVERE, "Failed to build server", e);
-      // Fall through
+    String server =
+        InProject.resolveRunfilesPath(System.getProperty("selenium.browser.remote.path"));
+    if (server == null) {
+      throw new AssertionError(
+          "Please set the sys property selenium.browser.remote.path to point to the out-of-process"
+              + " selenium server");
     }
-
-    if (System.getProperty("selenium.browser.remote.path") != null) {
-      return System.getProperty("selenium.browser.remote.path");
-    }
-    throw new AssertionError(
-        "Please set the sys property selenium.browser.remote.path to point to the out-of-process"
-            + " selenium server");
+    return server;
   }
 
   public URL getWebDriverUrl() {

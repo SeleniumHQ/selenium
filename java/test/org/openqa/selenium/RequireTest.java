@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.internal.Require.nonNull;
 
 import java.io.File;
@@ -397,12 +398,20 @@ class RequireTest {
         .hasMessage("Binary must exist: " + path);
 
     Path tempFile = createTemporaryFile();
+    tempFile.toFile().setExecutable(true);
+    Require.state("Binary", tempFile).isExecutable();
+  }
+
+  @Test
+  void canCheckIfPathIsNotExecutable() throws IOException {
+    assumeFalse(
+        Platform.getCurrent().is(Platform.WINDOWS),
+        "Windows treats every readable file as executable");
+
+    Path tempFile = createTemporaryFile();
     assertThatThrownBy(() -> Require.state("Binary", tempFile).isExecutable())
         .isInstanceOf(IllegalStateException.class)
         .hasMessage("Binary must be executable: " + tempFile);
-
-    tempFile.toFile().setExecutable(true);
-    Require.state("Binary", tempFile).isExecutable();
   }
 
   @Test

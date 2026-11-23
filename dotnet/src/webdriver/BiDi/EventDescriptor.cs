@@ -26,7 +26,6 @@ public abstract class EventDescriptor
     public string Name { get; }
 
     internal abstract JsonTypeInfo? JsonTypeInfo { get; }
-    internal abstract Func<IBiDi, object, EventArgs>? ArgsFactory { get; }
 
     private protected EventDescriptor(string name)
     {
@@ -38,21 +37,18 @@ public sealed class EventDescriptor<TEventArgs> : EventDescriptor
     where TEventArgs : EventArgs
 {
     internal override JsonTypeInfo? JsonTypeInfo { get; }
-    internal override Func<IBiDi, object, EventArgs>? ArgsFactory { get; }
 
     internal EventDescriptor(string name) : base(name) { }
 
-    private EventDescriptor(string name, JsonTypeInfo jsonTypeInfo, Func<IBiDi, object, EventArgs> argsFactory) : base(name)
+    private EventDescriptor(string name, JsonTypeInfo<TEventArgs> jsonTypeInfo) : base(name)
     {
         JsonTypeInfo = jsonTypeInfo;
-        ArgsFactory = argsFactory;
     }
 
-    public static EventDescriptor<TEventArgs> Create<TEventParams>(
+    public static EventDescriptor<TEventArgs> Create(
         string name,
-        Func<IBiDi, TEventParams, TEventArgs> factory,
-        JsonTypeInfo<TEventParams> jsonTypeInfo)
+        JsonTypeInfo<TEventArgs> jsonTypeInfo)
     {
-        return new(name, jsonTypeInfo, (bidi, ep) => factory(bidi, (TEventParams)ep));
+        return new(name, jsonTypeInfo);
     }
 }

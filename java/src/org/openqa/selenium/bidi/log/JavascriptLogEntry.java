@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.log;
 
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
@@ -26,6 +27,7 @@ import org.openqa.selenium.json.JsonInput;
  * @see <a href="https://w3c.github.io/webdriver-bidi/#cddl-type-logjavascriptlogentry">BiDi
  *     spec</a>
  */
+@Beta
 public class JavascriptLogEntry extends GenericLogEntry {
 
   public JavascriptLogEntry(

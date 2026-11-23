@@ -1,0 +1,23 @@
+- document "Names and descriptions"
+  - text: First
+  - text: Second
+  - group "First Second"
+    - paragraph
+      - text: Group content
+  - button "Close"
+  - text: Opens a new window
+  - link "Documentation"
+  - button "Save"
+  - button "Save"
+  - button "Only a title"
+  - textbox "Search terms"
+  - text: Quantity
+  - textbox: 2
+  - text: items
+  - textbox "Quantity 2 items"
+  - generic "Sidebar"
+    - paragraph
+      - text: Named generic survives
+  - heading "Heading X" [level=2]
+    - generic "X"
+  - button "From a hidden label"

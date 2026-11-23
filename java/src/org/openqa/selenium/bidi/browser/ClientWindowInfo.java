@@ -18,7 +18,9 @@
 package org.openqa.selenium.bidi.browser;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class ClientWindowInfo {
   private final String clientWindow;
   private final ClientWindowState state;

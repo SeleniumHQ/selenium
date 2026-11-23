@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.IO;
 using OpenQA.Selenium.BiDi.BrowsingContext;
 
 namespace OpenQA.Selenium.Tests.BiDi.BrowsingContext;
@@ -79,7 +80,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanNavigateToUrl()
     {
-        var info = await context.NavigateAsync(UrlBuilder.WhereIs("/bidi/logEntryAdded.html"));
+        var info = await context.NavigateAsync(Urls.WhereIs("/bidi/logEntryAdded.html"));
 
         Assert.That(info.Url, Does.Contain("/bidi/logEntryAdded.html"));
     }
@@ -87,7 +88,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanNavigateToUrlWithReadinessState()
     {
-        var info = await context.NavigateAsync(UrlBuilder.WhereIs("/bidi/logEntryAdded.html"), new()
+        var info = await context.NavigateAsync(Urls.WhereIs("/bidi/logEntryAdded.html"), new()
         {
             Wait = ReadinessState.Complete
         });
@@ -99,24 +100,25 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanGetTreeWithChild()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("iframes.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.IframesPage, new() { Wait = ReadinessState.Complete });
 
         var tree = await context.GetTreeAsync();
 
-        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts, Has.Length.EqualTo(1));
         Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
-        Assert.That(tree.Contexts[0].Children, Has.Count.EqualTo(1));
-        Assert.That(tree.Contexts[0].Children[0].Url, Does.Contain("formPage.html"));
+        Assert.That(tree.Contexts[0].Children, Is.Not.Null);
+        Assert.That(tree.Contexts[0].Children.Value, Has.Length.EqualTo(1));
+        Assert.That(tree.Contexts[0].Children.Value[0].Url, Does.Contain("formPage.html"));
     }
 
     [Test]
     public async Task CanGetTreeWithDepth()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("iframes.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.IframesPage, new() { Wait = ReadinessState.Complete });
 
         var tree = await context.GetTreeAsync(new() { MaxDepth = 0 });
 
-        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts, Has.Length.EqualTo(1));
         Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
         Assert.That(tree.Contexts[0].Children, Is.Null);
     }
@@ -129,7 +131,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts, Has.Count.GreaterThanOrEqualTo(2));
+        Assert.That(tree.Contexts, Has.Length.GreaterThanOrEqualTo(2));
     }
 
     [Test]
@@ -141,7 +143,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(window));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(window.Context));
     }
 
     [Test]
@@ -153,7 +155,7 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(tab));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(tab.Context));
     }
 
     [Test]
@@ -167,7 +169,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanReload()
     {
-        string url = UrlBuilder.WhereIs("/bidi/logEntryAdded.html");
+        string url = Urls.WhereIs("/bidi/logEntryAdded.html");
 
         await context.NavigateAsync(url, new() { Wait = ReadinessState.Complete });
 
@@ -180,7 +182,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanReloadWithReadinessState()
     {
-        string url = UrlBuilder.WhereIs("/bidi/logEntryAdded.html");
+        string url = Urls.WhereIs("/bidi/logEntryAdded.html");
 
         await context.NavigateAsync(url, new() { Wait = ReadinessState.Complete });
 
@@ -196,7 +198,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanHandleUserPrompt()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AlertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
 
@@ -206,7 +208,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanAcceptUserPrompt()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AlertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
 
@@ -219,7 +221,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanDismissUserPrompt()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AlertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
 
@@ -232,7 +234,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanPassUserTextToPrompt()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("alerts.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.AlertsPage, new() { Wait = ReadinessState.Complete });
 
         driver.FindElement(By.Id("alert")).Click();
 
@@ -280,7 +282,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     public async Task CanCaptureScreenshotOfElement()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("formPage.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.FormsPage, new() { Wait = ReadinessState.Complete });
 
         var nodesResult = await context.LocateNodesAsync(new CssLocator("#checky"));
 
@@ -339,5 +341,34 @@ internal class BrowsingContextTests : BiDiTestFixture
 
         Assert.That(pdf, Is.Not.Null);
         Assert.That(pdf.Data.Length, Is.Not.Zero);
+    }
+
+    [Test]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
+    public async Task CanStartAndStopScreencast()
+    {
+        StartScreencastResult startScreencastResult = null;
+
+        try
+        {
+            startScreencastResult = await context.StartScreencastAsync();
+
+            Assert.That(startScreencastResult.Screencast, Is.Not.Null);
+            Assert.That(startScreencastResult.Path, Is.Not.Empty);
+
+            var stopScreencastResult = await startScreencastResult.Screencast.StopAsync();
+
+            Assert.That(stopScreencastResult.Path, Is.EqualTo(startScreencastResult.Path));
+            Assert.That(stopScreencastResult.Error, Is.Null);
+        }
+        finally
+        {
+            if (Path.Exists(startScreencastResult?.Path))
+            {
+                File.Delete(startScreencastResult.Path);
+            }
+        }
     }
 }

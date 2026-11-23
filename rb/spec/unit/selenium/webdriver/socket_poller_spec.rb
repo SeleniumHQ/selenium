@@ -23,16 +23,26 @@ module Selenium
   module WebDriver
     describe SocketPoller do
       before(:context) do
-        @server_thread = Thread.new do
-          server = TCPServer.open(Platform.localhost, 9250)
-          Thread.current.thread_variable_set(:server, server)
-          loop { server.accept.close }
+        # Open the listening socket synchronously so the server object is captured
+        # deterministically (no race with the accept thread) and bind errors surface here.
+        @listening_server = TCPServer.new(Platform.localhost, 0)
+        @listening_port = @listening_server.addr[1]
+        @accept_thread = Thread.new do
+          loop { @listening_server.accept.close }
+        rescue IOError, Errno::EBADF, Errno::ECONNABORTED
+          # listening socket closed during teardown
         end
-        @server_thread.report_on_exception = false
+        @accept_thread.report_on_exception = false
+
+        # Reserve an ephemeral port, then release it so nothing is listening on it.
+        closed_server = TCPServer.new(Platform.localhost, 0)
+        @closed_port = closed_server.addr[1]
+        closed_server.close
       end
 
       after(:context) do
-        @server_thread.thread_variable_get(:server).close
+        @listening_server&.close
+        @accept_thread&.kill
       end
 
       def poller(port)
@@ -41,7 +51,7 @@ module Selenium
 
       describe '#connected?' do
         it 'returns true when the socket is listening' do
-          expect(poller(9250)).to be_connected
+          expect(poller(@listening_port)).to be_connected
         end
 
         it 'returns false if the socket is not listening after the given timeout' do
@@ -50,13 +60,13 @@ module Selenium
           stop  = Time.parse('2010-01-01 00:00:06')
 
           allow(Process).to receive(:clock_gettime).and_return(start, wait, stop)
-          expect(poller(9251)).not_to be_connected
+          expect(poller(@closed_port)).not_to be_connected
         end
       end
 
       describe '#closed?' do
         it 'returns true when the socket is closed' do
-          expect(poller(9251)).to be_closed
+          expect(poller(@closed_port)).to be_closed
         end
 
         it 'returns false if the socket is still listening after the given timeout' do
@@ -65,7 +75,7 @@ module Selenium
           stop  = Time.parse('2010-01-01 00:00:06').to_f
 
           allow(Process).to receive(:clock_gettime).and_return(start, wait, stop)
-          expect(poller(9250)).not_to be_closed
+          expect(poller(@listening_port)).not_to be_closed
         end
       end
     end

@@ -218,19 +218,17 @@ class WebNetworkTest extends JupiterTestBase {
   void canAddRequestHandlerToModifyHeaders() throws InterruptedException {
     Route route =
         Route.matching(req -> req.getUri().contains("network"))
-            .to(
-                () ->
-                    req -> {
-                      HttpResponse response = new HttpResponse();
+            .to(() ->
+                req -> {
+                  HttpResponse response = new HttpResponse();
 
-                      req.getHeaderNames()
-                          .forEach(
-                              header -> {
-                                String value = req.getHeader(header);
-                                response.addHeader(header, value);
-                              });
-                      return response.setContent(utf8String("Received response for network"));
-                    });
+                  req.getHeaderNames()
+                      .forEach(header -> {
+                        String value = req.getHeader(header);
+                        response.addHeader(header, value);
+                      });
+                  return response.setContent(utf8String("Received response for network"));
+                });
 
     appServer = new NettyAppServer(route);
     appServer.start();
@@ -249,17 +247,15 @@ class WebNetworkTest extends JupiterTestBase {
                 new HttpRequest(HttpMethod.HEAD, page).addHeader("test", "network-intercept"));
 
     Network network = new Network(driver);
-    network.onResponseCompleted(
-        responseDetails -> {
-          List<Header> headers = responseDetails.getResponseData().getHeaders();
-          headers.forEach(
-              header -> {
-                if (header.getName().equals("test")) {
-                  assertThat(header.getValue().getValue()).isEqualTo("network-intercept");
-                  latch.countDown();
-                }
-              });
-        });
+    network.onResponseCompleted(responseDetails -> {
+      List<Header> headers = responseDetails.getResponseData().getHeaders();
+      headers.forEach(header -> {
+        if (header.getName().equals("test")) {
+          assertThat(header.getValue().getValue()).isEqualTo("network-intercept");
+          latch.countDown();
+        }
+      });
+    });
 
     driver.get(page);
 
@@ -275,12 +271,11 @@ class WebNetworkTest extends JupiterTestBase {
   void canAddRequestHandlerToModifyBody() throws InterruptedException {
     Route route =
         Route.matching(req -> req.getUri().contains("network"))
-            .to(
-                () ->
-                    req -> {
-                      HttpResponse response = new HttpResponse();
-                      return response.setContent(req.getContent());
-                    });
+            .to(() ->
+                req -> {
+                  HttpResponse response = new HttpResponse();
+                  return response.setContent(req.getContent());
+                });
 
     appServer = new NettyAppServer(route);
     appServer.start();
@@ -351,19 +346,17 @@ class WebNetworkTest extends JupiterTestBase {
   void canRemoveRequestHandler() throws InterruptedException {
     Route route =
         Route.matching(req -> req.getUri().contains("network"))
-            .to(
-                () ->
-                    req -> {
-                      HttpResponse response = new HttpResponse();
+            .to(() ->
+                req -> {
+                  HttpResponse response = new HttpResponse();
 
-                      req.getHeaderNames()
-                          .forEach(
-                              header -> {
-                                String value = req.getHeader(header);
-                                response.addHeader(header, value);
-                              });
-                      return response.setContent(utf8String("Received response for network"));
-                    });
+                  req.getHeaderNames()
+                      .forEach(header -> {
+                        String value = req.getHeader(header);
+                        response.addHeader(header, value);
+                      });
+                  return response.setContent(utf8String("Received response for network"));
+                });
 
     appServer = new NettyAppServer(route);
     appServer.start();
@@ -385,17 +378,15 @@ class WebNetworkTest extends JupiterTestBase {
     ((RemoteWebDriver) driver).network().removeRequestHandler(id);
 
     Network network = new Network(driver);
-    network.onResponseCompleted(
-        responseDetails -> {
-          List<Header> headers = responseDetails.getResponseData().getHeaders();
-          headers.forEach(
-              header -> {
-                if (header.getName().equals("test")) {
-                  assertThat(header.getValue().getValue()).isEqualTo("network-intercept");
-                  latch.countDown();
-                }
-              });
-        });
+    network.onResponseCompleted(responseDetails -> {
+      List<Header> headers = responseDetails.getResponseData().getHeaders();
+      headers.forEach(header -> {
+        if (header.getName().equals("test")) {
+          assertThat(header.getValue().getValue()).isEqualTo("network-intercept");
+          latch.countDown();
+        }
+      });
+    });
 
     driver.get(page);
 

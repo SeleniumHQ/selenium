@@ -307,12 +307,17 @@ public final class Require {
       this.path = path;
     }
 
-    public Path isFile() {
+    public Path exists() {
       nonNull(argName, path);
       if (!Files.exists(path)) {
         throw new IllegalArgumentException(
             String.format(MUST_EXIST, argName, path.toAbsolutePath()));
       }
+      return path;
+    }
+
+    public Path isFile() {
+      exists();
       if (!Files.isRegularFile(path)) {
         throw new IllegalArgumentException(
             String.format(MUST_BE_FILE, argName, path.toAbsolutePath()));
@@ -321,11 +326,7 @@ public final class Require {
     }
 
     public Path isDirectory() {
-      nonNull(argName, path);
-      if (!Files.exists(path)) {
-        throw new IllegalArgumentException(
-            String.format(MUST_EXIST, argName, path.toAbsolutePath()));
-      }
+      exists();
       if (!Files.isDirectory(path)) {
         throw new IllegalArgumentException(
             String.format(MUST_BE_DIR, argName, path.toAbsolutePath()));

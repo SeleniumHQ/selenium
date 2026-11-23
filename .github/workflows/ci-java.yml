@@ -6,66 +6,29 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
-  browser-tests-windows:
-    name: Browser Tests
+  smoke:
+    name: Smoke Tests
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
+        os: [windows, macos]
+        tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
         include:
-          - os: windows
+          # Edge has no linux-arm64 build
+          - os: ubuntu-24.04-arm
+            tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-edge"
     with:
-      name: Browser Tests (chrome, ${{ matrix.os }})
+      name: Smoke Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
-      browser: chrome
+      needs-display: true
       rerun-with-debug: true
+      remote-cache: true
       run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
-        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
-        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-        //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
-
-  browser-tests-macos:
-    name: Browser Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos
-    with:
-      name: Browser Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      browser: chrome
-      rerun-with-debug: true
-      run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
-        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
-        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-
-  remote-tests:
-    name: Remote Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos
-    with:
-      name: Remote Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      browser: chrome
-      rerun-with-debug: true
-      run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+        ./scripts/github-actions/bazel-test-if-targets.sh
+        --config=gh-browser
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
+        //java/...

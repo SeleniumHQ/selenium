@@ -42,11 +42,10 @@ class FilterTest {
                       filterCalled.set(true);
                       return next.execute(req);
                     })
-            .andFinally(
-                req -> {
-                  handlerCalled.set(true);
-                  return new HttpResponse();
-                });
+            .andFinally(req -> {
+              handlerCalled.set(true);
+              return new HttpResponse();
+            });
 
     HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
 
@@ -65,13 +64,12 @@ class FilterTest {
                       res.addHeader("cheese", "cheddar");
                       return res;
                     })
-            .andThen(
-                next ->
-                    req -> {
-                      HttpResponse res = next.execute(req);
-                      res.setHeader("cheese", "brie");
-                      return res;
-                    })
+            .andThen(next ->
+                req -> {
+                  HttpResponse res = next.execute(req);
+                  res.setHeader("cheese", "brie");
+                  return res;
+                })
             .andFinally(req -> new HttpResponse());
 
     HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
@@ -94,21 +92,19 @@ class FilterTest {
 
     AtomicInteger filterOneCount = new AtomicInteger(0);
     root =
-        root.with(
-            httpHandler ->
-                req -> {
-                  filterOneCount.incrementAndGet();
-                  return httpHandler.execute(req);
-                });
+        root.with(httpHandler ->
+            req -> {
+              filterOneCount.incrementAndGet();
+              return httpHandler.execute(req);
+            });
 
     AtomicInteger filterTwoCount = new AtomicInteger(0);
     root =
-        root.with(
-            httpHandler ->
-                req -> {
-                  filterTwoCount.incrementAndGet();
-                  return httpHandler.execute(req);
-                });
+        root.with(httpHandler ->
+            req -> {
+              filterTwoCount.incrementAndGet();
+              return httpHandler.execute(req);
+            });
 
     root.execute(new HttpRequest(GET, "/cheese"));
 
@@ -128,18 +124,16 @@ class FilterTest {
         };
     HttpHandler handler =
         inner
-            .with(
-                next ->
-                    req -> {
-                      ordered.add("middle");
-                      return next.execute(req);
-                    })
-            .with(
-                next ->
-                    req -> {
-                      ordered.add("outer");
-                      return next.execute(req);
-                    });
+            .with(next ->
+                req -> {
+                  ordered.add("middle");
+                  return next.execute(req);
+                })
+            .with(next ->
+                req -> {
+                  ordered.add("outer");
+                  return next.execute(req);
+                });
 
     handler.execute(new HttpRequest(GET, "/cheese"));
 

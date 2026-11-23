@@ -47,7 +47,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
 import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADABLE_FILES;
-import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADED_FILE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
@@ -96,6 +95,7 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -202,7 +202,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     defineCommand(GET_DOWNLOADABLE_FILES, get(sessionId + "/se/files"));
     defineCommand(DOWNLOAD_FILE, post(sessionId + "/se/files"));
-    defineCommand(GET_DOWNLOADED_FILE, get(sessionId + "/se/files/:name"));
     defineCommand(DELETE_DOWNLOADABLE_FILES, delete(sessionId + "/se/files"));
 
     defineCommand(FIRE_SESSION_EVENT, post(sessionId + "/se/event"));
@@ -239,8 +238,11 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     HttpRequest request = new HttpRequest(spec.method, uri);
 
     if (HttpMethod.POST == spec.method) {
-      String content = json.toJson(parameters);
-      byte[] data = content.getBytes(UTF_8);
+      StringBuilder content = new StringBuilder();
+      try (JsonOutput out = json.newOutput(content)) {
+        out.setPrettyPrint(false).write(parameters);
+      }
+      byte[] data = content.toString().getBytes(UTF_8);
 
       request.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(data.length));
       request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8);

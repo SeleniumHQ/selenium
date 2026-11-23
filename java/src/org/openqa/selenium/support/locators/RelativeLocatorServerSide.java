@@ -63,9 +63,13 @@ public class RelativeLocatorServerSide implements CustomLocator {
       if (driver instanceof RemoteWebDriver) {
         Object converted = new JsonToWebElementConverter((RemoteWebDriver) driver).apply(using);
 
+        // The atom searches from the document when its root is null.
+        Object atomRoot = context instanceof WebDriver ? null : context;
+
         @SuppressWarnings("unchecked")
         List<WebElement> elements =
-            (List<WebElement>) js.executeScript(FIND_ELEMENTS, Map.of("relative", converted));
+            (List<WebElement>)
+                js.executeScript(FIND_ELEMENTS, Map.of("relative", converted), atomRoot);
         return requireNonNull(elements);
       }
 

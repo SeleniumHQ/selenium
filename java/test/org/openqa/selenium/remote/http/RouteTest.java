@@ -59,12 +59,10 @@ class RouteTest {
   void shouldAllowRoutesToBeUrlTemplates() {
     Route route =
         Route.post("/greeting/{name}")
-            .to(
-                params ->
-                    req ->
-                        new HttpResponse()
-                            .setContent(
-                                utf8String(String.format("Hello, %s!", params.get("name")))));
+            .to(params ->
+                req ->
+                    new HttpResponse()
+                        .setContent(utf8String(String.format("Hello, %s!", params.get("name")))));
 
     HttpRequest request = new HttpRequest(POST, "/greeting/cheese");
     assertThat(route.matches(request)).isTrue();
@@ -95,11 +93,10 @@ class RouteTest {
                 Route.prefix("/favourite")
                     .to(
                         Route.get("/is/{kind}")
-                            .to(
-                                params ->
-                                    req ->
-                                        new HttpResponse()
-                                            .setContent(Contents.utf8String(params.get("kind"))))));
+                            .to(params ->
+                                req ->
+                                    new HttpResponse()
+                                        .setContent(Contents.utf8String(params.get("kind"))))));
 
     HttpRequest good = new HttpRequest(GET, "/cheese/favourite/is/stilton");
     assertThat(route.matches(good)).isTrue();
@@ -116,10 +113,8 @@ class RouteTest {
         Route.prefix("/cheese")
             .to(
                 Route.get("/type")
-                    .to(
-                        () ->
-                            req ->
-                                new HttpResponse().setContent(Contents.utf8String(req.getUri()))));
+                    .to(() ->
+                        req -> new HttpResponse().setContent(Contents.utf8String(req.getUri()))));
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
     assertThat(route.matches(request)).isTrue();

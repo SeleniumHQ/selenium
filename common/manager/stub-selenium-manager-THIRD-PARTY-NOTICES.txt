@@ -1,0 +1,2 @@
+Placeholder notices file from a --manager=stub or --manager=host build.
+The --manager=download or --manager=all build carries the real third-party notices for Selenium Manager.

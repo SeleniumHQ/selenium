@@ -39,18 +39,17 @@ public interface Capabilities extends Serializable {
     return Stream.of("platformName")
         .map(this::getCapability)
         .filter(Objects::nonNull)
-        .map(
-            cap -> {
-              if (cap instanceof Platform) {
-                return (Platform) cap;
-              }
+        .map(cap -> {
+          if (cap instanceof Platform) {
+            return (Platform) cap;
+          }
 
-              try {
-                return Platform.fromString((String.valueOf(cap)));
-              } catch (WebDriverException e) {
-                return null;
-              }
-            })
+          try {
+            return Platform.fromString((String.valueOf(cap)));
+          } catch (WebDriverException e) {
+            return null;
+          }
+        })
         .filter(Objects::nonNull)
         .findFirst()
         .orElse(null);

@@ -41,6 +41,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
@@ -67,10 +71,9 @@ class RetryRequestTest {
   void canThrowUnexpectedException() {
     HttpHandler handler =
         new RetryRequest()
-            .andFinally(
-                (HttpRequest request) -> {
-                  throw new UnsupportedOperationException("Testing");
-                });
+            .andFinally((HttpRequest request) -> {
+              throw new UnsupportedOperationException("Testing");
+            });
 
     assertThatThrownBy(() -> handler.execute(new HttpRequest(GET, "/")))
         .isInstanceOf(UnsupportedOperationException.class)
@@ -82,14 +85,13 @@ class RetryRequestTest {
     AtomicInteger count = new AtomicInteger();
     HttpHandler handler =
         new RetryRequest()
-            .andFinally(
-                (HttpRequest request) -> {
-                  if (count.getAndIncrement() == 0) {
-                    throw new StackOverflowError("Testing");
-                  } else {
-                    throw new UncheckedIOException("More testing", new IOException());
-                  }
-                });
+            .andFinally((HttpRequest request) -> {
+              if (count.getAndIncrement() == 0) {
+                throw new StackOverflowError("Testing");
+              } else {
+                throw new UncheckedIOException("More testing", new IOException());
+              }
+            });
 
     assertThatThrownBy(() -> handler.execute(new HttpRequest(GET, "/")))
         .isInstanceOf(StackOverflowError.class)
@@ -106,10 +108,9 @@ class RetryRequestTest {
   void canReturnAppropriateFallbackResponse() {
     HttpHandler handler1 =
         new RetryRequest()
-            .andFinally(
-                (HttpRequest request) -> {
-                  throw new TimeoutException("Failed to load in time");
-                });
+            .andFinally((HttpRequest request) -> {
+              throw new TimeoutException("Failed to load in time");
+            });
 
     assertThatThrownBy(() -> handler1.execute(new HttpRequest(GET, "/")))
         .isInstanceOf(TimeoutException.class)
@@ -158,11 +159,10 @@ class RetryRequestTest {
   void shouldBeAbleToHandleARequest() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server =
-        new NettyAppServer(
-            req -> {
-              count.incrementAndGet();
-              return new HttpResponse();
-            });
+        new NettyAppServer(req -> {
+          count.incrementAndGet();
+          return new HttpResponse();
+        });
     server.start();
 
     URI uri = URI.create(server.whereIs("/"));
@@ -180,15 +180,14 @@ class RetryRequestTest {
   void shouldBeAbleToRetryARequestOnInternalServerError() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server =
-        new NettyAppServer(
-            req -> {
-              count.incrementAndGet();
-              if (count.get() <= 2) {
-                return new HttpResponse().setStatus(500);
-              } else {
-                return new HttpResponse();
-              }
-            });
+        new NettyAppServer(req -> {
+          count.incrementAndGet();
+          if (count.get() <= 2) {
+            return new HttpResponse().setStatus(500);
+          } else {
+            return new HttpResponse();
+          }
+        });
     server.start();
 
     URI uri = URI.create(server.whereIs("/"));
@@ -206,11 +205,10 @@ class RetryRequestTest {
   void shouldBeAbleToGetTheErrorResponseOnInternalServerError() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server =
-        new NettyAppServer(
-            req -> {
-              count.incrementAndGet();
-              return new HttpResponse().setStatus(500);
-            });
+        new NettyAppServer(req -> {
+          count.incrementAndGet();
+          return new HttpResponse().setStatus(500);
+        });
     server.start();
 
     URI uri = URI.create(server.whereIs("/"));
@@ -228,13 +226,12 @@ class RetryRequestTest {
   void shouldNotRetryRequestOnInternalServerErrorWithContent() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server =
-        new NettyAppServer(
-            req -> {
-              count.incrementAndGet();
-              return new HttpResponse()
-                  .setStatus(500)
-                  .setContent(asJson(Map.of("error", "non-transient")));
-            });
+        new NettyAppServer(req -> {
+          count.incrementAndGet();
+          return new HttpResponse()
+              .setStatus(500)
+              .setContent(asJson(Map.of("error", "non-transient")));
+        });
     server.start();
 
     URI uri = URI.create(server.whereIs("/"));
@@ -252,17 +249,16 @@ class RetryRequestTest {
   void shouldRetryRequestOnServerUnavailableError() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server =
-        new NettyAppServer(
-            req -> {
-              count.incrementAndGet();
-              if (count.get() <= 2) {
-                return new HttpResponse()
-                    .setStatus(503)
-                    .setContent(asJson(Map.of("error", "server down")));
-              } else {
-                return new HttpResponse();
-              }
-            });
+        new NettyAppServer(req -> {
+          count.incrementAndGet();
+          if (count.get() <= 2) {
+            return new HttpResponse()
+                .setStatus(503)
+                .setContent(asJson(Map.of("error", "server down")));
+          } else {
+            return new HttpResponse();
+          }
+        });
     server.start();
 
     URI uri = URI.create(server.whereIs("/"));
@@ -279,13 +275,12 @@ class RetryRequestTest {
   void shouldGetTheErrorResponseOnServerUnavailableError() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server =
-        new NettyAppServer(
-            req -> {
-              count.incrementAndGet();
-              return new HttpResponse()
-                  .setStatus(503)
-                  .setContent(asJson(Map.of("error", "server down")));
-            });
+        new NettyAppServer(req -> {
+          count.incrementAndGet();
+          return new HttpResponse()
+              .setStatus(503)
+              .setContent(asJson(Map.of("error", "server down")));
+        });
     server.start();
 
     URI uri = URI.create(server.whereIs("/"));
@@ -304,14 +299,13 @@ class RetryRequestTest {
     AtomicInteger count = new AtomicInteger(0);
     HttpHandler handler =
         new RetryRequest()
-            .andFinally(
-                (HttpRequest request) -> {
-                  if (count.getAndIncrement() < 2) {
-                    throw new UncheckedIOException(new ConnectException());
-                  } else {
-                    return new HttpResponse();
-                  }
-                });
+            .andFinally((HttpRequest request) -> {
+              if (count.getAndIncrement() < 2) {
+                throw new UncheckedIOException(new ConnectException());
+              } else {
+                return new HttpResponse();
+              }
+            });
 
     HttpRequest request = new HttpRequest(GET, "/");
     HttpResponse response = handler.execute(request);
@@ -326,12 +320,11 @@ class RetryRequestTest {
     AtomicReference<UncheckedIOException> lastThrown = new AtomicReference<>();
     HttpHandler handler =
         new RetryRequest()
-            .andFinally(
-                (HttpRequest request) -> {
-                  count.getAndIncrement();
-                  lastThrown.set(new UncheckedIOException(new ConnectException()));
-                  throw lastThrown.get();
-                });
+            .andFinally((HttpRequest request) -> {
+              count.getAndIncrement();
+              lastThrown.set(new UncheckedIOException(new ConnectException()));
+              throw lastThrown.get();
+            });
 
     assertThatThrownBy(() -> handler.execute(new HttpRequest(GET, "/")))
         .isInstanceOf(UncheckedIOException.class)
@@ -345,14 +338,60 @@ class RetryRequestTest {
     AtomicReference<HttpResponse> lastResponse = new AtomicReference<>();
     HttpHandler handler =
         new RetryRequest()
-            .andFinally(
-                (HttpRequest request) -> {
-                  count.getAndIncrement();
-                  lastResponse.set(new HttpResponse().setStatus(500));
-                  return lastResponse.get();
-                });
+            .andFinally((HttpRequest request) -> {
+              count.getAndIncrement();
+              lastResponse.set(new HttpResponse().setStatus(500));
+              return lastResponse.get();
+            });
 
     assertThat(handler.execute(new HttpRequest(GET, "/"))).isSameAs(lastResponse.get());
     assertThat(count).hasValue(3);
+  }
+
+  @Test
+  void retryLogsAtFine() {
+    Logger logger = Logger.getLogger(RetryRequest.class.getName());
+    Level previousLevel = logger.getLevel();
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.setLevel(Level.ALL);
+    logger.addHandler(handler);
+    try {
+      HttpHandler unavailable = request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE);
+      new RetryRequest().andFinally(unavailable).execute(new HttpRequest(GET, "/"));
+
+      HttpHandler connectionFailure =
+          request -> {
+            throw new UncheckedIOException(new ConnectException());
+          };
+      HttpHandler retryingConnection = new RetryRequest().andFinally(connectionFailure);
+      assertThatThrownBy(() -> retryingConnection.execute(new HttpRequest(GET, "/")))
+          .isInstanceOf(UncheckedIOException.class)
+          .hasCauseInstanceOf(ConnectException.class);
+
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("ServerError"))
+          .isNotEmpty()
+          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("ConnectException"))
+          .isNotEmpty()
+          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previousLevel);
+    }
   }
 }

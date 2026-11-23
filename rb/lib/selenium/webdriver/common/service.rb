@@ -57,19 +57,21 @@ module Selenium
         end
       end
 
-      attr_accessor :host, :executable_path, :port, :log, :args
+      attr_accessor :host, :executable_path, :port, :log, :args, :env
       alias extra_args args
 
       #
       # End users should use a class method for the desired driver, rather than using this directly.
       #
+      # @param env [Hash<String, String, nil>] environment variables for the driver process.
+      #   These are merged into the inherited environment; set a value to nil to remove an inherited variable.
+      #
       # @api private
       #
 
-      def initialize(path: nil, port: nil, log: nil, args: nil)
+      def initialize(path: nil, port: nil, log: nil, args: nil, env: nil)
         port ||= self.class::DEFAULT_PORT
         args ||= []
-        path ||= env_path
 
         @executable_path = path
         @host = Platform.localhost
@@ -83,26 +85,18 @@ module Selenium
                  log
                end
         @args = args
+        @env = env || {}
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end
 
       def launch
-        @executable_path ||= env_path || find_driver_path
+        @executable_path ||= DriverFinder.new(nil, self).driver_path
         ServiceManager.new(self).tap(&:start)
       end
 
       def shutdown_supported
         self.class::SHUTDOWN_SUPPORTED
-      end
-
-      def find_driver_path
-        default_options = WebDriver.const_get("#{self.class.name&.split('::')&.[](2)}::Options").new
-        DriverFinder.new(default_options, self).driver_path
-      end
-
-      def env_path
-        ENV.fetch(self.class::DRIVER_PATH_ENV_KEY, nil)
       end
 
       private

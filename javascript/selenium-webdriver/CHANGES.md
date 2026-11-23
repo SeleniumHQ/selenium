@@ -1,3 +1,123 @@
+## 4.54.0
+
+- Support CDP versions: v156, v157, v158
+- [bidi] Keep received node attributes in the generated BiDi modules (#18336)
+- [bidi] Type vendor-declared BiDi fields instead of making extended types extensible (#18335)
+- [bidi] Type vendor fields on extensible session capabilities (#18337)
+- [build] Automated Browser Version Update (major) with CDP (#18338)
+- Honor the --headless bazel flag in Chrome, Edge and Firefox tests (#18350)
+- [build] ensure Selenium Manager browser versions match pinned browser versions in our tests (#18352)
+- Let Firefox choose the BiDi websocket port (#18351)
+- Start test Grids with only the browser under test (#18355)
+- Add internal tag to generated BiDi modules (#18359)
+
+## 4.53.0
+
+- Support CDP versions: v155, v156, v157
+- [build] Automated Dependency Update (#18242)
+- hold BiDi numbers to their declared ranges (#18272)
+- add the accessibility snapshot atom and the binding methods (#18232)
+- [build] Automated Dependency Update (#18288)
+- [build] Automated Browser Version Update (major) with CDP (#18278)
+- Snapshot accessibility in Classic sessions too (#18308)
+- [build] Automated Dependency Update (#18320)
+
+## 4.52.0
+
+- Support CDP versions: v154, v155, v156
+- [build] scope RBE internet access to the tests that exercise Selenium Manager (#18147)
+- [build] carry CDDL numeric bounds into the BiDi schema (#18194)
+- only track the page request in the BiDi 'can request cookies' test (#18186)
+- port the atoms Appium uses from Closure to TypeScript (#18175)
+- [build] Automated Dependency Update (#18201)
+- move the JavaScript version to version.bzl and keep it and the changelog out of test inputs (#18221)
+- [build] Automated Browser Version Update (major) with CDP (#18214)
+- require Node releases that block the compromised eMudhra keys (#18249)
+
+## 4.51.0
+
+- Support CDP versions: v153, v154, v155
+- [build] Automated Dependency Update (#18124)
+- [bidi] Add vendor specific class generation (#18125)
+- Add webextension methods on the driver with BiDi and fallback (#18127)
+- [build] Automated Browser Version Update (major) with CDP (#18131)
+
+## 4.50.0
+
+- Support CDP versions: v152, v153, v154
+- [build] Automated Dependency Update (#18032)
+- [build] generate webref_cddl.bzl from the BiDi spec's external specifications list (#18055)
+- [build] replace the BiDi KNOWN_INCOMPLETE allowlist with spec-shaped CDDL overlays (#18057)
+- [build] Automated Dependency Update (#18061)
+- [build] generate the BiDi schema vendor section from Mozilla's Firefox CDDL (#18060)
+- remove deprecated Firefox profile extension and cert methods (#18066)
+- [build] add support for Mozilla's Commands fragment in the BiDi schema (#18071)
+- Align BiDi Generator with the low-level contract (#17973)
+- [build] Automated Browser Version Update (major) with CDP (#18067)
+- [build] Automated CDDL Spec Update (#18075)
+- [build] Automated Dependency Update (#18082)
+- Run tests on Grid, MacOS and Windows (#18081)
+
+## 4.49.0
+
+- Support CDP versions: v151, v152, v153
+- [build] track the generated BiDi schema (#17962)
+- derive BiDi field names and enum value types in the schema (#17966)
+- [build] Automated Dependency Update (#17937)
+- [build] Automated Dependency Update (#17991)
+- [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+- [build] Automated Browser Version Update (major) with CDP (#18005)
+
+## 4.48.0
+
+- Support CDP versions: v150, v151, v152
+- Normalize empty custom locator results (#17851)
+- [build] Automated Browser Version Update (major) with CDP (#17910)
+- Ensure BiDi is not exposed on Driver (#17926)
+- Add serialization and domain layer (#17927)
+- [bidi] Add BiDi connection-level event subscription (#17946)
+
+## 4.47.0
+
+- Support CDP versions: v149, v150, v151
+- link generated BiDi elements to their spec definitions (#17781)
+- add objectOnly/preserveExtras/scalar-primitive BiDi schema signals (#17784)
+- [build] Fix GeckoDriver rejecting system-access via capabilities (#17811)
+- [build] standardize generated-file license and not to edit markers across generators (#17816)
+- [build] Download and bundle Selenium Manager SBOM and NOTICE in each package (#17820)
+- [build] BiDi schema generation cleanup (#17837)
+- [build] Merge vendor cddl files into shared BiDi schema and implement custom Firefox webExtension options (#17840)
+- [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+- remove deprecated FTP proxy support (#17846)
+- [bidi] Correct float/enum type fidelity in the shared schema and validate primitives outbound in Ruby (#17852)
+- [bidi] mark BiDi types extensible per spec and update Ruby handling (#17853)
+- validate BiDi outbound ref fields against their declared type (#17861)
+- [build] derive per-type inbound/outbound directionality in the shared schema (#17864)
+- [build] update node versioning for testing and publishing (#17866)
+- Wait for async BiDi events and window resize in flaky tests (#17874)
+- deprecate invalid Firefox profile code (#17871)
+- [build] Automated Browser Version Update with CDP (#17873)
+
+## 4.46.0
+
+- Support CDP versions: v148, v149, v150
+- Add binding-neutral BiDi schema with cddl2ts-gated fidelity (#17700)
+- Update cddl to 0.21.0 to fix quoted reserved-word parsing in BiDi codegen (#17752)
+- Add guidance for testing conventions in each language (#16734)
+
+## 4.45.0
+
+- Support CDP versions: v147, v148, v149
+- update vulnerable dependency with a range (#17466)
+- update dev dependencies (#17479)
+- update eslint to v10 with fixes (#17482)
+- Use the typescript atom for get attribute (#17526)
+- Move JS bindings to use typescript atoms for isDisplayed and Find-Element (#17547)
+- trim agent formatting guidance (#17617)
+- [build] Automated Browser Version Update (#17609)
+- Add Javascript/Typescript CDDL code generator for WebDriver BiDi (#17574)
+- Expose BiDi CDDL ast and model as shared artifacts (#17657)
+
 ## 4.44.0
 
 - Support CDP versions: v146, v147, v148

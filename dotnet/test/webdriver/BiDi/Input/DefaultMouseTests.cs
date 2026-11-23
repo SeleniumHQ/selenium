@@ -24,7 +24,7 @@
 //    [Test]
 //    public async Task PerformDragAndDropWithMouse()
 //    {
-//        driver.Url = UrlBuilder.WhereIs("draggableLists.html");
+//        driver.Url = Urls.DraggableLists;
 
 //        await context.Input.PerformActionsAsync([
 //            new KeyActions

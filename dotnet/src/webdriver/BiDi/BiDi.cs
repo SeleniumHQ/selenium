@@ -53,12 +53,18 @@ public sealed class BiDi : IBiDi
 
     public Emulation.IEmulationModule Emulation => AsModule<Emulation.EmulationModule>();
 
-    public static async Task<IBiDi> ConnectAsync(string url, Action<BiDiOptionsBuilder>? configure = null, CancellationToken cancellationToken = default)
+    public static async Task<IBiDi> ConnectAsync(Uri url, Action<BiDiOptionsBuilder>? configure = null, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(url);
+
         BiDiOptionsBuilder builder = new();
         configure?.Invoke(builder);
 
-        var transport = await builder.TransportFactory(new Uri(url), cancellationToken).ConfigureAwait(false);
+        var transportFactoryTask = builder.TransportFactory(url, cancellationToken)
+            ?? throw new InvalidOperationException("The transport factory must return a non-null Task<ITransport> instance.");
+
+        var transport = await transportFactoryTask.ConfigureAwait(false)
+            ?? throw new InvalidOperationException("The transport factory must return a non-null ITransport instance.");
 
         BiDi bidi = new();
 
@@ -101,17 +107,15 @@ public sealed class BiDi : IBiDi
         return SubscribeAsync([descriptor], handler, cancellationToken);
     }
 
-    public async Task<ISubscription> SubscribeAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Action<TEventArgs> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<ISubscription> SubscribeAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, Action<TEventArgs> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
         return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => { handler(e); return default; }, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<ISubscription> SubscribeAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<ISubscription> SubscribeAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, Func<TEventArgs, Task> handler, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
         ArgumentNullException.ThrowIfNull(handler);
 
         return await EventDispatcher.SubscribeAsync<TEventArgs>(descriptors, e => new ValueTask(handler(e)), cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -124,10 +128,8 @@ public sealed class BiDi : IBiDi
         return StreamAsync<TEventArgs>([descriptor], cancellationToken);
     }
 
-    public async Task<IEventStream<TEventArgs>> StreamAsync<TEventArgs>(IEnumerable<EventDescriptor> descriptors, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
+    public async Task<IEventStream<TEventArgs>> StreamAsync<TEventArgs>(ImmutableArray<EventDescriptor> descriptors, CancellationToken cancellationToken = default) where TEventArgs : EventArgs
     {
-        ArgumentNullException.ThrowIfNull(descriptors);
-
         return await EventDispatcher.SubscribeReaderAsync<TEventArgs>(descriptors, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 

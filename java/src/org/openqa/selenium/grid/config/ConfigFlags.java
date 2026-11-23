@@ -78,15 +78,13 @@ public class ConfigFlags implements HasRoles {
 
       config
           .getOptions(section)
-          .forEach(
-              option ->
-                  config
-                      .get(section, option)
-                      .ifPresent(
-                          value ->
-                              toOutput
-                                  .computeIfAbsent(section, ignored -> new TreeMap<>())
-                                  .put(option, value)));
+          .forEach(option ->
+              config
+                  .get(section, option)
+                  .ifPresent(value ->
+                      toOutput
+                          .computeIfAbsent(section, ignored -> new TreeMap<>())
+                          .put(option, value)));
     }
 
     dumpTo.print(new Json().toJson(toOutput));
@@ -118,44 +116,41 @@ public class ConfigFlags implements HasRoles {
         .append("In case of parsing errors, validate the config using https://www.toml-lint.com/")
         .append("\n\n");
     demoToml.append("Refer https://toml.io/en/ for TOML usage guidance").append("\n\n");
-    allOptions.forEach(
-        (section, options) -> {
-          demoToml.append("[").append(section).append("]\n");
-          options.stream()
-              .filter(option -> !option.hidden)
-              .forEach(
-                  option -> {
-                    if (!option.optionName.isEmpty()) {
-                      demoToml.append("# ").append(option.description).append("\n");
-                    }
-                    demoToml.append("# Type: ").append(option.type).append("\n");
-                    if (!option.defaultValue.isEmpty()) {
-                      demoToml.append("# Default: ").append(option.defaultValue).append("\n");
-                    }
-                    Arrays.stream(option.example())
-                        .forEach(
-                            example -> {
-                              demoToml.append("# Example: ").append("\n");
-                              if (option.prefixed) {
-                                demoToml
-                                    .append("[[")
-                                    .append(section)
-                                    .append(".")
-                                    .append(option.optionName)
-                                    .append("]]")
-                                    .append(option.example(config, example))
-                                    .append("\n\n");
-                              } else {
-                                demoToml
-                                    .append(option.optionName)
-                                    .append(" = ")
-                                    .append(option.example(config, example))
-                                    .append("\n\n");
-                              }
-                            });
-                    demoToml.append("\n");
-                  });
-        });
+    allOptions.forEach((section, options) -> {
+      demoToml.append("[").append(section).append("]\n");
+      options.stream()
+          .filter(option -> !option.hidden)
+          .forEach(option -> {
+            if (!option.optionName.isEmpty()) {
+              demoToml.append("# ").append(option.description).append("\n");
+            }
+            demoToml.append("# Type: ").append(option.type).append("\n");
+            if (!option.defaultValue.isEmpty()) {
+              demoToml.append("# Default: ").append(option.defaultValue).append("\n");
+            }
+            Arrays.stream(option.example())
+                .forEach(example -> {
+                  demoToml.append("# Example: ").append("\n");
+                  if (option.prefixed) {
+                    demoToml
+                        .append("[[")
+                        .append(section)
+                        .append(".")
+                        .append(option.optionName)
+                        .append("]]")
+                        .append(option.example(config, example))
+                        .append("\n\n");
+                  } else {
+                    demoToml
+                        .append(option.optionName)
+                        .append(" = ")
+                        .append(option.example(config, example))
+                        .append("\n\n");
+                  }
+                });
+            demoToml.append("\n");
+          });
+    });
 
     dumpTo.print(demoToml);
 

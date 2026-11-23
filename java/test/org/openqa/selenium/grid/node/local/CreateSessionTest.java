@@ -67,9 +67,8 @@ class CreateSessionTest {
                 DefaultTestTracer.createTracer(), new GuavaEventBus(), uri, uri, registrationSecret)
             .add(
                 stereotype,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
@@ -122,9 +121,8 @@ class CreateSessionTest {
                 DefaultTestTracer.createTracer(), new GuavaEventBus(), uri, uri, registrationSecret)
             .add(
                 stereotype,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =

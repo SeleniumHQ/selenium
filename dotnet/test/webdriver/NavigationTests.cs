@@ -28,7 +28,7 @@ public class NavigationTests : DriverTestFixture
     public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsed()
     {
         INavigation navigation;
-        navigation = driver.Navigate();
+        navigation = Driver.Navigate();
         navigation.Back();
         navigation.Forward();
     }
@@ -37,23 +37,23 @@ public class NavigationTests : DriverTestFixture
     public void ShouldGoBackAndForward()
     {
         INavigation navigation;
-        navigation = driver.Navigate();
+        navigation = Driver.Navigate();
 
-        driver.Url = macbethPage;
-        driver.Url = simpleTestPage;
+        Driver.Url = Urls.MacbethPage;
+        Driver.Url = Urls.SimpleTestPage;
 
         navigation.Back();
-        Assert.That(driver.Title, Is.EqualTo(macbethTitle));
+        Assert.That(Driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
         navigation.Forward();
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(Driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public void ShouldAcceptInvalidUrlsUsingUris()
     {
         INavigation navigation;
-        navigation = driver.Navigate();
+        navigation = Driver.Navigate();
         Assert.That(() => navigation.GoToUrl((Uri)null), Throws.InstanceOf<ArgumentNullException>());
         // new Uri("") and new Uri("isidsji30342??éåµñ©æ")
         // throw an exception, so we needn't worry about them.
@@ -63,45 +63,45 @@ public class NavigationTests : DriverTestFixture
     public void ShouldGoToUrlUsingString()
     {
         INavigation navigation;
-        navigation = driver.Navigate();
+        navigation = Driver.Navigate();
 
-        navigation.GoToUrl(macbethPage);
-        Assert.That(driver.Title, Is.EqualTo(macbethTitle));
+        navigation.GoToUrl(Urls.MacbethPage);
+        Assert.That(Driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
         // We go to two pages to ensure that the browser wasn't
         // already at the desired page through a previous test.
-        navigation.GoToUrl(simpleTestPage);
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        navigation.GoToUrl(Urls.SimpleTestPage);
+        Assert.That(Driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public void ShouldGoToUrlUsingUri()
     {
-        Uri macBeth = new Uri(macbethPage);
-        Uri simpleTest = new Uri(simpleTestPage);
+        Uri macBeth = new Uri(Urls.MacbethPage);
+        Uri simpleTest = new Uri(Urls.SimpleTestPage);
         INavigation navigation;
-        navigation = driver.Navigate();
+        navigation = Driver.Navigate();
 
         navigation.GoToUrl(macBeth);
-        Assert.That(macbethTitle, Is.EqualTo(driver.Title));
+        Assert.That(Driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
         // We go to two pages to ensure that the browser wasn't
         // already at the desired page through a previous test.
         navigation.GoToUrl(simpleTest);
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(Driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public void ShouldRefreshPage()
     {
-        driver.Url = javascriptPage;
-        IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
-        driver.FindElement(By.Id("updatediv")).Click();
+        Driver.Url = Urls.JavascriptPage;
+        IWebElement changedDiv = Driver.FindElement(By.Id("dynamo"));
+        Driver.FindElement(By.Id("updatediv")).Click();
 
         Assert.That(changedDiv.Text, Is.EqualTo("Fish and chips!"));
-        driver.Navigate().Refresh();
+        Driver.Navigate().Refresh();
 
-        changedDiv = driver.FindElement(By.Id("dynamo"));
+        changedDiv = Driver.FindElement(By.Id("dynamo"));
         Assert.That(changedDiv.Text, Is.EqualTo("What's for dinner?"));
     }
 
@@ -109,7 +109,7 @@ public class NavigationTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedBeforeTest = true)]
     public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsedAsync()
     {
-        var navigation = driver.Navigate();
+        var navigation = Driver.Navigate();
         Assert.That(async () => await navigation.BackAsync(), Throws.Nothing);
         Assert.That(async () => await navigation.ForwardAsync(), Throws.Nothing);
     }
@@ -117,59 +117,59 @@ public class NavigationTests : DriverTestFixture
     [Test]
     public async Task ShouldGoBackAndForwardAsync()
     {
-        INavigation navigation = driver.Navigate();
+        INavigation navigation = Driver.Navigate();
 
-        await navigation.GoToUrlAsync(macbethPage);
-        await navigation.GoToUrlAsync(simpleTestPage);
+        await navigation.GoToUrlAsync(Urls.MacbethPage);
+        await navigation.GoToUrlAsync(Urls.SimpleTestPage);
 
         await navigation.BackAsync();
-        Assert.That(driver.Title, Is.EqualTo(macbethTitle));
+        Assert.That(Driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
         await navigation.ForwardAsync();
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        Assert.That(Driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public void ShouldAcceptInvalidUrlsUsingUrisAsync()
     {
-        INavigation navigation = driver.Navigate();
+        INavigation navigation = Driver.Navigate();
         Assert.That(async () => await navigation.GoToUrlAsync((Uri)null), Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
     public async Task ShouldGoToUrlUsingStringAsync()
     {
-        var navigation = driver.Navigate();
+        var navigation = Driver.Navigate();
 
-        await navigation.GoToUrlAsync(macbethPage);
-        Assert.That(driver.Title, Is.EqualTo(macbethTitle));
+        await navigation.GoToUrlAsync(Urls.MacbethPage);
+        Assert.That(Driver.Title, Is.EqualTo("Macbeth: Entire Play"));
 
-        await navigation.GoToUrlAsync(simpleTestPage);
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        await navigation.GoToUrlAsync(Urls.SimpleTestPage);
+        Assert.That(Driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public void ShouldGoToUrlUsingUriAsync()
     {
-        var navigation = driver.Navigate();
+        var navigation = Driver.Navigate();
 
-        navigation.GoToUrlAsync(new Uri(macbethPage));
-        Assert.That(macbethTitle, Is.EqualTo(driver.Title));
-        navigation.GoToUrl(new Uri(simpleTestPage));
-        Assert.That(driver.Title, Is.EqualTo(simpleTestTitle));
+        navigation.GoToUrlAsync(new Uri(Urls.MacbethPage));
+        Assert.That(Driver.Title, Is.EqualTo("Macbeth: Entire Play"));
+        navigation.GoToUrl(new Uri(Urls.SimpleTestPage));
+        Assert.That(Driver.Title, Is.EqualTo("Hello WebDriver"));
     }
 
     [Test]
     public async Task ShouldRefreshPageAsync()
     {
-        await driver.Navigate().GoToUrlAsync(javascriptPage);
-        IWebElement changedDiv = driver.FindElement(By.Id("dynamo"));
-        driver.FindElement(By.Id("updatediv")).Click();
+        await Driver.Navigate().GoToUrlAsync(Urls.JavascriptPage);
+        IWebElement changedDiv = Driver.FindElement(By.Id("dynamo"));
+        Driver.FindElement(By.Id("updatediv")).Click();
 
         Assert.That(changedDiv.Text, Is.EqualTo("Fish and chips!"));
-        await driver.Navigate().RefreshAsync();
+        await Driver.Navigate().RefreshAsync();
 
-        changedDiv = driver.FindElement(By.Id("dynamo"));
+        changedDiv = Driver.FindElement(By.Id("dynamo"));
         Assert.That(changedDiv.Text, Is.EqualTo("What's for dinner?"));
     }
 }

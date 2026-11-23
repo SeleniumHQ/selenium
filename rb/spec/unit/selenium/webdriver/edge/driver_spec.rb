@@ -54,13 +54,14 @@ module Selenium
           expect(finder).to have_received(:driver_path)
         end
 
-        it 'does not use DriverFinder when provided Service with path' do
+        it 'does not call Selenium Manager when Service has executable_path set' do
           expect_request
           allow(service).to receive(:executable_path).and_return('path')
-          allow(DriverFinder).to receive(:new).and_return(finder)
+          allow(SeleniumManager).to receive(:binary_paths)
+          allow(Platform).to receive(:assert_executable).with('path').and_return(true)
 
           described_class.new(service: service)
-          expect(finder).not_to have_received(:driver_path)
+          expect(SeleniumManager).not_to have_received(:binary_paths)
         end
 
         it 'does not require any parameters' do
@@ -80,8 +81,10 @@ module Selenium
 
         it 'raises an ArgumentError if parameter is not recognized' do
           allow(DriverFinder).to receive(:new).and_return(finder)
+          allow(service_manager).to receive(:stop)
           msg = 'unknown keyword: :invalid'
           expect { described_class.new(invalid: 'foo') }.to raise_error(ArgumentError, msg)
+          expect(service_manager).to have_received(:stop)
         end
 
         it 'does not accept Options of the wrong class' do

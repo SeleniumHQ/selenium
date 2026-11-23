@@ -4,19 +4,19 @@ package(default_visibility = ["//rb:__subpackages__"])
 
 copy_file(
     name = "find-elements",
-    src = "//javascript/atoms/fragments:find-elements.js",
+    src = "//javascript/atoms/fragments:find-elements-typescript.js",
     out = "findElements.js",
 )
 
 copy_file(
     name = "get-attribute",
-    src = "//javascript/webdriver/atoms:get-attribute.js",
+    src = "//javascript/atoms/fragments:get-attribute-typescript.js",
     out = "getAttribute.js",
 )
 
 copy_file(
     name = "is-displayed",
-    src = "//javascript/atoms/fragments:is-displayed.js",
+    src = "//javascript/atoms/fragments:is-displayed-typescript.js",
     out = "isDisplayed.js",
 )
 

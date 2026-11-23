@@ -18,7 +18,9 @@
 package org.openqa.selenium.bidi.emulation;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class GeolocationPositionError {
 
   public Map<String, Object> toMap() {

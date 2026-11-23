@@ -70,7 +70,7 @@ class DrainTest {
         new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
 
     Server<?> hub = startHub(baseConfig);
-    try (AutoCloseable stopHub = () -> Safely.safelyCall(hub::stop); ) {
+    try (AutoCloseable stopHub = () -> Safely.safelyCall(hub::stop)) {
       UrlChecker urlChecker = new UrlChecker();
       urlChecker.waitUntilAvailable(
           5, TimeUnit.SECONDS, hub.getUrl().toURI().resolve("readyz").toURL());
@@ -160,7 +160,7 @@ class DrainTest {
         new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
 
     Server<?> hub = startHub(baseConfig);
-    try (AutoCloseable stopHub = () -> Safely.safelyCall(hub::stop); ) {
+    try (AutoCloseable stopHub = () -> Safely.safelyCall(hub::stop)) {
       UrlChecker urlChecker = new UrlChecker();
       urlChecker.waitUntilAvailable(
           5, TimeUnit.SECONDS, hub.getUrl().toURI().resolve("readyz").toURL());

@@ -61,44 +61,38 @@ public class SeleniumSpanExporter {
         new SpanExporter() {
           @Override
           public CompletableResultCode export(Collection<SpanData> spans) {
-            spans.forEach(
-                span -> {
-                  if (LOG.isLoggable(Level.FINE)) {
-                    LOG.fine(String.valueOf(span));
-                  }
+            spans.forEach(span -> {
+              if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine(String.valueOf(span));
+              }
 
-                  Level logLevel = getLogLevel(span);
+              Level logLevel = getLogLevel(span);
 
-                  if (!LOG.isLoggable(logLevel)) {
-                    return;
-                  }
+              if (!LOG.isLoggable(logLevel)) {
+                return;
+              }
 
-                  String traceId = span.getTraceId();
-                  List<EventData> eventList = span.getEvents();
-                  eventList.forEach(
-                      event -> {
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("eventTime", event.getEpochNanos());
-                        map.put("traceId", traceId);
-                        map.put("eventName", event.getName());
+              String traceId = span.getTraceId();
+              List<EventData> eventList = span.getEvents();
+              eventList.forEach(event -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("eventTime", event.getEpochNanos());
+                map.put("traceId", traceId);
+                map.put("eventName", event.getName());
 
-                        Attributes attributes = event.getAttributes();
-                        map.put("attributes", attributes.asMap());
+                Attributes attributes = event.getAttributes();
+                map.put("attributes", attributes.asMap());
 
-                        EXCEPTION_ATTRIBUTES.forEach(
-                            exceptionAttribute ->
-                                attributes.asMap().keySet().stream()
-                                    .filter(
-                                        key -> exceptionAttribute.equalsIgnoreCase(key.getKey()))
-                                    .findFirst()
-                                    .ifPresent(
-                                        key ->
-                                            LOG.log(
-                                                logLevel, attributes.asMap().get(key).toString())));
-                        String jsonString = getJsonString(map);
-                        LOG.log(logLevel, jsonString);
-                      });
-                });
+                EXCEPTION_ATTRIBUTES.forEach(exceptionAttribute ->
+                    attributes.asMap().keySet().stream()
+                        .filter(key -> exceptionAttribute.equalsIgnoreCase(key.getKey()))
+                        .findFirst()
+                        .ifPresent(
+                            key -> LOG.log(logLevel, attributes.asMap().get(key).toString())));
+                String jsonString = getJsonString(map);
+                LOG.log(logLevel, jsonString);
+              });
+            });
             return CompletableResultCode.ofSuccess();
           }
 

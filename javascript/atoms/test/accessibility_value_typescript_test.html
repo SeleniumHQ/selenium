@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_value_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script type="text/javascript">
+    // The optional `value` field of ADR 18205 §2: present for textbox,
+    // searchbox, combobox and the range roles, absent (not undefined) for
+    // everything else.
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    function assertValues(assert, expectations) {
+      Object.keys(expectations).forEach(function (id) {
+        assert.strictEqual(snapshot(byId(id)).value, expectations[id], '#' + id);
+      });
+    }
+
+    function assertNoValue(assert, ids) {
+      ids.forEach(function (id) {
+        assert.notOk('value' in snapshot(byId(id)), '#' + id + ' should have no value key');
+      });
+    }
+
+    QUnit.test('text inputs, textareas and search boxes report their current value', function (assert) {
+      byId('typed').value = 'typed later';
+      // A password's value is masked, one bullet per character, as Chromium's
+      // accessibility tree exposes it: a snapshot ends up in logs and reports.
+      assertValues(assert, { 'typed': 'typed later', 'empty': '', 'textarea': 'default text', 'search': 'q', 'password': '••••••' });
+    });
+
+    QUnit.test('a contenteditable textbox reports its rendered text', function (assert) {
+      assertValues(assert, { 'editable': 'hello' });
+    });
+
+    QUnit.test('a combobox reports the selected option, or the typed text', function (assert) {
+      assertValues(assert, { 'select': 'Beta', 'select-label': 'Labelled', 'input-list': 'ab' });
+    });
+
+    QUnit.test('range roles report aria-valuetext, then aria-valuenow, then the native value', function (assert) {
+      assertValues(assert, {
+        'range': '30', 'number': '7', 'progress': '1', 'meter': '0.5',
+        'slider-now': '40', 'slider-text': 'Medium', 'slider-padded-text': 'Low', 'spinbutton-now': '3',
+      });
+    });
+
+    QUnit.test('a range role with no value source has no value key', function (assert) {
+      assertNoValue(assert, ['slider-empty']);
+    });
+
+    QUnit.test('other roles have no value key', function (assert) {
+      assertNoValue(assert, ['button', 'checkbox', 'listbox', 'heading', 'link', 'option']);
+      assert.notOk('value' in snapshot(), 'the document has no value');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <input id="typed" type="text" value="initial">
+  <input id="empty" type="text">
+  <textarea id="textarea">default text</textarea>
+  <input id="search" type="search" value="q">
+  <input id="password" type="password" value="secret">
+  <div id="editable" role="textbox" contenteditable="true">hello <span style="display: none">secret</span></div>
+  <select id="select"><option>Alpha</option><option selected>Beta</option></select>
+  <select id="select-label"><option label="Labelled" selected>Text</option></select>
+  <input id="input-list" type="text" list="dl" value="ab"><datalist id="dl"><option value="abc"></option></datalist>
+  <input id="range" type="range" min="0" max="100" value="30">
+  <input id="number" type="number" value="7">
+  <progress id="progress" value="1" max="2"></progress>
+  <meter id="meter" value="0.5"></meter>
+  <div id="slider-now" role="slider" aria-valuenow="40"></div>
+  <div id="slider-text" role="slider" aria-valuenow="50" aria-valuetext="Medium"></div>
+  <div id="slider-padded-text" role="slider" aria-valuenow="50" aria-valuetext="  Low  "></div>
+  <div id="spinbutton-now" role="spinbutton" aria-valuenow="3"></div>
+  <div id="slider-empty" role="slider"></div>
+  <button id="button">b</button>
+  <input id="checkbox" type="checkbox">
+  <div id="listbox" role="listbox"><div id="option" role="option" aria-selected="true">o</div></div>
+  <h1 id="heading">h</h1>
+  <a id="link" href="#">l</a>
+</body>
+
+</html>

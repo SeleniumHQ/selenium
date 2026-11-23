@@ -23,8 +23,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class DownloadBehavior {
   private final boolean allowed;
   private final @Nullable Path destinationFolder;

@@ -140,7 +140,7 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
       return Stream.of(
               new AddHasPermissions().getAdditionalCommands(),
               new AddHasDebugger().getAdditionalCommands())
-          .flatMap((m) -> m.entrySet().stream())
+          .flatMap(m -> m.entrySet().stream())
           .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
   }

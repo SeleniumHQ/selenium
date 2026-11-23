@@ -62,11 +62,9 @@ public abstract class WebSocketTestBase {
             req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!")),
             (uri, sink) -> {
               if ("/text".equals(uri)) {
-                return Optional.of(
-                    msg ->
-                        sink.accept(
-                            new TextMessage(
-                                String.format("Hello, %s!", ((TextMessage) msg).text()))));
+                return Optional.of(msg ->
+                    sink.accept(
+                        new TextMessage(String.format("Hello, %s!", ((TextMessage) msg).text()))));
               }
 
               if ("/binary".equals(uri)) {

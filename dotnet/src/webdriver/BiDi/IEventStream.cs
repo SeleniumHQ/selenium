@@ -19,7 +19,8 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-public interface IEventStream<out TEventArgs> : IAsyncEnumerable<TEventArgs>, IAsyncDisposable
+public interface IEventStream<out TEventArgs> : IAsyncDisposable
     where TEventArgs : EventArgs
 {
+    IAsyncEnumerable<TEventArgs> ReadAllAsync(CancellationToken cancellationToken = default);
 }

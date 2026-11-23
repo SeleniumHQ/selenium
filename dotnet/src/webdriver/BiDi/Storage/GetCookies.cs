@@ -39,11 +39,12 @@ public sealed record ContextGetCookiesOptions : CommandOptions
     {
         Filter = options?.Filter,
         Partition = new ContextPartitionDescriptor(context),
-        Timeout = options?.Timeout
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 
-public sealed record GetCookiesResult(IReadOnlyList<Network.Cookie> Cookies, PartitionKey PartitionKey) : EmptyResult;
+public sealed record GetCookiesResult(ImmutableArray<Network.Cookie> Cookies, PartitionKey PartitionKey) : EmptyResult;
 
 public sealed record CookieFilter
 {

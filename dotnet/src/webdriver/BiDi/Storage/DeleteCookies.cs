@@ -36,7 +36,8 @@ public sealed record ContextDeleteCookiesOptions : CommandOptions
     {
         Partition = new ContextPartitionDescriptor(context),
         Filter = options?.Filter,
-        Timeout = options?.Timeout
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 

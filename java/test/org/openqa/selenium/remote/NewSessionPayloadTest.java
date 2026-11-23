@@ -135,25 +135,22 @@ class NewSessionPayloadTest {
   @Test
   void shouldValidateW3cCapabilitiesByComplainingAboutKeysThatAreNotExtensions() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(
-            () ->
-                create(
-                    singletonMap(
-                        "capabilities",
-                        singletonMap("alwaysMatch", singletonMap("cake", "cheese")))));
+        .isThrownBy(() ->
+            create(
+                singletonMap(
+                    "capabilities", singletonMap("alwaysMatch", singletonMap("cake", "cheese")))));
   }
 
   @Test
   void shouldValidateW3cCapabilitiesByComplainingAboutDuplicateFirstAndAlwaysMatchKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(
-            () ->
-                create(
-                    singletonMap(
-                        "capabilities",
-                        Map.of(
-                            "alwaysMatch", singletonMap("se:cake", "cheese"),
-                            "firstMatch", singletonList(singletonMap("se:cake", "sausages"))))));
+        .isThrownBy(() ->
+            create(
+                singletonMap(
+                    "capabilities",
+                    Map.of(
+                        "alwaysMatch", singletonMap("se:cake", "cheese"),
+                        "firstMatch", singletonList(singletonMap("se:cake", "sausages"))))));
   }
 
   @Test

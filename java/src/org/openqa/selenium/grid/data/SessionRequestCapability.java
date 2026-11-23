@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.data;
 
 import static java.util.Collections.unmodifiableSet;
 
-import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -27,19 +26,17 @@ import java.util.Set;
 import java.util.StringJoiner;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
 
 public class SessionRequestCapability {
 
-  private static final Type SET_OF_CAPABILITIES = new TypeToken<Set<Capabilities>>() {}.getType();
   private final RequestId requestId;
   private final Set<Capabilities> desiredCapabilities;
 
-  public SessionRequestCapability(RequestId requestId, Set<Capabilities> desiredCapabilities) {
+  // Constructor parameter names are used as JSON field names.
+  public SessionRequestCapability(RequestId requestId, Set<Capabilities> capabilities) {
     this.requestId = Require.nonNull("Request ID", requestId);
     this.desiredCapabilities =
-        unmodifiableSet(new LinkedHashSet<>(Require.nonNull("Capabilities", desiredCapabilities)));
+        unmodifiableSet(new LinkedHashSet<>(Require.nonNull("Capabilities", capabilities)));
   }
 
   public RequestId getRequestId() {
@@ -76,31 +73,5 @@ public class SessionRequestCapability {
 
   private Map<String, Object> toJson() {
     return Map.of("requestId", requestId, "capabilities", desiredCapabilities);
-  }
-
-  @SuppressWarnings({"unused", "DataFlowIssue"})
-  private static SessionRequestCapability fromJson(JsonInput input) {
-    RequestId id = null;
-    Set<Capabilities> capabilities = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "capabilities":
-          capabilities = input.read(SET_OF_CAPABILITIES);
-          break;
-
-        case "requestId":
-          id = input.read(RequestId.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-
-    return new SessionRequestCapability(id, capabilities);
   }
 }

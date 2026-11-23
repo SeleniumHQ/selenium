@@ -20,7 +20,16 @@ import argparse
 import json
 import os
 import re
-import urllib.request
+import sys
+
+import urllib3
+
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
+API_HEADERS = {}
+if os.environ.get("GITHUB_TOKEN"):
+    API_HEADERS["Authorization"] = f"Bearer {os.environ['GITHUB_TOKEN']}"
 
 
 def run(lockfile_path):
@@ -39,10 +48,14 @@ def run(lockfile_path):
         else:
             continue
         try:
-            with urllib.request.urlopen(releases_url) as response:
-                json_resp = json.loads(response.read())
-                new_version = json_resp["tag_name"]
-                assets = json_resp["assets"]
+            response = http.request("GET", releases_url, headers=API_HEADERS)
+            if response.status != 200:
+                body = response.data[:200].decode("utf-8", "replace")
+                print(f"Skipping '{tool}' (HTTP {response.status}): {body}", file=sys.stderr)
+                continue
+            json_resp = json.loads(response.data)
+            new_version = json_resp["tag_name"]
+            assets = json_resp["assets"]
         except Exception:
             continue
         if new_version != version:

@@ -1,0 +1,23 @@
+diff --git a/ruby/private/download/BUILD.tpl b/ruby/private/download/BUILD.tpl
+index 14939ef..1d21183 100644
+--- a/ruby/private/download/BUILD.tpl
++++ b/ruby/private/download/BUILD.tpl
+@@ -28,6 +28,18 @@ filegroup(
+     srcs = glob(
+         ["dist/**/*"],
+         allow_empty = True,
++        # RubyInstaller's MSYS2 setup writes files that differ on every fetch (random pacman keyring, install
++        # dates, logs, copies of the host's /etc files); as inputs they would change every action's cache key.
++        exclude = [
++            "dist/unins*.dat",
++            "dist/msys64/etc/hosts",
++            "dist/msys64/etc/networks",
++            "dist/msys64/etc/protocols",
++            "dist/msys64/etc/services",
++            "dist/msys64/etc/pacman.d/gnupg/**",
++            "dist/msys64/var/**",
++            "dist/msys64/**/etc/pki/ca-trust/extracted/java/**",
++        ],
+     ),
+ )
+ 

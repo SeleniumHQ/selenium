@@ -234,14 +234,13 @@ public class Standalone extends TemplateGridServerCommand {
 
     config
         .get("server", "max-threads")
-        .ifPresent(
-            value ->
-                LOG.log(
-                    Level.WARNING,
-                    () ->
-                        "Support for max-threads flag is deprecated. The intent of the flag is to"
-                            + " set the thread pool size in the Distributor. Please use"
-                            + " newsession-threadpool-size flag instead."));
+        .ifPresent(value ->
+            LOG.log(
+                Level.WARNING,
+                () ->
+                    "Support for max-threads flag is deprecated. The intent of the flag is to"
+                        + " set the thread pool size in the Distributor. Please use"
+                        + " newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config).start();
 
@@ -262,27 +261,26 @@ public class Standalone extends TemplateGridServerCommand {
     distributor.add(node);
 
     bus.addListener(
-        NodeDrainComplete.listener(
-            nodeId -> {
-              if (!node.getId().equals(nodeId)) {
-                return;
-              }
+        NodeDrainComplete.listener(nodeId -> {
+          if (!node.getId().equals(nodeId)) {
+            return;
+          }
 
-              // Wait a beat before shutting down so the final response from the
-              // node can escape.
-              new Thread(
-                      () -> {
-                        try {
-                          Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                          // Swallow, the next thing we're doing is shutting down
-                        }
-                        LOG.info("Shutting down");
-                        System.exit(0);
-                      },
-                      "Standalone shutdown: " + nodeId)
-                  .start();
-            }));
+          // Wait a beat before shutting down so the final response from the
+          // node can escape.
+          new Thread(
+                  () -> {
+                    try {
+                      Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                      // Swallow, the next thing we're doing is shutting down
+                    }
+                    LOG.info("Shutting down");
+                    System.exit(0);
+                  },
+                  "Standalone shutdown: " + nodeId)
+              .start();
+        }));
     return node;
   }
 }

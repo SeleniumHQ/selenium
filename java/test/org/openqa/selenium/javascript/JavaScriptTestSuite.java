@@ -93,15 +93,14 @@ class JavaScriptTestSuite {
 
     List<Path> tests = TestFileLocator.findTestFiles();
     return tests.stream()
-        .map(
-            file -> {
-              final String path = TestFileLocator.getTestFilePath(baseDir, file);
-              String title = path.replaceAll(".html$", "");
-              ClosureTestStatement testStatement =
-                  new ClosureTestStatement(driverSupplier, path, pathToUrlFn, timeout);
+        .map(file -> {
+          final String path = TestFileLocator.getTestFilePath(baseDir, file);
+          String title = path.replaceAll(".html$", "");
+          ClosureTestStatement testStatement =
+              new ClosureTestStatement(driverSupplier, path, pathToUrlFn, timeout);
 
-              return dynamicTest(title, testStatement::evaluate);
-            })
+          return dynamicTest(title, testStatement::evaluate);
+        })
         .collect(toList());
   }
 

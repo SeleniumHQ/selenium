@@ -23,8 +23,7 @@ namespace OpenQA.Selenium.BiDi.Speculation;
 
 public static class SpeculationEvent
 {
-    public static EventDescriptor<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdated { get; } = EventDescriptor<PrefetchStatusUpdatedEventArgs>.Create<PrefetchStatusUpdatedParameters>(
+    public static EventDescriptor<PrefetchStatusUpdatedEventArgs> PrefetchStatusUpdated { get; } = EventDescriptor<PrefetchStatusUpdatedEventArgs>.Create(
         "speculation.prefetchStatusUpdated",
-        static (bidi, p) => new PrefetchStatusUpdatedEventArgs(bidi, p.Context, p.Url, p.Status),
-        Default.PrefetchStatusUpdatedParameters);
+        Default.PrefetchStatusUpdatedEventArgs);
 }

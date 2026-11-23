@@ -97,13 +97,12 @@ class LocalGridModelDeadlockTest {
     // Register a listener that simulates LocalNodeRegistry.remove()
     // which would try to acquire the external lock
     events.addListener(
-        NodeRemovedEvent.listener(
-            status -> {
-              synchronized (externalLock) {
-                // Simulate work that LocalNodeRegistry.remove() does
-                eventFired.countDown();
-              }
-            }));
+        NodeRemovedEvent.listener(status -> {
+          synchronized (externalLock) {
+            // Simulate work that LocalNodeRegistry.remove() does
+            eventFired.countDown();
+          }
+        }));
 
     CountDownLatch thread1Started = new CountDownLatch(1);
     CountDownLatch thread2Started = new CountDownLatch(1);
@@ -112,38 +111,36 @@ class LocalGridModelDeadlockTest {
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
     // Thread 1: Holds external lock and calls model.setAvailability()
-    executor.submit(
-        () -> {
-          try {
-            thread1Started.countDown();
-            thread2Started.await(1, TimeUnit.SECONDS);
+    executor.submit(() -> {
+      try {
+        thread1Started.countDown();
+        thread2Started.await(1, TimeUnit.SECONDS);
 
-            synchronized (externalLock) {
-              // This simulates LocalNodeRegistry.updateNodeAvailability()
-              // which holds its lock and calls model.setAvailability()
-              model.setAvailability(nodeId, UP);
-            }
-          } catch (Exception e) {
-            // Ignore interruption
-          } finally {
-            testComplete.countDown();
-          }
-        });
+        synchronized (externalLock) {
+          // This simulates LocalNodeRegistry.updateNodeAvailability()
+          // which holds its lock and calls model.setAvailability()
+          model.setAvailability(nodeId, UP);
+        }
+      } catch (Exception e) {
+        // Ignore interruption
+      } finally {
+        testComplete.countDown();
+      }
+    });
 
     // Thread 2: Calls purgeDeadNodes which fires event
-    executor.submit(
-        () -> {
-          try {
-            thread2Started.countDown();
-            thread1Started.await(1, TimeUnit.SECONDS);
+    executor.submit(() -> {
+      try {
+        thread2Started.countDown();
+        thread1Started.await(1, TimeUnit.SECONDS);
 
-            model.purgeDeadNodes();
-          } catch (Exception e) {
-            // Ignore interruption
-          } finally {
-            testComplete.countDown();
-          }
-        });
+        model.purgeDeadNodes();
+      } catch (Exception e) {
+        // Ignore interruption
+      } finally {
+        testComplete.countDown();
+      }
+    });
 
     // Wait for completion with timeout - if deadlock occurs, this will timeout
     boolean completed = testComplete.await(5, TimeUnit.SECONDS);
@@ -182,18 +179,17 @@ class LocalGridModelDeadlockTest {
 
     // When event fires, try to call another model method that needs the lock
     events.addListener(
-        NodeRemovedEvent.listener(
-            status -> {
-              try {
-                // This needs the read lock - if event is fired inside write lock,
-                // this would work due to lock downgrading, but we verify the pattern
-                model.getSnapshot();
-                canAcquireLock.set(true);
-              } catch (Exception e) {
-                canAcquireLock.set(false);
-              }
-              eventFired.countDown();
-            }));
+        NodeRemovedEvent.listener(status -> {
+          try {
+            // This needs the read lock - if event is fired inside write lock,
+            // this would work due to lock downgrading, but we verify the pattern
+            model.getSnapshot();
+            canAcquireLock.set(true);
+          } catch (Exception e) {
+            canAcquireLock.set(false);
+          }
+          eventFired.countDown();
+        }));
 
     model.purgeDeadNodes();
 
@@ -226,16 +222,15 @@ class LocalGridModelDeadlockTest {
 
     // When restart event fires, try to call another model method that needs the lock
     events.addListener(
-        NodeRestartedEvent.listener(
-            status -> {
-              try {
-                model.getSnapshot();
-                canAcquireLock.set(true);
-              } catch (Exception e) {
-                canAcquireLock.set(false);
-              }
-              eventFired.countDown();
-            }));
+        NodeRestartedEvent.listener(status -> {
+          try {
+            model.getSnapshot();
+            canAcquireLock.set(true);
+          } catch (Exception e) {
+            canAcquireLock.set(false);
+          }
+          eventFired.countDown();
+        }));
 
     // Add a new node with same URI but different ID (simulates node restart)
     NodeStatus restartedNode = createNodeStatus(newNodeId, sharedUri, UP);

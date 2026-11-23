@@ -34,6 +34,7 @@ import org.openqa.selenium.bidi.browsingcontext.CreateContextParameters;
 import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.bidi.module.Storage;
 import org.openqa.selenium.bidi.network.BytesValue;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -82,6 +83,7 @@ class StorageCommandsTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
+  @CloseExtraWindowsAfterTest
   public void canGetCookieInDefaultUserContext() {
     String windowHandle = driver.getWindowHandle();
     String key = generateUniqueKey();
@@ -122,54 +124,59 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
+  @CloseExtraWindowsAfterTest
   public void canGetCookieInAUserContext() {
     Browser browser = new Browser(driver);
     String userContext = browser.createUserContext();
-    String windowHandle = driver.getWindowHandle();
+    try {
+      String windowHandle = driver.getWindowHandle();
 
-    String key = generateUniqueKey();
-    String value = "set";
+      String key = generateUniqueKey();
+      String value = "set";
 
-    PartitionDescriptor descriptor = new StorageKeyPartitionDescriptor().userContext(userContext);
+      PartitionDescriptor descriptor = new StorageKeyPartitionDescriptor().userContext(userContext);
 
-    SetCookieParameters parameters =
-        new SetCookieParameters(
-            new PartialCookie(
-                key, new BytesValue(BytesValue.Type.STRING, value), appServer.getHostName()),
-            descriptor);
+      SetCookieParameters parameters =
+          new SetCookieParameters(
+              new PartialCookie(
+                  key, new BytesValue(BytesValue.Type.STRING, value), appServer.getHostName()),
+              descriptor);
 
-    storage.setCookie(parameters);
+      storage.setCookie(parameters);
 
-    CookieFilter cookieFilter = new CookieFilter();
-    cookieFilter.name(key);
-    cookieFilter.value(new BytesValue(BytesValue.Type.STRING, "set"));
+      CookieFilter cookieFilter = new CookieFilter();
+      cookieFilter.name(key);
+      cookieFilter.value(new BytesValue(BytesValue.Type.STRING, "set"));
 
-    BrowsingContext context =
-        new BrowsingContext(
-            driver, new CreateContextParameters(WindowType.TAB).userContext(userContext));
+      BrowsingContext context =
+          new BrowsingContext(
+              driver, new CreateContextParameters(WindowType.TAB).userContext(userContext));
 
-    driver.switchTo().window(context.getId());
+      driver.switchTo().window(context.getId());
 
-    GetCookiesParameters params = new GetCookiesParameters(cookieFilter, descriptor);
+      GetCookiesParameters params = new GetCookiesParameters(cookieFilter, descriptor);
 
-    GetCookiesResult result = storage.getCookies(params);
+      GetCookiesResult result = storage.getCookies(params);
 
-    assertThat(result.getCookies().get(0).getValue().getValue()).isEqualTo(value);
-    PartitionKey partitionKey = result.getPartitionKey();
+      assertThat(result.getCookies().get(0).getValue().getValue()).isEqualTo(value);
+      PartitionKey partitionKey = result.getPartitionKey();
 
-    assertThat(partitionKey.getUserContext()).isNotNull().isEqualTo(userContext);
+      assertThat(partitionKey.getUserContext()).isNotNull().isEqualTo(userContext);
 
-    driver.switchTo().window(windowHandle);
+      driver.switchTo().window(windowHandle);
 
-    PartitionDescriptor browsingContextPartitionDescriptor =
-        new BrowsingContextPartitionDescriptor(windowHandle);
+      PartitionDescriptor browsingContextPartitionDescriptor =
+          new BrowsingContextPartitionDescriptor(windowHandle);
 
-    GetCookiesParameters params1 =
-        new GetCookiesParameters(cookieFilter, browsingContextPartitionDescriptor);
+      GetCookiesParameters params1 =
+          new GetCookiesParameters(cookieFilter, browsingContextPartitionDescriptor);
 
-    GetCookiesResult result1 = storage.getCookies(params1);
+      GetCookiesResult result1 = storage.getCookies(params1);
 
-    assertThat(result1.getCookies()).hasSize(0);
+      assertThat(result1.getCookies()).hasSize(0);
+    } finally {
+      browser.removeUserContext(userContext);
+    }
   }
 
   @Test

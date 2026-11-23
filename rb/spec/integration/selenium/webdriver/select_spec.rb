@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     module Support
-      describe Select, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+      describe Select, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
         let(:select) { described_class.new(driver.find_element(name: 'selectomatic')) }
         let(:multi_select) { described_class.new(driver.find_element(id: 'multi')) }
         let(:single_disabled) { described_class.new(driver.find_element(name: 'single_disabled')) }
@@ -30,7 +30,6 @@ module Selenium
         let(:multi_invisible) { described_class.new(driver.find_element(id: 'invisible_multi_select')) }
 
         before { driver.navigate.to url_for('formPage.html') }
-        after { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
         describe '#initialize' do
           it 'raises exception if not a select element' do
@@ -112,7 +111,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   multi_disabled.select_by(:text, 'Disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -149,7 +148,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect { multi_disabled.select_by(:index, 1) }.to raise_exception(Error::UnsupportedOperationError)
               end
 
@@ -181,7 +180,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   multi_disabled.select_by(:value, 'disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -221,7 +220,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   single_disabled.select_by(:text, 'Disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -248,7 +247,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect { single_disabled.select_by(:index, 1) }.to raise_exception(Error::UnsupportedOperationError)
               end
 
@@ -273,7 +272,7 @@ module Selenium
               end
 
               it 'errors when option disabled',
-                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+                 skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   single_disabled.select_by(:value, 'disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -387,7 +386,7 @@ module Selenium
           end
 
           it 'raises exception if select contains disabled options',
-             exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
+             skip_if: {browser_family: :safari, reason: 'Safari raises no exception with disabled'} do
             select = described_class.new(driver.find_element(name: 'multi_disabled'))
 
             expect { select.select_all }.to raise_exception(Error::UnsupportedOperationError)

@@ -26,9 +26,36 @@ if (process.argv.length < 3) {
 
 const buffer = fs.readFileSync(process.argv[2])
 
+// Shared license + note text, copied next to this file by BUILD.bazel — see scripts/*.txt.
+const commentLines = (text) =>
+  text
+    .split('\n')
+    .map((line) => `// ${line}`.trimEnd())
+    .join('\n')
+const LICENSE_HEADER = commentLines(
+  fs.readFileSync(path.join(__dirname, 'license_header.txt'), 'utf8').replace(/\n$/, ''),
+)
+const GENERATED_NOTE = commentLines(
+  fs
+    .readFileSync(path.join(__dirname, 'generated_note_template.txt'), 'utf8')
+    .replace('{generator}', 'javascript/selenium-webdriver/lib/atoms/make-atoms-module.js')
+    .replace('{command}', 'bazel build //javascript/selenium-webdriver/lib/atoms:all')
+    .trim(),
+)
+
+// lib/http.js sends an atom to the browser by stringifying the exported
+// function. The input is an expression whose value is a function that closes
+// over the bundle's helpers, so exporting that value directly would serialise
+// the bare function and leave every helper undefined in the browser. Wrapping
+// the whole expression keeps the bundle inside the function's own source, and
+// also means nothing in the bundle runs when Node loads this module.
 fs.writeFileSync(
   process.argv[3],
-  `// GENERATED CODE - DO NOT EDIT
-module.exports = ${buffer.toString('utf8').trim()};
+  `${LICENSE_HEADER}
+
+${GENERATED_NOTE}
+module.exports = function () {
+  return (${buffer.toString('utf8').trim()}).apply(null, arguments)
+};
 `,
 )

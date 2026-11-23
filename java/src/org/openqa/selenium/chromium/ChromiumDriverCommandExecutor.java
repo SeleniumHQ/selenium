@@ -55,7 +55,7 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
             new AddHasNetworkConditions().getAdditionalCommands(),
             new AddHasPermissions().getAdditionalCommands(),
             new AddHasLaunchApp().getAdditionalCommands())
-        .flatMap((m) -> m.entrySet().stream())
+        .flatMap(m -> m.entrySet().stream())
         .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 }

@@ -19,7 +19,6 @@
 
 using System.Drawing;
 using System.IO;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -29,18 +28,18 @@ public class TakesScreenshotTests : DriverTestFixture
     [TearDown]
     public void SwitchToTop()
     {
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
     }
 
     [Test]
     public void GetScreenshotAsFile()
     {
-        if (driver is not ITakesScreenshot screenshotCapableDriver)
+        if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
-        driver.Url = simpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
 
         string filename = Path.Combine(Path.GetTempPath(), "snapshot" + new Random().Next().ToString() + ".png");
         Screenshot screenImage = screenshotCapableDriver.GetScreenshot();
@@ -53,12 +52,12 @@ public class TakesScreenshotTests : DriverTestFixture
     [Test]
     public void GetScreenshotAsBase64()
     {
-        if (driver is not ITakesScreenshot screenshotCapableDriver)
+        if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
-        driver.Url = simpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         Screenshot screenImage = screenshotCapableDriver.GetScreenshot();
         string base64 = screenImage.AsBase64EncodedString;
         Assert.That(base64.Length, Is.GreaterThan(0));
@@ -67,12 +66,12 @@ public class TakesScreenshotTests : DriverTestFixture
     [Test]
     public void GetScreenshotAsBinary()
     {
-        if (driver is not ITakesScreenshot screenshotCapableDriver)
+        if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
-        driver.Url = simpleTestPage;
+        Driver.Url = Urls.SimpleTestPage;
         Screenshot screenImage = screenshotCapableDriver.GetScreenshot();
         byte[] bytes = screenImage.AsByteArray;
         Assert.That(bytes.Length, Is.GreaterThan(0));
@@ -89,12 +88,12 @@ public class TakesScreenshotTests : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        if (driver is not ITakesScreenshot screenshotCapableDriver)
+        if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen.html");
+        Driver.Url = Urls.WhereIs("screen/screen.html");
         Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
 
         HashSet<string> actualColors = ScanActualColors(screenshot,
@@ -118,8 +117,8 @@ public class TakesScreenshotTests : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen.html");
-        IWebElement element = driver.FindElement(By.Id("cell11"));
+        Driver.Url = Urls.WhereIs("screen/screen.html");
+        IWebElement element = Driver.FindElement(By.Id("cell11"));
 
         if (element is not ITakesScreenshot screenshotCapableElement)
         {
@@ -146,20 +145,20 @@ public class TakesScreenshotTests : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        if (driver is not ITakesScreenshot screenshotCapableDriver)
+        if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_frames.html");
+        Driver.Url = Urls.WhereIs("screen/screen_frames.html");
         WaitFor(FrameToBeAvailableAndSwitchedTo("frame1"), "Did not switch to frame1");
         WaitFor(ElementToBeVisibleWithId("content"), "Did not find visible element with id content");
 
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
         WaitFor(FrameToBeAvailableAndSwitchedTo("frame2"), "Did not switch to frame2");
         WaitFor(ElementToBeVisibleWithId("content"), "Did not find visible element with id content");
 
-        driver.SwitchTo().DefaultContent();
+        Driver.SwitchTo().DefaultContent();
         WaitFor(TitleToBe("screen test"), "Title was not expected value");
         Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
 
@@ -190,19 +189,19 @@ public class TakesScreenshotTests : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        if (driver is not ITakesScreenshot screenshotCapableDriver)
+        if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_iframes.html");
+        Driver.Url = Urls.WhereIs("screen/screen_iframes.html");
 
         // Resize the window to avoid scrollbars in screenshot
-        Size originalSize = driver.Manage().Window.Size;
-        driver.Manage().Window.Size = new Size(1040, 700);
+        Size originalSize = Driver.Manage().Window.Size;
+        Driver.Manage().Window.Size = new Size(1040, 700);
 
         Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-        driver.Manage().Window.Size = originalSize;
+        Driver.Manage().Window.Size = originalSize;
 
         HashSet<string> actualColors = ScanActualColors(screenshot,
                                                    /* stepX in pixels */ 5,
@@ -222,93 +221,42 @@ public class TakesScreenshotTests : DriverTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
-    [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
-    [IgnoreBrowser(Browser.Chrome, "Color comparisons fail on Chrome")]
-    [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldCaptureScreenshotAtFramePageAfterSwitching()
     {
-#if NET10_0
-        Assert.Ignore("Skipping test: this framework can not process colors.");
-#endif
-
-        if (driver is not ITakesScreenshot screenshotCapableDriver)
+        if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_frames.html");
+        Driver.Url = Urls.WhereIs("screen/screen_frames.html");
+        Screenshot pageScreenshot = screenshotCapableDriver.GetScreenshot();
 
-        driver.SwitchTo().Frame(driver.FindElement(By.Id("frame2")));
+        Driver.SwitchTo().Frame(Driver.FindElement(By.Id("frame2")));
+        Screenshot frameScreenshot = screenshotCapableDriver.GetScreenshot();
 
-        Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-
-        HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                   /* stepX in pixels */ 5,
-                                                   /* stepY in pixels */ 5);
-
-        HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                 /* color step*/ 1000,
-                                                 /* grid X size */ 6,
-                                                 /* grid Y size */ 6);
-        expectedColors.UnionWith(GenerateExpectedColors( /* initial color */ 0xDFDFDF,
-                                                 /* color step*/ 1000,
-                                                 /* grid X size */ 6,
-                                                 /* grid Y size */ 6));
-
-        // expectation is that screenshot at page with frames after switching to a frame
-        // will be taken for full page
-        CompareColors(expectedColors, actualColors);
+        Assert.That(frameScreenshot.AsBase64EncodedString, Is.EqualTo(pageScreenshot.AsBase64EncodedString));
     }
 
     [Test]
-    [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
-    [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
-    [IgnoreBrowser(Browser.Chrome, "Color comparisons fail on Chrome")]
-    [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
     {
-#if NET10_0
-        Assert.Ignore("Skipping test: this framework can not process colors.");
-#endif
-
-        if (driver is not ITakesScreenshot screenshotCapableDriver)
+        if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_iframes.html");
+        Driver.Url = Urls.WhereIs("screen/screen_iframes.html");
+        Screenshot pageScreenshot = screenshotCapableDriver.GetScreenshot();
 
-        // Resize the window to avoid scrollbars in screenshot
-        Size originalSize = driver.Manage().Window.Size;
-        driver.Manage().Window.Size = new Size(1040, 700);
+        Driver.SwitchTo().Frame(Driver.FindElement(By.Id("iframe2")));
+        Screenshot frameScreenshot = screenshotCapableDriver.GetScreenshot();
 
-        driver.SwitchTo().Frame(driver.FindElement(By.Id("iframe2")));
-
-        Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-        driver.Manage().Window.Size = originalSize;
-
-        HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                   /* stepX in pixels */ 5,
-                                                   /* stepY in pixels */ 5);
-
-        HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                 /* color step*/ 1000,
-                                                 /* grid X size */ 6,
-                                                 /* grid Y size */ 6);
-        expectedColors.UnionWith(GenerateExpectedColors( /* initial color */ 0xDFDFDF,
-                                                 /* color step*/ 1000,
-                                                 /* grid X size */ 6,
-                                                 /* grid Y size */ 6));
-
-        // expectation is that screenshot at page with Iframes after switching to a Iframe
-        // will be taken for full page
-        CompareColors(expectedColors, actualColors);
+        Assert.That(frameScreenshot.AsBase64EncodedString, Is.EqualTo(pageScreenshot.AsBase64EncodedString));
     }
 
     private string FormatColorToHex(int colorValue)
     {
-        string pixelColorString = string.Format("#{0:x2}{1:x2}{2:x2}", (colorValue & 0xFF0000) >> 16, (colorValue & 0x00FF00) >> 8, (colorValue & 0x0000FF));
+        string pixelColorString = string.Format("#{0:x2}{1:x2}{2:x2}", (colorValue & 0xFF0000) >> 16, (colorValue & 0x00FF00) >> 8, colorValue & 0x0000FF);
         return pixelColorString;
     }
 
@@ -391,8 +339,8 @@ public class TakesScreenshotTests : DriverTestFixture
         {
             try
             {
-                IWebElement frameElement = driver.FindElement(By.Id(frameId));
-                driver.SwitchTo().Frame(frameElement);
+                IWebElement frameElement = Driver.FindElement(By.Id(frameId));
+                Driver.SwitchTo().Frame(frameElement);
             }
             catch (Exception)
             {
@@ -409,7 +357,7 @@ public class TakesScreenshotTests : DriverTestFixture
         {
             try
             {
-                IWebElement element = driver.FindElement(By.Id(elementId));
+                IWebElement element = Driver.FindElement(By.Id(elementId));
                 return element.Displayed;
             }
             catch (Exception)
@@ -421,6 +369,6 @@ public class TakesScreenshotTests : DriverTestFixture
 
     private Func<bool> TitleToBe(string desiredTitle)
     {
-        return () => driver.Title == desiredTitle;
+        return () => Driver.Title == desiredTitle;
     }
 }

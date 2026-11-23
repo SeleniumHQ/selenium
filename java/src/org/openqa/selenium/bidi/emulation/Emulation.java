@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class Emulation {
   private final HasBiDi driver;
 

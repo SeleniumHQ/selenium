@@ -119,11 +119,10 @@ public class EventBusCommand extends TemplateGridCommand {
               synchronized (pending) {
                 // Concurrent health checks might influence each other, we can ignore this.
                 // We only want to see any event is delivered to tell the bus is healthy.
-                pending.removeIf(
-                    latch -> {
-                      latch.countDown();
-                      return true;
-                    });
+                pending.removeIf(latch -> {
+                  latch.countDown();
+                  return true;
+                });
               }
             }));
 
@@ -131,29 +130,28 @@ public class EventBusCommand extends TemplateGridCommand {
         serverOptions,
         Route.combine(
             Route.get("/status")
-                .to(
-                    () ->
-                        req -> {
-                          CountDownLatch latch = new CountDownLatch(1);
+                .to(() ->
+                    req -> {
+                      CountDownLatch latch = new CountDownLatch(1);
 
-                          synchronized (pending) {
-                            pending.add(latch);
-                          }
+                      synchronized (pending) {
+                        pending.add(latch);
+                      }
 
-                          bus.fire(new Event(healthCheck, "ping"));
+                      bus.fire(new Event(healthCheck, "ping"));
 
-                          try {
-                            if (latch.await(5, TimeUnit.SECONDS)) {
-                              return httpResponse(true, "Event bus running");
-                            } else {
-                              return httpResponse(
-                                  false, "Event bus could not deliver a test message in 5 seconds");
-                            }
-                          } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                            return httpResponse(false, "Status checking was interrupted");
-                          }
-                        }),
+                      try {
+                        if (latch.await(5, TimeUnit.SECONDS)) {
+                          return httpResponse(true, "Event bus running");
+                        } else {
+                          return httpResponse(
+                              false, "Event bus could not deliver a test message in 5 seconds");
+                        }
+                      } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return httpResponse(false, "Status checking was interrupted");
+                      }
+                    }),
             Route.get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)))) {
 
       @Override
@@ -173,14 +171,13 @@ public class EventBusCommand extends TemplateGridCommand {
 
     config
         .get("server", "max-threads")
-        .ifPresent(
-            value ->
-                LOG.log(
-                    Level.WARNING,
-                    () ->
-                        "Support for max-threads flag is deprecated. The intent of the flag is to"
-                            + " set the thread pool size in the Distributor. Please use"
-                            + " newsession-threadpool-size flag instead."));
+        .ifPresent(value ->
+            LOG.log(
+                Level.WARNING,
+                () ->
+                    "Support for max-threads flag is deprecated. The intent of the flag is to"
+                        + " set the thread pool size in the Distributor. Please use"
+                        + " newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config);
     server.start();

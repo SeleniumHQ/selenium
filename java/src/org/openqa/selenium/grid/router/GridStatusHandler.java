@@ -50,12 +50,11 @@ import org.openqa.selenium.remote.tracing.Tracer;
 class GridStatusHandler implements HttpHandler {
 
   private static final ExecutorService EXECUTOR_SERVICE =
-      Executors.newCachedThreadPool(
-          r -> {
-            Thread thread = new Thread(r, "Grid status executor");
-            thread.setDaemon(true);
-            return thread;
-          });
+      Executors.newCachedThreadPool(r -> {
+        Thread thread = new Thread(r, "Grid status executor");
+        thread.setDaemon(true);
+        return thread;
+      });
 
   private final Tracer tracer;
   private final Distributor distributor;
@@ -129,9 +128,8 @@ class GridStatusHandler implements HttpHandler {
 
       boolean ready =
           status.getNodes().stream()
-              .anyMatch(
-                  nodeStatus ->
-                      UP.equals(nodeStatus.getAvailability()) && nodeStatus.hasCapacity());
+              .anyMatch(nodeStatus ->
+                  UP.equals(nodeStatus.getAvailability()) && nodeStatus.hasCapacity());
 
       List<Map<String, Object>> nodeResults =
           status.getNodes().stream().map(node -> nodeAsMap(node)).collect(toList());

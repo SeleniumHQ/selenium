@@ -19,31 +19,18 @@ package org.openqa.selenium.remote;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 
 public class Response {
 
   private volatile @Nullable Object value;
   private volatile @Nullable String sessionId;
-  @Deprecated // (forRemoval = true)
-  private volatile @Nullable Integer status;
   private volatile @Nullable String state;
 
   public Response() {}
 
   public Response(SessionId sessionId) {
     this.sessionId = String.valueOf(sessionId);
-  }
-
-  @Deprecated // (forRemoval = true)
-  public @Nullable Integer getStatus() {
-    return status;
-  }
-
-  @Deprecated // (forRemoval = true)
-  public void setStatus(@Nullable Integer status) {
-    this.status = status;
   }
 
   public @Nullable String getState() {
@@ -73,8 +60,7 @@ public class Response {
   @Override
   public String toString() {
     return String.format(
-        "(Response: SessionID: %s, Status: %s, State: %s, Value: %s)",
-        getSessionId(), getStatus(), getState(), getValue());
+        "(Response: SessionID: %s, State: %s, Value: %s)", getSessionId(), getState(), getValue());
   }
 
   @Override
@@ -86,42 +72,33 @@ public class Response {
     Response that = (Response) o;
     return Objects.equals(value, that.value)
         && Objects.equals(sessionId, that.sessionId)
-        && Objects.equals(status, that.status)
         && Objects.equals(state, that.state);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(value, sessionId, status, state);
+    return Objects.hash(value, sessionId, state);
   }
 
   private static Response fromJson(Map<String, Object> json) {
-    ErrorCodes errorCodes = new ErrorCodes();
     Response response = new Response();
 
     if (json.get("error") instanceof String) {
-      String state = (String) json.get("error");
-      response.setState(state);
-      response.setStatus(errorCodes.toStatus(state, Optional.empty()));
+      response.setState((String) json.get("error"));
       response.setValue(json.get("message"));
     }
 
     if (json.get("state") instanceof String) {
-      String state = (String) json.get("state");
-      response.setState(state);
-      response.setStatus(errorCodes.toStatus(state, Optional.empty()));
+      response.setState((String) json.get("state"));
     }
 
     if (json.get("status") != null) {
       Object status = json.get("status");
       if (status instanceof String) {
-        String state = (String) status;
-        response.setState(state);
-        response.setStatus(errorCodes.toStatus(state, Optional.empty()));
+        response.setState((String) status);
       } else {
-        int intStatus = ((Number) status).intValue();
-        response.setState(errorCodes.toState(intStatus));
-        response.setStatus(intStatus);
+        // JSON Wire payloads carry an integer status; read it, but only as the W3C state.
+        response.setState(new ErrorCodes().toState(((Number) status).intValue()));
       }
     }
 

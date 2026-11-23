@@ -28,9 +28,11 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +46,7 @@ import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
@@ -64,7 +67,9 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @AfterEach
   final void resetDownloadBehavior() {
-    browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
+    if (browser != null) {
+      browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null));
+    }
   }
 
   @AfterEach
@@ -143,7 +148,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
     driver.findElement(By.id("file-1")).click();
 
-    assertFileIsDownloaded("file_1.txt");
+    assertFileIsDownloaded("file_1.*\\.txt");
   }
 
   @Test
@@ -167,6 +172,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
+  @CloseExtraWindowsAfterTest
   void canSetDownloadBehaviorWithUserContext() throws InterruptedException {
     String userContext = browser.createUserContext();
 
@@ -187,7 +193,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
         driver.findElement(By.id("file-1")).click();
 
-        assertFileIsDownloaded("file_1.txt");
+        assertFileIsDownloaded("file_1.*\\.txt");
 
         List<String> initialFiles = files(tmpDir);
         assertThat(initialFiles).contains("file_1.txt");
@@ -209,17 +215,17 @@ class BrowserCommandsTest extends JupiterTestBase {
     }
   }
 
-  private void assertFileIsDownloaded(String file) {
-    FileIsFound fileIsFound = new FileIsFound(tmpDir, file);
+  private void assertFileIsDownloaded(String filenameRegex) {
+    FileIsFound fileIsFound = new FileIsFound(tmpDir, Pattern.compile(filenameRegex));
     new WebDriverWait(driver, ofSeconds(5)).withMessage(fileIsFound).until(fileIsFound);
   }
 
   private static final class FileIsFound implements Function<WebDriver, Boolean>, Supplier<String> {
     private final Path dir;
-    private final String expectedFileName;
+    private final Pattern expectedFileName;
     private List<String> foundFiles;
 
-    private FileIsFound(Path dir, String expectedFileName) {
+    private FileIsFound(Path dir, Pattern expectedFileName) {
       this.dir = dir;
       this.expectedFileName = expectedFileName;
     }
@@ -227,27 +233,26 @@ class BrowserCommandsTest extends JupiterTestBase {
     @Override
     public Boolean apply(WebDriver driver) {
       foundFiles = files(dir);
-      boolean result = foundFiles.contains(expectedFileName);
-      if (result) {
-        LOG.info(
-            () ->
-                "Found file: "
-                    + expectedFileName
-                    + " in temp dir: "
-                    + dir.toAbsolutePath()
-                    + ". All found files: "
-                    + foundFiles);
+      Optional<String> result =
+          foundFiles.stream().filter(f -> expectedFileName.matcher(f).matches()).findAny();
+      if (result.isPresent()) {
+        LOG.info(() ->
+            "Found file: "
+                + result.get()
+                + " in temp dir: "
+                + dir.toAbsolutePath()
+                + ". All found files: "
+                + foundFiles);
       } else {
-        LOG.info(
-            () ->
-                "Not found file: "
-                    + expectedFileName
-                    + " in temp dir: "
-                    + dir.toAbsolutePath()
-                    + ". All found files: "
-                    + foundFiles);
+        LOG.info(() ->
+            "Not found file: "
+                + expectedFileName
+                + " in temp dir: "
+                + dir.toAbsolutePath()
+                + ". All found files: "
+                + foundFiles);
       }
-      return result;
+      return result.isPresent();
     }
 
     @Override
@@ -258,9 +263,17 @@ class BrowserCommandsTest extends JupiterTestBase {
     }
   }
 
+  private static final Pattern IN_PROGRESS_DOWNLOAD = Pattern.compile(".*\\.(part|crdownload)");
+
   private static List<String> files(Path dir) {
     try (Stream<Path> files = Files.list(dir)) {
-      return files.map(path -> path.getFileName().toString()).collect(toList());
+      // Browsers stage downloads under a temporary name and rename on completion. Those temps
+      // appear and disappear on their own schedule, so including them makes any comparison of
+      // two directory listings depend on timing.
+      return files
+          .map(path -> path.getFileName().toString())
+          .filter(name -> !IN_PROGRESS_DOWNLOAD.matcher(name).matches())
+          .collect(toList());
     } catch (IOException e) {
       throw new UncheckedIOException("Failed to check files in " + dir, e);
     }

@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public enum ScreenOrientationType {
   PORTRAIT_PRIMARY("portrait-primary"),
   PORTRAIT_SECONDARY("portrait-secondary"),
