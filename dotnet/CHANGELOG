@@ -1,3 +1,12 @@
+v4.54.0
+======
+* Support CDP versions: v156, v157, v158
+* [bidi] Add missing userContexts in Subscribe command (#18330)
+* [build] Automated Browser Version Update (major) with CDP (#18338)
+* Let Firefox choose the BiDi websocket port (#18351)
+* add --diagnose to safaridriver when SE_DEBUG is set (#18356)
+* Escape frame ids that are not valid CSS identifiers (#18315)
+
 v4.53.0
 ======
 * Support CDP versions: v155, v156, v157
