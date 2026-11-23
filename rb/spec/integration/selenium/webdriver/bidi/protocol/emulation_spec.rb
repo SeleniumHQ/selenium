@@ -28,7 +28,7 @@ module Selenium
                  skip_if: {browser_family: :safari,
                            reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
+          after { |example| quit_driver unless example.skipped? }
 
           let(:emulation) { described_class.new(driver) }
           let(:script) { Script.new(driver) }

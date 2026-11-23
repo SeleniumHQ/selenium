@@ -29,18 +29,17 @@ module Selenium
       ]
 
       it 'creates default capabilities', skip_if: {browser_family: :safari} do
-        reset_driver! do |driver|
-          caps = driver.capabilities
-          expect(caps.proxy).to be_nil
-          expect(caps.browser_version).to match(/^\d\d\d?\./)
-          expect(caps.platform_name).not_to be_nil
+        driver = local_driver
+        caps = driver.capabilities
+        expect(caps.proxy).to be_nil
+        expect(caps.browser_version).to match(/^\d\d\d?\./)
+        expect(caps.platform_name).not_to be_nil
 
-          expect(caps.accept_insecure_certs).to eq(caps.browser_name == 'firefox')
-          expect(caps.page_load_strategy).to eq 'normal'
-          expect(caps.implicit_timeout).to be_zero
-          expect(caps.page_load_timeout).to eq 300000
-          expect(caps.script_timeout).to eq 30000
-        end
+        expect(caps.accept_insecure_certs).to eq(caps.browser_name == 'firefox')
+        expect(caps.page_load_strategy).to eq 'normal'
+        expect(caps.implicit_timeout).to be_zero
+        expect(caps.page_load_timeout).to eq 300000
+        expect(caps.script_timeout).to eq 30000
       end
 
       it 'gets driver status' do
@@ -367,7 +366,7 @@ module Selenium
               skip_unless: {bidi: true, reason: 'extensions install over the webExtension BiDi command'} do
         let(:extensions) { '../../../../../common/extensions/' }
 
-        after { |example| reset_driver!(example: example) }
+        after { |example| quit_driver unless example.skipped? }
 
         describe '#install_web_extension' do
           it 'installs an unpacked directory on any browser' do

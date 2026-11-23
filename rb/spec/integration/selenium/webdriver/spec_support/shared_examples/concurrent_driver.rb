@@ -21,20 +21,13 @@ shared_examples_for 'driver that can be started concurrently' do |guard|
   let(:drivers) { [] }
   let(:threads) { [] }
 
-  before { quit_driver }
-
-  after do |example|
-    skip if example.metadata[:skip]
-    drivers.each(&:quit)
-    threads.select(&:alive?).each(&:kill)
-    create_driver!
-  end
+  after { threads.select(&:alive?).each(&:kill) }
 
   it 'starts multiple drivers sequentially', guard do
     expected_count = WebDriver::Platform.ci ? 2 : 4
     expected_count.times do
       thread = Thread.new do
-        drivers << create_driver!
+        drivers << local_driver
       end
       thread.report_on_exception = false
       threads << thread
