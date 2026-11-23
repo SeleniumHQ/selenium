@@ -43,10 +43,9 @@ module Selenium
 
           describe '.new' do
             it 'errors when bidi not enabled' do
-              reset_driver!(web_socket_url: false) do |driver|
-                msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
-                expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
-              end
+              driver = local_driver(web_socket_url: false)
+              msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
+              expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
             end
           end
 
