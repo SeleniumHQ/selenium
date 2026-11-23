@@ -40,6 +40,7 @@ module Selenium
             @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
             # Reuse the BiDi object's socket as the connection until the bridge owns it directly.
             @connection = @bidi.ws
+            @current_window = window_handle
           rescue StandardError
             quit
             raise
@@ -57,23 +58,31 @@ module Selenium
         end
 
         def get(url)
-          browsing_context.navigate(context: window_handle, url: url, wait: readiness_state)
+          browsing_context.navigate(context: @current_window, url: url, wait: readiness_state)
           nil
+        rescue Error::NoSuchFrameError => e
+          raise Error::NoSuchWindowError, e.message
         end
 
         def go_back
-          browsing_context.traverse_history(context: window_handle, delta: -1)
+          browsing_context.traverse_history(context: @current_window, delta: -1)
           nil
+        rescue Error::NoSuchFrameError => e
+          raise Error::NoSuchWindowError, e.message
         end
 
         def go_forward
-          browsing_context.traverse_history(context: window_handle, delta: 1)
+          browsing_context.traverse_history(context: @current_window, delta: 1)
           nil
+        rescue Error::NoSuchFrameError => e
+          raise Error::NoSuchWindowError, e.message
         end
 
         def refresh
-          browsing_context.reload(context: window_handle, wait: readiness_state)
+          browsing_context.reload(context: @current_window, wait: readiness_state)
           nil
+        rescue Error::NoSuchFrameError => e
+          raise Error::NoSuchWindowError, e.message
         end
 
         def quit
@@ -86,6 +95,10 @@ module Selenium
 
         def close
           execute(:close_window).tap { |handles| bidi.close if handles.empty? }
+        end
+
+        def switch_to_window(name)
+          super.tap { @current_window = name }
         end
 
         private
