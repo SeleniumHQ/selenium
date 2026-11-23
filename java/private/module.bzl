@@ -15,6 +15,7 @@ JavaModuleInfo = provider(
     fields = {
         "name": "Name of the module.",
         "module_path": "depset of jars to include on the module path",
+        "release_jar": "The jar to publish and distribute: the module jar plus any `release_jars`.",
     },
 )
 
@@ -142,6 +143,21 @@ def _java_module_impl(ctx):
         arguments = [args],
     )
 
+    release_jar = module_jar
+    if ctx.files.release_jars:
+        release_jar = ctx.actions.declare_file("lib%s-release.jar" % ctx.attr.name)
+        args = ctx.actions.args()
+        args.add_all([module_jar] + ctx.files.release_jars, before_each = "--sources")
+        args.add_all(["--output", release_jar])
+
+        ctx.actions.run(
+            mnemonic = "MergeReleaseJar",
+            executable = ctx.executable._merge_jars,
+            outputs = [release_jar],
+            inputs = [module_jar] + ctx.files.release_jars,
+            arguments = [args],
+        )
+
     # Generate the ijar
     compile_jar = java_common.run_ijar(
         actions = ctx.actions,
@@ -176,9 +192,11 @@ def _java_module_impl(ctx):
         JavaModuleInfo(
             name = name,
             module_path = depset(direct = [module_jar], transitive = [info.module_path for info in all_infos]),
+            release_jar = release_jar,
         ),
         OutputGroupInfo(
             module_jar = [module_jar],
+            release_jar = [release_jar],
             module_source = [src_jar],
             _source_jars = [src_jar],
         ),
@@ -220,6 +238,12 @@ java_module = rule(
         ),
         "opens_to": attr.string_list(
             doc = "List of modules this module is open to",
+            default = [],
+        ),
+        "release_jars": attr.label_list(
+            doc = "Jars merged only into the published and distributed jar, so stamped content " +
+                  "doesn't change the module jar that dependents build against",
+            allow_files = [".jar"],
             default = [],
         ),
         "uses": attr.string_list(

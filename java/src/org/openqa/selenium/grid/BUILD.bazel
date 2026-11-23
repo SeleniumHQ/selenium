@@ -210,7 +210,7 @@ java_binary(
 
 copy_file(
     name = "server-binary",
-    src = ":selenium_server_deploy.jar",
+    src = ":add-build-info",
     out = "selenium-server-%s.jar" % SE_VERSION,
 )
 
