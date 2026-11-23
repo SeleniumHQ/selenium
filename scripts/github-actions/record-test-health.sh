@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Parse the Bazel console log into one record per test target that actually ran,
-# so the weekly report has both halves of a flake rate: how often a target ran,
+# so the test health report knows how often a target ran, how often it failed,
 # and how often it only passed because it was retried.
 #
 # Two ways a test shows up as flaky:
@@ -12,10 +12,10 @@
 
 set -euo pipefail
 
-FAILURES=build/failures
-RESULTS="$FAILURES/results.tsv"
+OUT=build/test-health
+RESULTS="$OUT/results.tsv"
 
-mkdir -p "$FAILURES"
+mkdir -p "$OUT"
 : > "$RESULTS"
 
 [ -f build/bazel-console.log ] || exit 0
@@ -46,8 +46,8 @@ awk -v out="$RESULTS" '
 if [ -f build/bazel-console2.log ]; then
   awk '{ gsub(/\033\[[0-9;]*m/, "") }
        $1 ~ /^\/\// && $2 == "PASSED" && $3 == "in" { print $1 }' build/bazel-console2.log \
-    | sort -u > "$FAILURES/_recovered.txt"
-  awk -F'\t' -v recovered="$FAILURES/_recovered.txt" '
+    | sort -u > "$OUT/_recovered.txt"
+  awk -F'\t' -v recovered="$OUT/_recovered.txt" '
     BEGIN { while ((getline t < recovered) > 0) { recover[t] = 1 } }
     $1 in recover { print $1 "\trerun-recovered\t" $3 "\t" ($4 + 1); next }
     { print }
@@ -74,7 +74,7 @@ jq -Rc \
    | { target: .[0], status: .[1], failed: (.[2] | tonumber), attempts: (.[3] | tonumber),
        os: $os, timestamp: $timestamp }
    | if .status == "passed" then . else . + { run: $run, job: $job } end' \
-  "$RESULTS" > "$FAILURES/results.jsonl"
+  "$RESULTS" > "$OUT/results.jsonl"
 
 echo "results=true" >> "${GITHUB_OUTPUT:-/dev/null}"
 echo "Recorded $(wc -l < "$RESULTS" | tr -d ' ') test results"

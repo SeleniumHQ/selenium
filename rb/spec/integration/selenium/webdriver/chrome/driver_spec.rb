@@ -56,13 +56,9 @@ module Selenium
 
           describe 'PrintsPage' do
             before(:all) { @headless = ENV.delete('HEADLESS') }
-            before { reset_driver!(args: ['--headless']) }
+            after(:all) { ENV['HEADLESS'] = @headless }
 
-            after(:all) do
-              quit_driver
-              ENV['HEADLESS'] = @headless
-            end
-
+            let(:driver) { local_driver(args: ['--headless']) }
             let(:magic_number) { 'JVBER' }
 
             it 'returns base64 for print command' do
@@ -92,14 +88,9 @@ module Selenium
           end
 
           describe '#logs' do
-            before do
-              reset_driver!(logging_prefs: {browser: 'ALL',
-                                            driver: 'ALL',
-                                            performance: 'ALL'})
-              driver.navigate.to url_for('errors.html')
-            end
+            let(:driver) { local_driver(logging_prefs: {browser: 'ALL', driver: 'ALL', performance: 'ALL'}) }
 
-            after(:all) { reset_driver! }
+            before { driver.navigate.to url_for('errors.html') }
 
             it 'can fetch available log types' do
               expect(driver.logs.available_types).to include(:performance, :browser, :driver)
@@ -139,7 +130,7 @@ module Selenium
             expect { driver.network_conditions }.to raise_error(Error::UnknownError, error)
 
             # Need to reset because https://bugs.chromium.org/p/chromedriver/issues/detail?id=4790
-            reset_driver!
+            quit_driver
           end
 
           # This requires cast sinks to run
@@ -172,7 +163,7 @@ module Selenium
             expect(get_permission('clipboard-read')).to eq('denied')
             expect(get_permission('clipboard-write')).to eq('prompt')
 
-            reset_driver!
+            quit_driver
           end
 
           it 'can set multiple permissions' do

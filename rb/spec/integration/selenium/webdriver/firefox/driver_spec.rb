@@ -64,16 +64,15 @@ module Selenium
           it 'can get and set context',
              skip_if: {driver: :remote, reason: 'system access cannot be granted per-session on Grid'} do
             service = WebDriver::Service.firefox(args: ['--allow-system-access'])
-            reset_driver!(service: service, prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
-              expect(driver.context).to eq 'content'
+            driver = local_driver(service: service, prefs: {'browser.download.dir': 'foo/bar'})
+            expect(driver.context).to eq 'content'
 
-              driver.context = 'chrome'
-              expect(driver.context).to eq 'chrome'
+            driver.context = 'chrome'
+            expect(driver.context).to eq 'chrome'
 
-              # This call can not be made when context is set to 'content'
-              dir = driver.execute_script("return Services.prefs.getStringPref('browser.download.dir')")
-              expect(dir).to eq 'foo/bar'
-            end
+            # This call can not be made when context is set to 'content'
+            dir = driver.execute_script("return Services.prefs.getStringPref('browser.download.dir')")
+            expect(dir).to eq 'foo/bar'
           end
         end
 
@@ -186,27 +185,25 @@ module Selenium
             let(:ext) { File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__) }
 
             it 'runs in a private window when allowed' do
-              reset_driver!(args: ['-private-window']) do |driver|
-                driver.install_web_extension(ext, allow_private_browsing: true)
-                driver.navigate.to url_for('blank.html')
+              driver = local_driver(args: ['-private-window'])
+              driver.install_web_extension(ext, allow_private_browsing: true)
+              driver.navigate.to url_for('blank.html')
 
-                injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
-                expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
-              end
+              injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
+              expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
             end
 
             it 'does not run in a private window when disabled' do
-              reset_driver!(args: ['-private-window']) do |driver|
-                driver.install_web_extension(ext, allow_private_browsing: false)
-                driver.navigate.to url_for('blank.html')
-                expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
-              end
+              driver = local_driver(args: ['-private-window'])
+              driver.install_web_extension(ext, allow_private_browsing: false)
+              driver.navigate.to url_for('blank.html')
+              expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
             end
           end
         end
 
         describe '#install_web_extension', skip_unless: {bidi: true, reason: 'moz webExtension BiDi command'} do
-          after { |example| reset_driver!(example: example) }
+          after { |example| quit_driver unless example.skipped? }
 
           it 'installs and removes an xpi file' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
@@ -248,22 +245,20 @@ module Selenium
             let(:ext) { File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__) }
 
             it 'runs in a private window when allowed' do
-              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
-                driver.install_web_extension(ext, allow_private_browsing: true)
-                driver.navigate.to url_for('blank.html')
+              driver = local_driver(prefs: {'browser.privatebrowsing.autostart': true})
+              driver.install_web_extension(ext, allow_private_browsing: true)
+              driver.navigate.to url_for('blank.html')
 
-                injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
-                expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
-              end
+              injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
+              expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
             end
 
             it 'does not run in a private window by default' do
-              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
-                driver.install_web_extension(ext)
-                driver.navigate.to url_for('blank.html')
+              driver = local_driver(prefs: {'browser.privatebrowsing.autostart': true})
+              driver.install_web_extension(ext)
+              driver.navigate.to url_for('blank.html')
 
-                expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
-              end
+              expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
             end
           end
         end

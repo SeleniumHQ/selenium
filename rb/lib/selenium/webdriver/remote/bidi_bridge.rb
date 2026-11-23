@@ -23,6 +23,7 @@ require 'selenium/webdriver/bidi/protocol'
 module Selenium
   module WebDriver
     module Remote
+      # @api private
       class BiDiBridge < Bridge
         attr_reader :bidi, :connection
 

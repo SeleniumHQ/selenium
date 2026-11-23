@@ -21,7 +21,7 @@ permissions:
   packages: read
 
 # Two tiers, mutually exclusive by content. `smoke` runs on every event, including
-# schedule, so the schedule-only flaky parser sees it. The full jobs run on schedule
+# schedule, so the schedule-only test health recording sees it. The full jobs run on schedule
 # or dispatch and exclude the smoke tags, so they are the nightly complement of
 # smoke rather than the whole tree.
 jobs:

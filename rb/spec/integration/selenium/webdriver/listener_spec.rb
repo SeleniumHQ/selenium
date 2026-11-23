@@ -22,11 +22,9 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
-      before { quit_driver }
-
       it 'supports listener' do
         expect {
-          create_driver!(listener: Selenium::WebDriver::Support::AbstractEventListener.new) { nil }
+          local_driver(listener: Selenium::WebDriver::Support::AbstractEventListener.new)
         }.not_to raise_exception
       end
     end

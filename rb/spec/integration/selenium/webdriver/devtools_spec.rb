@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     describe DevTools, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'},
                                      {browser_family: :chromium}] do
-      after { |example| reset_driver!(example: example) }
+      after { |example| quit_driver unless example.skipped? }
 
       it 'sends commands' do
         driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))

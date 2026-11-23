@@ -25,16 +25,12 @@ module Selenium
           GlobalTestEnv.driver_instance
         end
 
-        def reset_driver!(...)
-          GlobalTestEnv.reset_driver!(...)
-        end
-
         def quit_driver
           GlobalTestEnv.quit_driver
         end
 
-        def create_driver!(...)
-          GlobalTestEnv.create_driver!(...)
+        def local_driver(...)
+          GlobalTestEnv.local_driver(...)
         end
 
         def url_for(filename, secure: false)

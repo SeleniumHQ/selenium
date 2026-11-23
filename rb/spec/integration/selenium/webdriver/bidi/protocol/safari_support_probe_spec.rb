@@ -31,7 +31,7 @@ module Selenium
         # probe passes, raising PendingExampleFixedError so we drop skip_if(:safari) in the named spec.
         describe 'Safari BiDi support probes',
                  skip_unless: {bidi: true, browser_family: :safari, reason: 'probes only run on Safari'} do
-          after { |example| reset_driver!(example: example) }
+          after { |example| quit_driver unless example.skipped? }
 
           it 'bluetooth is unimplemented on Safari',
              pending_if: {browser_family: :safari, exception: {class: Error::UnknownCommandError},

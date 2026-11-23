@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Aggregate the results.jsonl artifacts written by parse-flaky-results.sh.
+# Aggregate the results.jsonl artifacts written by record-test-health.sh.
 #
 # Flaky means a target failed and then passed within the same run, either on a
 # retry or in the debug rerun. Every job feeding this report has the rerun, so a
@@ -31,6 +31,7 @@ HISTORY_DAYS=14
 FAILING_RUNS=2
 BROWSER_SUFFIX='-(chrome|firefox|edge|safari)(-beta|-preview)?(-remote|-bidi)?(-alerts)?$'
 REPO="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY must be set}"
+RUNS_URL="${GITHUB_SERVER_URL:-https://github.com}/$REPO/actions/runs"
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
@@ -48,23 +49,25 @@ history_start=$(days_ago "$((HISTORY_DAYS + 1))" %Y-%m-%dT%H:%M:%SZ)
 # other run falls back to the artifacts its jobs uploaded. That covers a workflow
 # with a single test job, which has nothing to merge, and a run whose merge job
 # failed. Fetch a day of slack and let the record timestamps do the windowing.
+# The flaky-* names predate the rename to test-health-*; drop them once those
+# artifacts are older than the window.
 fetch_from=$(days_ago "$((WINDOW_DAYS + 1))" %Y-%m-%dT%H:%M:%SZ)
 echo "Collecting results created since $fetch_from"
 gh api "repos/$REPO/actions/artifacts" --paginate \
   --jq '.artifacts[] | select(.expired == false)
-        | select((.name | startswith("flaky-")) or (.name | startswith("merged-flaky-results-")))
+        | select(.name | test("^(merged-)?(test-health|flaky)-"))
         | [.id, .created_at, .workflow_run.id, .name] | @tsv' \
   > "$WORK/artifacts.tsv"
 
 awk -F'\t' -v from="$fetch_from" '
   $2 > from {
     row[++n] = $0
-    if ($4 ~ /^merged-flaky-results-/) merged[$3] = 1
+    if ($4 ~ /^merged-(test-health|flaky)-/) merged[$3] = 1
   }
   END {
     for (i = 1; i <= n; i++) {
       split(row[i], f, "\t")
-      if (f[4] ~ /^merged-flaky-results-/ || !(f[3] in merged)) print f[1]
+      if (f[4] ~ /^merged-(test-health|flaky)-/ || !(f[3] in merged)) print f[1]
     }
   }' "$WORK/artifacts.tsv" > "$WORK/wanted.txt"
 
@@ -92,12 +95,13 @@ jq -s --arg lastDay "$last_day_start" --arg history "$history_start" --arg suffi
            targets: (map(.target) | unique)})
 ' "$WORK/all.jsonl" > "$WORK/flagged.json"
 
-jq -s --arg recent "$recent_start" --arg window "$window_start" --slurpfile flagged "$WORK/flagged.json" '
+jq -s --arg recent "$recent_start" --arg window "$window_start" --arg runs "$RUNS_URL" --slurpfile flagged "$WORK/flagged.json" '
   [$flagged[0][] | .os as $os | .targets[] | "\(.)|\($os)"] as $flaggedTargets
   | map(select(.timestamp >= $window))
   | group_by([.target, .os])
   | map(
-      [.[] | select(.status | endswith("-recovered")) | .timestamp] as $flakes
+      [.[] | select(.status | endswith("-recovered"))] as $flakes
+      | ($flakes | max_by(.timestamp)) as $lastFlake
       | {
           target: .[0].target,
           os: .[0].os,
@@ -105,9 +109,10 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --slurpfile flag
           flaked: ($flakes | length),
           reruns: ([.[] | select(.status == "rerun-recovered")] | length),
           failed: ([.[] | select(.status == "failed")] | length),
-          last: ($flakes | max),
+          last: $lastFlake.timestamp,
+          lastJob: "\($runs)/\($lastFlake.run)/job/\($lastFlake.job)",
           # Every flake it has is recent, so it started this week.
-          new: (($flakes | min // "9999") >= $recent)
+          new: (($flakes | map(.timestamp) | min // "9999") >= $recent)
         }
       | . + {rate: (.flaked * 100 / .ran), flagged: ("\(.target)|\(.os)" | IN($flaggedTargets[]))})
   | map(select(.flaked > 0))
@@ -116,21 +121,52 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --slurpfile flag
 
 # The latest run must be recent so a target dropped from the schedule while
 # failing is not reported for the rest of the window.
-jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson failingRuns "$FAILING_RUNS" '
+jq -s --arg recent "$recent_start" --arg window "$window_start" --arg runs "$RUNS_URL" --argjson failingRuns "$FAILING_RUNS" '
   map(select(.timestamp >= $window))
   | group_by([.target, .os])
   | map(
       sort_by(.timestamp)
+      | [.[] | select(.status == "failed")][-1] as $lastFailure
       | {
           target: .[0].target,
           os: .[0].os,
           streak: ([.[].status == "failed"] | reverse | index(false) // length),
           lastRan: .[-1].timestamp,
+          lastFailed: $lastFailure.timestamp,
+          lastFailedJob: "\($runs)/\($lastFailure.run)/job/\($lastFailure.job)",
           lastPassed: ([.[] | select(.status != "failed") | .timestamp] | max)
         })
   | map(select(.streak >= $failingRuns and .lastRan >= $recent))
   | sort_by(-.streak, .target)
 ' "$WORK/all.jsonl" > "$WORK/failing.json"
+
+# GitHub numbers a step's log lines from its "Run" header, so the count restarts there.
+test_output_anchor() {
+  local job="$1" target="$2" log="$WORK/logs/$1"
+  if [ ! -f "$log.step" ]; then
+    gh api "repos/$REPO/actions/jobs/$job" --jq '.steps[] | select(.name == "Run Bazel") | .number' > "$log.step" \
+      && gh api --allow-escape-sequences "repos/$REPO/actions/jobs/$job/logs" > "$log" \
+      || : > "$log"
+  fi
+  awk -v output="Test output for $target:" -v step="$(cat "$log.step")" '
+    /##\[group\]Run / { start = NR }
+    step != "" && index($0, output) { printf "#step:%d:%d", step, NR - start + 1; exit }
+  ' "$log"
+}
+
+add_anchors() {
+  local rows="$1" link="$2"
+  jq -r --arg link "$link" '.[] | "\(.[$link] | sub(".*/"; ""))\t\(.target)"' "$rows" \
+    | while IFS=$'\t' read -r job target; do test_output_anchor "$job" "$target" < /dev/null; echo; done \
+    | jq -nR --arg link "$link" --slurpfile rows "$rows" \
+        '[inputs] as $anchors | $rows[0] | to_entries | map(.value + {($link): (.value[$link] + $anchors[.key])})' \
+    > "$rows.tmp"
+  mv "$rows.tmp" "$rows"
+}
+
+mkdir -p "$WORK/logs"
+add_anchors "$WORK/report.json" lastJob
+add_anchors "$WORK/failing.json" lastFailedJob
 
 {
   echo "## Failing tests"
@@ -138,9 +174,9 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson failin
   echo "Failed every attempt, including the debug rerun, in at least their last $FAILING_RUNS runs."
   echo
   if jq -e 'length > 0' "$WORK/failing.json" > /dev/null; then
-    echo "| target | os | failed in a row | last passed |"
-    echo "|---|---|---|---|"
-    jq -r '.[] | "| `\(.target)` | \(.os) | \(.streak) | \(.lastPassed // "not in window") |"' "$WORK/failing.json"
+    echo "| target | os | failed in a row | last failed | last passed |"
+    echo "|---|---|---|---|---|"
+    jq -r '.[] | "| `\(.target)` | \(.os) | \(.streak) | [\(.lastFailed)](\(.lastFailedJob)) | \(.lastPassed // "not in window") |"' "$WORK/failing.json"
   else
     echo "None."
   fi
@@ -153,7 +189,7 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson failin
   echo
   echo "| target | os | flaked | needed rerun | failed | of runs | rate | flagged | new | last flaked |"
   echo "|---|---|---|---|---|---|---|---|---|---|"
-  jq -r '.[] | "| `\(.target)` | \(.os) | \(.flaked) | \(.reruns) | \(.failed) | \(.ran) | \(.rate | round)% | \(if .flagged then "yes" else "" end) | \(if .new then "yes" else "" end) | \(.last) |"' "$WORK/report.json"
+  jq -r '.[] | "| `\(.target)` | \(.os) | \(.flaked) | \(.reruns) | \(.failed) | \(.ran) | \(.rate | round)% | \(if .flagged then "yes" else "" end) | \(if .new then "yes" else "" end) | [\(.last)](\(.lastJob)) |"' "$WORK/report.json"
 } > "$WORK/report.md"
 
 # Every flaky target, whatever the thresholds say. The thresholds only decide

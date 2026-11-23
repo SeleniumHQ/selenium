@@ -21,6 +21,10 @@ module Selenium
     class WebSocketConnection
       include WebSocket
 
+      @event_receiver: BiDi::Dispatcher?
+
+      @event_receiver_mtx: Thread::Mutex
+
       @callback_threads: untyped
 
       @protocol: Symbol?
@@ -56,6 +60,8 @@ module Selenium
       MAX_FRAME_SIZE: Integer
 
       def initialize: (url: String) -> void
+
+      def event_receiver: () ?{ () -> BiDi::Dispatcher } -> BiDi::Dispatcher?
 
       def add_callback: (untyped event) { () -> void } -> Integer
 

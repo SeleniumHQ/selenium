@@ -756,6 +756,40 @@ module Selenium
             params = SetExtraHeadersParameters.new(headers: headers, contexts: contexts, user_contexts: user_contexts)
             execute(cmd: 'network.setExtraHeaders', params: params)
           end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-network-authRequired
+          def add_auth_required_listener(&block)
+            add_listener('network.authRequired', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def add_before_request_sent_listener(&block)
+            add_listener('network.beforeRequestSent', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-network-fetchError
+          def add_fetch_error_listener(&block)
+            add_listener('network.fetchError', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-network-responseCompleted
+          def add_response_completed_listener(&block)
+            add_listener('network.responseCompleted', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-network-responseStarted
+          def add_response_started_listener(&block)
+            add_listener('network.responseStarted', &block)
+          end
         end # Network
       end # Protocol
     end # BiDi

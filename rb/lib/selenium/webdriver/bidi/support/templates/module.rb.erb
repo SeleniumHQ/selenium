@@ -106,9 +106,7 @@ module Selenium
           EVENT_TYPES = {
             <%= mod.events.map(&:type_entry).join(",\n            ") %>
           }.freeze
-<%- if !mod.commands.empty? || !mod.accessors.empty? -%>
 
-<%- end -%>
 <%- end -%>
 <%- mod.accessors.each do |accessor| -%>
 <%- if accessor.vendor? -%>
@@ -127,6 +125,12 @@ module Selenium
 
 <%- end -%>
 <%= cmd.render_lines(10).join("\n") %>
+<%- end -%>
+<%- mod.events.each_with_index do |event, index| -%>
+<%- unless index.zero? && mod.commands.empty? && mod.accessors.empty? -%>
+
+<%- end -%>
+<%= event.render_lines(10).join("\n") %>
 <%- end -%>
 <%- mod.vendor_modules.each do |vendor_module| -%>
 
