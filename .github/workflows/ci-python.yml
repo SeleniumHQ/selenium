@@ -30,7 +30,10 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint (ruff)
-      run: bazel run //py:ruff-check -- --no-fix
+      run: |
+        ./go py:format
+        bazel run //py:ruff-check -- --no-fix
+        ./scripts/github-actions/check-format-diff.sh
 
   lint-mypy:
     name: Lint (mypy)

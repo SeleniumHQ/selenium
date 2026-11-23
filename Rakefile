@@ -163,6 +163,7 @@ task :lint do
   SeleniumRake.aggregate_errors(
     workflows: -> { Rake::Task['lint_workflows'].invoke },
     shell: -> { Rake::Task['lint_shell'].invoke },
+    rust: -> { Rake::Task['rust:lint'].invoke },
     all: -> { Rake::Task['all:lint'].invoke }
   )
 end

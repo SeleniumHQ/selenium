@@ -21,25 +21,20 @@ permissions:
   packages: read
 
 jobs:
+  # Each binding's workflow formats its own directory; this covers files no binding owns.
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Check Workflows and Shell
-      run: ./go lint_workflows && ./go lint_shell
-
-  format:
-    name: Format
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Check Format
+      name: Check Shared Files
       run: |
-        ./go format
-        if ! git diff --quiet; then
-          echo "::error::Code needs formatting. Run './go format' locally and push changes."
-          git diff
-          exit 1
-        fi
+        ./go lint_workflows
+        ./go lint_shell
+        bazel run //:buildifier
+        bazel run //scripts:update_copyright
+        bazel run //rb:rubocop-rake-tasks -- -a
+        bazel run //py:ruff-format
+        ./scripts/github-actions/check-format-diff.sh
 
   # Everything but the release PR holds its binding jobs while trunk is locked, so macOS runners stay free for the release.
   wait-for-unlock:
@@ -169,7 +164,7 @@ jobs:
   ci-success:
     name: CI Success
     if: always()
-    needs: [lint, format, targets, dotnet, java, python, ruby, rust, javascript]
+    needs: [lint, targets, dotnet, java, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

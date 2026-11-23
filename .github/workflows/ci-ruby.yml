@@ -34,7 +34,9 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
-      run: ./go rb:lint
+      run: |
+        ./go rb:lint
+        ./scripts/github-actions/check-format-diff.sh
 
   # Tests on 3.3.12 (earliest supported version) are run in smoke and RBE.
   # This job covers the latest supported version and alternate interpreters.
