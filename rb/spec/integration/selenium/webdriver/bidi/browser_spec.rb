@@ -23,8 +23,6 @@ module Selenium
   module WebDriver
     class BiDi
       describe Browser, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-        after { |example| quit_driver unless example.skipped? }
-
         let(:bidi) { driver.bidi }
 
         it 'creates a user context',
@@ -34,6 +32,8 @@ module Selenium
           user_context = browser.create_user_context
           expect(user_context).not_to be_nil
           expect(user_context['userContext']).to be_a String
+        ensure
+          browser.remove_user_context(user_context['userContext']) if user_context
         end
 
         it 'gets user contexts',
@@ -44,6 +44,8 @@ module Selenium
           all_context_ids = browser.user_contexts['userContexts'].map { |c| c['userContext'] }
 
           expect(all_context_ids).to include(created_context_id)
+        ensure
+          browser.remove_user_context(created_context_id) if created_context_id
         end
 
         it 'removes an user context' do

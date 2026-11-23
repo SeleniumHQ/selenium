@@ -28,8 +28,6 @@ module Selenium
                  skip_if: {browser_family: :safari,
                            reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| quit_driver unless example.skipped? }
-
           let(:permissions) { described_class.new(driver) }
           let(:script) { Script.new(driver) }
           let(:browsing_context) { BrowsingContext.new(driver) }
@@ -57,14 +55,21 @@ module Selenium
           describe '#set_permission' do
             it 'sets geolocation permission to granted' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
+              permission_origin = origin
 
               permissions.set_permission(
                 descriptor: Permissions::PermissionDescriptor.new(name: 'geolocation'),
                 state: :granted,
-                origin: origin
+                origin: permission_origin
               )
 
               expect(geolocation_permission).to eq('granted')
+            ensure
+              if permission_origin
+                permissions.set_permission(descriptor: Permissions::PermissionDescriptor.new(name: 'geolocation'),
+                                           state: :prompt,
+                                           origin: permission_origin)
+              end
             end
 
             it 'accepts embedded origin and user context parameters' do

@@ -23,8 +23,6 @@ module Selenium
   module WebDriver
     describe DevTools, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'},
                                      {browser_family: :chromium}] do
-      after { |example| quit_driver unless example.skipped? }
-
       it 'sends commands' do
         driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
         expect(driver.title).to eq('XHTML Test Page')
@@ -36,21 +34,25 @@ module Selenium
         expect(driver.devtools.dom_debugger).not_to be_nil
       end
 
-      it 'supports events' do
-        expect { |block|
-          driver.devtools.page.enable
-          driver.devtools.page.on(:load_event_fired, &block)
-          driver.navigate.to url_for('xhtmlTest.html')
-          sleep 0.5
-        }.to yield_control
-      end
+      context 'with DevTools event callbacks' do
+        after { |example| quit_driver unless example.skipped? }
 
-      it 'logs errors in events' do
-        driver.devtools.page.enable
-        driver.devtools.page.on(:load_event_fired) { raise 'This is fine!' }
-        expect {
-          driver.navigate.to url_for('xhtmlTest.html')
-        }.to have_error(:ws, /This is fine!/)
+        it 'supports events' do
+          expect { |block|
+            driver.devtools.page.enable
+            driver.devtools.page.on(:load_event_fired, &block)
+            driver.navigate.to url_for('xhtmlTest.html')
+            sleep 0.5
+          }.to yield_control
+        end
+
+        it 'logs errors in events' do
+          driver.devtools.page.enable
+          driver.devtools.page.on(:load_event_fired) { raise 'This is fine!' }
+          expect {
+            driver.navigate.to url_for('xhtmlTest.html')
+          }.to have_error(:ws, /This is fine!/)
+        end
       end
 
       describe '#target' do
@@ -59,12 +61,16 @@ module Selenium
           expect(driver.devtools.target.get_target_info.dig('result', 'targetInfo', 'type')).to eq 'page'
         end
 
-        it 'target type is service_worker' do
-          driver.devtools.page.navigate(url: url_for('service_worker.html'))
-          wait_for_devtools_target(target_type: 'service_worker')
+        context 'with a service worker' do
+          after { |example| quit_driver unless example.skipped? }
 
-          target = driver.devtools(target_type: 'service_worker').target
-          expect(target.get_target_info.dig('result', 'targetInfo', 'type')).to eq 'service_worker'
+          it 'target type is service_worker' do
+            driver.devtools.page.navigate(url: url_for('service_worker.html'))
+            wait_for_devtools_target(target_type: 'service_worker')
+
+            target = driver.devtools(target_type: 'service_worker').target
+            expect(target.get_target_info.dig('result', 'targetInfo', 'type')).to eq 'service_worker'
+          end
         end
 
         it 'throws an error for unknown target type' do
@@ -75,6 +81,8 @@ module Selenium
       end
 
       describe '#register' do
+        after { |example| quit_driver unless example.skipped? }
+
         let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
         let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
@@ -97,66 +105,72 @@ module Selenium
         end
       end
 
-      it 'notifies about log messages' do
-        logs = []
-        driver.on_log_event(:console) { |log| logs.push(log.args[0]) }
-        driver.navigate.to url_for('javascriptPage.html')
+      describe '#on_log_event' do
+        after { |example| quit_driver unless example.skipped? }
 
-        driver.execute_script('console.log(true);')
-        driver.execute_script('console.log(null);')
-        driver.execute_script('console.log(undefined);')
-        driver.execute_script('console.log(document);')
-        driver.execute_script("console.log('I like cheese');")
+        it 'notifies about log messages' do
+          logs = []
+          driver.on_log_event(:console) { |log| logs.push(log.args[0]) }
+          driver.navigate.to url_for('javascriptPage.html')
 
-        wait.until { logs.include?('I like cheese') }
+          driver.execute_script('console.log(true);')
+          driver.execute_script('console.log(null);')
+          driver.execute_script('console.log(undefined);')
+          driver.execute_script('console.log(document);')
+          driver.execute_script("console.log('I like cheese');")
 
-        expect(logs).to include(true)
-        expect(logs).to include(nil)
-        expect(logs).to include({'type' => 'undefined'})
-      end
+          wait.until { logs.include?('I like cheese') }
 
-      it 'notifies about document log messages' do
-        logs = []
-        driver.on_log_event(:console) { |log| logs.push(log) }
-        driver.navigate.to url_for('javascriptPage.html')
+          expect(logs).to include(true)
+          expect(logs).to include(nil)
+          expect(logs).to include({'type' => 'undefined'})
+        end
 
-        driver.execute_script('console.log(document);')
-        wait.until { !logs.empty? }
+        it 'notifies about document log messages' do
+          logs = []
+          driver.on_log_event(:console) { |log| logs.push(log) }
+          driver.navigate.to url_for('javascriptPage.html')
 
-        expect(logs).to include(
-          an_object_having_attributes(type: :log, args: [hash_including('type' => 'object')])
-        )
-      end
+          driver.execute_script('console.log(document);')
+          wait.until { !logs.empty? }
 
-      it 'notifies about exceptions' do
-        exceptions = []
-        driver.on_log_event(:exception) { |exception| exceptions.push(exception) }
-        driver.navigate.to url_for('javascriptPage.html')
+          expect(logs).to include(
+            an_object_having_attributes(type: :log, args: [hash_including('type' => 'object')])
+          )
+        end
 
-        driver.find_element(id: 'throwing-mouseover').click
-        wait.until { exceptions.any? }
+        it 'notifies about exceptions' do
+          exceptions = []
+          driver.on_log_event(:exception) { |exception| exceptions.push(exception) }
+          driver.navigate.to url_for('javascriptPage.html')
 
-        exception = exceptions.first
-        expect(exception.description).to include('Error: I like cheese')
-        expect(exception.stacktrace).not_to be_empty
-      end
+          driver.find_element(id: 'throwing-mouseover').click
+          wait.until { exceptions.any? }
 
-      it 'notifies about DOM mutations' do
-        mutations = []
-        driver.on_log_event(:mutation) { |mutation| mutations.push(mutation) }
-        driver.navigate.to url_for('dynamic.html')
+          exception = exceptions.first
+          expect(exception.description).to include('Error: I like cheese')
+          expect(exception.stacktrace).not_to be_empty
+        end
 
-        driver.find_element(id: 'reveal').click
-        wait.until { mutations.any? }
+        it 'notifies about DOM mutations' do
+          mutations = []
+          driver.on_log_event(:mutation) { |mutation| mutations.push(mutation) }
+          driver.navigate.to url_for('dynamic.html')
 
-        mutation = mutations.first
-        expect(mutation.element).to eq(driver.find_element(id: 'revealed'))
-        expect(mutation.attribute_name).to eq('style')
-        expect(mutation.current_value).to eq('')
-        expect(mutation.old_value).to eq('display:none;')
+          driver.find_element(id: 'reveal').click
+          wait.until { mutations.any? }
+
+          mutation = mutations.first
+          expect(mutation.element).to eq(driver.find_element(id: 'revealed'))
+          expect(mutation.attribute_name).to eq('style')
+          expect(mutation.current_value).to eq('')
+          expect(mutation.old_value).to eq('display:none;')
+        end
       end
 
       describe '#intercept' do
+        after { |example| quit_driver unless example.skipped? }
+
         it 'continues requests' do
           requests = []
           driver.intercept do |request, &continue|
@@ -210,6 +224,8 @@ module Selenium
         before do
           driver.navigate.to url_for('xhtmlTest.html')
         end
+
+        after { driver.pinned_scripts.dup.each { |script| driver.unpin_script(script) } }
 
         it 'allows to pin script' do
           script = driver.pin_script('return document.title;')
