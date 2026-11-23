@@ -1,3 +1,7 @@
+0.4.54
+======
+* Write se-metadata.json atomically (#18200)
+
 0.4.53
 ======
 * fix(#18263): keep Selenium Manager stderr empty in --output json (#18268)
