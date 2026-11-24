@@ -220,6 +220,7 @@ From `spec_support/helpers.rb`:
 | `driver` | Shared WebDriver instance, started on first use. |
 | `quit_driver` | Quit the shared driver so the next `driver` call starts a fresh one. |
 | `local_driver(...)` | Quit the shared driver and start a new one with these options for this example; it is quit after the example. Use `let(:driver) { local_driver(...) }` to give a whole group these options. |
+| `reset_windows(keep: nil)` | Close every window except `keep` and switch to it; if `keep` was closed, open a fresh tab to keep instead. |
 | `url_for(filename)` | Get test page URL (from `common/src/web`). |
 | `wait` / `short_wait` / `long_wait` | Wait instances (10s, 3s, 30s). |
 | `wait_for_element(locator)` | Wait for element to appear. |

@@ -29,15 +29,8 @@ module Selenium
                  skip_if: {browser_family: :safari,
                            reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          let(:driver) { local_driver(args: chromium_web_extension_args) }
           let(:web_extension) { described_class.new(driver) }
           let(:expected_id) { 'webextensions-selenium-example-v3@example.com' }
-
-          def chromium_web_extension_args
-            return [] unless GlobalTestEnv.browser_family == :chromium
-
-            %w[--enable-unsafe-extension-debugging --remote-debugging-pipe]
-          end
 
           def extension_path(name)
             File.expand_path("../../../../../../../common/extensions/#{name}", __dir__)

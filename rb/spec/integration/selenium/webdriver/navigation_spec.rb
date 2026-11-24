@@ -62,12 +62,7 @@ module Selenium
       context 'with more than one window' do
         let!(:original_window) { driver.window_handle }
 
-        after do
-          driver.switch_to.window(original_window)
-          (driver.window_handles - [original_window]).each do |handle|
-            driver.switch_to.window(handle) { driver.close }
-          end
-        end
+        after { reset_windows(keep: original_window) }
 
         it 'raises when the current window is closed' do
           driver.switch_to.new_window(:tab)

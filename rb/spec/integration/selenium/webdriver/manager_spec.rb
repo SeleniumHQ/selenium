@@ -122,7 +122,8 @@ module Selenium
         end
 
         context 'when https', skip_if: {browser_family: :safari, reason: 'Safari does not accept insecure certs'} do
-          let(:driver) { local_driver(accept_insecure_certs: true) }
+          # Firefox options already accept insecure certs by default
+          let(:driver) { GlobalTestEnv.browser == :firefox ? super() : local_driver(accept_insecure_certs: true) }
 
           before { driver.get url_for('xhtmlTest.html', secure: true) }
 

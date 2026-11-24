@@ -106,8 +106,6 @@ module Selenium
       end
 
       describe '#on_log_event' do
-        after { |example| quit_driver unless example.skipped? }
-
         it 'notifies about log messages' do
           logs = []
           driver.on_log_event(:console) { |log| logs.push(log.args[0]) }
@@ -165,6 +163,9 @@ module Selenium
           expect(mutation.attribute_name).to eq('style')
           expect(mutation.current_value).to eq('')
           expect(mutation.old_value).to eq('display:none;')
+        ensure
+          # The mutation listener cannot be removed and runs on every new document
+          quit_driver
         end
       end
 
@@ -225,7 +226,9 @@ module Selenium
           driver.navigate.to url_for('xhtmlTest.html')
         end
 
-        after { driver.pinned_scripts.dup.each { |script| driver.unpin_script(script) } }
+        after do |example|
+          driver.pinned_scripts.dup.each { |script| driver.unpin_script(script) } unless example.skipped?
+        end
 
         it 'allows to pin script' do
           script = driver.pin_script('return document.title;')

@@ -34,12 +34,9 @@ module Selenium
           after do |example|
             next if example.metadata[:skip] || example.skip
 
-            begin
-              bluetooth.disable_simulation(context: driver.window_handle)
-            rescue StandardError
-              nil
-            end
-            quit_driver
+            bluetooth.disable_simulation(context: driver.window_handle)
+          rescue StandardError
+            nil
           end
 
           let(:bluetooth) { described_class.new(driver) }

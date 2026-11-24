@@ -29,7 +29,6 @@ module Selenium
       ]
 
       it 'creates default capabilities', skip_if: {browser_family: :safari} do
-        driver = local_driver
         caps = driver.capabilities
         expect(caps.proxy).to be_nil
         expect(caps.browser_version).to match(/^\d\d\d?\./)

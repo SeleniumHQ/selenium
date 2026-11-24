@@ -34,8 +34,6 @@ module Selenium
       end
 
       context 'when closing windows' do
-        after { |example| quit_driver unless example.skipped? }
-
         it 'does not close BiDi session if at least one window is opened',
            pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
           status = driver.bidi.session.status
@@ -51,6 +49,8 @@ module Selenium
           status_after_closing = driver.bidi.session.status
           expect(status_after_closing.ready).to be false
           expect(status_after_closing.message).to be_a String
+        ensure
+          reset_windows
         end
 
         it 'closes BiDi session if last window is closed',
@@ -62,6 +62,8 @@ module Selenium
           driver.close
 
           expect { driver.bidi.session.status }.to raise_error(IOError)
+        ensure
+          quit_driver
         end
       end
     end

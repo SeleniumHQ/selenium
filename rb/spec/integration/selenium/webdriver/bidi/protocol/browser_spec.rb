@@ -180,12 +180,11 @@ module Selenium
                                 exception: {class: Error::UnsupportedOperationError,
                                             message: /Closing the browser in a session /},
                                 reason: 'Firefox unsupported operation for browser.close on Classic sessions'} do
-            after { |example| quit_driver unless example.skipped? }
-
             it 'closes the browser session' do
               driver.navigate.to url_for('blank.html')
 
               expect(browser.close).to be_empty
+              quit_driver
             end
           end
         end

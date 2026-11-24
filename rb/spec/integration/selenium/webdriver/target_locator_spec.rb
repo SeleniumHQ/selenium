@@ -24,14 +24,7 @@ module Selenium
     describe TargetLocator, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before { @original_window = driver.window_handle }
 
-      after do
-        handles = driver.window_handles
-        driver.switch_to.window(@original_window) if handles.include?(@original_window)
-
-        (handles - [driver.window_handle]).each do |handle|
-          driver.switch_to.window(handle) { driver.close }
-        end
-      end
+      after { reset_windows(keep: @original_window) }
 
       let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
 

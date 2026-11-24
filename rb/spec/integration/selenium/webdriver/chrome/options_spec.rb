@@ -42,8 +42,6 @@ module Selenium
         end
 
         it 'enables bidi', skip_unless: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
-          quit_driver
-
           options = Selenium::WebDriver::Options.chrome
           expect(options.web_socket_url).to be_nil
           expect(options.bidi?).to be false
@@ -61,8 +59,6 @@ module Selenium
 
         it 'enables BiDi on initialization',
            skip_unless: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
-          quit_driver
-
           options = Selenium::WebDriver::Options.chrome(bidi: true)
           expect(options.web_socket_url).to be true
           expect(options.bidi?).to be true

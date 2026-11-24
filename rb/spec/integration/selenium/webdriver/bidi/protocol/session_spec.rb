@@ -96,10 +96,9 @@ module Selenium
                                 exception: {class: Error::UnsupportedOperationError,
                                             message: /Ending a session /},
                                 reason: 'Firefox returns unsupported operation for session.end on Classic sessions'} do
-            after { |example| quit_driver unless example.skipped? }
-
             it 'ends the active BiDi session' do
               expect(session.end_).to be_empty
+              quit_driver
             end
           end
         end
