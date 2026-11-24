@@ -1,3 +1,9 @@
+Selenium 4.54.0
+* Support CDP versions: v156, v157, v158
+* Let Firefox choose the BiDi websocket port (#18351)
+* add --diagnose to safaridriver when SE_DEBUG is set (#18356)
+* Skip the shutdown request when stopping geckodriver (#18316)
+
 Selenium 4.53.0
 * Support CDP versions: v155, v156, v157
 * Add WebDriver cookie type annotations (#17537)

@@ -1,3 +1,13 @@
+v4.54.0
+======
+* Support CDP versions: v156, v157, v158
+* quit Safari driver like geckodriver without waiting an additional 10 seconds (#18340)
+* [build] Automated Browser Version Update (major) with CDP (#18338)
+* [grid] Don't fail node status when a session stops mid-read (#18318)
+* add --diagnose to safaridriver when SE_DEBUG is set (#18356)
+* Log remaining diagnostics at a fixed FINE level (#18295)
+* Remove deprecated Debug.getDebugLogLevel() (#18363)
+
 v4.53.0
 ======
 * Support CDP versions: v155, v156, v157

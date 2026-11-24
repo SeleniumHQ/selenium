@@ -21,6 +21,7 @@ const assert = require('node:assert')
 const net = require('node:net')
 const { WebSocketServer } = require('ws')
 const BiDi = require('selenium-webdriver/bidi')
+const error = require('selenium-webdriver/lib/error')
 const { Domain, event, DOMAIN_TOKEN } = require('selenium-webdriver/bidi/domain')
 const { defineRecord } = require('selenium-webdriver/bidi/serialization/record')
 
@@ -416,7 +417,11 @@ describe('BiDi addCallback', function () {
       const subscription = await failingBidi.addCallback('log.entryAdded', (params) => received.push(params))
 
       // First attempt: the server rejects the unsubscribe.
-      await assert.rejects(subscription.unsubscribe(), /unknown error: unsubscribe failed/)
+      await assert.rejects(subscription.unsubscribe(), (err) => {
+        assert.strictEqual(err.constructor, error.WebDriverError)
+        assert.strictEqual(err.message, 'unknown error: unsubscribe failed')
+        return true
+      })
       assert.strictEqual(unsubscribeAttempts, 1)
 
       // Local delivery must still work — the failed attempt must not have torn
@@ -479,7 +484,11 @@ describe('BiDi addCallback', function () {
       await errorBidi.waitForConnection()
       await assert.rejects(
         errorBidi.addCallback('log.entryAdded', () => {}),
-        /unknown command: not implemented/,
+        (err) => {
+          assert.ok(err instanceof error.UnknownCommandError, `expected UnknownCommandError, got ${err}`)
+          assert.strictEqual(err.message, 'unknown command: not implemented')
+          return true
+        },
       )
     } finally {
       await errorBidi.close()

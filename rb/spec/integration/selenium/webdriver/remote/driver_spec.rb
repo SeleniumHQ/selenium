@@ -32,47 +32,43 @@ module Selenium
         end
 
         it 'lists downloads', skip_if: {browser: :safari, reason: 'grid hangs'} do
-          reset_driver!(enable_downloads: true) do |driver|
-            browser_downloads(driver)
+          driver = local_driver(enable_downloads: true)
+          browser_downloads(driver)
 
-            file_names = %w[file_1.txt file_2.jpg]
+          file_names = %w[file_1.txt file_2.jpg]
 
-            expect(driver.downloadable_files).to match_array(file_names)
-          end
+          expect(driver.downloadable_files).to match_array(file_names)
         end
 
         it 'downloads a file', skip_if: {browser: :safari, reason: 'grid hangs'} do
           target_directory = File.join(Dir.tmpdir.to_s, SecureRandom.uuid)
           at_exit { FileUtils.rm_f(target_directory) }
 
-          reset_driver!(enable_downloads: true) do |driver|
-            browser_downloads(driver)
+          driver = local_driver(enable_downloads: true)
+          browser_downloads(driver)
 
-            file_name = 'file_1.txt'
-            driver.download_file(file_name, target_directory)
+          file_name = 'file_1.txt'
+          driver.download_file(file_name, target_directory)
 
-            file_content = File.read("#{target_directory}/#{file_name}").strip
-            expect(file_content).to eq('Hello, World!')
-          end
+          file_content = File.read("#{target_directory}/#{file_name}").strip
+          expect(file_content).to eq('Hello, World!')
         end
 
         it 'deletes downloadable files', skip_if: {browser: :safari, reason: 'grid hangs'} do
-          reset_driver!(enable_downloads: true) do |driver|
-            browser_downloads(driver)
+          driver = local_driver(enable_downloads: true)
+          browser_downloads(driver)
 
-            driver.delete_downloadable_files
+          driver.delete_downloadable_files
 
-            expect(driver.downloadable_files).to be_empty
-          end
+          expect(driver.downloadable_files).to be_empty
         end
 
         it 'errors when not set', skip_if: {browser: :safari, reason: 'grid hangs'} do
-          reset_driver!(enable_downloads: false) do |driver|
-            expect {
-              driver.downloadable_files
-            }.to raise_exception(Error::WebDriverError,
-                                 'You must enable downloads in order to work with downloadable files.')
-          end
+          driver = local_driver(enable_downloads: false)
+          expect {
+            driver.downloadable_files
+          }.to raise_exception(Error::WebDriverError,
+                               'You must enable downloads in order to work with downloadable files.')
         end
 
         private

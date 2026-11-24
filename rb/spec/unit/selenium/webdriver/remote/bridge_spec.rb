@@ -230,6 +230,15 @@ module Selenium
             end
           end
         end
+
+        describe 'BiDi domain accessors' do
+          it 'raise for every domain when BiDi is not enabled' do
+            BiDi::Protocol::Domains.instance_methods(false).each do |accessor|
+              expect { bridge.public_send(accessor) }
+                .to raise_error(Error::WebDriverError, /BiDi must be enabled by setting #web_socket_url to true/)
+            end
+          end
+        end
       end
     end # Remote
   end # WebDriver

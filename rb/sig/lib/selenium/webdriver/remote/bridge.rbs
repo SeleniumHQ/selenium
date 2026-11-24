@@ -39,6 +39,7 @@ module Selenium
         @escaper: untyped
 
         include Atoms
+        include BiDi::Protocol::Domains
 
         PORT: Integer
 
@@ -257,8 +258,6 @@ module Selenium
         def user_verified: (untyped verified, untyped authenticator_id) -> untyped
 
         private
-
-        def web_extension: () -> WebDriver::BiDi::Protocol::WebExtension
 
         def encode_extension: (String path) -> String
 

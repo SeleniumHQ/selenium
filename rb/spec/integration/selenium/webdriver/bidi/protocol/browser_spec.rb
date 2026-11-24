@@ -29,8 +29,6 @@ module Selenium
                  skip_if: {browser_family: :safari,
                            reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:browser) { described_class.new(driver) }
 
           def create_user_context
@@ -124,6 +122,7 @@ module Selenium
 
             describe '#set_client_window_state' do
               it 'sets a client window to a normal rectangle' do
+                original_rect = driver.manage.window.rect
                 client_window = browser.get_client_windows.client_windows.first.client_window
 
                 result = browser.set_client_window_state(
@@ -140,6 +139,8 @@ module Selenium
                 expect(result.state).to eq(:normal)
                 expect(result.width).to be >= 320
                 expect(result.height).to be >= 240
+              ensure
+                driver.manage.window.rect = original_rect if original_rect
               end
             end
 
@@ -179,6 +180,8 @@ module Selenium
                                 exception: {class: Error::UnsupportedOperationError,
                                             message: /Closing the browser in a session /},
                                 reason: 'Firefox unsupported operation for browser.close on Classic sessions'} do
+            after { |example| quit_driver unless example.skipped? }
+
             it 'closes the browser session' do
               driver.navigate.to url_for('blank.html')
 
