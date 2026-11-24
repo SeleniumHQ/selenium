@@ -22,10 +22,8 @@ debug!("diagnostic: request details for debugging");
 ```
 
 ### Deprecation
-```rust
-#[deprecated(since = "0.1.0", note = "Use new_function instead")]
-pub fn old_function() { }
-```
+Selenium Manager ships as a binary and its crate is not published, so Rust `pub` items are internal and can change without a deprecation.
+Its public interface is the CLI arguments, configuration, and JSON output; keep those compatible and log a warning that points to the replacement before removing one.
 
 ### Documentation
 Use doc comments for public APIs:
