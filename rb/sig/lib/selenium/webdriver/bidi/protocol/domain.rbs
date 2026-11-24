@@ -21,17 +21,13 @@ module Selenium
     class BiDi
       module Protocol
         class Domain
-          @driver: untyped
-
-          @transport: Transport?
+          @transport: Transport
 
           def initialize: (untyped source) -> void
 
           def remove_listener: (String id) -> void
 
           private
-
-          def transport: () -> Transport
 
           def connection: () -> untyped
 

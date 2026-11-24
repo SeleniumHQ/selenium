@@ -41,12 +41,12 @@ module Selenium
             (driver.window_handles - [driver.window_handle]).each { |handle| browsing_context.close(context: handle) }
           end
 
-          it 'errors on first use when bidi not enabled' do
-            driver = local_driver(web_socket_url: false)
-            msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
-            domain = described_class.new(driver)
-
-            expect { domain.get_tree }.to raise_error(WebDriver::Error::WebDriverError, msg)
+          describe '.new' do
+            it 'errors when bidi not enabled' do
+              driver = local_driver(web_socket_url: false)
+              msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
+              expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
+            end
           end
 
           describe '#activate' do

@@ -24,38 +24,30 @@ module Selenium
         # @api private
         class Domain
           def initialize(source)
-            if source.is_a?(Driver)
-              @driver = source
-            elsif source.respond_to?(:send_cmd)
-              @transport = Transport.new(source)
-            else
-              raise Error::WebDriverError, 'a Driver or connection is required'
-            end
+            connection = source.is_a?(Driver) ? source.send(:bridge).connection : source
+            raise(Error::WebDriverError, 'a Driver or connection is required') unless connection.respond_to?(:send_cmd)
+
+            @transport = Transport.new(connection)
           end
 
           # Stops invoking the listener an `add_<event>_listener` method returned the id for, without
           # waiting for a running invocation to finish. Local only, and a no-op for an unknown id.
           def remove_listener(id)
-            transport.remove_listener(id)
+            @transport.remove_listener(id)
           end
 
           private
 
-          # A driver's connection is looked up on first use, so a session without BiDi fails there.
-          def transport
-            @transport ||= Transport.new(@driver.send(:bridge).connection)
-          end
-
           # The connection this domain runs over, so a generated vendor accessor can build its
           # sibling variant (`Moz.new(connection)`) — construction stays connection-based.
-          def connection = transport.connection
+          def connection = @transport.connection
 
           def execute(cmd:, params: nil, result: nil)
-            transport.execute(cmd: cmd, params: params, result: result)
+            @transport.execute(cmd: cmd, params: params, result: result)
           end
 
           def add_listener(event, &block)
-            transport.add_listener(event, self.class.const_get(:EVENT_TYPES).fetch(event), &block)
+            @transport.add_listener(event, self.class.const_get(:EVENT_TYPES).fetch(event), &block)
           end
         end
       end
