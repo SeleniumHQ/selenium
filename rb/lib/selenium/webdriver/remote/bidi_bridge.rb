@@ -48,38 +48,38 @@ module Selenium
         end
 
         def install_web_extension(path)
-          result = web_extension.install(extension_data: web_extension_data(path))
+          result = bidi_web_extension.install(extension_data: web_extension_data(path))
           WebExtension.new(result.extension)
         end
 
         def uninstall_web_extension(id)
-          web_extension.uninstall(extension: id)
+          bidi_web_extension.uninstall(extension: id)
           nil
         end
 
         def get(url)
-          browsing_context.navigate(context: @current_window, url: url, wait: readiness_state)
+          bidi_browsing_context.navigate(context: @current_window, url: url, wait: readiness_state)
           nil
         rescue Error::NoSuchFrameError => e
           raise Error::NoSuchWindowError, e.message
         end
 
         def go_back
-          browsing_context.traverse_history(context: @current_window, delta: -1)
+          bidi_browsing_context.traverse_history(context: @current_window, delta: -1)
           nil
         rescue Error::NoSuchFrameError => e
           raise Error::NoSuchWindowError, e.message
         end
 
         def go_forward
-          browsing_context.traverse_history(context: @current_window, delta: 1)
+          bidi_browsing_context.traverse_history(context: @current_window, delta: 1)
           nil
         rescue Error::NoSuchFrameError => e
           raise Error::NoSuchWindowError, e.message
         end
 
         def refresh
-          browsing_context.reload(context: @current_window, wait: readiness_state)
+          bidi_browsing_context.reload(context: @current_window, wait: readiness_state)
           nil
         rescue Error::NoSuchFrameError => e
           raise Error::NoSuchWindowError, e.message
@@ -111,21 +111,13 @@ module Selenium
                 "BiDi was enabled, but the remote end did not return a valid webSocketUrl: #{url.inspect}."
         end
 
-        def browsing_context
-          @browsing_context ||= BiDi::Protocol::BrowsingContext.new(connection)
-        end
-
-        def web_extension
-          @web_extension ||= BiDi::Protocol::WebExtension.new(connection)
-        end
-
         # A directory only resolves on the machine running the browser, so upload it to the remote
         # end and reference the returned path; archives and base64 bytes travel inline.
         def web_extension_data(path)
-          return web_extension.extension_base64_encoded(value: encode_extension(path)) unless File.directory?(path)
+          return bidi_web_extension.extension_base64_encoded(value: encode_extension(path)) unless File.directory?(path)
 
           path = upload(path) if respond_to?(:upload)
-          web_extension.extension_path(path: path)
+          bidi_web_extension.extension_path(path: path)
         end
 
         def readiness_state
