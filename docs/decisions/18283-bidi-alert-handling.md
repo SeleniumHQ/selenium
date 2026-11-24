@@ -35,20 +35,22 @@ There is no clear alert handlers equivalent. A binding may implement a way to ad
 that describes its type and the default value of a prompt, and can read text, send keys, accept or dismiss just like in the current Alert API.
 The alert object acts on the alert that triggered the handler, regardless of which window the driver is on.
 
-3. **Support existing synchronous Alert API.** By default, a user must be able to wait for alerts and access open alerts regardless
-of how they were opened. This is required for backwards compatibility with existing code.
+3. **Support existing synchronous Alert API.** A user must be able to wait for alerts and access open alerts regardless
+of how they were opened, with or without a registered handler. This is required for backwards compatibility with existing code.
 
 4. **Support classic Configuration.** All five classic values of `unhandledPromptBehavior` capability must be supported with their classic behavior
 and apply to `alert`, `confirm`, and `prompt` dialogs. The default for those dialogs will continue to be `dismiss and notify`.
 `beforeUnload` prompts must be accepted by default. Any support for users to set the BiDi version of `unhandledPromptBehavior` with the map
 must be deprecated and removed.
 
-5. **Registering an async handler removes backwards compatibility.** When a user adds an alert handler (until it is removed), they are opting out of
-all support for `unhandledPromptBehavior` values. Users need to manage alerts through their handler, including `beforeUnload` prompts, and Alert API commands must error.
+5. **Registering an async handler replaces `unhandledPromptBehavior`.** When a user adds an alert handler (until it is removed), they are opting out of
+all support for `unhandledPromptBehavior` values, and the handler is called with every alert, including `beforeUnload` prompts.
+An alert the handler leaves open is treated as under `ignore`: the command that opened it returns as it would in classic,
+the Alert API can act on it, and any other command errors.
 
 6. **Only the most recently added handler is called.** Unlike Network handlers, events are not passed along a chain, 
 any previously registered handlers are ignored so users can scope handlers to specific alert instances.
-Removing that handler makes the one added before it the handler that is called; removing the only handler restores decisions 3 and 4.
+Removing that handler makes the one added before it the handler that is called; removing the only handler restores decision 4.
 
 7. **Handlers must manage disposition and errors.** 
 An exception in the callable is not caught on behalf of the user, it is always surfaced.
@@ -108,9 +110,9 @@ driver.alerts().removeHandler(handle);
   - A chain, as network handlers use. Rejected: an alert has two outcomes and nothing to combine.
   - Fall back to `unhandledPromptBehavior` when a handler leaves an alert open. Rejected: two
     rules with different timing would apply to the same alert.
-  - Keep the Alert API working while a handler is registered, or only warn when it is used.
-    Rejected: the test and the handler could both act on the same alert, and access can be allowed
-    later without breaking anyone.
+  - Make Alert API commands error while a handler is registered. Rejected: alert waits in existing
+    code fail under a handler that a suite adds, and an alert the handler leaves open would have no
+    synchronous path.
 - **Exceptions (decision 7)** follow [17685](17685-network-handler-behavior.md) decision 7, which
   records the alternatives.
 
