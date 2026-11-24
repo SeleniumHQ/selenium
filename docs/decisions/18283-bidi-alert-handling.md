@@ -24,12 +24,12 @@ BiDi also supports interacting with `beforeUnload` prompts (the alert that asks 
   * A BiDi command (script, navigation, click) that opens an alert will hang until the binding's response timeout (30 seconds by default) when `unhandledPromptBehavior` is set to ignore (classic commands that open an alert will still work)
 * No bindings prevent BiDi commands from executing when an alert is open
 
-## Decision
+## Decisions
 
 1. **Alert handlers may be added or removed through `driver.alerts`.** Like `driver.network` ([17685](17685-network-handler-behavior.md)),
 the handlers live on a domain off the driver, and a registered handler applies to every window.
 `addHandler` returns a handle object; `removeHandler` takes that handle and unregisters exactly that handler.
-There is no clear alert handlers equivalent. A binding may implement a way to add and remove a handler on behalf of a user so it applies for a specific block of code.
+There is no clear alert handlers equivalent.
 
 2. **A handler is a callable that acts on the alert object.** Inside the async handler the user has access to an alert object
 that describes its type and the default value of a prompt, and can read text, send keys, accept or dismiss just like in the current Alert API.
