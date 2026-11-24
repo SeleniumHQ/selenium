@@ -18,19 +18,15 @@
 # under the License.
 
 require 'selenium/webdriver/bidi'
-require 'selenium/webdriver/bidi/protocol'
 
 module Selenium
   module WebDriver
     module Remote
+      # @api private
       class BiDiBridge < Bridge
-        attr_reader :bidi, :connection
+        include BiDiCommands
 
-        READINESS_STATE = {
-          'none' => :none,
-          'eager' => :interactive,
-          'normal' => :complete
-        }.freeze
+        attr_reader :bidi, :connection
 
         def create_session(capabilities)
           super
@@ -39,40 +35,11 @@ module Selenium
             @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
             # Reuse the BiDi object's socket as the connection until the bridge owns it directly.
             @connection = @bidi.ws
+            @current_window = window_handle
           rescue StandardError
             quit
             raise
           end
-        end
-
-        def install_web_extension(path)
-          result = web_extension.install(extension_data: web_extension_data(path))
-          WebExtension.new(result.extension)
-        end
-
-        def uninstall_web_extension(id)
-          web_extension.uninstall(extension: id)
-          nil
-        end
-
-        def get(url)
-          browsing_context.navigate(context: window_handle, url: url, wait: readiness_state)
-          nil
-        end
-
-        def go_back
-          browsing_context.traverse_history(context: window_handle, delta: -1)
-          nil
-        end
-
-        def go_forward
-          browsing_context.traverse_history(context: window_handle, delta: 1)
-          nil
-        end
-
-        def refresh
-          browsing_context.reload(context: window_handle, wait: readiness_state)
-          nil
         end
 
         def quit
@@ -95,27 +62,6 @@ module Selenium
 
           raise Error::WebDriverError,
                 "BiDi was enabled, but the remote end did not return a valid webSocketUrl: #{url.inspect}."
-        end
-
-        def browsing_context
-          @browsing_context ||= BiDi::Protocol::BrowsingContext.new(connection)
-        end
-
-        def web_extension
-          @web_extension ||= BiDi::Protocol::WebExtension.new(connection)
-        end
-
-        # A directory only resolves on the machine running the browser, so upload it to the remote
-        # end and reference the returned path; archives and base64 bytes travel inline.
-        def web_extension_data(path)
-          return web_extension.extension_base64_encoded(value: encode_extension(path)) unless File.directory?(path)
-
-          path = upload(path) if respond_to?(:upload)
-          web_extension.extension_path(path: path)
-        end
-
-        def readiness_state
-          READINESS_STATE.fetch(capabilities[:page_load_strategy] || 'normal')
         end
       end # BiDiBridge
     end # Remote

@@ -1,3 +1,16 @@
+## 4.54.0
+
+- Support CDP versions: v156, v157, v158
+- [bidi] Keep received node attributes in the generated BiDi modules (#18336)
+- [bidi] Type vendor-declared BiDi fields instead of making extended types extensible (#18335)
+- [bidi] Type vendor fields on extensible session capabilities (#18337)
+- [build] Automated Browser Version Update (major) with CDP (#18338)
+- Honor the --headless bazel flag in Chrome, Edge and Firefox tests (#18350)
+- [build] ensure Selenium Manager browser versions match pinned browser versions in our tests (#18352)
+- Let Firefox choose the BiDi websocket port (#18351)
+- Start test Grids with only the browser under test (#18355)
+- Add internal tag to generated BiDi modules (#18359)
+
 ## 4.53.0
 
 - Support CDP versions: v155, v156, v157

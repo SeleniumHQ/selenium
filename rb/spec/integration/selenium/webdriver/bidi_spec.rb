@@ -23,9 +23,8 @@ module Selenium
   module WebDriver
     describe BiDi, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
       it 'errors when bidi not enabled' do
-        reset_driver!(web_socket_url: false) do |driver|
-          expect { driver.bidi }.to raise_error(WebDriver::Error::WebDriverError)
-        end
+        driver = local_driver(web_socket_url: false)
+        expect { driver.bidi }.to raise_error(WebDriver::Error::WebDriverError)
       end
 
       it 'gets session status' do
@@ -35,7 +34,7 @@ module Selenium
       end
 
       context 'when closing windows' do
-        after { |example| reset_driver!(example: example) }
+        after { |example| quit_driver unless example.skipped? }
 
         it 'does not close BiDi session if at least one window is opened',
            pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do

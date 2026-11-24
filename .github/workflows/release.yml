@@ -391,6 +391,7 @@ jobs:
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       unlock: true
+      skip-notification: true
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

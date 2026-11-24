@@ -333,6 +333,11 @@ module BiDiGenerate
   # through the same emit/render path as the domain modules.
   ErrorModule = Struct.new(:filename, :codes, :new_classes, keyword_init: true)
 
+  # The generated Protocol::Domains module (filename 'domains'): a memoized `bidi_<domain>` accessor
+  # per generated domain class, vendor domains (`moz:debugging`) included. A vendor variant nested in
+  # a spec domain (`WebExtension::Moz`) gets none; it is reached through that domain's own accessor.
+  DomainsModule = Struct.new(:filename, :domains, keyword_init: true)
+
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
@@ -1592,6 +1597,22 @@ module BiDiGenerate
     emit(modules, output_dir, 'module.rb.erb', 'rb')
     emit(modules, sig_dir(output_dir), 'module.rbs.erb', 'rbs')
     emit_error_module(schema, output_dir)
+    emit_domains_module(modules, output_dir)
+  end
+
+  def self.domains_module(modules)
+    if modules.any? { |m| m.filename == 'domains' }
+      raise 'a domain named "domains" would collide with the Protocol::Domains module'
+    end
+
+    DomainsModule.new(filename: 'domains', domains: modules)
+  end
+
+  # Writes protocol/domains.rb (+ its .rbs), the Protocol::Domains accessor module.
+  def self.emit_domains_module(modules, output_dir)
+    mod = domains_module(modules)
+    emit([mod], output_dir, 'domains.rb.erb', 'rb')
+    emit([mod], sig_dir(output_dir), 'domains.rbs.erb', 'rbs')
   end
 
   # The ErrorCode wire values mapped to their Ruby exception class names (schema order), e.g.

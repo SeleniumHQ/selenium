@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe Network, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:network) { described_class.new(driver) }
           let(:browsing_context) { BrowsingContext.new(driver) }
           let(:session) { Session.new(driver) }
@@ -63,7 +61,11 @@ module Selenium
              pending_if: {browser_family: :safari, exception: {class: Error::UnknownCommandError},
                           reason: 'Safari does not support BiDi network interception; ' \
                                   'when this passes, unskip the Safari network specs'} do
-            expect(network.add_intercept(phases: [:before_request_sent]).intercept).to be_a(String)
+            result = network.add_intercept(phases: [:before_request_sent])
+
+            expect(result.intercept).to be_a(String)
+          ensure
+            network.remove_intercept(intercept: result.intercept) if result&.intercept
           end
 
           describe '#add_data_collector',
