@@ -54,6 +54,36 @@ module Selenium
             expect(http).to have_received(:request).at_least(:twice)
           end
         end
+
+        describe 'navigation' do
+          let(:connection) { instance_double(WebSocketConnection) }
+          let(:window_url) { URI('http://localhost/session/foo/window') }
+
+          before do
+            stub_new_session('ws://localhost/session/foo')
+            allow(http).to receive(:request).with(:get, window_url, any_args).and_return('value' => 'window-1')
+            allow(http).to receive(:request).with(:post, window_url, any_args).and_return('value' => nil)
+            allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection))
+            navigate_result = {'navigation' => nil, 'url' => 'about:blank'}
+            allow(connection).to receive(:send_cmd).and_return('result' => navigate_result)
+            bridge.create_session(Capabilities.new)
+          end
+
+          it 'navigates the window it switched to' do
+            bridge.switch_to_window('window-2')
+            bridge.get('about:blank')
+
+            expect(connection).to have_received(:send_cmd)
+              .with(method: 'browsingContext.navigate', params: hash_including('context' => 'window-2'))
+          end
+
+          it 'requests the window handle only when the session starts' do
+            bridge.get('about:blank')
+            bridge.refresh
+
+            expect(http).to have_received(:request).with(:get, window_url, any_args).once
+          end
+        end
       end
     end # Remote
   end # WebDriver

@@ -25,6 +25,11 @@ on:
         required: false
         type: string
         default: ''
+      skip-notification:
+        description: 'Leave the Slack notice to the caller'
+        required: false
+        type: boolean
+        default: false
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -86,7 +91,7 @@ jobs:
   notify:
     name: Send Notification
     needs: [manage-trunk]
-    if: always() && needs.manage-trunk.result == 'success'
+    if: always() && needs.manage-trunk.result == 'success' && !inputs.skip-notification
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification

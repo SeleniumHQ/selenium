@@ -203,8 +203,6 @@ module Selenium
         end
 
         describe '#install_web_extension', skip_unless: {bidi: true, reason: 'moz webExtension BiDi command'} do
-          after { |example| quit_driver unless example.skipped? }
-
           it 'installs and removes an xpi file' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
             extension = driver.install_web_extension(ext)

@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/bidi/protocol/domains'
+
 module Selenium
   module WebDriver
     module Remote
@@ -26,6 +28,7 @@ module Selenium
         autoload :LocatorConverter, 'selenium/webdriver/remote/bridge/locator_converter'
 
         include Atoms
+        include BiDi::Protocol::Domains
 
         PORT = 4444
 
@@ -595,14 +598,11 @@ module Selenium
         end
 
         def bidi(*)
-          raise WebDriver::Error::WebDriverError,
-                'BiDi must be enabled by setting #web_socket_url to true in options class'
+          raise WebDriver::Error::WebDriverError, connection_error_message
         end
         alias connection bidi
-        alias web_extension bidi
         alias install_web_extension bidi
         alias uninstall_web_extension bidi
-        private :web_extension
 
         def bidi?
           !@bidi.nil?
@@ -613,6 +613,10 @@ module Selenium
         end
 
         private
+
+        def connection_error_message
+          'BiDi must be enabled by setting #web_socket_url to true in options class'
+        end
 
         def encode_extension(path)
           if File.directory?(path)
