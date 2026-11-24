@@ -85,48 +85,47 @@ module Selenium
                                                              device_pixel_ratio: nil)
         end
 
-        it 'accepts users prompts without text',
-           pending_if: {browser_family: :chromium,
-                        reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-          browsing_context = described_class.new(bridge)
+        context 'when a prompt is open' do
+          # The default unhandled prompt behavior dismisses a prompt before the example can handle it
+          let(:driver) { local_driver(unhandled_prompt_behavior: :ignore) }
 
-          driver.navigate.to url_for('alerts.html')
-          driver.find_element(id: 'alert').click
-          wait_for_alert
-          window = driver.window_handles.first
-          browsing_context.handle_user_prompt(window, accept: true)
-          wait_for_no_alert
+          it 'accepts users prompts without text' do
+            browsing_context = described_class.new(bridge)
 
-          expect(driver.title).to eq('Testing Alerts')
-        end
+            driver.navigate.to url_for('alerts.html')
+            driver.find_element(id: 'alert').click
+            wait_for_alert
+            window = driver.window_handles.first
+            browsing_context.handle_user_prompt(window, accept: true)
+            wait_for_no_alert
 
-        it 'accepts users prompts with text',
-           pending_if: {browser_family: :chromium,
-                        reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-          browsing_context = described_class.new(bridge)
-          driver.navigate.to url_for('alerts.html')
-          driver.find_element(id: 'prompt').click
-          wait_for_alert
-          window = driver.window_handles.first
-          browsing_context.handle_user_prompt(window, accept: true, text: 'Hello, world!')
-          wait_for_no_alert
+            expect(driver.title).to eq('Testing Alerts')
+          end
 
-          expect(driver.title).to eq('Testing Alerts')
-        end
+          it 'accepts users prompts with text' do
+            browsing_context = described_class.new(bridge)
+            driver.navigate.to url_for('alerts.html')
+            driver.find_element(id: 'prompt').click
+            wait_for_alert
+            window = driver.window_handles.first
+            browsing_context.handle_user_prompt(window, accept: true, text: 'Hello, world!')
+            wait_for_no_alert
 
-        it 'rejects users prompts',
-           pending_if: {browser_family: :chromium,
-                        reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-          browsing_context = described_class.new(bridge)
-          driver.navigate.to url_for('alerts.html')
-          driver.find_element(id: 'alert').click
-          wait_for_alert
-          window = driver.window_handles.first
+            expect(driver.title).to eq('Testing Alerts')
+          end
 
-          browsing_context.handle_user_prompt(window, accept: false)
-          wait_for_no_alert
+          it 'rejects users prompts' do
+            browsing_context = described_class.new(bridge)
+            driver.navigate.to url_for('alerts.html')
+            driver.find_element(id: 'alert').click
+            wait_for_alert
+            window = driver.window_handles.first
 
-          expect(driver.title).to eq('Testing Alerts')
+            browsing_context.handle_user_prompt(window, accept: false)
+            wait_for_no_alert
+
+            expect(driver.title).to eq('Testing Alerts')
+          end
         end
 
         it 'activates a browser context',

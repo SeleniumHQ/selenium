@@ -393,7 +393,6 @@ module Selenium
 
         def firefox_options(args: [], **opts)
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:unhandled_prompt_behavior] ||= 'ignore'
           args << '--headless' if ENV['HEADLESS']
           WebDriver::Options.firefox(args: args, **opts)
         end

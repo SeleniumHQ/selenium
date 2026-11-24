@@ -229,9 +229,10 @@ module Selenium
               }.to raise_error(Error::NoSuchAlertError)
             end
 
-            context 'when a prompt is open',
-                    pending_if: {browser_family: :chromium,
-                                 reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
+            context 'when a prompt is open' do
+              # The default unhandled prompt behavior dismisses a prompt before the example can handle it
+              let(:driver) { local_driver(unhandled_prompt_behavior: :ignore) }
+
               it 'accepts user prompts without text' do
                 driver.navigate.to url_for('alerts.html')
                 driver.find_element(id: 'alert').click
