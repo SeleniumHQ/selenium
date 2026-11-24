@@ -50,11 +50,9 @@ module Selenium
           expect(options.web_socket_url).to be true
           expect(options.bidi?).to be true
 
-          driver = Selenium::WebDriver.for :chrome, options: options
+          driver = local_driver(web_socket_url: true)
 
           expect(driver.capabilities.web_socket_url).to be_a String
-
-          driver.quit
         end
 
         it 'enables BiDi on initialization',
@@ -63,11 +61,9 @@ module Selenium
           expect(options.web_socket_url).to be true
           expect(options.bidi?).to be true
 
-          driver = Selenium::WebDriver.for :chrome, options: options
+          driver = local_driver(bidi: true)
 
           expect(driver.capabilities.web_socket_url).to be_a String
-
-          driver.quit
         end
       end
     end # Chrome
