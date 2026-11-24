@@ -363,4 +363,14 @@ module BiDiGenerate
         .to raise_error(/nullable list element/)
     end
   end
+
+  describe '.domains_module' do
+    def mod(filename)
+      BiDiGenerate::Module.new(name: filename, ruby_class: filename.capitalize, filename: filename)
+    end
+
+    it 'fails when a domain would share the module name' do
+      expect { BiDiGenerate.domains_module([mod('domains')]) }.to raise_error(/collide/)
+    end
+  end
 end

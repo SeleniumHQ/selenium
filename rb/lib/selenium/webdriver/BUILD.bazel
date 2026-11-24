@@ -36,6 +36,8 @@ rb_binary(
         "rb/lib/selenium/webdriver/bidi/protocol",
     ],
     data = [
+        "bidi/support/templates/domains.rb.erb",
+        "bidi/support/templates/domains.rbs.erb",
         "bidi/support/templates/error_code.rb.erb",
         "bidi/support/templates/error_code.rbs.erb",
         "bidi/support/templates/module.rb.erb",
@@ -58,6 +60,7 @@ rb_test(
     args = ["$(rootpath //javascript/selenium-webdriver:create-bidi-src_schema)"],
     data = [
         "bidi/support/bidi_generate.rb",
+        "bidi/support/templates/domains.rb.erb",
         "bidi/support/templates/error_code.rb.erb",
         "bidi/support/templates/module.rb.erb",
         "//javascript/selenium-webdriver:create-bidi-src_schema",
@@ -157,7 +160,10 @@ rb_library(
         "remote/**/*.rb",
         "remote.rb",
     ]),
-    deps = [":common"],
+    deps = [
+        ":bidi",
+        ":common",
+    ],
 )
 
 rb_library(
