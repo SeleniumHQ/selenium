@@ -581,10 +581,7 @@ task :format do
 end
 
 # ErrorProne runs at build time, SpotBugs runs as test targets in RBE
-desc 'Run Java linters (google-java-format, docs; other linting happens during build/test)'
+desc 'Run Java linter (google-java-format; other linting happens during build/test)'
 task :lint do
-  SeleniumRake.aggregate_errors(
-    google_java_format: -> { Rake::Task['java:format'].invoke },
-    java_docs: -> { Rake::Task['java:docs_generate'].invoke }
-  )
+  Rake::Task['java:format'].invoke
 end

@@ -218,11 +218,10 @@ task :format do
                 '//javascript:prettier')
 end
 
-desc 'Run JavaScript linters (prettier, eslint, docs)'
+desc 'Run JavaScript linters (prettier, eslint)'
 task :lint do
   SeleniumRake.aggregate_errors(
     prettier: -> { Rake::Task['node:format'].invoke },
-    eslint: -> { Bazel.execute('test', [], '//javascript/selenium-webdriver:eslint-test') },
-    javascript_docs: -> { Rake::Task['node:docs_generate'].invoke }
+    eslint: -> { Bazel.execute('test', [], '//javascript/selenium-webdriver:eslint-test') }
   )
 end

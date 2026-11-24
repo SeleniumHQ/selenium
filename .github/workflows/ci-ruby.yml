@@ -38,6 +38,14 @@ jobs:
         ./go rb:lint
         ./scripts/github-actions/check-format-diff.sh
 
+  docs:
+    name: Docs
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs
+      run: ./go rb:docs_generate
+
   # Tests on 3.3.12 (earliest supported version) are run in smoke and RBE.
   # This job covers the latest supported version and alternate interpreters.
   unit-tests:
