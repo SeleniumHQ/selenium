@@ -196,7 +196,7 @@ function projectRef(type) {
 function arrayNode(members) {
   const node = { list: projectRef(members[0]?.Type) }
   if (members.length < 2) return node
-  const once = (m) => (m.Occurrence?.n ?? 1) === 1 && (m.Occurrence?.m ?? 1) === 1
+  const once = ({ Occurrence: occ }) => !occ || (!isUnbounded(occ) && (occ.n ?? 1) === 1 && (occ.m ?? 1) === 1)
   node.tuple = members.map((m) => (once(m) ? projectRef(m.Type) : { primitive: 'unknown' }))
   return node
 }

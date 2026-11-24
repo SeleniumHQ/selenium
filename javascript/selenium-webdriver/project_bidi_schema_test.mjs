@@ -196,10 +196,16 @@ describe('projectType (list / union / alias defs)', () => {
       assert.deepEqual(checkSchema(s), [])
     })
 
-    it('fails closed when a position may repeat, since its arity is not fixed', () => {
-      const s = projectSchema(mapping(member([ref('x.Item')], { n: 0, m: null })), {})
-      assert.ok(checkSchema(s).some((e) => /x\.Mapping: .*unknown primitive/.test(e)))
-    })
+    for (const [label, occ] of [
+      ['zero or more (*)', { n: 0, m: null }],
+      ['one or more (+)', { n: 1, m: null }],
+      ['one or more (+), before a JSON round-trip', { n: 1, m: Infinity }],
+    ]) {
+      it(`fails closed when a position may repeat ${label}, since its arity is not fixed`, () => {
+        const s = projectSchema(mapping(member([ref('x.Item')], occ)), {})
+        assert.ok(checkSchema(s).some((e) => /x\.Mapping: .*unknown primitive/.test(e)))
+      })
+    }
   })
 
   it('projects a multi-member choice group as a union with a structural selector', () => {
