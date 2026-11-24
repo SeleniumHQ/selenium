@@ -19,9 +19,6 @@ package org.openqa.selenium.devtools.events;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -69,7 +66,9 @@ public class CdpEventTypes {
   public static EventType<Void> domMutation(Consumer<@Nullable DomMutationEvent> handler) {
     Require.nonNull("Handler", handler);
 
-    String script = readModuleResource("/org/openqa/selenium/devtools/mutation-listener.js");
+    String script =
+        Read.resourceAsString(
+            CdpEventTypes.class, "/org/openqa/selenium/devtools/mutation-listener.js");
 
     return new EventType<>() {
       @Override
@@ -116,21 +115,5 @@ public class CdpEventTypes {
             });
       }
     };
-  }
-
-  /**
-   * Reads a resource packaged in this module. The lookup has to happen in this module rather than
-   * in {@link Read}: {@link Class#getResourceAsStream(String)} is caller-sensitive, and on the
-   * module path the resource's package is not opened to the {@code api} module.
-   */
-  private static String readModuleResource(String resource) {
-    try (InputStream stream = CdpEventTypes.class.getResourceAsStream(resource)) {
-      if (stream == null) {
-        throw new IllegalArgumentException("Resource not found: " + resource);
-      }
-      return Read.toString(stream);
-    } catch (IOException e) {
-      throw new UncheckedIOException("Failed to read resource " + resource, e);
-    }
   }
 }

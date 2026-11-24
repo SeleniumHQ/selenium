@@ -57,23 +57,13 @@ public class Read {
   /**
    * This method might not work in OSGI environment.
    *
-   * @deprecated Open the resource with {@link Class#getResourceAsStream(String)} in the module that
-   *     owns it and read it with {@link #toString(InputStream)}
+   * @deprecated Use {@link #resourceAsString(Class, String)} instead
    */
   @Deprecated
   public static String resourceAsString(String resource) {
     return resourceAsString(Read.class, resource);
   }
 
-  /**
-   * Reads a resource relative to {@code resourceOwner} as a UTF-8 string.
-   *
-   * @deprecated {@link Class#getResourceAsStream(String)} is caller-sensitive, so on the module
-   *     path this method cannot read resources in packages of other named modules that are not
-   *     opened to this module. Open the resource in the module that owns it and read it with {@link
-   *     #toString(InputStream)} instead.
-   */
-  @Deprecated
   public static String resourceAsString(Class<?> resourceOwner, String resource) {
     Class<?> clazz = requireNonNull(resourceOwner, "Class owning the resource");
     try (InputStream stream = clazz.getResourceAsStream(resource)) {

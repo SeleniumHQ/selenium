@@ -19,9 +19,6 @@ package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +84,7 @@ class RemoteScript implements Script {
   @Override
   public String addDomMutationHandler(Consumer<DomMutation> consumer) {
     String scriptValue =
-        readModuleResource("/org/openqa/selenium/remote/bidi-mutation-listener.js");
+        Read.resourceAsString(getClass(), "/org/openqa/selenium/remote/bidi-mutation-listener.js");
 
     this.script.addPreloadScript(scriptValue, List.of(new ChannelValue("channel_name")));
 
@@ -155,22 +152,6 @@ class RemoteScript implements Script {
       throw new WebDriverException(
           "Error while executing script: "
               + ((EvaluateResultExceptionValue) result).getExceptionDetails().getText());
-    }
-  }
-
-  /**
-   * Reads a resource packaged in this module. The lookup has to happen in this module rather than
-   * in {@link Read}: {@link Class#getResourceAsStream(String)} is caller-sensitive, and on the
-   * module path the resource's package is not opened to the {@code api} module.
-   */
-  private static String readModuleResource(String resource) {
-    try (InputStream stream = RemoteScript.class.getResourceAsStream(resource)) {
-      if (stream == null) {
-        throw new IllegalArgumentException("Resource not found: " + resource);
-      }
-      return Read.toString(stream);
-    } catch (IOException e) {
-      throw new UncheckedIOException("Failed to read resource " + resource, e);
     }
   }
 }
