@@ -23,19 +23,19 @@ module Selenium
   module WebDriver
     class BiDi
       describe Network, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-        after { |example| reset_driver!(example: example) }
+        after { |example| quit_driver unless example.skipped? }
 
         it 'adds an intercept',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
           expect(intercept).not_to be_nil
         end
 
         it 'adds an intercept with a default pattern type',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           pattern = 'http://localhost:4444/formPage.html'
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]], url_patterns: pattern)
@@ -43,8 +43,8 @@ module Selenium
         end
 
         it 'adds an intercept with a url pattern',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           pattern = 'http://localhost:4444/formPage.html'
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]],
@@ -54,16 +54,16 @@ module Selenium
         end
 
         it 'removes an intercept',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
           expect(network.remove_intercept(intercept['intercept'])).to be_empty
         end
 
         it 'continues with auth',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           username = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first
           password = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last
           network = described_class.new(driver.bidi)
@@ -79,8 +79,8 @@ module Selenium
         end
 
         it 'continues without auth',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:auth_required]])
           network.on(:auth_required) do |event|
@@ -92,8 +92,8 @@ module Selenium
         end
 
         it 'cancels auth',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:auth_required]])
           network.on(:auth_required) do |event|
@@ -106,8 +106,8 @@ module Selenium
         end
 
         it 'continues request',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:before_request]])
           network.on(:before_request) do |event|
@@ -120,8 +120,8 @@ module Selenium
         end
 
         it 'fails request',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:before_request]])
           network.on(:before_request) do |event|
@@ -133,8 +133,8 @@ module Selenium
         end
 
         it 'continues response',
-           pending_if: {browser_family: :safari,
-                        reason: 'Safari does not support the BiDi network domain'} do
+           skip_if: {browser_family: :safari,
+                     reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:response_started]])
           network.on(:response_started) do |event|
@@ -147,9 +147,8 @@ module Selenium
         end
 
         it 'provides response',
-           pending_if: [{browser: :firefox, reason: 'https://github.com/w3c/webdriver-bidi/issues/747'},
-                        {browser_family: :safari,
-                         reason: 'Safari does not support the BiDi network domain'}] do
+           pending_if: {browser: :firefox, reason: 'https://github.com/w3c/webdriver-bidi/issues/747'},
+           skip_if: {browser_family: :safari, reason: 'Safari does not support BiDi network interception'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:response_started]])
           network.on(:response_started) do |event|

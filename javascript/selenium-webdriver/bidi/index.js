@@ -17,6 +17,7 @@
 
 const { EventEmitter } = require('node:events')
 const WebSocket = require('ws')
+const { errorFromResponse } = require('./error')
 
 const RESPONSE_TIMEOUT = 1000 * 30
 
@@ -407,11 +408,11 @@ class Index extends EventEmitter {
         params: { events: [method] },
       })
       // send() resolves with the raw reply on any response, including a
-      // wire-level error — check for one explicitly and surface it plainly,
-      // rather than letting it fall through to the generic "no subscription
-      // id" message below (matching how Domain#send() reports the same shape).
+      // wire-level error — check for one explicitly and surface it as the
+      // same typed error Domain#send() throws, rather than letting it fall
+      // through to the generic "no subscription id" message below.
       if (response?.error !== undefined) {
-        throw new Error(`${response.error}: ${response.message}`)
+        throw errorFromResponse(response)
       }
       const subscriptionId = response?.result?.subscription
       if (typeof subscriptionId !== 'string' || subscriptionId === '') {
@@ -471,7 +472,7 @@ class Index extends EventEmitter {
           params: { subscriptions: [subscriptionId] },
         })
         if (response?.error !== undefined) {
-          throw new Error(`${response.error}: ${response.message}`)
+          throw errorFromResponse(response)
         }
         this._callbacks.delete(subscriptionId)
         this.off(entry.method, entry.handler)

@@ -20,12 +20,13 @@
 /**
  * @fileoverview Accessibility snapshots computed in the page (ADR 18205).
  *
- * The tree is computed by the `accessibility-snapshot` atom of `@selenium/atoms`,
- * run over WebDriver BiDi in a sandbox realm so page scripts cannot interfere
- * with it. The atom's wire entry hands the tree back as one JSON string beside
- * the element and frame references, so this module holds only what is the
- * binding's: the public node type and its text form, the mapping of references
- * to WebElement, and frame stitching across browsing contexts.
+ * The tree is computed by the `accessibility-snapshot` atom of `@selenium/atoms`.
+ * In a BiDi session it runs in a sandbox realm so page scripts cannot interfere
+ * with it; in a WebDriver Classic session it runs through Execute Script and
+ * child frames are reached by switching into them and back. The atom's wire entry hands the tree back as one
+ * JSON string beside the element and frame references, so this module holds only
+ * what is the binding's: the public node type and its text form, the mapping of
+ * references to WebElement, and frame stitching.
  *
  * The output is *computed* from the DOM following WAI-ARIA, html-aam and
  * accname; it is not the browser's own accessibility tree and can differ from
@@ -222,6 +223,29 @@ function atomDeclaration() {
   return String(atomModule)
 }
 
+/** The iframe element of each frame index in the wire tree. */
+function frameElements(data, elements) {
+  const found = new Map()
+  const stack = [data]
+  while (stack.length) {
+    const node = stack.pop()
+    if ('frame' in node && node.element !== undefined) {
+      found.set(node.frame, elements[node.element])
+    }
+    stack.push(...(node.children ?? []))
+  }
+  return found
+}
+
+/** Whether a Classic error says a frame or its iframe element is gone. */
+function classicFrameUnreachable(e) {
+  return (
+    e instanceof error.NoSuchFrameError ||
+    e instanceof error.NoSuchElementError ||
+    e instanceof error.StaleElementReferenceError
+  )
+}
+
 /** A shared id that the targeted document does not own. */
 class NoSuchNode extends Error {}
 
@@ -271,30 +295,31 @@ class AccessibilitySnapshotter {
   }
 
   /**
-   * Snapshots the whole page, or the subtree under `root`.
+   * Snapshots the driver's current browsing context, or the subtree under `root`.
    *
    * @param {?WebElement} root The element whose subtree to snapshot, or null for
-   *     the page of the current window's top-level browsing context.
+   *     the document of the driver's current browsing context: the top-level
+   *     document, or the frame the driver has switched into.
    * @param {{interestingOnly: (boolean|undefined)}=} options With `interestingOnly`
    *     true, the default, unnamed generic and presentational elements produce no
    *     node and their children take their place; with false every rendered
    *     element produces a node.
    * @return {!Promise<!AccessibilityNode>} The snapshot, with every reachable
-   *     child frame's tree attached under its `iframe` node.
-   * @throws {error.UnsupportedOperationError} When the session has no BiDi connection.
+   *     child frame's tree attached under its `iframe` node. The driver's current
+   *     browsing context is left as it was.
    * @throws {error.StaleElementReferenceError} When `root` no longer belongs to a document.
    */
   async snapshot(root, { interestingOnly = true } = {}) {
     const caps = await this.driver_.getCapabilities()
     if (!caps.get('webSocketUrl')) {
-      throw new error.UnsupportedOperationError(
-        'getAccessibilitySnapshot() requires a WebDriver BiDi session; enable it with options.enableBidi()' +
-          ' before building the driver',
-      )
+      return this.classicSnapshot_(root, interestingOnly)
     }
-    const top = await this.driver_.getWindowHandle()
     if (!root) {
-      const node = await this.snapshotContext_(top, null, interestingOnly)
+      const context = await this.currentContext_()
+      if (context === null) {
+        return this.classicSnapshot_(null, interestingOnly)
+      }
+      const node = await this.snapshotContext_(context, null, interestingOnly)
       if (node === null) {
         throw new error.WebDriverError('accessibility snapshot: the script returned nothing')
       }
@@ -305,6 +330,7 @@ class AccessibilitySnapshotter {
     // the browsing context group, so the atom checks ownership itself and each
     // context is tried until the owner is found.
     const rootId = await root.getId()
+    const top = await this.driver_.getWindowHandle()
     for (const context of await this.contexts_(top)) {
       let node
       try {
@@ -384,6 +410,76 @@ class AccessibilitySnapshotter {
       throw new error.WebDriverError(`accessibility snapshot failed in the page: ${text}`)
     }
     return raw.result
+  }
+
+  /**
+   * The BiDi browsing context id of the driver's current browsing context.
+   * Classic serializes a window as a window or frame reference whose id is the
+   * browsing context's id, the same id BiDi uses. Null when the remote end
+   * answers in another shape, so the caller falls back to Execute Script.
+   * @private
+   */
+  async currentContext_() {
+    const reference = await this.driver_.executeScript('return window')
+    if (reference && typeof reference === 'object') {
+      const ids = Object.values(reference)
+      if (ids.length === 1 && typeof ids[0] === 'string' && ids[0]) return ids[0]
+    }
+    return null
+  }
+
+  /**
+   * The snapshot of the driver's current browsing context through Execute Script.
+   * Classic resolves element arguments against the current browsing context, so
+   * `root` must belong to it. Child frames are snapshotted by switching into each
+   * `iframe` element and back to the parent.
+   * @private
+   */
+  async classicSnapshot_(root, interestingOnly) {
+    const args = [interestingOnly]
+    if (root) args.push(root)
+    // The frame windows the wire form carries are BiDi references; Classic
+    // reaches a frame through its iframe element, so only their count is kept.
+    const result = await this.driver_.executeScript(
+      `var r = (${atomDeclaration()})(arguments[1], {interestingOnly: arguments[0]});` +
+        ' if (r && r.windows) { r.windows = r.windows.length; }' +
+        ' return r;',
+      ...args,
+    )
+    if (!result || typeof result !== 'object' || 'error' in result) {
+      // null: the root is not in this document; error: it left its document.
+      throw new error.StaleElementReferenceError(STALE_MESSAGE)
+    }
+    const data = JSON.parse(result.json)
+    const elements = result.elements ?? []
+    const frames = frameElements(data, elements)
+    return nodeFromWire(data, elements, (index) => this.classicFrame_(frames.get(index), interestingOnly))
+  }
+
+  /**
+   * The document of a frame, reached by switching into it, as the frame node's one child.
+   * @private
+   */
+  async classicFrame_(frame, interestingOnly) {
+    if (!frame) return []
+    try {
+      await this.driver_.switchTo().frame(frame)
+    } catch (e) {
+      if (!classicFrameUnreachable(e)) throw e
+      log_.finer(`accessibility snapshot: frame not reachable: ${e}`)
+      return []
+    }
+    try {
+      return [await this.classicSnapshot_(null, interestingOnly)]
+    } catch (e) {
+      // Mid-navigation, or gone since the parent's snapshot: the frame stays a
+      // leaf (ADR §1). Anything else is a real failure.
+      if (!classicFrameUnreachable(e)) throw e
+      log_.finer(`accessibility snapshot: frame not reachable: ${e}`)
+      return []
+    } finally {
+      await this.driver_.switchTo().parentFrame()
+    }
   }
 
   /**

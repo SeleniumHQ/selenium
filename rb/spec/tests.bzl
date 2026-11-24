@@ -3,10 +3,15 @@ load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
     "chrome_beta_data",
+    "chrome_beta_version_env",
     "chrome_data",
+    "chrome_version_env",
     "edge_data",
+    "edge_version_env",
     "firefox_beta_data",
+    "firefox_beta_version_env",
     "firefox_data",
+    "firefox_version_env",
 )
 load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 
@@ -34,7 +39,7 @@ BROWSERS = {
                 "CHROMEDRIVER_BINARY": "$(rlocationpath @mac_chromedriver//:chromedriver)",
             },
             "//conditions:default": {},
-        }),
+        }) | chrome_version_env,
     },
     "chrome-beta": {
         "data": chrome_beta_data,
@@ -46,6 +51,7 @@ BROWSERS = {
             "WD_REMOTE_BROWSER": "chrome",
             "WD_SPEC_DRIVER": "chrome",
             "WD_BROWSER_VERSION": "beta",
+            "SE_CHROME_VERSION": "beta",
         } | select({
             "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
@@ -60,7 +66,7 @@ BROWSERS = {
                 "CHROMEDRIVER_BINARY": "$(rlocationpath @mac_beta_chromedriver//:chromedriver)",
             },
             "//conditions:default": {},
-        }),
+        }) | chrome_beta_version_env,
     },
     "edge": {
         "data": edge_data,
@@ -85,7 +91,7 @@ BROWSERS = {
                 "MSEDGEDRIVER_BINARY": "$(rlocationpath @mac_edgedriver//:msedgedriver)",
             },
             "//conditions:default": {},
-        }),
+        }) | edge_version_env,
     },
     "firefox": {
         "data": firefox_data,
@@ -110,7 +116,7 @@ BROWSERS = {
                 "GECKODRIVER_BINARY": "$(rlocationpath @mac_geckodriver//:geckodriver)",
             },
             "//conditions:default": {},
-        }),
+        }) | firefox_version_env,
     },
     "firefox-beta": {
         "data": firefox_beta_data,
@@ -122,6 +128,7 @@ BROWSERS = {
             "WD_REMOTE_BROWSER": "firefox",
             "WD_SPEC_DRIVER": "firefox",
             "WD_BROWSER_VERSION": "beta",
+            "SE_FIREFOX_VERSION": "beta",
         } | select({
             "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
@@ -136,7 +143,7 @@ BROWSERS = {
                 "GECKODRIVER_BINARY": "$(rlocationpath @mac_geckodriver//:geckodriver)",
             },
             "//conditions:default": {},
-        }),
+        }) | firefox_beta_version_env,
     },
     "ie": {
         "data": [],

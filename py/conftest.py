@@ -221,32 +221,34 @@ _GRID_VENDOR_OPTIONS = {
 }
 
 
-def _pinned_grid_args(config):
-    """Pin the driver and browser in a driver-configuration so the Grid node skips Selenium Manager.
+def _grid_args(config):
+    """Register only the browser under test, so Grid does not run Selenium Manager for every browser at startup.
 
-    Returns an empty list when nothing is pinned, keeping the default Selenium Manager behavior.
+    Several drivers keep detection, because the server command line accepts only one driver-configuration.
     """
-    drivers_opt = config.option.drivers or []
-    driver = next((d for d in drivers_opt if d.lower() in _GRID_VENDOR_OPTIONS), None)
-    executable = config.option.executable  # --driver-binary
-    binary = config.option.binary  # --browser-binary
-    if not (driver and executable and binary):
+    drivers = config.option.drivers or []
+    driver = drivers[0] if len(drivers) == 1 else None
+    if driver not in _GRID_VENDOR_OPTIONS:
         return []
 
-    driver_path = _resolve_bazel_path(executable).strip("'")
-    browser_path = _resolve_bazel_path(binary).strip("'")
-    browser_name, vendor_key = _GRID_VENDOR_OPTIONS[driver.lower()]
-    stereotype = json.dumps({"browserName": browser_name, vendor_key: {"binary": browser_path}})
+    browser_name, vendor_key = _GRID_VENDOR_OPTIONS[driver]
+    stereotype = {"browserName": browser_name}
+    driver_configuration = [f"display-name={driver}", "max-sessions=1"]
+    executable = config.option.executable  # --driver-binary
+    binary = config.option.binary  # --browser-binary
+    if executable and binary:
+        driver_path = _resolve_bazel_path(executable).strip("'")
+        browser_path = _resolve_bazel_path(binary).strip("'")
+        driver_configuration.append(f"webdriver-executable={driver_path}")
+        stereotype[vendor_key] = {"binary": browser_path}
     return [
         "--enable-managed-downloads",
         "true",
         "--detect-drivers",
         "false",
         "--driver-configuration",
-        f"display-name={driver}",
-        "max-sessions=1",
-        f"webdriver-executable={driver_path}",
-        f"stereotype={stereotype}",
+        *driver_configuration,
+        f"stereotype={json.dumps(stereotype)}",
     ]
 
 
@@ -669,7 +671,7 @@ def server(request):
         # under Wayland, so we use XWayland instead.
         remote_env["MOZ_ENABLE_WAYLAND"] = "0"
 
-    server = Server(env=remote_env, startup_timeout=60, args=_pinned_grid_args(request.config) or None)
+    server = Server(env=remote_env, startup_timeout=60, args=_grid_args(request.config) or None)
 
     repo_root = Path(__file__).parent.parent  # py/conftest.py -> py/ -> selenium/
     jar_path = "java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"

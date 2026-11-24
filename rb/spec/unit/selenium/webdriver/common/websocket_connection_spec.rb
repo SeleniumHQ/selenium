@@ -186,6 +186,7 @@ module Selenium
         end
 
         it 'does not render the frame to a string when debug logging is off' do
+          allow(WebDriver).to receive(:logger).and_return(WebDriver::Logger.new(default_level: :info))
           allow(frame).to receive(:to_s)
 
           connection.send(:process_frame, '{"id":1,"result":{}}')

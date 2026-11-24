@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe BrowsingContext, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:browsing_context) { described_class.new(driver) }
 
           def script_target(context = driver.window_handle, sandbox: nil)
@@ -39,16 +37,21 @@ module Selenium
             Script.new(driver).evaluate(expression: expression, target: script_target(context), await_promise: false)
           end
 
+          def close_other_contexts
+            (driver.window_handles - [driver.window_handle]).each { |handle| browsing_context.close(context: handle) }
+          end
+
           describe '.new' do
             it 'errors when bidi not enabled' do
-              reset_driver!(web_socket_url: false) do |driver|
-                msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
-                expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
-              end
+              driver = local_driver(web_socket_url: false)
+              msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
+              expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
             end
           end
 
           describe '#activate' do
+            after { close_other_contexts }
+
             it 'activates an existing browsing context' do
               context = browsing_context.create(type: :tab, background: true).context
 
@@ -91,10 +94,7 @@ module Selenium
             end
 
             it 'limits the screenshot to the requested image size',
-               pending_if: [{browser_family: :chromium,
-                             version: 'stable',
-                             reason: 'Chromium ignores the captureScreenshot imageSize parameter'},
-                            {browser_family: :safari,
+               pending_if: [{browser_family: :safari,
                              reason: 'Safari ignores the captureScreenshot imageSize parameter'}] do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
 
@@ -127,6 +127,8 @@ module Selenium
           end
 
           describe '#create' do
+            after { close_other_contexts }
+
             it 'creates a tab context' do
               result = browsing_context.create(type: :tab)
 
@@ -158,26 +160,27 @@ module Selenium
                pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                             reason: 'Safari session.subscribe result fails strict deserialization'} do
               event_name = 'browsingContext.contextCreated'
-              connection = driver.send(:bridge).connection
               session = Session.new(driver)
-              events = []
-              callback = connection.add_callback(event_name) { |params| events << params }
+              events = Queue.new
+              listener = browsing_context.add_context_created_listener { |payload| events << payload }
               session.subscribe(events: [event_name])
 
               context = browsing_context.create(type: :tab).context
-              event = wait.until { events.find { |params| params['context'] == context } }
-              created = BrowsingContext::EVENT_TYPES[event_name].from_json(event)
+              created = wait.until do
+                payload = events.pop(timeout: 0)
+                payload if payload&.context == context
+              end
 
               expect(created).to be_a(BrowsingContext::ContextCreatedParameters)
               expect(created.user_context).to eq('default')
               expect(created.parent).to be_nil
             ensure
               session&.unsubscribe(events: [event_name])
-              connection.remove_callback(event_name, callback) if callback
+              browsing_context.remove_listener(listener) if listener
             end
 
             it 'accepts reference, background, and user context parameters',
-               pending_if: {browser_family: :safari,
+               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                             reason: 'Safari create_user_context result fails strict deserialization'} do
               user_context = Browser.new(driver).create_user_context.user_context
 
@@ -379,12 +382,7 @@ module Selenium
           end
 
           describe '#set_bypass_csp',
-                   pending_if: [{browser_family: :chromium,
-                                 version: 'stable',
-                                 exception: {class: Error::UnsupportedOperationError,
-                                             message: /browsingContext\.setBypassCSP/},
-                                 reason: 'Chromium returns unsupported operation for browsingContext.setBypassCSP'},
-                                {browser: :firefox,
+                   pending_if: [{browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox returns unknown command for browsingContext.setBypassCSP'},
                                 {browser_family: :safari,
@@ -397,6 +395,10 @@ module Selenium
           end
 
           describe '#set_viewport' do
+            after do
+              browsing_context.set_viewport(context: driver.window_handle, viewport: nil, device_pixel_ratio: nil)
+            end
+
             it 'sets the viewport size and device pixel ratio',
                pending_if: {browser_family: :safari,
                             reason: 'Safari accepts browsingContext.setViewport but returns undefined for the ' \
@@ -478,9 +480,7 @@ module Selenium
             end
           end
 
-          describe '#traverse_history',
-                   skip_if: {browser_family: :safari,
-                             reason: 'Times out: browsingContext.traverseHistory hangs on Safari'} do
+          describe '#traverse_history' do
             it 'moves backward and forward in the context history' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
               browsing_context.navigate(

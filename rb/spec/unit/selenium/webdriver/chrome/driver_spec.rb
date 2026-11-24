@@ -82,9 +82,11 @@ module Selenium
 
         it 'raises an ArgumentError if parameter is not recognized' do
           allow(DriverFinder).to receive(:new).and_return(finder)
+          allow(service_manager).to receive(:stop)
 
           msg = 'unknown keyword: :invalid'
           expect { described_class.new(invalid: 'foo') }.to raise_error(ArgumentError, msg)
+          expect(service_manager).to have_received(:stop)
         end
 
         it 'does not accept Options of the wrong class' do

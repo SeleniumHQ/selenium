@@ -21,9 +21,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Navigation do
-      it 'navigates back and forward',
-         pending_if: {browser_family: :safari, bidi: true,
-                      reason: 'Safari does not support BiDi browsingContext.traverseHistory'} do
+      it 'navigates back and forward' do
         form_title = 'We Leave From Here'
         result_title = 'We Arrive Here'
         form_url = url_for 'formPage.html'
@@ -59,6 +57,27 @@ module Selenium
         wait.until { driver.title != changed_title }
 
         expect(driver.title).to eq('Testing Javascript')
+      end
+
+      context 'with more than one window' do
+        let!(:original_window) { driver.window_handle }
+
+        after do
+          driver.switch_to.window(original_window)
+          (driver.window_handles - [original_window]).each do |handle|
+            driver.switch_to.window(handle) { driver.close }
+          end
+        end
+
+        it 'raises when the current window is closed' do
+          driver.switch_to.new_window(:tab)
+          driver.close
+
+          expect { driver.navigate.to url_for('formPage.html') }.to raise_error(Error::NoSuchWindowError)
+          expect { driver.navigate.back }.to raise_error(Error::NoSuchWindowError)
+          expect { driver.navigate.forward }.to raise_error(Error::NoSuchWindowError)
+          expect { driver.navigate.refresh }.to raise_error(Error::NoSuchWindowError)
+        end
       end
     end
   end # WebDriver

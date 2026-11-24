@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe Network, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:network) { described_class.new(driver) }
           let(:browsing_context) { BrowsingContext.new(driver) }
           let(:session) { Session.new(driver) }
@@ -59,10 +57,20 @@ module Selenium
             end
           end
 
+          it 'supports interception',
+             pending_if: {browser_family: :safari, exception: {class: Error::UnknownCommandError},
+                          reason: 'Safari does not support BiDi network interception; ' \
+                                  'when this passes, unskip the Safari network specs'} do
+            result = network.add_intercept(phases: [:before_request_sent])
+
+            expect(result.intercept).to be_a(String)
+          ensure
+            network.remove_intercept(intercept: result.intercept) if result&.intercept
+          end
+
           describe '#add_data_collector',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.add_data_collector'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.add_data_collector'} do
             it 'returns a collector id' do
               result = network.add_data_collector(data_types: [:response], max_encoded_data_size: 200_000_000)
 
@@ -87,9 +95,8 @@ module Selenium
           end
 
           describe '#add_intercept',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.add_intercept'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.add_intercept'} do
             it 'returns an intercept id' do
               result = network.add_intercept(phases: [:before_request_sent])
 
@@ -113,9 +120,8 @@ module Selenium
           end
 
           describe '#continue_request',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.continue_request'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.continue_request'} do
             it 'continues an intercepted request' do
               intercept = network.add_intercept(phases: [:before_request_sent])
               events, callback = subscribe('network.beforeRequestSent')
@@ -171,9 +177,8 @@ module Selenium
           end
 
           describe '#continue_response',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.continue_response'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.continue_response'} do
             it 'continues an intercepted response' do
               intercept = network.add_intercept(phases: [:response_started])
               events, callback = subscribe('network.responseStarted')
@@ -222,9 +227,8 @@ module Selenium
           end
 
           describe '#continue_with_auth',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.continue_with_auth'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.continue_with_auth'} do
             it 'provides credentials for an auth challenge' do
               username, password = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS
               intercept = network.add_intercept(phases: [:auth_required])
@@ -252,9 +256,8 @@ module Selenium
           end
 
           describe '#fail_request',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.fail_request'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.fail_request'} do
             it 'fails an intercepted request' do
               intercept = network.add_intercept(
                 phases: [:before_request_sent],
@@ -280,9 +283,8 @@ module Selenium
           end
 
           describe '#get_data',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.get_data'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.get_data'} do
             it 'gets and disowns collected response data' do
               collector = network.add_data_collector(data_types: [:response], max_encoded_data_size: 200_000_000)
               events, callback = subscribe('network.responseCompleted')
@@ -313,9 +315,8 @@ module Selenium
           end
 
           describe '#provide_response',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.provide_response'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.provide_response'} do
             it 'provides a complete response body' do
               intercept = network.add_intercept(
                 phases: [:before_request_sent],
@@ -347,9 +348,8 @@ module Selenium
           end
 
           describe '#remove_data_collector',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.remove_data_collector'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.remove_data_collector'} do
             it 'removes a collector' do
               collector = network.add_data_collector(data_types: [:response], max_encoded_data_size: 200_000_000)
 
@@ -358,9 +358,8 @@ module Selenium
           end
 
           describe '#remove_intercept',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari returns unknown command for network.remove_intercept'} do
+                   skip_if: {browser_family: :safari,
+                             reason: 'Safari returns unknown command for network.remove_intercept'} do
             it 'removes an intercept' do
               intercept = network.add_intercept(phases: [:before_request_sent])
 

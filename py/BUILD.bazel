@@ -126,7 +126,7 @@ compile_pip_requirements(
 SE_VERSION = VERSIONS["python"]
 
 BROWSER_VERSIONS = [
-    "v155",
+    "v158",
     "v156",
     "v157",
 ]
@@ -971,7 +971,10 @@ BIDI_TESTS = glob([
 ])
 
 # Tests that have bidi and classic implementations.
-BIDI_IMPLEMENTATIONS = []
+BIDI_IMPLEMENTATIONS = [
+    # ADR 18205: the snapshot runs over BiDi when the session has it, and Classic otherwise.
+    "test/selenium/webdriver/common/accessibility_snapshot_tests.py",
+]
 
 # BiDi test files with Grid-specific behavior, run through Grid as well. Empty
 # generates no targets: an empty test_suite would mean every test in the package.
@@ -1023,17 +1026,18 @@ FEATURE_TESTS = (
 # that library into every other test suite.
 ACTIONS_TESTS = [
     "test/selenium/webdriver/common/interactions_tests.py",
-    "test/selenium/webdriver/common/interactions_with_device_tests.py",
     "test/selenium/webdriver/common/w3c_interaction_tests.py",
     "test/selenium/webdriver/support/event_firing_webdriver_tests.py",
 ]
 
 DRIVER_FINDER_TESTS = ["test/selenium/webdriver/common/driver_finder_tests.py"]
 
-# Behavior that differs by host OS (window geometry, screenshots); tagged so CI
-# runs these on every OS rather than only on the Linux RBE pass.
+# Behavior that differs by host OS (window geometry, screenshots, input); tagged
+# so CI runs these on every OS rather than only on the Linux RBE pass.
 OS_SENSITIVE_TESTS = [
+    "test/selenium/webdriver/common/interactions_tests.py",
     "test/selenium/webdriver/common/takes_screenshots_tests.py",
+    "test/selenium/webdriver/common/w3c_interaction_tests.py",
     "test/selenium/webdriver/common/window_tests.py",
 ]
 
@@ -1131,8 +1135,9 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
             "--instafail",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env = BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
-        extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS},
+        extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS if src not in ACTIONS_TESTS},
         tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = browser,
@@ -1154,10 +1159,10 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
             "--instafail",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env = BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
-        tags = [
-            "os-sensitive",
-        ] + BROWSERS[browser]["tags"],
+        extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS if src in ACTIONS_TESTS},
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-actions" % browser,
         deps = [
@@ -1189,6 +1194,7 @@ FEATURE_SUITE_DEFS = {
             "--instafail",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env = BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1249,6 +1255,7 @@ FEATURE_SUITE_DEFS = {
             "--bidi",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env = BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1283,7 +1290,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
@@ -1329,7 +1336,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
@@ -1364,7 +1371,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
@@ -1400,7 +1407,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
@@ -1436,7 +1443,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",

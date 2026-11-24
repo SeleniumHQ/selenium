@@ -39,25 +39,20 @@ suite(
     })
 
     describe('Browsing Context Inspector', function () {
-      // TODO: Flaky on Firefox: the assertion doesn't wait for the new window's contextCreated
-      // event, so a late or extra event reports another context. Wait for the matching id.
-      ignore(env.browsers(Browser.FIREFOX)).it(
-        'can listen to window browsing context created event',
-        async function () {
-          let contextInfo = null
-          browsingcontextInspector = await BrowsingContextInspector(driver)
-          await browsingcontextInspector.onBrowsingContextCreated((entry) => {
-            contextInfo = entry
-          })
+      it('can listen to window browsing context created event', async function () {
+        const created = []
+        browsingcontextInspector = await BrowsingContextInspector(driver)
+        await browsingcontextInspector.onBrowsingContextCreated((entry) => {
+          created.push(entry)
+        })
 
-          await driver.switchTo().newWindow('window')
-          const windowHandle = await driver.getWindowHandle()
-          assert.equal(contextInfo.id, windowHandle)
-          assert.equal(contextInfo.url, 'about:blank')
-          assert.equal(contextInfo.children, null)
-          assert.equal(contextInfo.parentBrowsingContext, null)
-        },
-      )
+        await driver.switchTo().newWindow('window')
+        const windowHandle = await driver.getWindowHandle()
+        const contextInfo = await driver.wait(() => created.find((entry) => entry.id === windowHandle), 5000)
+        assert.equal(contextInfo.url, 'about:blank')
+        assert.equal(contextInfo.children, null)
+        assert.equal(contextInfo.parentBrowsingContext, null)
+      })
 
       it('can listen to browsing context destroyed event', async function () {
         let contextInfo = null
@@ -71,6 +66,7 @@ suite(
         const windowHandle = await driver.getWindowHandle()
         await driver.close()
 
+        await driver.wait(() => contextInfo !== null, 5000)
         assert.equal(contextInfo.id, windowHandle)
         assert.equal(contextInfo.url, 'about:blank')
 
@@ -82,16 +78,16 @@ suite(
       })
 
       it('can listen to tab browsing context created event', async function () {
-        let contextInfo = null
+        const created = []
         browsingcontextInspector = await BrowsingContextInspector(driver)
         await browsingcontextInspector.onBrowsingContextCreated((entry) => {
-          contextInfo = entry
+          created.push(entry)
         })
 
         await driver.switchTo().newWindow('tab')
         const tabHandle = await driver.getWindowHandle()
 
-        assert.equal(contextInfo.id, tabHandle)
+        const contextInfo = await driver.wait(() => created.find((entry) => entry.id === tabHandle), 5000)
         assert.equal(contextInfo.url, 'about:blank')
         assert.equal(contextInfo.children, null)
         assert.equal(contextInfo.parentBrowsingContext, null)
@@ -109,6 +105,7 @@ suite(
         })
         await browsingContext.navigate(Pages.logEntryAdded, 'complete')
 
+        await driver.wait(() => navigationInfo !== null, 5000)
         assert.equal(navigationInfo.browsingContextId, browsingContext.id)
         assert(navigationInfo.url.includes('/bidi/logEntryAdded.html'))
       })
@@ -125,6 +122,7 @@ suite(
         })
         await browsingContext.navigate(Pages.logEntryAdded, 'complete')
 
+        await driver.wait(() => navigationInfo !== null, 5000)
         assert.equal(navigationInfo.browsingContextId, browsingContext.id)
         assert(navigationInfo.url.includes('/bidi/logEntryAdded.html'))
       })
@@ -145,6 +143,7 @@ suite(
 
           await browsingContext.navigate(Pages.logEntryAdded, 'complete')
 
+          await driver.wait(() => navigationInfo !== null, 5000)
           assert.equal(navigationInfo.browsingContextId, browsingContext.id)
           assert(navigationInfo.url.includes('/bidi/logEntryAdded.html'))
         },
@@ -167,6 +166,7 @@ suite(
 
           await browsingContext.navigate(Pages.linkedImage + '#linkToAnchorOnThisPage', 'complete')
 
+          await driver.wait(() => navigationInfo !== null, 5000)
           // Chrome/Edge do not return the window's browsing context id as per the spec.
           // This assertion fails.
           assert.equal(navigationInfo.browsingContextId, browsingContext.id)
@@ -196,6 +196,7 @@ suite(
 
           await browsingContext.handleUserPrompt(true)
 
+          await driver.wait(() => userpromptOpened !== null, 5000)
           // Chrome/Edge do not return the window's browsing context id as per the spec.
           // This assertion fails.
           // It is probably a bug in the Chrome/Edge driver.
@@ -227,6 +228,7 @@ suite(
 
           await browsingContext.handleUserPrompt(true, 'selenium')
 
+          await driver.wait(() => userpromptClosed !== null, 5000)
           // Chrome/Edge do not return the window's browsing context id as per the spec.
           // This assertion fails.
           // It is probably a bug in the Chrome/Edge driver.

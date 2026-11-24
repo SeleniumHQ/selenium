@@ -53,8 +53,11 @@ A browser tag (e.g. `firefox`) matches every variant of that browser (local, rem
 bazel test //rb/spec/integration/selenium/webdriver:driver-chrome
 ```
 
-By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not
-depend on what the machine has installed. To have Selenium Manager handle this instead, pass
+By default on x64 Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do
+not depend on what the machine has installed. Elsewhere, Selenium Manager uses the pinned major
+version: it reuses an installed browser of that major or downloads one, Chrome always comes from
+Chrome for Testing, and installing Edge on Windows needs admin. To have Selenium Manager pick the
+browser and driver instead, pass
 `--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
 to ensure the latest stable version, pass
 `--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
@@ -210,8 +213,9 @@ From `spec_support/helpers.rb`:
 
 | Helper | Description |
 | --- | --- |
-| `driver` | Current WebDriver instance. |
-| `reset_driver!(...)` | Reset driver with new options. |
+| `driver` | Shared WebDriver instance, started on first use. |
+| `quit_driver` | Quit the shared driver so the next `driver` call starts a fresh one. |
+| `local_driver(...)` | Quit the shared driver and start a new one with these options for this example; it is quit after the example. Use `let(:driver) { local_driver(...) }` to give a whole group these options. |
 | `url_for(filename)` | Get test page URL (from `common/src/web`). |
 | `wait` / `short_wait` / `long_wait` | Wait instances (10s, 3s, 30s). |
 | `wait_for_element(locator)` | Wait for element to appear. |

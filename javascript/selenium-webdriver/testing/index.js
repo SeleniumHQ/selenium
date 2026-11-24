@@ -257,6 +257,10 @@ function init(force = false) {
   })
 }
 
+function isHeadless() {
+  return process.env['SE_HEADLESS'] === 'true'
+}
+
 const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */ new WeakMap()
 const URL_MAP = /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
 
@@ -306,6 +310,18 @@ class Environment {
    */
   remote() {
     return () => URL_MAP.get(this) !== null
+  }
+
+  /**
+   * Returns a predicate function that will suppress tests in this environment
+   * when it starts browsers headless, as requested by `SE_HEADLESS=true`.
+   *
+   *     ignore(env.headless()).it('installs an extension', ...)
+   *
+   * @return {function(): boolean} a new predicate function.
+   */
+  headless() {
+    return isHeadless
   }
 
   /**
@@ -369,6 +385,16 @@ class Environment {
       builder.setFirefoxOptions(new firefox.Options())
     }
 
+    if (isHeadless()) {
+      if (browser.name === Browser.CHROME) {
+        builder.getChromeOptions().addArguments('--headless')
+      } else if (browser.name === Browser.EDGE) {
+        builder.getEdgeOptions().addArguments('--headless')
+      } else if (browser.name === Browser.FIREFOX) {
+        builder.getFirefoxOptions().addArguments('-headless')
+      }
+    }
+
     builder.disableEnvironmentOverrides()
 
     const realBuild = builder.build
@@ -383,9 +409,18 @@ class Environment {
         builder.setCapability('moz:debuggerAddress', true)
       }
 
-      // Enable BiDi for supporting browsers.
+      // Enable BiDi for supporting browsers, unless the test asked for a Classic
+      // session by setting webSocketUrl to false. Browser options are merged over
+      // the base capabilities at build time, and SE_FIREFOX turns BiDi on in the
+      // Firefox options, so a Classic request has to be written there too.
       if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
-        builder.setCapability('webSocketUrl', true)
+        if (builder.getCapabilities().get('webSocketUrl') === false) {
+          for (const options of [builder.getChromeOptions(), builder.getEdgeOptions(), builder.getFirefoxOptions()]) {
+            options?.set('webSocketUrl', false)
+          }
+        } else {
+          builder.setCapability('webSocketUrl', true)
+        }
         builder.setCapability('unhandledPromptBehavior', 'ignore')
       }
 
@@ -487,7 +522,7 @@ function suite(fn, options = undefined) {
           seleniumServer = new remote.SeleniumServer(seleniumJar, {
             java: bazelJava(),
             loopback: true,
-            args: ['--host', '127.0.0.1', ...pinnedGridArgs(targetBrowsers.map((b) => b.name))],
+            args: ['--host', '127.0.0.1', ...gridArgs(targetBrowsers.map((b) => b.name))],
           })
 
           const startTimeout = 65 * 1000
@@ -607,40 +642,35 @@ function bazelJava() {
   return process.platform === 'win32' ? fs.realpathSync(java) : java
 }
 
-/** Browser name -> [driver env var, browser env var, vendor options key], for pinned browsers. */
-const PINNED_BROWSERS = {
+/** Browser name -> [driver env var, browser env var, vendor options key], for a Grid slot. */
+const GRID_BROWSERS = {
   [Browser.CHROME]: ['SE_CHROMEDRIVER', 'SE_CHROME', 'goog:chromeOptions'],
   [Browser.FIREFOX]: ['SE_GECKODRIVER', 'SE_FIREFOX', 'moz:firefoxOptions'],
   [Browser.EDGE]: ['SE_EDGEDRIVER', 'SE_EDGE', 'ms:edgeOptions'],
 }
 
 /**
- * Pins the Grid node to the Bazel-provided driver and browser; on CI, Selenium Manager would find
- * no installed browser.
+ * Gives the Grid node a slot for only the browser under test, so it doesn't run Selenium Manager
+ * for every browser at startup. A Bazel-provided driver and browser are pinned in that slot; on
+ * CI, Selenium Manager would find no installed browser.
  * @param {!Array<string>} browserNames the browsers sharing the server.
  * @return {!Array<string>} empty to keep driver detection.
  */
-function pinnedGridArgs(browserNames) {
+function gridArgs(browserNames) {
   // The command line merges repeated --driver-configuration flags into one, so only a single
-  // browser can be pinned; with several, detection must stay on to give each one a slot.
-  if (browserNames.length !== 1) {
+  // browser can have a slot; with several, detection must stay on to give each one a slot.
+  if (browserNames.length !== 1 || !(browserNames[0] in GRID_BROWSERS)) {
     return []
   }
   const [browserName] = browserNames
-  const [driverVar, browserVar, vendorKey] = PINNED_BROWSERS[browserName] ?? []
-  if (!process.env[driverVar] || !process.env[browserVar]) {
-    return []
+  const [driverVar, browserVar, vendorKey] = GRID_BROWSERS[browserName]
+  const slot = [`display-name=${browserName}`, 'max-sessions=1']
+  const stereotype = { browserName }
+  if (process.env[driverVar] && process.env[browserVar]) {
+    slot.push(`webdriver-executable=${locate(process.env[driverVar])}`)
+    stereotype[vendorKey] = { binary: locate(process.env[browserVar]) }
   }
-  const stereotype = JSON.stringify({ browserName, [vendorKey]: { binary: locate(process.env[browserVar]) } })
-  return [
-    '--detect-drivers',
-    'false',
-    '--driver-configuration',
-    `display-name=${browserName}`,
-    'max-sessions=1',
-    `webdriver-executable=${locate(process.env[driverVar])}`,
-    `stereotype=${stereotype}`,
-  ]
+  return ['--detect-drivers', 'false', '--driver-configuration', ...slot, `stereotype=${JSON.stringify(stereotype)}`]
 }
 
 function locate(fileLike) {

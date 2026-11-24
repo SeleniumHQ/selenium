@@ -296,9 +296,24 @@ module BiDiGenerate
 
   # payload_ref is the Protocol-relative class the event's params parse into (nil when
   # non-structured, dispatched raw) — the inbound counterpart to a command's result_ref.
-  Event = Struct.new(:wire_name, :event_name, :payload_ref, keyword_init: true) do
+  Event = Struct.new(:wire_name, :event_name, :payload_ref, :spec_href, keyword_init: true) do
     # An EVENT_TYPES entry mapping the wire method to the type its params parse into.
     def type_entry = "'#{wire_name}' => #{payload_ref || 'nil'}"
+
+    def listener_method = "add_#{event_name}_listener"
+
+    def render_lines(indent)
+      pad = ' ' * indent
+      lines = ["#{pad}# @api private", "#{pad}# @see #{BiDiGenerate::BIDI_DOC_URL}"]
+      lines << "#{pad}# @see #{spec_href}" if spec_href
+      lines + ["#{pad}def #{listener_method}(&block)",
+               "#{pad}  add_listener('#{wire_name}', &block)",
+               "#{pad}end"]
+    end
+
+    def rbs_signature
+      "() { (#{payload_ref || 'Hash[String, untyped]'}) -> void } -> String"
+    end
   end
 
   # The RBS type a schema value primitive maps to; an unrecognized one is untyped.
@@ -317,6 +332,11 @@ module BiDiGenerate
   # Error module does not already define (the ones whose RBS this file must declare). Rendered
   # through the same emit/render path as the domain modules.
   ErrorModule = Struct.new(:filename, :codes, :new_classes, keyword_init: true)
+
+  # The generated Protocol::Domains module (filename 'domains'): a memoized `bidi_<domain>` accessor
+  # per generated domain class, vendor domains (`moz:debugging`) included. A vendor variant nested in
+  # a spec domain (`WebExtension::Moz`) gets none; it is reached through that domain's own accessor.
+  DomainsModule = Struct.new(:filename, :domains, keyword_init: true)
 
   # ref is the Protocol-relative class path for a nested structured field (nil
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
@@ -1495,9 +1515,10 @@ module BiDiGenerate
   end
 
   # Public instance methods every accessor would shadow if it reused their name:
-  # Domain's own (`execute`/`initialize`) plus everything Object/Kernel expose. The
-  # collision guard fails generation before a schema-driven shadow can ship.
-  INHERITED_INSTANCE_METHODS = (%w[execute initialize].to_set + Object.instance_methods.to_set(&:to_s)).freeze
+  # Domain's own plus everything Object/Kernel expose. The collision guard fails generation
+  # before a schema-driven shadow can ship.
+  INHERITED_INSTANCE_METHODS = (%w[execute initialize add_listener remove_listener].to_set +
+                                Object.instance_methods.to_set(&:to_s)).freeze
 
   # Fail generation if an accessor name would collide with a command method, an
   # inherited method, or another accessor — turning a future shadow into a build error
@@ -1542,7 +1563,8 @@ module BiDiGenerate
   def self.build_event(schema, event)
     params = event['params']
     payload_ref = params && params['ref'] && schema.structured_ref(params['ref'])
-    Event.new(wire_name: event['method'], event_name: camel_to_snake(event['name']), payload_ref: payload_ref)
+    Event.new(wire_name: event['method'], event_name: camel_to_snake(event['name']), payload_ref: payload_ref,
+              spec_href: event['specHref'])
   end
 
   # The projector tags lifted-out types with {synthetic, owner, label}. Emit each
@@ -1575,6 +1597,22 @@ module BiDiGenerate
     emit(modules, output_dir, 'module.rb.erb', 'rb')
     emit(modules, sig_dir(output_dir), 'module.rbs.erb', 'rbs')
     emit_error_module(schema, output_dir)
+    emit_domains_module(modules, output_dir)
+  end
+
+  def self.domains_module(modules)
+    if modules.any? { |m| m.filename == 'domains' }
+      raise 'a domain named "domains" would collide with the Protocol::Domains module'
+    end
+
+    DomainsModule.new(filename: 'domains', domains: modules)
+  end
+
+  # Writes protocol/domains.rb (+ its .rbs), the Protocol::Domains accessor module.
+  def self.emit_domains_module(modules, output_dir)
+    mod = domains_module(modules)
+    emit([mod], output_dir, 'domains.rb.erb', 'rb')
+    emit([mod], sig_dir(output_dir), 'domains.rbs.erb', 'rbs')
   end
 
   # The ErrorCode wire values mapped to their Ruby exception class names (schema order), e.g.

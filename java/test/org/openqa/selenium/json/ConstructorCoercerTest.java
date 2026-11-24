@@ -20,11 +20,13 @@ package org.openqa.selenium.json;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -42,6 +44,16 @@ class ConstructorCoercerTest {
 
     NoDefaultConstructor bean = new Json().toType(raw, NoDefaultConstructor.class);
 
+    assertThat(bean.getValue()).isEqualTo("time");
+  }
+
+  @Test
+  void extraCoercersAreUsedForConstructorParameters() {
+    Json json = new Json(List.of(new StrictStringCoercer()));
+
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> json.toType("{\"value\": 5}", NoDefaultConstructor.class));
+    NoDefaultConstructor bean = json.toType("{\"value\": \"time\"}", NoDefaultConstructor.class);
     assertThat(bean.getValue()).isEqualTo("time");
   }
 
@@ -368,6 +380,23 @@ class ConstructorCoercerTest {
 
     public WarnOnUnknown(String value) {
       this.value = value;
+    }
+  }
+
+  private static class StrictStringCoercer extends TypeCoercer<String> {
+    @Override
+    public boolean test(Class<?> aClass) {
+      return aClass == String.class;
+    }
+
+    @Override
+    public BiFunction<JsonInput, PropertySetting, String> apply(Type type) {
+      return (input, setting) -> {
+        if (input.peek() != JsonType.STRING) {
+          throw new JsonException("Expected a string but saw " + input.peek());
+        }
+        return input.nextString();
+      };
     }
   }
 

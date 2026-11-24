@@ -620,6 +620,9 @@ module Selenium
           def evaluate: (expression: String, target: ::Selenium::WebDriver::BiDi::Protocol::Script::target, await_promise: bool, ?result_ownership: Symbol, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?user_activation: bool) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluationResult
           def get_realms: (?context: String, ?type: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::Script::GetRealmsResult
           def remove_preload_script: (script: String) -> untyped
+          def add_message_listener: () { (Script::MessageParameters) -> void } -> String
+          def add_realm_created_listener: () { (Script::RealmInfo) -> void } -> String
+          def add_realm_destroyed_listener: () { (Script::RealmDestroyedParameters) -> void } -> String
         end
       end
     end

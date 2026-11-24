@@ -1,9 +1,43 @@
+load(":browser_versions.bzl", "CHROME_BETA_MAJOR_VERSION", "CHROME_MAJOR_VERSION", "EDGE_MAJOR_VERSION", "FIREFOX_BETA_MAJOR_VERSION", "FIREFOX_MAJOR_VERSION")
+
 COMMON_TAGS = [
     "browser-test",
     # Sandboxes don't nest on macOS, so browsers can't sandbox their own processes inside Bazel's.
     "no-sandbox",
     "resources:browser:1",
 ]
+
+# Per-browser keys, unlike SE_BROWSER_VERSION, don't pin the other browsers a Grid node probes.
+# Edge's key follows the MicrosoftEdge browser name the bindings pass to Selenium Manager.
+_SE_VERSION_ENV = {
+    "chrome": "SE_CHROME_VERSION",
+    "edge": "SE_MICROSOFTEDGE_VERSION",
+    "firefox": "SE_FIREFOX_VERSION",
+}
+
+def pinned_version_env(browser, major_version, pinned_os = ["linux", "macos"]):
+    """Has Selenium Manager use the pinned major version where the test gets no pinned browser.
+
+    Selenium Manager reuses an installed browser of that major and otherwise downloads one.
+    The env, unlike a browser Selenium Manager resolves at runtime, is part of the test's cache key.
+    """
+    env = {_SE_VERSION_ENV[browser]: major_version}
+    if browser == "chrome":
+        # Chrome for Testing rather than an installed Chrome, which has different defaults
+        env["SE_FORCE_BROWSER_DOWNLOAD"] = "true"
+    return select({
+        "@selenium//common:use_pinned_%s_%s" % (os, browser): {}
+        for os in pinned_os
+    } | {
+        "@selenium//common:use_pinned_browser": env,
+        "//conditions:default": {},
+    })
+
+chrome_version_env = pinned_version_env("chrome", CHROME_MAJOR_VERSION)
+chrome_beta_version_env = pinned_version_env("chrome", CHROME_BETA_MAJOR_VERSION)
+edge_version_env = pinned_version_env("edge", EDGE_MAJOR_VERSION)
+firefox_version_env = pinned_version_env("firefox", FIREFOX_MAJOR_VERSION)
+firefox_beta_version_env = pinned_version_env("firefox", FIREFOX_BETA_MAJOR_VERSION)
 
 chromedriver_data = select({
     "@selenium//common:use_pinned_linux_chrome": [
