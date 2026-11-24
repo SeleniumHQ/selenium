@@ -18,20 +18,15 @@
 # under the License.
 
 require 'selenium/webdriver/bidi'
-require 'selenium/webdriver/bidi/protocol'
 
 module Selenium
   module WebDriver
     module Remote
       # @api private
       class BiDiBridge < Bridge
-        attr_reader :bidi, :connection
+        include BiDiCommands
 
-        READINESS_STATE = {
-          'none' => :none,
-          'eager' => :interactive,
-          'normal' => :complete
-        }.freeze
+        attr_reader :bidi, :connection
 
         def create_session(capabilities)
           super
@@ -47,44 +42,6 @@ module Selenium
           end
         end
 
-        def install_web_extension(path)
-          result = bidi_web_extension.install(extension_data: web_extension_data(path))
-          WebExtension.new(result.extension)
-        end
-
-        def uninstall_web_extension(id)
-          bidi_web_extension.uninstall(extension: id)
-          nil
-        end
-
-        def get(url)
-          bidi_browsing_context.navigate(context: @current_window, url: url, wait: readiness_state)
-          nil
-        rescue Error::NoSuchFrameError => e
-          raise Error::NoSuchWindowError, e.message
-        end
-
-        def go_back
-          bidi_browsing_context.traverse_history(context: @current_window, delta: -1)
-          nil
-        rescue Error::NoSuchFrameError => e
-          raise Error::NoSuchWindowError, e.message
-        end
-
-        def go_forward
-          bidi_browsing_context.traverse_history(context: @current_window, delta: 1)
-          nil
-        rescue Error::NoSuchFrameError => e
-          raise Error::NoSuchWindowError, e.message
-        end
-
-        def refresh
-          bidi_browsing_context.reload(context: @current_window, wait: readiness_state)
-          nil
-        rescue Error::NoSuchFrameError => e
-          raise Error::NoSuchWindowError, e.message
-        end
-
         def quit
           bidi&.close
         rescue *QUIT_ERRORS
@@ -97,10 +54,6 @@ module Selenium
           execute(:close_window).tap { |handles| bidi.close if handles.empty? }
         end
 
-        def switch_to_window(name)
-          super.tap { @current_window = name }
-        end
-
         private
 
         def validated_socket_url
@@ -109,19 +62,6 @@ module Selenium
 
           raise Error::WebDriverError,
                 "BiDi was enabled, but the remote end did not return a valid webSocketUrl: #{url.inspect}."
-        end
-
-        # A directory only resolves on the machine running the browser, so upload it to the remote
-        # end and reference the returned path; archives and base64 bytes travel inline.
-        def web_extension_data(path)
-          return bidi_web_extension.extension_base64_encoded(value: encode_extension(path)) unless File.directory?(path)
-
-          path = upload(path) if respond_to?(:upload)
-          bidi_web_extension.extension_path(path: path)
-        end
-
-        def readiness_state
-          READINESS_STATE.fetch(capabilities[:page_load_strategy] || 'normal')
         end
       end # BiDiBridge
     end # Remote
