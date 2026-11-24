@@ -92,4 +92,4 @@ See language-specific AGENTS.md for applicable deprecation usage
 - Note cross-binding impact and any follow-up issues needed
 
 ## Reviewing pull requests
-See `.github/pr_review.md` for agentic review priorities and scope.
+See `REVIEW.md` for agentic review priorities and scope.
