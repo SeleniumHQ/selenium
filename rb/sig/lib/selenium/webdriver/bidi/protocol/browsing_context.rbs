@@ -462,6 +462,20 @@ module Selenium
           def start_screencast: (context: String, ?destination_folder: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StartScreencastResult
           def stop_screencast: (screencast: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StopScreencastResult
           def traverse_history: (context: String, delta: Integer) -> untyped
+          def add_context_created_listener: () { (BrowsingContext::ContextCreatedParameters) -> void } -> String
+          def add_context_destroyed_listener: () { (BrowsingContext::Info) -> void } -> String
+          def add_dom_content_loaded_listener: () { (BrowsingContext::NavigationInfo) -> void } -> String
+          def add_download_end_listener: () { (BrowsingContext::DownloadEndParams) -> void } -> String
+          def add_download_will_begin_listener: () { (BrowsingContext::DownloadWillBeginParams) -> void } -> String
+          def add_fragment_navigated_listener: () { (BrowsingContext::NavigationInfo) -> void } -> String
+          def add_history_updated_listener: () { (BrowsingContext::HistoryUpdatedParameters) -> void } -> String
+          def add_load_listener: () { (BrowsingContext::NavigationInfo) -> void } -> String
+          def add_navigation_aborted_listener: () { (BrowsingContext::NavigationInfo) -> void } -> String
+          def add_navigation_committed_listener: () { (BrowsingContext::NavigationInfo) -> void } -> String
+          def add_navigation_failed_listener: () { (BrowsingContext::NavigationInfo) -> void } -> String
+          def add_navigation_started_listener: () { (BrowsingContext::NavigationInfo) -> void } -> String
+          def add_user_prompt_closed_listener: () { (BrowsingContext::UserPromptClosedParameters) -> void } -> String
+          def add_user_prompt_opened_listener: () { (BrowsingContext::UserPromptOpenedParameters) -> void } -> String
 
           class Moz < ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext
             class GetTreeParameters < ::Selenium::WebDriver::BiDi::Serialization::Record

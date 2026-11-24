@@ -22,6 +22,7 @@
 # below when a new BiDi domain is generated.
 require 'selenium/webdriver/common/error'
 require 'selenium/webdriver/bidi/serialization'
+require 'selenium/webdriver/bidi/dispatcher'
 require 'selenium/webdriver/bidi/transport'
 require 'selenium/webdriver/bidi/protocol/domain'
 require 'selenium/webdriver/bidi/protocol/error_code'
@@ -43,3 +44,4 @@ require 'selenium/webdriver/bidi/protocol/speculation'
 require 'selenium/webdriver/bidi/protocol/storage'
 require 'selenium/webdriver/bidi/protocol/user_agent_client_hints'
 require 'selenium/webdriver/bidi/protocol/web_extension'
+require 'selenium/webdriver/bidi/protocol/domains'

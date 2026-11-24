@@ -8,7 +8,7 @@ require 'net/http'
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v155:v155.publish
+  //java/src/org/openqa/selenium/devtools/v158:v158.publish
   //java/src/org/openqa/selenium/devtools/v156:v156.publish
   //java/src/org/openqa/selenium/devtools/v157:v157.publish
   //java/src/org/openqa/selenium/devtools/latest:latest.publish

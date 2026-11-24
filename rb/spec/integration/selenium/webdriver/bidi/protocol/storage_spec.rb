@@ -29,8 +29,6 @@ module Selenium
                  skip_if: {browser_family: :safari,
                            reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:storage) { described_class.new(driver) }
 
           def cookie_domain

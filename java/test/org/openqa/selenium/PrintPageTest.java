@@ -19,13 +19,11 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.print.PageSize;
 import org.openqa.selenium.print.PrintOptions;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
 class PrintPageTest extends JupiterTestBase {
@@ -39,9 +37,7 @@ class PrintPageTest extends JupiterTestBase {
     driver.get(pages.printPage);
   }
 
-  // TODO: Skipped for Chrome because it needs to run headless, a workaround for this is needed.
   @Test
-  @Ignore(value = CHROME)
   public void canPrintPage() {
     PrintOptions printOptions = new PrintOptions();
 
@@ -49,9 +45,7 @@ class PrintPageTest extends JupiterTestBase {
     assertThat(pdf.getContent()).contains(MAGIC_STRING);
   }
 
-  // TODO: Skipped for Chrome because it needs to run headless, a workaround for this is needed.
   @Test
-  @Ignore(value = CHROME)
   public void canPrintTwoPages() {
     PrintOptions printOptions = new PrintOptions().setPageRanges("1-2");
 
@@ -59,9 +53,7 @@ class PrintPageTest extends JupiterTestBase {
     assertThat(pdf.getContent()).contains(MAGIC_STRING);
   }
 
-  // TODO: Skipped for Chrome because it needs to run headless, a workaround for this is needed.
   @Test
-  @Ignore(value = CHROME)
   public void canPrintWithValidParams() {
     PrintOptions printOptions =
         new PrintOptions()

@@ -51,6 +51,12 @@ module Selenium
           EVENT_TYPES = {
             'speculation.prefetchStatusUpdated' => Speculation::PrefetchStatusUpdatedParameters
           }.freeze
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def add_prefetch_status_updated_listener(&block)
+            add_listener('speculation.prefetchStatusUpdated', &block)
+          end
         end # Speculation
       end # Protocol
     end # BiDi

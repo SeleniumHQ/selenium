@@ -17,14 +17,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/bidi/protocol/domains'
+
 module Selenium
   module WebDriver
     module Remote
+      # @api private
       class Bridge
         autoload :COMMANDS, 'selenium/webdriver/remote/bridge/commands'
         autoload :LocatorConverter, 'selenium/webdriver/remote/bridge/locator_converter'
 
         include Atoms
+        include BiDi::Protocol::Domains
 
         PORT = 4444
 
@@ -421,18 +425,6 @@ module Selenium
           execute :get_element_aria_label, id: element
         end
 
-        # The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one.
-        def accessibility_snapshot(root = nil, interesting_only: true)
-          unless bidi?
-            raise Error::UnsupportedOperationError,
-                  'accessibility_snapshot requires WebDriver BiDi; ' \
-                  'enable it by setting #web_socket_url to true in options class'
-          end
-
-          @accessibility_snapshotter ||= AccessibilitySnapshotter.new(self)
-          @accessibility_snapshotter.snapshot(root, interesting_only: interesting_only)
-        end
-
         def element_value(element)
           element_property element, 'value'
         end
@@ -606,14 +598,11 @@ module Selenium
         end
 
         def bidi(*)
-          raise WebDriver::Error::WebDriverError,
-                'BiDi must be enabled by setting #web_socket_url to true in options class'
+          raise WebDriver::Error::WebDriverError, connection_error_message
         end
         alias connection bidi
-        alias web_extension bidi
         alias install_web_extension bidi
         alias uninstall_web_extension bidi
-        private :web_extension
 
         def bidi?
           !@bidi.nil?
@@ -624,6 +613,10 @@ module Selenium
         end
 
         private
+
+        def connection_error_message
+          'BiDi must be enabled by setting #web_socket_url to true in options class'
+        end
 
         def encode_extension(path)
           if File.directory?(path)

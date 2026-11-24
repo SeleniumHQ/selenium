@@ -131,7 +131,7 @@ public class EnvironmentManager
             autoStartRemoteServer = driverConfig.AutoStartRemoteServer;
         }
 
-        RemoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer);
+        RemoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer, ResolveBazelJava(runfiles));
     }
 
     ~EnvironmentManager()
@@ -200,5 +200,32 @@ public class EnvironmentManager
 
         // Bazel $(location ...) emits paths relative to <runfiles>/_main.
         return Path.GetFullPath(Path.Combine(srcdir, "_main", path));
+    }
+
+    private static string ResolveBazelJava(Runfiles runfiles)
+    {
+        string locationFile = runfiles?.Rlocation("_main/dotnet/test/testing.nunit/java-location.txt");
+        if (string.IsNullOrEmpty(locationFile) || !File.Exists(locationFile))
+        {
+            return "java";
+        }
+
+        // $(JAVA) is an exec path (external/<repo>/...); without the prefix it is a runfiles path.
+        const string externalPrefix = "external/";
+        string execPath = File.ReadAllText(locationFile).Trim();
+        string runfilesPath = execPath.StartsWith(externalPrefix) ? execPath.Substring(externalPrefix.Length) : execPath;
+        string java = runfiles.Rlocation(runfilesPath);
+        if (string.IsNullOrEmpty(java) || !File.Exists(java))
+        {
+            return "java";
+        }
+
+        // Resolve the JDK symlink to its real path to dodge a Windows JVM bug mapping lib\modules.
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return new FileInfo(java).ResolveLinkTarget(returnFinalTarget: true)?.FullName ?? java;
+        }
+
+        return java;
     }
 }

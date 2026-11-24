@@ -61,6 +61,9 @@ guards combine). Use one of these five, and always include a `reason:`:
 - `pending_unless:` — expect failure unless config matches
 - `flaky:` — `skip_if` reserved for unreliable/intermittent tests
 
+A pending example keeps the shared driver running. If its expected failure leaves the browser unusable,
+use `skip_if` instead or call `quit_driver` in the example.
+
 Matching within one Hash = AND (every pair must match); an Array value within a key = OR (matches any
 listed value). An Array of Hashes lists configs matched independently, and the combined effect depends
 on the guard direction: for `skip_if`/`pending_if` the guard triggers if **any** Hash matches (OR); for

@@ -34,6 +34,8 @@ module Selenium
               'download_throughput' => 789,
               'upload_throughput' => 789
             )
+          ensure
+            driver.delete_network_conditions
           end
 
           it 'sets download path' do
@@ -55,14 +57,6 @@ module Selenium
           end
 
           describe 'PrintsPage' do
-            before(:all) { @headless = ENV.delete('HEADLESS') }
-            before { reset_driver!(args: ['--headless']) }
-
-            after(:all) do
-              quit_driver
-              ENV['HEADLESS'] = @headless
-            end
-
             let(:magic_number) { 'JVBER' }
 
             it 'returns base64 for print command' do
@@ -92,14 +86,9 @@ module Selenium
           end
 
           describe '#logs' do
-            before do
-              reset_driver!(logging_prefs: {browser: 'ALL',
-                                            driver: 'ALL',
-                                            performance: 'ALL'})
-              driver.navigate.to url_for('errors.html')
-            end
+            let(:driver) { local_driver(logging_prefs: {browser: 'ALL', driver: 'ALL', performance: 'ALL'}) }
 
-            after(:all) { reset_driver! }
+            before { driver.navigate.to url_for('errors.html') }
 
             it 'can fetch available log types' do
               expect(driver.logs.available_types).to include(:performance, :browser, :driver)
@@ -137,9 +126,6 @@ module Selenium
 
             error = /network conditions must be set before it can be retrieved/
             expect { driver.network_conditions }.to raise_error(Error::UnknownError, error)
-
-            # Need to reset because https://bugs.chromium.org/p/chromedriver/issues/detail?id=4790
-            reset_driver!
           end
 
           # This requires cast sinks to run
@@ -171,8 +157,8 @@ module Selenium
 
             expect(get_permission('clipboard-read')).to eq('denied')
             expect(get_permission('clipboard-write')).to eq('prompt')
-
-            reset_driver!
+          ensure
+            driver.add_permissions('clipboard-read' => 'prompt', 'clipboard-write' => 'granted')
           end
 
           it 'can set multiple permissions' do
@@ -185,6 +171,8 @@ module Selenium
 
             expect(get_permission('clipboard-read')).to eq('denied')
             expect(get_permission('clipboard-write')).to eq('prompt')
+          ensure
+            driver.add_permissions('clipboard-read' => 'prompt', 'clipboard-write' => 'granted')
           end
         end
 

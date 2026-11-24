@@ -73,6 +73,7 @@ build:rbe --nolegacy_important_outputs
 build:remote-cache --remote_cache=grpcs://gypsum.cluster.engflow.com
 build:remote-cache --remote_upload_local_results=false
 build:remote-cache --experimental_remote_cache_chunking
+build:remote-cache --remote_cache_compression
 build:remote-cache --grpc_keepalive_time=30s
 build:remote-cache --bes_backend=grpcs://gypsum.cluster.engflow.com
 build:remote-cache --bes_results_url=https://gypsum.cluster.engflow.com/invocation

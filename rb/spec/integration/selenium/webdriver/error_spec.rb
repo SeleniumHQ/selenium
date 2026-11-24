@@ -49,10 +49,14 @@ module Selenium
       end
 
       it 'has backtrace when using a remote server', skip_unless: {driver: :remote} do
-        driver.send(:bridge).instance_variable_set(:@session_id, 'fake_session_id')
+        bridge = driver.send(:bridge)
+        session_id = bridge.session_id
+        bridge.instance_variable_set(:@session_id, 'fake_session_id')
         driver.window_handle
       rescue WebDriver::Error::InvalidSessionIdError => e
         expect(e.backtrace).not_to be_empty
+      ensure
+        bridge.instance_variable_set(:@session_id, session_id)
       end
     end
   end # WebDriver

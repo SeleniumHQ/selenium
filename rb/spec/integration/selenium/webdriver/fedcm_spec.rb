@@ -26,8 +26,10 @@ module Selenium
                skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser_family: :chromium}] do
         let(:dialog) { driver.fedcm_dialog }
 
-        before { driver.get url_for('fedcm/fedcm.html') }
-        after { reset_driver! }
+        before do
+          driver.get url_for('fedcm/fedcm.html')
+          driver.reset_fedcm_cooldown
+        end
 
         context 'without dialog present' do
           it 'throws an error' do
@@ -79,6 +81,8 @@ module Selenium
 
           it 'sets the delay' do
             expect(driver.enable_fedcm_delay = true).to be_truthy
+          ensure
+            driver.enable_fedcm_delay = false
           end
 
           it 'resets the cooldown' do

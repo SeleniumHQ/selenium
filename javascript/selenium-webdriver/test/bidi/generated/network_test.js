@@ -20,6 +20,7 @@
 const assert = require('node:assert')
 const { suite, ignore, Pages } = require('../../../lib/test')
 const { Browser } = require('selenium-webdriver')
+const { errorType } = require('selenium-webdriver/bidi/error')
 const { Network } = require('selenium-webdriver/bidi/generated/network')
 const { BrowsingContext } = require('selenium-webdriver/bidi/generated/browsing_context')
 
@@ -137,7 +138,10 @@ suite(
       })
 
       it('throws when removing a non-existent intercept', async function () {
-        await assert.rejects(() => network.removeIntercept({ intercept: 'no-such-intercept-id' }), /no such intercept/)
+        await assert.rejects(
+          () => network.removeIntercept({ intercept: 'no-such-intercept-id' }),
+          errorType('no such intercept'),
+        )
       })
 
       it('can intercept and continue a request', async function () {

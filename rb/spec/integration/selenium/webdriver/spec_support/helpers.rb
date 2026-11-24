@@ -25,16 +25,27 @@ module Selenium
           GlobalTestEnv.driver_instance
         end
 
-        def reset_driver!(...)
-          GlobalTestEnv.reset_driver!(...)
-        end
-
         def quit_driver
           GlobalTestEnv.quit_driver
         end
 
-        def create_driver!(...)
-          GlobalTestEnv.create_driver!(...)
+        def local_driver(...)
+          GlobalTestEnv.local_driver(...)
+        end
+
+        # A leftover popup can keep its window name, so a closed `keep` is replaced with a fresh tab
+        def reset_windows(keep: nil)
+          handles = driver.window_handles
+          unless handles.include?(keep)
+            driver.switch_to.window(handles.first)
+            driver.switch_to.new_window(:tab)
+            keep = driver.window_handle
+          end
+          (handles - [keep]).each do |handle|
+            driver.switch_to.window(handle)
+            driver.close
+          end
+          driver.switch_to.window(keep)
         end
 
         def url_for(filename, secure: false)

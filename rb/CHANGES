@@ -1,3 +1,26 @@
+4.54.0 (2026-11-23)
+=========================
+* Support CDP versions: v156, v157, v158
+* stop the driver service when starting a session fails with any error (#18333)
+* [build] Automated Browser Version Update (major) with CDP (#18338)
+* add --diagnose to safaridriver when SE_DEBUG is set (#18356)
+* fail fast when a driver process exits during startup and stop it when startup fails (#18357)
+* send driver output to the logger again when it is at debug (#18358)
+* add local BiDi event listeners to the low-level modules (#18365)
+* add env to Selenium::Server so the test Grid gets the real HOME for Safari diagnose logs (#18366)
+* mark Remote::Bridge and Remote::BiDiBridge as @api private (#18368)
+
+4.53.0 (2026-11-17)
+=========================
+* Support CDP versions: v155, v156, v157
+* download the Server jar with Selenium Manager instead of the GitHub API (#18245)
+* Allocate websocket command ids atomically (#18262)
+* add the accessibility snapshot atom and the binding methods (#18232)
+* [build] Automated Browser Version Update (major) with CDP (#18278)
+* Allow to set environment variables when staring a browser (#17395)
+* [build] Automated CDDL Spec Update (#18248)
+* Remove the accessibility snapshot client implementations (#18291)
+
 4.52.0 (2026-10-29)
 =========================
 * Support CDP versions: v154, v155, v156

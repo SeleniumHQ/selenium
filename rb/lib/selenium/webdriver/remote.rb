@@ -25,6 +25,7 @@ module Selenium
     module Remote
       autoload :Features,     'selenium/webdriver/remote/features'
       autoload :Bridge,       'selenium/webdriver/remote/bridge'
+      autoload :BiDiCommands, 'selenium/webdriver/remote/bidi_commands'
       autoload :BiDiBridge,   'selenium/webdriver/remote/bidi_bridge'
       autoload :Driver,       'selenium/webdriver/remote/driver'
       autoload :Response,     'selenium/webdriver/remote/response'

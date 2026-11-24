@@ -662,8 +662,6 @@ public class KubernetesSessionFactory implements SessionFactory {
       podSpecBuilder.withPriorityClassName(inheritedPodSpec.getPriorityClassName());
     }
 
-    long sessionTimeoutSeconds = sessionTimeout.getSeconds();
-
     ObjectMetaBuilder templateMetaBuilder = new ObjectMetaBuilder().withLabels(labels);
     if (!annotations.isEmpty()) {
       templateMetaBuilder.withAnnotations(annotations);
@@ -675,7 +673,6 @@ public class KubernetesSessionFactory implements SessionFactory {
             new JobSpecBuilder()
                 .withBackoffLimit(0)
                 .withTtlSecondsAfterFinished(30)
-                .withActiveDeadlineSeconds(sessionTimeoutSeconds)
                 .withTemplate(
                     new PodTemplateSpecBuilder()
                         .withMetadata(templateMetaBuilder.build())
@@ -883,10 +880,8 @@ public class KubernetesSessionFactory implements SessionFactory {
     job.setMetadata(buildJobMetadata(jobName, labels).build());
 
     // Override Job spec fields
-    long sessionTimeoutSeconds = sessionTimeout.getSeconds();
     job.getSpec().setBackoffLimit(0);
     job.getSpec().setTtlSecondsAfterFinished(30);
-    job.getSpec().setActiveDeadlineSeconds(sessionTimeoutSeconds);
 
     // Override Pod template labels
     Map<String, String> podLabels = new HashMap<>();

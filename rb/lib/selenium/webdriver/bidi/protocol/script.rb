@@ -1059,6 +1059,27 @@ module Selenium
             params = RemovePreloadScriptParameters.new(script: script)
             execute(cmd: 'script.removePreloadScript', params: params)
           end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-script-message
+          def add_message_listener(&block)
+            add_listener('script.message', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-script-realmCreated
+          def add_realm_created_listener(&block)
+            add_listener('script.realmCreated', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#event-script-realmDestroyed
+          def add_realm_destroyed_listener(&block)
+            add_listener('script.realmDestroyed', &block)
+          end
         end # Script
       end # Protocol
     end # BiDi

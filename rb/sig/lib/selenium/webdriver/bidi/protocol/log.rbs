@@ -77,6 +77,7 @@ module Selenium
 
           EVENT_TYPES: Hash[String, untyped]
 
+          def add_entry_added_listener: () { (Log::Entry) -> void } -> String
         end
       end
     end

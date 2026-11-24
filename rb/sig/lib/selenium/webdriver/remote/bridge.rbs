@@ -39,12 +39,9 @@ module Selenium
         @escaper: untyped
 
         include Atoms
+        include BiDi::Protocol::Domains
 
         PORT: Integer
-
-        def self.element_class: () -> singleton(Element)
-
-        def self.element_class=: (singleton(Element)? klass) -> void
 
         attr_accessor http: untyped
 
@@ -216,8 +213,6 @@ module Selenium
 
         def element_aria_label: (untyped element) -> untyped
 
-        def accessibility_snapshot: (?Element? root, ?interesting_only: bool) -> AccessibilityNode
-
         def element_value: (untyped element) -> untyped
 
         def element_text: (untyped element) -> untyped
@@ -263,8 +258,6 @@ module Selenium
         def user_verified: (untyped verified, untyped authenticator_id) -> untyped
 
         private
-
-        def web_extension: () -> WebDriver::BiDi::Protocol::WebExtension
 
         def encode_extension: (String path) -> String
 

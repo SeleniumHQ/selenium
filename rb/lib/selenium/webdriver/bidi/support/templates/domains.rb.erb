@@ -1,0 +1,58 @@
+# frozen_string_literal: true
+
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+<%= generated_note %>
+
+module Selenium
+  module WebDriver
+    class BiDi
+      module Protocol
+        # A memoized accessor per generated domain, for a bridge to include. The includer supplies
+        # #connection; the domain classes load on first use, so this file loads without them.
+        # @api private
+        module Domains
+<%- mod.domains.each_with_index do |domain, index| -%>
+<%- unless index.zero? -%>
+
+<%- end -%>
+          def bidi_<%= domain.filename %>
+            @bidi_<%= domain.filename %> ||= bidi_domain(:<%= domain.ruby_class %>)
+          end
+<%- end -%>
+
+          private
+
+          # The connection is read before the protocol loads, so a session without BiDi fails cheaply.
+          def bidi_domain(name)
+            connection = self.connection
+            raise Error::WebDriverError, connection_error_message unless connection
+
+            require 'selenium/webdriver/bidi/protocol'
+            Protocol.const_get(name, false).new(connection)
+          end
+
+          # Override to tell users how the including bridge enables BiDi.
+          def connection_error_message
+            'No BiDi connection is available for this session'
+          end
+        end # Domains
+      end # Protocol
+    end # BiDi
+  end # WebDriver
+end # Selenium

@@ -270,7 +270,33 @@ class KubernetesSessionFactoryTest {
 
     assertThat(job.getSpec().getBackoffLimit()).isEqualTo(0);
     assertThat(job.getSpec().getTtlSecondsAfterFinished()).isEqualTo(30);
-    assertThat(job.getSpec().getActiveDeadlineSeconds()).isEqualTo(300L);
+    assertThat(job.getSpec().getActiveDeadlineSeconds()).isNull();
+  }
+
+  @Test
+  void buildJobSpecFromTemplatePreservesUserActiveDeadlineSeconds() {
+    Job template = createMinimalJobTemplate();
+    template.getSpec().setActiveDeadlineSeconds(7200L);
+    KubernetesSessionFactory factory = createTemplateFactory(template);
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    assertThat(job.getSpec().getActiveDeadlineSeconds()).isEqualTo(7200L);
+  }
+
+  @Test
+  void buildJobSpecFromTemplateLeavesActiveDeadlineSecondsNullWhenNotSetInTemplate() {
+    Job template = createMinimalJobTemplate();
+    template.getSpec().setActiveDeadlineSeconds(null);
+    KubernetesSessionFactory factory = createTemplateFactory(template);
+
+    Job job =
+        factory.buildJobSpecFromTemplate(
+            "test-job", new ImmutableCapabilities("browserName", "chrome"));
+
+    assertThat(job.getSpec().getActiveDeadlineSeconds()).isNull();
   }
 
   @Test

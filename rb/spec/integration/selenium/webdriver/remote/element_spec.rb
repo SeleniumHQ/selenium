@@ -36,7 +36,7 @@ module Selenium
         driver.file_detector = lambda(&:first)
       end
 
-      after { driver.file_detector = nil }
+      after { |example| driver.file_detector = nil unless example.skipped? }
 
       context 'when uploading one file' do
         it 'uses the provided file detector',
