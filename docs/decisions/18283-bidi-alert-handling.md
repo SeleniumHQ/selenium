@@ -41,7 +41,8 @@ of how they were opened, with or without a registered handler. This is required 
 4. **Support classic Configuration.** All five classic values of `unhandledPromptBehavior` capability must be supported with their classic behavior
 and apply to `alert`, `confirm`, and `prompt` dialogs. The default for those dialogs will continue to be `dismiss and notify`.
 `beforeUnload` prompts must be accepted by default. Any support for users to set the BiDi version of `unhandledPromptBehavior` with the map
-must be deprecated and removed.
+must be deprecated and removed. The capabilities a session reports must show the `unhandledPromptBehavior` value the binding applies,
+not the value the binding sends to the remote end.
 
 5. **Registering an async handler replaces `unhandledPromptBehavior`.** When a user adds an alert handler (until it is removed), they are opting out of
 all support for `unhandledPromptBehavior` values, and the handler is called with every alert, including `beforeUnload` prompts.
@@ -58,8 +59,9 @@ An alert must not be closed for the user after the callable is executed; a handl
 
 
 ```ruby
-handle = driver.alerts.add_handler { |alert| alert.type == 'beforeUnload' ? alert.accept : alert.dismiss }
+handle = driver.alerts.add_handler { |alert| alert.type == 'beforeunload' ? alert.accept : alert.dismiss }
 click_button_opening_alert
+# Remove the handler once the test no longer expects alerts
 driver.alerts.remove_handler(handle)
 ```
 
@@ -68,6 +70,7 @@ var handle = driver.alerts().addHandler(alert -> {
   if (alert.getType() == AlertType.BEFORE_UNLOAD) alert.accept(); else alert.dismiss();
 });
 clickButtonOpeningAlert();
+// Remove the handler once the test no longer expects alerts
 driver.alerts().removeHandler(handle);
 ```
 
@@ -123,6 +126,8 @@ driver.alerts().removeHandler(handle);
 - Current BiDi Users:
   - If users updated `unhandledPromptBehavior` value to a map, they no longer need that and should remove it
   - Sessions that completed only because BiDi has automatically dismissed alerts will now get the errors.
+- Handler Users:
+  - A handler is chosen when the alert's opened event arrives, which can be after the command that opened the alert returns, so a handler removed right after that command may never be called
 - Bindings must do a lot of work to compensate for what the remote end used to do
   - Always set `unhandledPromptBehavior` to `{"default": "ignore"}` to allow client to handle all prompts
   - Track open alerts and associated contexts
