@@ -16,6 +16,7 @@
 // under the License.
 
 const { getBidiConnection } = require('../lib/bidi_connection')
+const { errorFromResponse } = require('./error')
 
 // Gates Domain's constructor so `new Network(someRandomThing)` fails loudly
 // instead of silently producing a broken instance. A Symbol can't be forged
@@ -60,7 +61,7 @@ class Domain {
   async send(method, params) {
     const response = await this.#bidi.send({ method, params })
     if (response?.error !== undefined) {
-      throw new Error(`${response.error}: ${response.message}`)
+      throw errorFromResponse(response)
     }
     return response?.result
   }
