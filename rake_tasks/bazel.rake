@@ -4,6 +4,7 @@ HIGH_IMPACT_PATHS = %w[common rust/src BUILD.bazel MODULE.bazel .bazelrc .bazelv
 
 # Files outside a target's own directory that only its jobs use
 TARGET_OVERRIDES = {
+  '.editorconfig' => %w[dotnet javascript],
   '.github/workflows/ci-dotnet.yml' => 'dotnet',
   '.github/workflows/ci-java.yml' => 'java',
   '.github/workflows/ci-javascript.yml' => 'javascript',
@@ -53,7 +54,7 @@ def affected_targets_for(changed_files)
   end
 
   keys = changed_files.flat_map do |f|
-    overrides = TARGET_OVERRIDES.select { |path, _| path_under?(f, path) }.values
+    overrides = TARGET_OVERRIDES.select { |path, _| path_under?(f, path) }.values.flatten
     top_level_dir = f.split('/').first
     TEST_TARGETS.key?(top_level_dir) ? overrides + [top_level_dir] : overrides
   end
