@@ -133,6 +133,10 @@ number):
 `except`, `only`, `exclude`, and `exclusive` are older aliases of `pending_if`, `pending_unless`,
 `skip_if`, and `skip_unless` respectively.
 
+The shared driver keeps running after a pending example. If an expected failure leaves the browser unusable
+or in a state later examples would trip over, skip the example instead, or call `quit_driver` in it so the
+next example starts fresh. Any other error except a failed expectation quits the shared driver automatically.
+
 **Matching:** within one Hash every pair must match (AND); an Array value for a key matches any
 listed value (OR). For an Array of Hashes, `skip_if`/`pending_if` trigger if **any** Hash matches,
 while `skip_unless`/`pending_unless` apply unless **every** Hash matches.

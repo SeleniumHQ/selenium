@@ -88,7 +88,7 @@ module Selenium
         end
 
         def local_driver(...)
-          # Safari allows only one session at a time
+          # Only one browser session runs at a time; Safari cannot run two at all
           quit_driver
           instance = create_driver(...)
           @local_drivers_lock.synchronize { @local_drivers << instance }
