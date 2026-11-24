@@ -158,11 +158,22 @@ task :lint_shell do
   sh shellcheck, *SeleniumRake.git.ls_files('*.sh').keys
 end
 
-desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
-task :lint do
+desc 'Lint files no binding owns (workflows, shell, Bazel, copyright headers, rake tasks, Python scripts)'
+task :lint_shared do
   SeleniumRake.aggregate_errors(
     workflows: -> { Rake::Task['lint_workflows'].invoke },
     shell: -> { Rake::Task['lint_shell'].invoke },
+    buildifier: -> { Bazel.execute('run', [], '//:buildifier') },
+    copyright: -> { Bazel.execute('run', [], '//scripts:update_copyright') },
+    rubocop: -> { Bazel.execute('run', ['--', '-a'], '//rb:rubocop-rake-tasks') },
+    ruff_format: -> { Rake::Task['py:format'].invoke }
+  )
+end
+
+desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
+task :lint do
+  SeleniumRake.aggregate_errors(
+    shared: -> { Rake::Task['lint_shared'].invoke },
     rust: -> { Rake::Task['rust:lint'].invoke },
     all: -> { Rake::Task['all:lint'].invoke }
   )

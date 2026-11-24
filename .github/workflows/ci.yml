@@ -28,12 +28,7 @@ jobs:
     with:
       name: Check Shared Files
       run: |
-        ./go lint_workflows
-        ./go lint_shell
-        bazel run //:buildifier
-        bazel run //scripts:update_copyright
-        bazel run //rb:rubocop-rake-tasks -- -a
-        bazel run //py:ruff-format
+        ./go lint_shared
         ./scripts/github-actions/check-format-diff.sh
 
   # Everything but the release PR holds its binding jobs while trunk is locked, so macOS runners stay free for the release.
