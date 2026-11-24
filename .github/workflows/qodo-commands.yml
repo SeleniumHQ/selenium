@@ -37,6 +37,33 @@ jobs:
           NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
 
+  cddl:
+    if: >-
+      github.event.action != 'labeled' &&
+      github.event.pull_request.user.login == 'selenium-ci' &&
+      github.event.pull_request.head.ref == 'automated-cddl-updates'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request a Qodo review of the tests the schema change needs
+        run: |
+          stale=$(gh api "repos/$REPO/issues/$NUMBER/comments" --paginate \
+            --jq '.[] | select(.user.login == "selenium-ci" and .body == env.COMMAND and .reactions.eyes > 0) | .id') || true
+          gh pr comment "$NUMBER" --repo "$REPO" --body "$COMMAND"
+          for id in $stale; do
+            gh api -X DELETE "repos/$REPO/issues/comments/$id" || true
+          done
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMAND: >-
+            /agentic_review
+            --review_agent.issues_user_guidelines="This PR regenerates common/bidi/schema.json from the upstream CDDL specs.
+            List each command, event, type, or record field it adds, removes, or changes, skipping specHref-only changes,
+            renames that keep the same fields, and aggregate unions such as CommandData that change only because a member
+            was added. For each remaining item, raise an issue naming the binding test that should exercise it under
+            rb/spec, py/test, javascript/selenium-webdriver/test, or java/test."
+
   label:
     if: >-
       github.event.repository.fork == false &&
