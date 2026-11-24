@@ -25,18 +25,18 @@ let typesByCode
 // which loads domain.js, which loads this file.
 function types() {
   if (typesByCode) return typesByCode
-  typesByCode = new Map()
   // lib/error keeps its code-to-type table private; encodeError is its public inverse.
+  const classicByCode = new Map()
   for (const type of Object.values(error)) {
     if (type === error.WebDriverError || type?.prototype instanceof error.WebDriverError) {
       const { error: code } = error.encodeError(new type())
-      if (!typesByCode.has(code)) typesByCode.set(code, type)
+      if (!classicByCode.has(code)) classicByCode.set(code, type)
     }
   }
+  // Only BiDi's own codes are typed, so a classic-only code such as 'no such cookie' stays
+  // a plain WebDriverError like any other code outside the spec.
   const { ErrorCode } = require('./generated/common')
-  for (const code of Object.values(ErrorCode)) {
-    if (!typesByCode.has(code)) typesByCode.set(code, defineType(code))
-  }
+  typesByCode = new Map(Object.values(ErrorCode).map((code) => [code, classicByCode.get(code) ?? defineType(code)]))
   return typesByCode
 }
 
@@ -51,6 +51,8 @@ function defineType(code) {
  * and WebDriverError itself for a code outside it.
  * @param {string} code A BiDi error code, e.g. 'no such frame'.
  * @return {typeof error.WebDriverError}
+ * @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+ * @internal
  */
 function errorType(code) {
   return types().get(code) ?? error.WebDriverError
@@ -61,6 +63,8 @@ function errorType(code) {
  * @param {{error: string, message: string, stacktrace: (string|undefined)}} response
  * @return {error.WebDriverError} The error, with the wire code in `code` and the remote
  *     end's stacktrace, if any, in `remoteStacktrace`.
+ * @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+ * @internal
  */
 function errorFromResponse(response) {
   const Type = errorType(response.error)

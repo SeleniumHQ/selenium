@@ -96,6 +96,13 @@ describe('Domain error responses', function () {
     assert.strictEqual(err.message, 'moz:something new: details')
   })
 
+  it('throws a plain WebDriverError for a classic-only code that BiDi does not define', async function () {
+    const err = await rejection({ error: 'no such cookie', message: 'details' })
+
+    assert.strictEqual(err.constructor, error.WebDriverError)
+    assert.strictEqual(err.code, 'no such cookie')
+  })
+
   it('keeps the "code: message" message format callers may already match on', async function () {
     const err = await rejection({ error: 'no such frame', message: 'Context ctx-1 not found' })
     assert.strictEqual(err.message, 'no such frame: Context ctx-1 not found')
