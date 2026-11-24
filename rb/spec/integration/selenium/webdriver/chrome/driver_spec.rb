@@ -57,8 +57,6 @@ module Selenium
           end
 
           describe 'PrintsPage' do
-            # Chrome only prints to PDF when headless
-            let(:driver) { ENV['HEADLESS'] ? super() : local_driver(args: ['--headless']) }
             let(:magic_number) { 'JVBER' }
 
             it 'returns base64 for print command' do
