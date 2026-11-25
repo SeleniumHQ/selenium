@@ -44,7 +44,7 @@ module Selenium
 
       context 'with log handlers' do
         after do
-          driver.bidi.callbacks['log.entryAdded'].map(&:object_id).each do |id|
+          driver.send(:bridge).bidi.callbacks['log.entryAdded'].map(&:object_id).each do |id|
             driver.script.remove_console_message_handler(id)
           end
         end

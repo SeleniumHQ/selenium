@@ -23,12 +23,16 @@ module Selenium
   module WebDriver
     class BiDi
       describe Browser, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-        let(:bidi) { driver.bidi }
+        def browser
+          return @browser if @browser
+
+          expect { @browser = described_class.new(driver.bidi) }.to have_deprecated(%i[driver_bidi bidi_browser])
+          @browser
+        end
 
         it 'creates a user context',
            pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
-          browser = described_class.new(bidi)
           user_context = browser.create_user_context
           expect(user_context).not_to be_nil
           expect(user_context['userContext']).to be_a String
@@ -39,7 +43,6 @@ module Selenium
         it 'gets user contexts',
            pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
-          browser = described_class.new(bidi)
           created_context_id = browser.create_user_context['userContext']
           all_context_ids = browser.user_contexts['userContexts'].map { |c| c['userContext'] }
 
@@ -49,7 +52,6 @@ module Selenium
         end
 
         it 'removes an user context' do
-          browser = described_class.new(bidi)
           context_id_to_remove = browser.create_user_context['userContext']
           browser.remove_user_context(context_id_to_remove)
           all_ids_after_removal = browser.user_contexts['userContexts'].map { |c| c['userContext'] }
@@ -60,7 +62,6 @@ module Selenium
         it 'throws an error when removing the default user context',
            pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
-          browser = described_class.new(bidi)
           expect {
             browser.remove_user_context('default')
           }.to raise_error(Error::WebDriverError, /\Ainvalid argument: /)
@@ -69,7 +70,6 @@ module Selenium
         it 'throws an error when removing a non-existent user context',
            pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
-          browser = described_class.new(bidi)
           expect {
             browser.remove_user_context('fake_context')
           }.to raise_error(Error::WebDriverError, /\Ano such user context: /)
@@ -78,7 +78,6 @@ module Selenium
         it 'gets windows',
            pending_if: {browser_family: :safari,
                         reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
-          browser = described_class.new(bidi)
           windows = browser.windows
           active_window = windows.first
 
