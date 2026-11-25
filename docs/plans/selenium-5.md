@@ -46,8 +46,8 @@ These are deferred, not rejected: none blocks Selenium 5.
 
 ### Full classic-over-BiDi migration
 
-Routing every classic command through BiDi, with the binding enforcing what the classic behavior BiDi
-lacks: page load and implicit timeouts, `strictFileInteractability`, and stale element errors.
+Routing every classic command through BiDi, with the binding enforcing the classic behavior that
+BiDi lacks: page load and implicit timeouts, `strictFileInteractability`, and stale element errors.
 
 ### Partial BiDi implementation support
 
@@ -86,8 +86,7 @@ pre-set response for file dialogs.
 
 ### Navigation events and waits
 
-A navigated handler, a per-call readiness override, and new page load and HTTP read timeout
-defaults ([#12368](https://github.com/SeleniumHQ/selenium/issues/12368)).
+A navigated handler, a per-call readiness override, and a new page load timeout default.
 
 ### Capability mapping
 
