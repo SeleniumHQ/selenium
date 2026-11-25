@@ -38,6 +38,8 @@ module Selenium
         #
         # Stops every service still running in this process.
         #
+        # @api private
+        #
 
         def stop_running
           @running_mutex.synchronize {
@@ -50,6 +52,8 @@ module Selenium
         # Tracks a started service so it can be stopped at exit. One exit hook covers
         # all of them, so a service that has been stopped is not held onto.
         #
+        # @api private
+        #
 
         def track(manager)
           @running_mutex.synchronize do
@@ -58,6 +62,7 @@ module Selenium
           end
         end
 
+        # @api private
         def untrack(manager)
           @running_mutex.synchronize { @running.delete(manager) }
         end
