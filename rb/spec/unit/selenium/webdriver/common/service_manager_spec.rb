@@ -43,6 +43,7 @@ module Selenium
         before do
           described_class.instance_variable_set(:@running, [])
           described_class.instance_variable_set(:@exit_hook_pid, nil)
+          allow(Platform).to receive(:exit_hook)
         end
 
         after { described_class.stop_running }
@@ -55,8 +56,6 @@ module Selenium
           end
 
           it 'registers a single exit hook however many services start' do
-            allow(Platform).to receive(:exit_hook)
-
             2.times { build_manager.start }
 
             expect(Platform).to have_received(:exit_hook).exactly(:once)
