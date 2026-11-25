@@ -22,6 +22,76 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe ServiceManager do
+      describe 'tracking started services' do
+        subject(:manager) { build_manager }
+
+        let(:running) { described_class.instance_variable_get(:@running) }
+
+        # The service itself is never launched; only the bookkeeping around it is under test.
+        def build_manager
+          config = instance_double(Service, executable_path: '/path/to/service', port: 4444,
+                                            log: nil, args: [], env: nil, shutdown_supported: true)
+          described_class.new(config).tap do |service_manager|
+            process = instance_double(ChildProcess, start: nil, alive?: false, exited?: true)
+            allow(service_manager).to receive_messages(find_free_port: nil, build_process: process,
+                                                       connect_until_stable: nil, stop_process: nil)
+          end
+        end
+
+        # The tracking list and the pid that armed the exit hook outlive an example, so a
+        # later one would otherwise see the hook as already armed.
+        before do
+          described_class.instance_variable_set(:@running, [])
+          described_class.instance_variable_set(:@exit_hook_pid, nil)
+        end
+
+        after { described_class.stop_running }
+
+        describe '.track' do
+          it 'holds a started service so it can be stopped at exit' do
+            manager.start
+
+            expect(running).to include(manager)
+          end
+
+          it 'registers a single exit hook however many services start' do
+            allow(Platform).to receive(:exit_hook)
+
+            2.times { build_manager.start }
+
+            expect(Platform).to have_received(:exit_hook).exactly(:once)
+          end
+        end
+
+        describe '.untrack' do
+          it 'releases a service once it is stopped' do
+            manager.start
+            manager.stop
+
+            expect(running).not_to include(manager)
+          end
+        end
+
+        describe '.stop_running' do
+          it 'stops a service that is still running' do
+            manager.start
+
+            described_class.stop_running
+
+            expect(manager).to have_received(:stop_process)
+          end
+
+          it 'leaves a service inherited through a fork to the parent' do
+            manager.start
+            described_class.instance_variable_set(:@exit_hook_pid, Process.pid - 1)
+
+            described_class.stop_running
+
+            expect(manager).not_to have_received(:stop_process)
+          end
+        end
+      end
+
       unless Platform.windows?
         let(:driver_dir) { Dir.mktmpdir }
 
