@@ -30,6 +30,8 @@ module Selenium
 
         attr_reader context_tree: BiDi::ContextTree
 
+        attr_reader listener_errors: ListenerErrors
+
         def create_session: (untyped capabilities) -> void
 
         def quit: () -> void
@@ -37,6 +39,8 @@ module Selenium
         def close: () -> void
 
         private
+
+        def execute: (Symbol command, *untyped) -> untyped
 
         def validated_socket_url: () -> String
       end

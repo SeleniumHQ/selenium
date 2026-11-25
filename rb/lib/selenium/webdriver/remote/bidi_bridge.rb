@@ -26,15 +26,17 @@ module Selenium
       class BiDiBridge < Bridge
         include BiDiCommands
 
-        attr_reader :bidi, :connection, :context_tree
+        attr_reader :bidi, :connection, :context_tree, :listener_errors
 
         def create_session(capabilities)
+          @listener_errors = ListenerErrors.new
           super
 
           begin
             @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
             # Reuse the BiDi object's socket as the connection until the bridge owns it directly.
             @connection = @bidi.ws
+            @connection.before_send << ->(_payload) { @listener_errors.check }
             @context_tree = BiDi::ContextTree.new(@connection)
             @current_window = window_handle
           rescue StandardError
@@ -43,12 +45,14 @@ module Selenium
           end
         end
 
+        # A stored error is raised once the session has ended, and outside Bridge#quit's rescue of connection errors
         def quit
           bidi&.close
         rescue *QUIT_ERRORS
           nil
         ensure
           super
+          @listener_errors.check
         end
 
         def close
@@ -56,6 +60,11 @@ module Selenium
         end
 
         private
+
+        def execute(command, *)
+          @listener_errors.check unless command == :delete_session
+          super
+        end
 
         def validated_socket_url
           url = @capabilities[:web_socket_url]
