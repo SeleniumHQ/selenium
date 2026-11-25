@@ -37,13 +37,15 @@ module Selenium
         expect(driver.title).to eq(result_title)
 
         driver.navigate.back
+        # BiDi history traversal returns before the page has loaded
+        wait.until { driver.title == form_title }
 
         expect(driver.current_url).to include(form_url)
-        expect(driver.title).to eq(form_title)
 
         driver.navigate.forward
+        wait.until { driver.title == result_title }
+
         expect(driver.current_url).to include(result_url)
-        expect(driver.title).to eq(result_title)
       end
 
       it 'refreshes the page' do

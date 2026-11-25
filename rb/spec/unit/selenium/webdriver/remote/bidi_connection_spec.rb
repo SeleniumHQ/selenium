@@ -26,8 +26,8 @@ module Selenium
         let(:http) { WebDriver::Remote::Http::Default.new.tap { |client| client.server_url = 'http://localhost' } }
         let(:bridge) { Bridge.new(http_client: http) }
 
-        def stub_new_session(web_socket_url)
-          capabilities = {'browserName' => 'safari', 'webSocketUrl' => web_socket_url}
+        def stub_new_session(web_socket_url, browser_name: 'firefox')
+          capabilities = {'browserName' => browser_name, 'webSocketUrl' => web_socket_url}
           allow(http).to receive(:request)
             .and_return('value' => {'sessionId' => 'foo', 'capabilities' => capabilities})
         end
@@ -45,6 +45,57 @@ module Selenium
 
             expect { bridge.create_session({}) }
               .to raise_error(Error::WebDriverError, /did not return a valid webSocketUrl/)
+          end
+
+          it 'asks the remote end to leave every prompt open' do
+            stub_new_session(true)
+
+            expect { bridge.create_session('browserName' => 'firefox', 'webSocketUrl' => true) }
+              .to raise_error(Error::WebDriverError)
+            expect(http).to have_received(:request).with(
+              :post, anything, anything, include('"unhandledPromptBehavior":{"default":"ignore"}')
+            )
+          end
+
+          it 'leaves prompts to the remote end when BiDi is not requested' do
+            stub_new_session(true)
+
+            expect { bridge.create_session('browserName' => 'safari') }.to raise_error(Error::WebDriverError)
+            expect(http).not_to have_received(:request).with(:post, anything, anything, include('unhandledPrompt'))
+          end
+
+          it 'asks only the firstMatch candidates that request BiDi to leave prompts open' do
+            stub_new_session(true)
+            capabilities = {'firstMatch' => [{'browserName' => 'chrome', 'webSocketUrl' => true},
+                                             {'browserName' => 'safari', 'unhandledPromptBehavior' => 'accept'}]}
+
+            expect { bridge.create_session(capabilities) }.to raise_error(Error::WebDriverError)
+            first_match = [{browserName: 'chrome', webSocketUrl: true, unhandledPromptBehavior: {default: 'ignore'}},
+                           {browserName: 'safari', unhandledPromptBehavior: 'accept'}]
+            expect(http).to have_received(:request).with(
+              :post, anything, anything, {capabilities: {firstMatch: first_match}}.to_json
+            )
+          end
+
+          it 'deprecates unhandledPromptBehavior and sends ignore in its place' do
+            stub_new_session(true)
+
+            capabilities = {'browserName' => 'firefox', 'webSocketUrl' => true, 'unhandledPromptBehavior' => 'accept'}
+            expect { expect { bridge.create_session(capabilities) }.to raise_error(Error::WebDriverError) }
+              .to have_deprecated(:unhandled_prompt_behavior)
+            expect(http).to have_received(:request).with(
+              :post, anything, anything, include('"unhandledPromptBehavior":{"default":"ignore"}')
+            )
+          end
+
+          it 'leaves the prompts of a Safari candidate to safaridriver' do
+            stub_new_session(true, browser_name: 'Safari')
+            capabilities = {'browserName' => 'safari', 'webSocketUrl' => true, 'unhandledPromptBehavior' => 'accept'}
+
+            expect { bridge.create_session(capabilities) }.to raise_error(Error::WebDriverError)
+            expect(http).to have_received(:request).with(
+              :post, anything, anything, include('"unhandledPromptBehavior":"accept"')
+            )
           end
 
           it 'quits the remote session when the webSocketUrl is invalid' do
@@ -67,6 +118,10 @@ module Selenium
             allow(http).to receive(:request).with(:get, URI("#{session_url}/title"), any_args)
                                             .and_return('value' => 'title')
             allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection, close: nil))
+            allow(connection).to receive_messages(event_receiver: BiDi::Dispatcher.new,
+                                                  send_cmd: {'result' => {'subscription' => 'sub-1'}})
+            allow(connection).to receive(:send_cmd).with(hash_including(method: 'browsingContext.getTree'))
+                                                   .and_return('result' => {'contexts' => []})
             bridge.create_session({})
             bridge.listener_errors.add(error)
           end
@@ -115,11 +170,45 @@ module Selenium
                                                                     'capabilities' => capabilities})
             connection = instance_double(WebSocketConnection, before_send: [])
             allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection))
+            allow(connection).to receive_messages(event_receiver: BiDi::Dispatcher.new,
+                                                  send_cmd: {'result' => {'subscription' => 'sub-1'}})
 
             bridge.create_session({})
 
             expect(bridge.method(:install_web_extension).owner).to eq(Firefox::Features)
             expect(bridge.method(:uninstall_web_extension).owner).to eq(Firefox::Features)
+          end
+        end
+
+        describe 'prompts' do
+          let(:connection) { instance_double(WebSocketConnection, before_send: []) }
+
+          before do
+            allow(http).to receive(:request).with(:get, URI('http://localhost/session/foo/window'), any_args)
+                                            .and_return('value' => 'window-1')
+            allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection, close: nil))
+            allow(connection).to receive_messages(event_receiver: BiDi::Dispatcher.new,
+                                                  send_cmd: {'result' => {'subscription' => 'sub-1'}})
+            allow(connection).to receive(:send_cmd).with(hash_including(method: 'browsingContext.getTree'))
+                                                   .and_return('result' => {'contexts' => []})
+          end
+
+          it 'handles them over BiDi' do
+            stub_new_session('ws://localhost/session/foo')
+            bridge.create_session({})
+
+            expect(bridge.method(:accept_alert).owner).to eq(BiDiPrompts)
+            expect(bridge.alerts).to be_a(Alerts)
+          end
+
+          it 'leaves them to safaridriver and the classic Alert API in a Safari session' do
+            stub_new_session('ws://localhost/session/foo', browser_name: 'Safari Technology Preview')
+            bridge.create_session({'browserName' => 'Safari Technology Preview'})
+
+            expect(bridge.method(:accept_alert).owner).to eq(Bridge)
+            expect { bridge.alerts }.to raise_error(Error::WebDriverError, /does not send the BiDi user prompt events/)
+            prompt_events = hash_including('events' => array_including('browsingContext.userPromptOpened'))
+            expect(connection).not_to have_received(:send_cmd).with(hash_including(params: prompt_events))
           end
         end
 
@@ -131,7 +220,7 @@ module Selenium
             stub_new_session('ws://localhost/session/foo')
             allow(http).to receive(:request).with(:get, window_url, any_args).and_return('value' => 'window-1')
             allow(http).to receive(:request).with(:post, window_url, any_args).and_return('value' => nil)
-            allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection))
+            allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection, close: nil))
             navigate_result = {'navigation' => nil, 'url' => 'about:blank'}
             allow(connection).to receive_messages(event_receiver: BiDi::Dispatcher.new,
                                                   send_cmd: {'result' => navigate_result})

@@ -40,10 +40,19 @@ module Selenium
           execute(:close_window).tap { |handles| bidi.close if handles.empty? }
         end
 
+        # BiDiPrompts replaces these, except for a browser that sends no BiDi user prompt events
+        def alerts(*)
+          raise Error::WebDriverError,
+                "#{@capabilities.browser_name} does not send the BiDi user prompt events alerts need"
+        end
+        alias alert_type alerts
+        alias alert_default_value alerts
+
         private
 
-        def connect_bidi
+        def connect_bidi(alerts)
           @listener_errors = ListenerErrors.new
+          handle_prompts(alerts) if alerts.handles_prompts?(@capabilities)
 
           begin
             @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
@@ -52,10 +61,19 @@ module Selenium
             @connection.before_send << ->(_payload) { @listener_errors.check }
             @context_tree = BiDi::ContextTree.new(@connection)
             @current_window = window_handle
+            @alerts&.subscribe
           rescue StandardError
             quit
             raise
           end
+        end
+
+        def handle_prompts(alerts)
+          extend(BiDiPrompts)
+
+          @alerts = alerts
+          # The remote end reports the 'ignore' it was sent, which is not what applies
+          @capabilities[:unhandled_prompt_behavior] = nil
         end
 
         def execute(command, *)

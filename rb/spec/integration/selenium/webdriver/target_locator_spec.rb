@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe TargetLocator, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe TargetLocator do
       before { @original_window = driver.window_handle }
 
       after { reset_windows(keep: @original_window) }
@@ -311,6 +311,17 @@ module Selenium
 
           wait_for_no_alert
           expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
+        end
+
+        it 'raises when reading the type or default value without BiDi',
+           skip_unless: {bidi: false, reason: 'BiDi sessions report them'} do
+          driver.navigate.to url_for('alerts.html')
+          driver.find_element(id: 'prompt').click
+
+          alert = wait_for_alert
+          expect { alert.type }.to raise_error(Error::WebDriverError, /BiDi must be enabled/)
+          expect { alert.default_value }.to raise_error(Error::WebDriverError, /BiDi must be enabled/)
+          alert.dismiss
         end
 
         it 'raises NoAlertOpenError if no alert is present' do

@@ -21,7 +21,9 @@ module Selenium
     class Alert
       @bridge: untyped
 
-      def initialize: (untyped bridge) -> void
+      @prompt: Alerts::Prompt?
+
+      def initialize: (untyped bridge, ?Alerts::Prompt? prompt) -> void
 
       def accept: () -> untyped
 
@@ -30,6 +32,10 @@ module Selenium
       def send_keys: (untyped keys) -> untyped
 
       def text: () -> untyped
+
+      def type: () -> String
+
+      def default_value: () -> String?
     end
   end
 end

@@ -79,6 +79,10 @@ module Selenium
 
       def send_cmd: (**untyped payload) -> untyped
 
+      def waiting: () -> Array[Hash[Symbol, untyped]]
+
+      def release: (Exception error) { (Hash[Symbol, untyped]) -> bool } -> void
+
       private
 
       def bidi?: -> bool
@@ -90,6 +94,10 @@ module Selenium
       def pending_responses: () -> Hash[Integer, Thread::ConditionVariable]
 
       def write_frame: (String data) -> void
+
+      def pending_payloads: () -> Hash[Integer, Hash[Symbol, untyped]]
+
+      def register: (Hash[Symbol, untyped] payload) -> Integer
 
       def await_response: (Integer id) -> untyped
 

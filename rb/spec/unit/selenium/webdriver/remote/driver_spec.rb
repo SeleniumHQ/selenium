@@ -225,10 +225,17 @@ module Selenium
           context 'when the response has no webSocketUrl' do
             let(:returned_capabilities) { {browserName: 'chrome'} }
 
-            it 'does not use BiDi' do
-              capabilities = Remote::Capabilities.always_match(browser_name: 'chrome', web_socket_url: true)
+            it 'does not use BiDi when another firstMatch candidate does not ask for it' do
+              capabilities = Remote::Capabilities.first_match({browser_name: 'chrome'},
+                                                              {browser_name: 'firefox', web_socket_url: true})
 
               expect(bridge_for(capabilities)).not_to be_a(BiDiConnection)
+            end
+
+            it 'raises when every candidate asks for BiDi, since the remote end was told to ignore prompts' do
+              capabilities = Remote::Capabilities.always_match(browser_name: 'chrome', web_socket_url: true)
+
+              expect { bridge_for(capabilities) }.to raise_error(Error::WebDriverError, /did not return a valid/)
             end
           end
         end

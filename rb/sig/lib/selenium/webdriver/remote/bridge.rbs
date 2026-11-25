@@ -55,6 +55,8 @@ module Selenium
 
         def bidi?: () -> bool
 
+        def alerts: () -> Alerts
+
         def connection: -> untyped
 
         def install_web_extension: (String path) -> WebExtension
@@ -101,13 +103,17 @@ module Selenium
 
         def timeouts=: (untyped timeouts) -> untyped
 
-        def accept_alert: () -> untyped
+        def accept_alert: (?Alerts::Prompt? _prompt) -> untyped
 
-        def dismiss_alert: () -> untyped
+        def dismiss_alert: (?Alerts::Prompt? _prompt) -> untyped
 
-        def alert=: (untyped keys) -> untyped
+        def send_alert_text: (String keys, ?Alerts::Prompt? _prompt) -> untyped
 
-        def alert_text: () -> untyped
+        def alert_text: (?Alerts::Prompt? _prompt) -> untyped
+
+        def alert_type: (?Alerts::Prompt? prompt) -> String
+
+        def alert_default_value: (?Alerts::Prompt? prompt) -> String?
 
         def go_back: () -> untyped
 

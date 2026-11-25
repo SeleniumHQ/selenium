@@ -17,6 +17,11 @@
 
 module Selenium
   module WebDriver
+    module Error
+      class InterruptedByAlertError < UnexpectedAlertOpenError
+      end
+    end
+
     class BiDi
       module Protocol
         module ErrorCode
