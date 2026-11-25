@@ -148,7 +148,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Publish ${{ matrix.language }}
-      gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.22.1' || '' }}
       run: |
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
@@ -259,7 +258,7 @@ jobs:
       always() && !cancelled() &&
       needs.generate-docs.result != 'skipped' &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
+      (needs.publish-python.result == 'success' || !contains(fromJSON(needs.parse-tag.outputs.languages), 'python')) &&
       needs.github-release-publish.result != 'failure' &&
       needs.create-tag.result != 'failure'
     permissions:
@@ -276,7 +275,7 @@ jobs:
       always() && !cancelled() &&
       needs.create-tag.result == 'success' &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
+      (needs.publish-python.result == 'success' || !contains(fromJSON(needs.parse-tag.outputs.languages), 'python'))
     permissions:
       contents: read
     strategy:
@@ -324,7 +323,7 @@ jobs:
       always() && !cancelled() &&
       needs.reset-version.result == 'success' &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
+      (needs.publish-python.result == 'success' || !contains(fromJSON(needs.parse-tag.outputs.languages), 'python'))
     permissions:
       contents: write
       actions: read
@@ -366,18 +365,33 @@ jobs:
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
 
+  docker-selenium:
+    name: Start docker-selenium Release
+    needs: [parse-tag, github-release-publish]
+    if: needs.parse-tag.outputs.language == 'all'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions: {}
+    steps:
+      - name: Dispatch Release Preparation
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          VERSION: ${{ needs.parse-tag.outputs.version }}
+        run: gh workflow run release-preparation.yml -R SeleniumHQ/docker-selenium -f grid-version="$VERSION"
+
   unrestrict-trunk:
     name: Unrestrict Trunk Branch
     needs: [parse-tag, publish, publish-python, update-version, mirror]
     if: >-
       always() && !cancelled() &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
+      (needs.publish-python.result == 'success' || !contains(fromJSON(needs.parse-tag.outputs.languages), 'python')) &&
       needs.update-version.result == 'success' &&
       (needs.parse-tag.outputs.language != 'all' || needs.mirror.result == 'success')
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       unlock: true
+      skip-notification: true
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -385,29 +399,34 @@ jobs:
   on-release-complete:
     name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [extract-tag, check-authorization, publish, publish-python, generate-docs, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly-grid-publish, mirror, unrestrict-trunk]
+    needs: [extract-tag, parse-tag, check-authorization, publish, publish-python, generate-docs, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly-grid-build, nightly-grid-publish, mirror, unrestrict-trunk]
     if: always() && !cancelled() && needs.extract-tag.result != 'skipped' && needs.check-authorization.result != 'failure'
+    permissions:
+      actions: read
+      contents: read
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout release scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: scripts/github-actions
+          persist-credentials: false
+      - name: Summarize release
+        id: summary
+        env:
+          TAG: ${{ needs.parse-tag.outputs.tag || needs.extract-tag.outputs.tag }}
+          LANGUAGES: ${{ needs.parse-tag.outputs.languages }}
+          UNLOCK: ${{ needs.unrestrict-trunk.result }}
+        run: ./scripts/github-actions/release-summary.sh
       - name: Slack Notification
+        if: ${{ !cancelled() }}
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_ICON_EMOJI: ${{ contains(needs.*.result, 'failure') && ':rotating_light:' || (needs.publish.result == 'success' && ':white_check_mark:' || ':warning:') }}
-          SLACK_COLOR: ${{ contains(needs.*.result, 'failure') && 'failure' || (needs.publish.result == 'success' && 'good' || 'warning') }}
+          SLACK_ICON_EMOJI: ${{ steps.summary.outputs.icon || ':warning:' }}
+          SLACK_COLOR: ${{ steps.summary.outputs.color || 'warning' }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_MESSAGE: |
-            ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
-            • Selenium Published: ${{ needs.publish.result }}
-            • Python Published: ${{ needs.publish-python.result }}
-            • Tag Created: ${{ needs.create-tag.result }}
-            • GitHub Release Draft: ${{ needs.github-release-draft.result }}
-            • Docs Updated: ${{ needs.docs.result }}
-            • GitHub Release Published: ${{ needs.github-release-publish.result }}
-            • Nightly Version Updated: ${{ needs.update-version.result }}
-            • Nightly Grid: ${{ needs.nightly-grid-publish.result }}
-            • Mirror Updated: ${{ needs.mirror.result }}
-            • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
+            ${{ steps.summary.outputs.message || format('{0} release finished, but its summary could not be built.', needs.extract-tag.outputs.tag) }}
             <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>
           MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

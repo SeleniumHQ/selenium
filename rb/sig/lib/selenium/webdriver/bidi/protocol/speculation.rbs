@@ -36,6 +36,7 @@ module Selenium
 
           EVENT_TYPES: Hash[String, untyped]
 
+          def add_prefetch_status_updated_listener: () { (Speculation::PrefetchStatusUpdatedParameters) -> void } -> String
         end
       end
     end

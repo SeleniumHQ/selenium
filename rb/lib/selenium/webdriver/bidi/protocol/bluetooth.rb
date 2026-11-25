@@ -492,6 +492,30 @@ module Selenium
             )
             execute(cmd: 'bluetooth.simulateDescriptorResponse', params: params)
           end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def add_request_device_prompt_updated_listener(&block)
+            add_listener('bluetooth.requestDevicePromptUpdated', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def add_gatt_connection_attempted_listener(&block)
+            add_listener('bluetooth.gattConnectionAttempted', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def add_characteristic_event_generated_listener(&block)
+            add_listener('bluetooth.characteristicEventGenerated', &block)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          def add_descriptor_event_generated_listener(&block)
+            add_listener('bluetooth.descriptorEventGenerated', &block)
+          end
         end # Bluetooth
       end # Protocol
     end # BiDi

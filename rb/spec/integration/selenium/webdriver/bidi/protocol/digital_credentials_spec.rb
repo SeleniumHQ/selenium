@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe DigitalCredentials, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:digital_credentials) { described_class.new(driver) }
 
           describe '#set_virtual_wallet_behavior',

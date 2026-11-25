@@ -161,24 +161,6 @@ class DebugTest {
   }
 
   @Test
-  @SuppressWarnings({"deprecation", "removal"})
-  void getDebugLogLevelHonoursTheLegacyVerboseProperty() {
-    System.setProperty("selenium.webdriver.verbose", "true");
-
-    assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.INFO);
-  }
-
-  @Test
-  @SuppressWarnings({"deprecation", "removal"})
-  void getDebugLogLevelStillReportsInfoWhileDeprecated() {
-    System.setProperty("selenium.debug", "true");
-    assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.INFO);
-
-    System.clearProperty("selenium.debug");
-    assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.FINE);
-  }
-
-  @Test
   void configureLoggerDoesNothingWhenDebuggingIsOff() {
     Level levelBefore = seleniumLogger().getLevel();
 

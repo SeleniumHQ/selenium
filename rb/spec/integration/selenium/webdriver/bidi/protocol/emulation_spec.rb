@@ -28,8 +28,6 @@ module Selenium
                  skip_if: {browser_family: :safari,
                            reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
                  skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:emulation) { described_class.new(driver) }
           let(:script) { Script.new(driver) }
           let(:browsing_context) { BrowsingContext.new(driver) }
@@ -48,12 +46,7 @@ module Selenium
           end
 
           describe '#set_forced_colors_mode_theme_override',
-                   pending_if: [{browser_family: :chromium,
-                                 version: 'stable',
-                                 exception: {class: Error::UnsupportedOperationError,
-                                             message: /emulation\.setForcedColorsModeThemeOverride/},
-                                 reason: 'Chromium unsupported operation: emulation.setForcedColorsModeThemeOverride'},
-                                {browser: :firefox,
+                   pending_if: [{browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox unknown command: emulation.setForcedColorsModeThemeOverride'}] do
             it 'sets and clears forced-colors theme override' do

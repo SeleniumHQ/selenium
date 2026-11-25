@@ -20,11 +20,17 @@ package org.openqa.selenium.testing.drivers;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -44,6 +50,8 @@ import org.openqa.selenium.remote.service.DriverService;
 class OutOfProcessSeleniumServer {
 
   private static final Logger LOG = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
+  private static final Set<Browser> GRID_BROWSERS =
+      EnumSet.of(Browser.CHROME, Browser.EDGE, Browser.FIREFOX, Browser.SAFARI);
 
   private @Nullable String baseUrl = null;
   private @Nullable ExternalProcess process = null;
@@ -82,7 +90,6 @@ class OutOfProcessSeleniumServer {
             })
             .map(entry -> "--jvm_flag=-D" + entry.getKey() + "=" + entry.getValue());
 
-    // Only use Selenium Manager if we're not running with pinned browsers.
     boolean driverProvided =
         Stream.of(
                 GeckoDriverService.createDefaultService(),
@@ -100,8 +107,7 @@ class OutOfProcessSeleniumServer {
     startupArgs.add("--port");
     startupArgs.add(String.valueOf(port));
     if (!driverProvided) {
-      startupArgs.add("--selenium-manager");
-      startupArgs.add("true");
+      startupArgs.addAll(unpinnedDriverArgs(Browser.detect()));
     }
 
     ExternalProcess.Builder builder =
@@ -142,6 +148,32 @@ class OutOfProcessSeleniumServer {
     WebDriverBuilder.addShutdownAction(this::stop);
 
     return this;
+  }
+
+  // A slot for only the browser under test, so the node doesn't run Selenium Manager for every
+  // browser at startup. A config file, since Java doesn't escape a stereotype's quotes on Windows.
+  private static List<String> unpinnedDriverArgs(@Nullable Browser browser) {
+    if (browser == null || !GRID_BROWSERS.contains(browser)) {
+      return List.of("--selenium-manager", "true");
+    }
+
+    String config =
+        String.join(
+            "\n",
+            "[node]",
+            "detect-drivers = false",
+            "[[node.driver-configuration]]",
+            "display-name = \"" + browser.displayName() + "\"",
+            "[node.driver-configuration.stereotype]",
+            "browserName = \"" + browser.getCapabilities().getBrowserName() + "\"");
+    try {
+      Path configFile = Files.createTempFile("selenium-node", ".toml");
+      configFile.toFile().deleteOnExit();
+      Files.writeString(configFile, config);
+      return List.of("--config", configFile.toString());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   private File findBinRoot(File dir) {

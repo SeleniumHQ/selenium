@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "0.4.53-nightly" # don't forget to update rust/BUILD.bazel
+version = "0.4.55-nightly"
 edition = "2024"
 rust-version = "1.93"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
@@ -14,11 +14,11 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver res
 """
 
 [dependencies]
-clap = { version = "4.6.7", features = ["derive", "cargo"] }
-log = "0.4.34"
+clap = { version = "4.6.8", features = ["derive", "cargo"] }
+log = "0.4.35"
 env_logger = "0.11.11"
 regex = "1.13.1"
-tokio = { version = "1.53.3", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
+tokio = { version = "1.54.1", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.27.0"
 reqwest = { version = "0.13.5", default-features = false, features = ["rustls-no-provider"] }
 # Pin the ring crypto backend so aws-lc-sys (and its C build requirements) are
@@ -26,15 +26,15 @@ reqwest = { version = "0.13.5", default-features = false, features = ["rustls-no
 # main.rs. rustls-platform-verifier (pulled in by reqwest) is crypto-agnostic
 # and works with whichever provider is installed as the process default.
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
-zip = { version = "9.0.5", default-features = false, features = ["deflate"] }
+zip = { version = "9.6.1", default-features = false, features = ["deflate"] }
 directories = "6.0.0"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
-flate2 = "1.1.10"
+flate2 = "1.1.11"
 tar = "0.4.46"
 infer = "0.22.0"
 exitcode = "1.1.2"
-toml = "1.1.8"
+toml = "1.2.1"
 bzip2 = "0.6.1"
 sevenz-rust2 = "0.25.0"
 xz2 = "0.1.7"

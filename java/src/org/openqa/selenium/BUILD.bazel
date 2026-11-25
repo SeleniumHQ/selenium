@@ -34,7 +34,7 @@ java_export(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        ":manifest",
+        ":build-properties",
         "//java/src/org/openqa/selenium/io",
         artifact("org.jspecify:jspecify"),
     ],
@@ -90,6 +90,13 @@ javadoc(
 )
 
 java_import(
+    name = "build-properties",
+    jars = [
+        ":manifest-jar",
+    ],
+)
+
+java_import(
     name = "manifest",
     jars = [
         ":manifest-entries",
@@ -109,7 +116,7 @@ genrule(
         "//common:stamp": """
         mkdir -p META-INF &&
         echo "Selenium-Version = %s" >META-INF/selenium-build.properties &&
-        echo "Build-Revision = " $$(grep GIT_REVISION bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/selenium-build.properties &&
+        echo "Build-Revision = " $$(grep '^STABLE_GIT_REVISION ' bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/selenium-build.properties &&
         $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
     """ % SE_VERSION,
         "//conditions:default": """
@@ -140,7 +147,7 @@ genrule(
       echo "" >>META-INF/MANIFEST.MF &&
       echo Name: Build-Info >>META-INF/MANIFEST.MF &&
       echo Selenium-Version: %s >>META-INF/MANIFEST.MF &&
-      echo Build-Revision: $$(grep GIT_REVISION bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/MANIFEST.MF &&
+      echo Build-Revision: $$(grep '^STABLE_GIT_REVISION ' bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/MANIFEST.MF &&
       echo Build-Time: $$(date) >>META-INF/MANIFEST.MF &&
       $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/MANIFEST.MF
       """ % SE_VERSION,

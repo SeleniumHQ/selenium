@@ -8,11 +8,6 @@ on:
         required: false
         type: boolean
         default: true
-      compile-manager:
-        description: Build Selenium Manager from source instead of downloading the pinned binary
-        required: false
-        type: boolean
-        default: false
   workflow_dispatch:
     inputs:
       smoke:
@@ -20,17 +15,13 @@ on:
         required: false
         type: boolean
         default: false
-      compile-manager:
-        description: Build Selenium Manager from source instead of downloading the pinned binary
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
+  packages: read
 
 # Two tiers, mutually exclusive by content. `smoke` runs on every event, including
-# schedule, so the schedule-only flaky parser sees it. The full jobs run on schedule
+# schedule, so the schedule-only test health recording sees it. The full jobs run on schedule
 # or dispatch and exclude the smoke tags, so they are the nightly complement of
 # smoke rather than the whole tree.
 jobs:
@@ -83,22 +74,17 @@ jobs:
       matrix:
         os: [windows, macos]
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
-        # macOS runners are scarce, so only use for PRs and nightly runs
-        exclude:
-          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
     with:
       name: ${{ matrix.os }}
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
-      download-artifact-name: targets
+      remote-cache: true
       run: >
-        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
-        ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
-        --target_pattern_file=bazel-targets-py.txt
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
+        //py/...
 
   browser-tests:
     name: Browser Tests
@@ -117,9 +103,9 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      remote-cache: true
       run: >
         bazel test
         --config=gh-browser
-        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_tag_filters=-os-sensitive,-se-manager,-skip-rbe
         //py:test-${{ matrix.browser }}

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.safari;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -27,9 +28,16 @@ import java.io.File;
 import java.time.Duration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 @Tag("UnitTests")
+@ExtendWith(SystemStubsExtension.class)
 class SafariDriverServiceTest {
+
+  @SystemStub private EnvironmentVariables environment;
 
   @Test
   void builderPassesTimeoutToDriverService() {
@@ -45,6 +53,26 @@ class SafariDriverServiceTest {
     builderMock.withTimeout(customTimeout);
     builderMock.build();
     verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
+  }
+
+  @Test
+  void seDebugEnablesDiagnose() {
+    environment.set("SE_DEBUG", "true");
+    SafariDriverService.Builder builder = new SafariDriverService.Builder();
+
+    builder.loadSystemProperties();
+
+    assertThat(builder.createArgs()).contains("--diagnose");
+  }
+
+  @Test
+  void diagnoseIsOffByDefault() {
+    environment.set("SE_DEBUG", "false");
+    SafariDriverService.Builder builder = new SafariDriverService.Builder();
+
+    builder.loadSystemProperties();
+
+    assertThat(builder.createArgs()).doesNotContain("--diagnose");
   }
 
   public static class MockSafariDriverServiceBuilder extends SafariDriverService.Builder {

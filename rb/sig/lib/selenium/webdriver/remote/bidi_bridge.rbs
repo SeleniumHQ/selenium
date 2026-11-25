@@ -20,31 +20,15 @@ module Selenium
   module WebDriver
     module Remote
       class BiDiBridge < Bridge
-        READINESS_STATE: Hash[String, Symbol]
-
-        @browsing_context: BiDi::Protocol::BrowsingContext
+        include BiDiCommands
 
         @connection: untyped
-
-        @web_extension: BiDi::Protocol::WebExtension
 
         attr_reader bidi: BiDi
 
         attr_reader connection: untyped
 
         def create_session: (untyped capabilities) -> void
-
-        def install_web_extension: (String path) -> WebExtension
-
-        def uninstall_web_extension: (String id) -> void
-
-        def get: (String url) -> void
-
-        def go_back: () -> void
-
-        def go_forward: () -> void
-
-        def refresh: () -> void
 
         def quit: () -> void
 
@@ -53,14 +37,6 @@ module Selenium
         private
 
         def validated_socket_url: () -> String
-
-        def browsing_context: () -> BiDi::Protocol::BrowsingContext
-
-        def web_extension: () -> BiDi::Protocol::WebExtension
-
-        def web_extension_data: (String path) -> untyped
-
-        def readiness_state: () -> Symbol
       end
     end
   end

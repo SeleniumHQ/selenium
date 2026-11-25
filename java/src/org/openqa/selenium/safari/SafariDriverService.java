@@ -32,6 +32,7 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
@@ -113,6 +114,11 @@ public class SafariDriverService extends DriverService {
     }
   }
 
+  @Override
+  protected boolean hasShutdownEndpoint() {
+    return false;
+  }
+
   /** Builder used to configure new {@link SafariDriverService} instances. */
   @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
@@ -146,8 +152,8 @@ public class SafariDriverService extends DriverService {
 
     @Override
     protected void loadSystemProperties() {
-      if (diagnose == null) {
-        this.diagnose = Boolean.getBoolean(SAFARI_DRIVER_LOGGING);
+      if (Debug.isDebugAll() || (diagnose == null && Boolean.getBoolean(SAFARI_DRIVER_LOGGING))) {
+        withLogging(true);
       }
     }
 

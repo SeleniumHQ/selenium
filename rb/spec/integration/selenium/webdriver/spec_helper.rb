@@ -32,18 +32,19 @@ GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 class SeleniumTestListener
   def example_finished(notification)
     exception = notification.example.exception
-    assertion_failed = exception &&
-                       (exception.is_a?(RSpec::Expectations::ExpectationNotMetError) ||
-                        exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError))
-    pending_exception = exception.nil? && notification.example.pending && !notification.example.skip
+    return if exception.nil? || assertion_failure?(exception)
 
-    return unless (exception && !assertion_failed) || pending_exception
+    GlobalTestEnv.quit_driver
+  end
 
-    begin
-      GlobalTestEnv.reset_driver!
-    rescue *WebDriver::SpecSupport::TestEnvironment::REMOTE_DRIVER_ERRORS => e
-      WebDriver.logger.error("Failed to reset driver after example: #{e.class}: #{e.message}")
-    end
+  private
+
+  # aggregate_failures wraps an example's errors, so check each one
+  def assertion_failure?(exception)
+    return exception.all_exceptions.all? { |error| assertion_failure?(error) } if exception.respond_to?(:all_exceptions)
+
+    exception.is_a?(RSpec::Expectations::ExpectationNotMetError) ||
+      exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
   end
 end
 
@@ -99,6 +100,10 @@ RSpec.configure do |c|
 
   c.after(:suite) do
     GlobalTestEnv.quit_driver
+  end
+
+  c.after do
+    GlobalTestEnv.quit_local_drivers
   end
 
   c.filter_run_when_matching :focus

@@ -15,6 +15,8 @@ The repository README is aimed at contributors; end-user docs live elsewhere.
 
 ## Invariants (don't violate unless explicitly asked)
 - Maintain API/ABI compatibility by default (users upgrade by changing only the version number); public functionality may be removed only after it has gone through the [Deprecation policy](#deprecation-policy) below
+  - Public means what users of released artifacts call or configure: the published binding packages (Java includes Grid), Grid's CLI flags, configuration and HTTP endpoints, and Selenium Manager's CLI arguments and JSON output
+  - Not public: test code and test helpers, the interfaces of build and CI code (Bazel rules, rake tasks, workflows, scripts), code a binding marks internal, and Selenium Manager's Rust `pub` items (the crate is not published)
 - Avoid repo-wide refactors/formatting; prefer small, reversible diffs
 
 ## Toolchain
@@ -41,7 +43,7 @@ Shared/high-risk areas:
 - `common/src/` (test HTML fixtures)
 - `javascript/atoms/` (shared JS atoms; high blast radius)
 - `scripts/`, `rake_tasks/`, `.github/`, `Rakefile` (tooling/build)
-- `third_party/` treat as read-only
+- `third_party/` treat vendored code as read-only; `third_party/bazel/` (patches applied through `MODULE.bazel`) and `third_party/dotnet/devtools/` are maintained here
 - `bazel-*/` treat as generated output
 
 ## Cross-binding consistency checks
@@ -90,4 +92,4 @@ See language-specific AGENTS.md for applicable deprecation usage
 - Note cross-binding impact and any follow-up issues needed
 
 ## Reviewing pull requests
-See `.github/pr_review.md` for agentic review priorities and scope.
+See `REVIEW.md` for agentic review priorities and scope.

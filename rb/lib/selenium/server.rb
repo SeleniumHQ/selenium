@@ -130,6 +130,8 @@ module Selenium
     # @option opts [true,false] :background Run the server in the background (default: false)
     # @option opts [true,false,String] :log Either a path to a log file,
     #                                      or true to pass server log to stdout.
+    # @option opts [Hash<String, String, nil>] :env Environment variables for the server process,
+    #                                              merged into the inherited environment.
     # @raise [Errno::ENOENT] if the jar file does not exist
     #
 
@@ -145,6 +147,7 @@ module Selenium
       @background = opts.fetch(:background, false)
       @additional_args = opts.fetch(:args, [])
       @log = opts[:log]
+      @env = opts[:env]
       if opts[:log_level]
         @log ||= true
         @additional_args << '--log-level'
@@ -212,15 +215,26 @@ module Selenium
         server_command = [@java] + properties + args + @additional_args
         cp = WebDriver::ChildProcess.build(*server_command)
 
-        if @log.is_a?(String)
-          cp.io = @log
-        elsif @log
-          cp.io = :out
-        end
-
+        cp.env = @env if @env
+        cp.io = log_io
         cp.detach = @background
 
         cp
+      end
+    end
+
+    def log_io
+      io = @log.is_a?(String) ? @log : (:out if @log)
+      if ENV.key?('SE_DEBUG')
+        if @log.is_a?(String)
+          WebDriver.logger.warn('SE_DEBUG is set; overriding user-specified server log output to use stderr',
+                                id: :se_debug)
+        end
+        WebDriver.logger.io
+      elsif WebDriver.logger.debug?
+        io || WebDriver.logger.io
+      else
+        io
       end
     end
 

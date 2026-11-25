@@ -159,7 +159,7 @@ module Selenium
 
       describe '#double_click', skip_if: {browser_family: :safari} do
         # https://issues.chromium.org/issues/400087471
-        before { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
+        before { quit_driver if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
         it 'presses pointer twice' do
           driver.navigate.to url_for('javascriptPage.html')

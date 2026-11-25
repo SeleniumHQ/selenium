@@ -31,25 +31,21 @@ module Selenium
         end
 
         it 'instantiates the browser with the correct profile' do
-          reset_driver!(profile: profile) do |driver|
-            expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
-          end
+          driver = local_driver(profile: profile)
+          expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
         end
 
         it 'is able to use the same profile more than once',
            skip_if: {driver: :remote, rbe: true, reason: 'Cannot start 2+ drivers at once.'} do
-          reset_driver!(profile: profile) do |driver1|
-            expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
-            reset_driver!(profile: profile) do |driver2|
-              expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
-            end
-          end
+          driver1 = local_driver(profile: profile)
+          expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
+          driver2 = local_driver(profile: profile)
+          expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
         end
 
         it 'ships preferences from an existing profile directory' do
-          reset_driver!(profile: described_class.new(profile.layout_on_disk)) do |driver|
-            expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
-          end
+          driver = local_driver(profile: described_class.new(profile.layout_on_disk))
+          expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
         end
       end
     end # Firefox

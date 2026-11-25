@@ -242,15 +242,8 @@ public class By
             throw new ArgumentNullException(nameof(classNameToFind), "Cannot find elements when the class name expression is null.");
         }
 
+        ThrowIfClassNameHasWhitespace(classNameToFind);
         string selector = "." + EscapeCssSelector(classNameToFind);
-        if (selector.Contains(" "))
-        {
-            // Finding elements by class name with whitespace is not allowed.
-            // However, converting the single class name to a valid CSS selector
-            // by prepending a '.' may result in a still-valid, but incorrect
-            // selector. Thus, we short-circuit that behavior here.
-            throw new InvalidSelectorException("Compound class names not allowed. Cannot have whitespace in class name. Use CSS selectors instead.");
-        }
 
         return new By(CssSelectorMechanism, selector)
         {
@@ -383,22 +376,42 @@ public class By
     }
 
     /// <summary>
-    /// Escapes invalid characters in a CSS selector.
+    /// Rejects a class name that contains whitespace. The check uses the original name
+    /// because a leading-digit escape ends with a space, and that space is not a second class.
     /// </summary>
-    /// <param name="selector">The selector to escape.</param>
-    /// <returns>The selector with invalid characters escaped.</returns>
+    /// <param name="className">The class name to check.</param>
+    /// <exception cref="InvalidSelectorException">If <paramref name="className"/> contains whitespace.</exception>
+    internal static void ThrowIfClassNameHasWhitespace(string className)
+    {
+        if (className.IndexOfAny(CssWhitespace) >= 0)
+        {
+            throw new InvalidSelectorException("Compound class names not allowed. Cannot have whitespace in class name. Use CSS selectors instead.");
+        }
+    }
+
+    /// <summary>
+    /// Escapes a value so it can be used as a CSS identifier, for example after <c>#</c> or <c>.</c>.
+    /// The result is also safe inside a single-quoted attribute value such as <c>[name='...']</c>.
+    /// </summary>
+    /// <param name="selector">The value to escape.</param>
+    /// <returns>The escaped value.</returns>
     internal static string EscapeCssSelector(string selector)
     {
         string escaped = InvalidCharsRegex.Replace(selector, @"\$1");
-        if (selector.Length > 0 && char.IsDigit(selector[0]))
+        // CSS drops a backslash followed by a newline, so newlines need hex escapes instead.
+        escaped = escaped.Replace("\\\n", "\\a ").Replace("\\\r", "\\d ").Replace("\\\f", "\\c ");
+        // Only ASCII 0-9 need the leading-digit escape. Other Unicode digits are already
+        // valid identifier starts, and escaping them collides with a different ASCII digit.
+        if (escaped.Length > 0 && escaped[0] >= '0' && escaped[0] <= '9')
         {
-            int digitCode = 30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture);
-
-            escaped = $"\\{digitCode.ToString(CultureInfo.InvariantCulture)} {selector.Substring(1)}";
+            int digitCode = 30 + (escaped[0] - '0');
+            escaped = "\\" + digitCode.ToString(CultureInfo.InvariantCulture) + " " + escaped.Substring(1);
         }
 
         return escaped;
     }
 
-    private static readonly Regex InvalidCharsRegex = new Regex(@"([ '""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", RegexOptions.Compiled);
+    private static readonly char[] CssWhitespace = { ' ', '\t', '\n', '\v', '\f', '\r' };
+
+    private static readonly Regex InvalidCharsRegex = new Regex("([ \\t\\n\\x0B\\f\\r'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]()])", RegexOptions.Compiled);
 }

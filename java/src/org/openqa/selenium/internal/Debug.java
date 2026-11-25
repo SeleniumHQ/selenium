@@ -72,19 +72,6 @@ public class Debug {
   }
 
   /**
-   * Returns the level that legacy call sites use for their diagnostic messages.
-   *
-   * @return {@link Level#INFO} while {@link #isDebugging()} is {@code true}, {@link Level#FINE}
-   *     otherwise
-   * @deprecated Log diagnostics at a fixed level such as {@link Level#FINE}. {@link
-   *     #configureLogger()} makes those records visible when debugging is enabled.
-   */
-  @Deprecated(forRemoval = true)
-  public static Level getDebugLogLevel() {
-    return isDebugging() ? Level.INFO : Level.FINE;
-  }
-
-  /**
    * Returns whether the {@code SE_DEBUG} environment variable is set to {@code true}.
    *
    * <p>The first time this returns {@code true}, a warning is printed to {@code System.err}.

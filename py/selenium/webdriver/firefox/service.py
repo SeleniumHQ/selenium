@@ -21,7 +21,7 @@ import sys
 from collections.abc import Mapping, Sequence
 from typing import IO, Any
 
-from selenium.webdriver.common import service, utils
+from selenium.webdriver.common import service
 
 
 class Service(service.Service):
@@ -76,13 +76,16 @@ class Service(service.Service):
             **kwargs,
         )
 
-        # Set a port for CDP
-        if "--connect-existing" not in self._service_args:
+        has_websocket_port = any(arg.startswith("--websocket-port") for arg in self._service_args)
+        if "--connect-existing" not in self._service_args and not has_websocket_port:
             self._service_args.append("--websocket-port")
-            self._service_args.append(f"{utils.free_port()}")
+            self._service_args.append("0")
 
     def command_line_args(self) -> list[str]:
         return ["--port", f"{self.port}"] + self._service_args
+
+    def send_remote_shutdown_command(self) -> None:
+        """Skip the shutdown request: geckodriver has no /shutdown endpoint, so stop() just ends the process."""
 
     @property
     def service_args(self) -> Sequence[str]:

@@ -10,5 +10,5 @@ push_commands = [
     "/agentic_review",
 ]
 
-[agentic_review]
-extra_instructions = "Look at the guidelines in .github/pr_review.md when evaluating this PR."
+[review_agent]
+enable_review_md = true

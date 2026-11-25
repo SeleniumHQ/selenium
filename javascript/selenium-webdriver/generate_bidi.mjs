@@ -273,13 +273,9 @@ function generateTypeScript(ast, model, vendorModel, args) {
     `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types`,
   )
 
-  // A type a vendor extends keeps undeclared fields (`moz:name` on browsingContext.Info) instead of
-  // dropping them, as the Ruby generator does; the vendor variant types only command params.
-  for (const section of Object.values(schema.vendor ?? {})) {
-    for (const typeName of Object.keys(section.extends ?? {})) {
-      if (schema.types[typeName]) schema.types[typeName] = { ...schema.types[typeName], extensible: true }
-    }
-  }
+  foldVendorExtensions(schema)
+
+  aliasMapRecords(schema)
 
   const typesByDomain = groupTypesByDomain(schema.types)
   const allCommands = schemaToCommands(schema)
@@ -310,6 +306,33 @@ function generateTypeScript(ast, model, vendorModel, args) {
   }
 
   console.log('Done.')
+}
+
+/**
+ * Turns each field-less map record (a CDDL `{* text => V}` group the projector lifts out
+ * as a synthetic type) into an alias of `{ map: V }`. Emitted as a record, it would have no
+ * declared keys, so every received entry would be warned about and dropped as undeclared;
+ * as a map, each key is declared by the map's rule and each value is held to V (ADR 17786
+ * decisions 4, 7, 9 and 10). An alias keeps the type's exported name.
+ */
+function aliasMapRecords(schema) {
+  const sections = [schema, ...Object.values(schema.vendor ?? {})]
+  const maps = new Set()
+  for (const section of sections) {
+    for (const [name, node] of Object.entries(section.types ?? {})) {
+      if (node.kind === 'record' && node.map !== undefined && node.fields.length === 0) {
+        section.types[name] = { kind: 'alias', type: { map: node.map } }
+        maps.add(name)
+      }
+    }
+  }
+  // A union resolves its variants as records or unions, so it cannot select a map.
+  for (const section of sections) {
+    for (const [name, node] of Object.entries(section.types ?? {})) {
+      const variant = node.kind === 'union' ? node.variants.find((v) => maps.has(v)) : undefined
+      if (variant) throw new Error(`${name}: union variant ${variant} is a map, which a union cannot select`)
+    }
+  }
 }
 
 // ============================================================
@@ -644,8 +667,9 @@ function schemaToCommand(c) {
 
 /**
  * The vendor variants of one spec domain, one per namespace (`moz` → `MozWebExtension`), each a
- * subclass of the shared domain class, so a non-matching browser never sees a vendor field or
- * command. Mirrors Ruby's generator (bidi_generate.rb#vendor_modules_for):
+ * subclass of the shared domain class, so the shared class never sends a vendor field or command
+ * (received vendor fields are folded into the shared types by foldVendorExtensions). Mirrors
+ * Ruby's generator (bidi_generate.rb#vendor_modules_for):
  *
  * - a command whose params type a vendor extends (`webExtension.InstallParameters` +
  *   `moz:permanent`) is overridden to take a params record of the shared fields plus the typed
@@ -696,6 +720,41 @@ function buildVendorModules(schema, domain, parentClassName, specCommands) {
     if (commands.length === 0) return []
     return [{ namespace, className: `${pascalCase(namespace)}${parentClassName}`, parentClassName, types, commands }]
   })
+}
+
+/**
+ * Folds each vendor's fields into the spec types it extends. ADR 17786 counts a supported vendor's
+ * extensions as the spec, so they are declared fields: typed and validated, never a reason to make
+ * the type extensible (#18184). Fields on a spec command's params go only to that command's vendor
+ * variant (buildVendorModules), so a vendor value reaches the wire only through the vendor class.
+ * Fields on any other type join it as optional fields, because it is received through the shared
+ * class whatever the browser. That includes a type the spec marks extensible
+ * (session.CapabilityRequest): its vendor fields are declared all the same, so they are typed rather
+ * than left to its extension map, which keeps carrying other browsers' fields.
+ */
+function foldVendorExtensions(schema) {
+  const vendorTypes = Object.assign({}, ...Object.values(schema.vendor ?? {}).map((s) => s.types ?? {}))
+  for (const [namespace, section] of Object.entries(schema.vendor ?? {})) {
+    for (const [typeName, entry] of Object.entries(section.extends ?? {})) {
+      const base = schema.types[typeName]
+      if (base?.kind !== 'record') {
+        throw new Error(`vendor ${namespace} extends ${typeName}, which is not a record`)
+      }
+      const wires = new Set(base.fields.map((f) => f.wire))
+      const redeclared = entry.fields.find((f) => wires.has(f.wire))
+      if (redeclared) throw new Error(`vendor ${namespace} redeclares ${redeclared.wire} on ${typeName}`)
+      if (schema.commands.some((c) => c.params?.ref === typeName)) continue
+
+      const taken = new Set(base.fields.map((f) => f.name))
+      const fields = entry.fields.map((f) => {
+        const name = `${namespace}${pascalCase(f.name.replace(`${namespace}:`, ''))}`
+        if (taken.has(name)) throw new Error(`vendor field ${f.wire} on ${typeName} collides with ${name}`)
+        return { ...f, name, required: false }
+      })
+      schema.types[typeName] = { ...base, fields: [...base.fields, ...fields] }
+      for (const ref of fields.flatMap((f) => refsIn(f.type))) collectVendorTypes(ref, vendorTypes, schema.types)
+    }
+  }
 }
 
 /** Adds `name` and every vendor type it transitively references to `into`; spec types are left to their own domain. */
@@ -1014,6 +1073,7 @@ function generateDomainFile({ domain, className, types, commands, events, vendor
         if (owner) (owner.enumConstants ??= []).push(constant)
         else enumConstants.push(constant)
       }
+      parts.push(INTERNAL_TYPE_DOC)
       parts.push(declared.ts)
       parts.push('')
     }
@@ -1023,6 +1083,7 @@ function generateDomainFile({ domain, className, types, commands, events, vendor
     parts.push(`// --- Enum constants ---`)
     parts.push('')
     for (const { propertyName, values } of enumConstants) {
+      parts.push(INTERNAL_TYPE_DOC)
       parts.push(`export const ${propertyName} = ${generateEnumConstantLiteral(values)}`)
     }
     parts.push('')
@@ -1062,14 +1123,23 @@ function generateDomainFile({ domain, className, types, commands, events, vendor
   return parts.join('\n') + '\n'
 }
 
-// Disclaimer attached to every generated class — matches Java's BiDiGenerator.
+// The BiDi implementation is internal, and each binding marks it so by its own convention. `@internal`
+// is the TypeScript one, as Java uses @ApiStatus.Internal and Ruby @api private; all three link the
+// same page.
+const INTERNAL_API_DOC_URL = 'https://www.selenium.dev/documentation/warnings/bidi-implementation/'
+
 const INTERNAL_API_DOC = [
   '/**',
   ' * This is an unsupported API. No compatibility guarantees are provided.',
   ' * It tracks the W3C WebDriver BiDi specification directly. As the specification',
   ' * evolves, this API will change or be removed without prior notice.',
+  ' *',
+  ` * @see ${INTERNAL_API_DOC_URL}`,
+  ' * @internal',
   ' */',
 ].join('\n')
+
+const INTERNAL_TYPE_DOC = `/** Unsupported BiDi implementation type, see ${INTERNAL_API_DOC_URL} @internal */`
 
 // camelCase -> SCREAMING_SNAKE_CASE, for event descriptor constant names
 // ("beforeRequestSent" -> "BEFORE_REQUEST_SENT") and enum constant keys

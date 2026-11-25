@@ -4,7 +4,7 @@ require 'git'
 require 'net/http'
 require 'fileutils'
 
-BINDING_TARGETS = {
+TEST_TARGETS = {
   'java' => '//java/...',
   'py' => '//py/...',
   'rb' => '//rb/...',

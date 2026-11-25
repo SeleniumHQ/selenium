@@ -242,44 +242,46 @@ def verify_url(url):
     return r.status == 200
 
 
-def find_matching_edge_version(platform):
-    """Find the latest Edge version where both browser and driver are available."""
-    browsers = get_edge_versions(platform)
-
-    # Sort by version descending (newest first)
-    browsers.sort(key=lambda x: parse(x["version"]), reverse=True)
-
-    for browser in browsers:
-        if not verify_url(browser["url"]):
-            print(
-                f"  Browser {browser['version']} not downloadable for {platform}",
-                file=sys.stderr,
-            )
-            continue
-
-        major = browser["version"].split(".")[0]
-        driver_version = get_edgedriver_version(major, platform)
-        if not driver_version:
-            print(f"  No driver for {platform} major version {major}", file=sys.stderr)
-            continue
-
-        driver_url = get_edgedriver_url(driver_version, platform)
-        if not driver_url:
-            print(
-                f"  Driver {driver_version} not downloadable for {platform}",
-                file=sys.stderr,
-            )
-            continue
-
+def edge_platform_match(browser, platform):
+    """Return the browser and its driver if both are downloadable for the platform, else None."""
+    if not verify_url(browser["url"]):
         print(
-            f"  Found match: browser={browser['version']}, driver={driver_version}",
+            f"  Browser {browser['version']} not downloadable for {platform}",
             file=sys.stderr,
         )
-        return {
-            "browser": browser,
-            "driver_version": driver_version,
-            "driver_url": driver_url,
-        }
+        return None
+
+    major = browser["version"].split(".")[0]
+    driver_version = get_edgedriver_version(major, platform)
+    if not driver_version:
+        print(f"  No driver for {platform} major version {major}", file=sys.stderr)
+        return None
+
+    driver_url = get_edgedriver_url(driver_version, platform)
+    if not driver_url:
+        print(
+            f"  Driver {driver_version} not downloadable for {platform}",
+            file=sys.stderr,
+        )
+        return None
+
+    return {
+        "browser": browser,
+        "driver_version": driver_version,
+        "driver_url": driver_url,
+    }
+
+
+def find_matching_edge_version():
+    """Find the latest Edge version whose browser and driver are available on both Linux and macOS."""
+    browsers = {platform: {b["version"]: b for b in get_edge_versions(platform)} for platform in ["linux", "mac"]}
+    shared_versions = sorted(browsers["linux"].keys() & browsers["mac"].keys(), key=parse, reverse=True)
+
+    for version in shared_versions:
+        matches = {platform: edge_platform_match(browsers[platform][version], platform) for platform in browsers}
+        if all(matches.values()):
+            print(f"  Found match: browser={version}", file=sys.stderr)
+            return matches
 
     return None
 
@@ -337,39 +339,21 @@ js_library(
 
 
 def edge_and_edgedriver():
-    """Fetch Edge browser and EdgeDriver, ensuring versions are compatible."""
-    matches = {}
+    """Fetch one Edge version and its EdgeDrivers for both Linux and macOS, like Chrome and Firefox."""
+    print("Finding an Edge version available on Linux and macOS...", file=sys.stderr)
+    matches = find_matching_edge_version()
+    if not matches:
+        print("Warning: No Edge browser/driver found for both Linux and macOS", file=sys.stderr)
+        return "", None
 
-    for platform in ["mac", "linux"]:
-        print(f"Finding matching Edge version for {platform}...", file=sys.stderr)
-        match = find_matching_edge_version(platform)
-        if match:
-            matches[platform] = match
-        else:
-            print(
-                f"Warning: No matching Edge browser/driver found for {platform}",
-                file=sys.stderr,
-            )
+    mac_browser = matches["mac"]["browser"]
+    linux_browser = matches["linux"]["browser"]
+    content = mac_edge_browser_content(mac_browser["url"], mac_browser["hash"], mac_browser["version"])
+    content += linux_edge_browser_content(linux_browser["url"], linux_browser["hash"])
+    content += edgedriver_content("linux_edgedriver", matches["linux"]["driver_url"])
+    content += edgedriver_content("mac_edgedriver", matches["mac"]["driver_url"])
 
-    content = ""
-
-    # Output browsers first: mac, then linux
-    if "mac" in matches:
-        browser = matches["mac"]["browser"]
-        content += mac_edge_browser_content(browser["url"], browser["hash"], browser["version"])
-
-    if "linux" in matches:
-        browser = matches["linux"]["browser"]
-        content += linux_edge_browser_content(browser["url"], browser["hash"])
-
-    # Output drivers: linux, then mac
-    if "linux" in matches:
-        content += edgedriver_content("linux_edgedriver", matches["linux"]["driver_url"])
-
-    if "mac" in matches:
-        content += edgedriver_content("mac_edgedriver", matches["mac"]["driver_url"])
-
-    return content
+    return content, linux_browser["version"]
 
 
 def edgedriver_content(name, driver_url):
@@ -398,7 +382,11 @@ js_library(
 def geckodriver():
     content = ""
 
-    r = http.request("GET", "https://api.github.com/repos/mozilla/geckodriver/releases/latest", headers=API_HEADERS)
+    releases_url = "https://api.github.com/repos/mozilla/geckodriver/releases/latest"
+    r = http.request("GET", releases_url, headers=API_HEADERS)
+    if r.status != 200:
+        body = r.data[:200].decode("utf-8", "replace")
+        raise ValueError(f"Fetch failed (HTTP {r.status}): {releases_url}: {body}")
     for a in json.loads(r.data)["assets"]:
         if a["name"].endswith("-linux64.tar.gz"):
             url = a["browser_download_url"]
@@ -463,7 +451,7 @@ def firefox():
     if latest_firefox != beta_firefox:
         sha_linux = calculate_hash(firefox_linux(beta_firefox))
         sha_mac = calculate_hash(firefox_mac(beta_firefox))
-    return content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
+    return content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac), latest_firefox, beta_firefox
 
 
 def firefox_version_data():
@@ -550,9 +538,11 @@ def pin_browsers():
     local_drivers(name = "local_drivers")
 
 """
-    content = content + firefox()
+    firefox_content, firefox_version, firefox_beta_version = firefox()
+    content = content + firefox_content
     content = content + geckodriver()
-    content = content + edge_and_edgedriver()
+    edge_content, edge_version = edge_and_edgedriver()
+    content = content + edge_content
 
     # Stable Chrome
     stable_chrome_info = get_chrome_info_for_channel(channel="Stable")
@@ -573,8 +563,22 @@ pin_browsers_extension = module_extension(
 )
 """
 
-    current_script_dir = Path(os.path.realpath(__file__)).parent
-    target_file_path = current_script_dir.parent / "common/repositories.bzl"
+    versions = {
+        "CHROME_MAJOR_VERSION": stable_chrome_info["version"],
+        "CHROME_BETA_MAJOR_VERSION": beta_chrome_info["version"],
+        "EDGE_MAJOR_VERSION": edge_version,
+        "FIREFOX_MAJOR_VERSION": firefox_version,
+        "FIREFOX_BETA_MAJOR_VERSION": firefox_beta_version,
+    }
+    versions_content = generated_note("#", "scripts/pinned_browsers.py", "bazel run //scripts:pinned_browsers")
+    versions_content += "\n\n" + "".join(
+        f'{name} = "{version.split(".")[0]}"\n' for name, version in versions.items() if version
+    )
 
-    with open(target_file_path, "w") as file:
+    common_dir = Path(os.path.realpath(__file__)).parent.parent / "common"
+
+    with open(common_dir / "repositories.bzl", "w") as file:
         file.write(content)
+
+    with open(common_dir / "browser_versions.bzl", "w") as file:
+        file.write(versions_content)

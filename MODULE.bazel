@@ -9,10 +9,8 @@ bazel_dep(name = "aspect_rules_ts", version = "3.10.1")
 bazel_dep(name = "bazel_features", version = "1.52.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
 bazel_dep(name = "buildifier_prebuilt", version = "10.1.0")
-
-# When bumping this version, delete rules_jvm_hostname_lookup_deadlock.patch and its single_version_override below
-bazel_dep(name = "contrib_rules_jvm", version = "0.34.0")
-bazel_dep(name = "llvm", version = "0.8.24")
+bazel_dep(name = "contrib_rules_jvm", version = "0.35.0")
+bazel_dep(name = "llvm", version = "0.8.27")
 bazel_dep(name = "package_metadata", version = "0.0.13")
 bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "protobuf", version = "36.2")
@@ -30,7 +28,7 @@ bazel_dep(name = "rules_pkg", version = "1.3.0")
 bazel_dep(name = "rules_python", version = "2.4.2")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.29.0")
-bazel_dep(name = "rules_rs", version = "0.1.0")
+bazel_dep(name = "rules_rs", version = "0.2.4")
 
 # Shorter toolchain dir names keep Windows sysroot paths under MAX_PATH; drop once upstream does
 single_version_override(
@@ -46,15 +44,6 @@ bazel_dep(name = "bzip2", version = "1.0.8.bcr.4")
 bazel_dep(name = "xz", version = "5.4.5.bcr.9")
 bazel_dep(name = "zstd", version = "1.5.7.bcr.3")
 
-# Carries bazel-contrib/rules_jvm#499 (hostname lookup deadlock delays every JUnit 5 test by 5s); drop in the next release
-single_version_override(
-    module_name = "contrib_rules_jvm",
-    patch_strip = 1,
-    patches = [
-        "//third_party/bazel:rules_jvm_hostname_lookup_deadlock.patch",
-    ],
-)
-
 # Adds `transitive` and `third_party_prefixes` to `javadoc` for the merged client/grid javadoc jars; no upstream equivalent
 single_version_override(
     module_name = "rules_jvm_external",
@@ -67,12 +56,14 @@ single_version_override(
 # Carries bazel-contrib/rules_ruby#409 (rb_gem_push omits the interpreter from runfiles); drop in the next release
 # Carries bazel-contrib/rules_ruby#421 (generated_srcs, so a version bump leaves Ruby tests cached); drop in the release that includes it
 # If rules_ruby#421 is rejected or the patch stops applying, remove it by reverting #18164 and setting rb/lib/selenium/webdriver/version.rb to the version.bzl value
+# Carries bazel-contrib/rules_ruby#448 (per-install MSYS2 files change every Windows Ruby action's cache key); drop in the release that includes it
 single_version_override(
     module_name = "rules_ruby",
     patch_strip = 1,
     patches = [
         "//third_party/bazel:rules_ruby_gem_push_runfiles.patch",
         "//third_party/bazel:rules_ruby_lazy_bundle_srcs.patch",
+        "//third_party/bazel:rules_ruby_windows_stable_toolchain_files.patch",
     ],
 )
 
@@ -209,7 +200,7 @@ maven.install(
         "com.google.protobuf:protobuf-java:4.36.2",
         "com.google.protobuf.nano:protobuf-javanano:3.1.0",
         "com.graphql-java:graphql-java:26.2",
-        "com.uber.nullaway:nullaway:0.14.3",
+        "com.uber.nullaway:nullaway:0.14.4",
         "dev.failsafe:failsafe:3.3.2",
         "io.fabric8:kubernetes-client:7.9.0",
         "io.fabric8:kubernetes-client-api:7.9.0",
@@ -231,7 +222,7 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-trace",
         "org.testcontainers:testcontainers:2.0.5",
         "net.bytebuddy:byte-buddy:1.18.17",
-        "org.htmlunit:htmlunit-core-js:5.7.0",
+        "org.htmlunit:htmlunit-core-js:5.8.0",
         "org.assertj:assertj-core:3.27.7",
         "org.bouncycastle:bcpkix-jdk18on:1.87",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
@@ -257,7 +248,7 @@ maven.install(
     boms = [
         "com.fasterxml.jackson:jackson-bom:2.23.0",
         "io.opentelemetry:opentelemetry-bom:1.68.0",
-        "io.netty:netty-bom:4.2.20.Final",
+        "io.netty:netty-bom:4.2.21.Final",
         "org.junit:junit-bom:6.1.3",
     ],
     excluded_artifacts = [
@@ -301,7 +292,7 @@ ruby.bundle_fetch(
         "//:rb/selenium-webdriver.gemspec",
     ],
     gem_checksums = {
-        "addressable-2.9.2": "9117c7e7d6ee07230e75ce41fb9401ae55354dc654fcd0e862ba41d539e9a610",
+        "addressable-2.10.0": "5e13b9c001adf01dd65ad6e0d2a91d2bc07885c0ff2b83f48cbcd95e08d9de62",
         "ast-2.4.3": "954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383",
         "base64-0.3.0": "27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b",
         "bigdecimal-4.1.3": "61ebe1e5e559bdc3cc6f2c0ee7f427321fc838f59611c294356eb04d6e21cf66",
@@ -317,7 +308,7 @@ ruby.bundle_fetch(
         "ffi-1.17.4-java": "449281c799727413eb367e396a838328e767a41fd76a14ae2dfbee0c37f0a279",
         "fileutils-1.8.1": "2d541a1ee34a9ed5c4f054be8fb819a26b5d654488a31dc8806917cf448b9cc3",
         "git-1.19.1": "b0a422d9f6517353c48a330d6114de4db9e0c82dbe7202964a1d9f1fbc827d70",
-        "hashdiff-1.2.2": "e2e287452b42f18d2a8d82dd48c435e214a81dbadccf49344b956842a3b9127f",
+        "hashdiff-1.3.0": "0b6724b8f3fef3961acc09489b175698ce0b7fd22c9cc5aa559d280cc6b65649",
         "io-console-0.9.5": "83dd9bbf4c4680416629245b39cd4212eb5f4d9a4ea91804870c1f6b846414d5",
         "io-console-0.9.5-java": "34b74ec7d8e39a526fb9a82aa34853257a1baa08f56c5cd5d37ec6be2a5e6000",
         "irb-1.19.0": "55ee56acbdd6c9fe06a2e6909f46a24e5c41f45f16906bab04e8049cf46f1d27",
@@ -329,7 +320,7 @@ ruby.bundle_fetch(
         "listen-3.10.1": "4c3f32855657f348747da4dd2372ff3790d90a6b1d3e4f21a3706adb2d04783c",
         "logger-1.7.0": "196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203",
         "parallel-2.3.0": "f75a3e904101ce6a1ccb6b8dc800cbafd42166d83330192438dcf29395167a6f",
-        "parser-3.3.13.0": "e02f9b63c2fe05b0c68f692ba4df89b3cb113b663964f75d988fbebfd6c3deca",
+        "parser-3.3.14.0": "62f8f76af7b919425ee2d811880e9dcb8011ab40bfd59970dfb583141697e58f",
         "pp-0.6.4": "dfcb0fce700c41456265922884f9fe195d7fbb0674a3578e6c0f69588e82b570",
         "prettyprint-0.2.1": "d555d57ea6d7cf001d4774b693546a6bd88bec1e778ddffb5c60b68ceec4b7d4",
         "prism-2.1.0": "1c0a7c6dea0e93183390fb123f007564dbe663198e2f86ad87204151147601f3",
@@ -340,7 +331,7 @@ ruby.bundle_fetch(
         "public_suffix-7.0.5": "1a8bb08f1bbea19228d3bed6e5ed908d1cb4f7c2726d18bd9cadf60bc676f623",
         "racc-1.8.1": "4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f",
         "racc-1.8.1-java": "54f2e6d1e1b91c154013277d986f52a90e5ececbe91465d29172e49342732b98",
-        "rack-2.2.25": "a5b3cd8f2df29c36ede21aa797c21e643f06792fae7487926102e06abe6da0b8",
+        "rack-2.2.26": "a0106d3ffa60a7c260ab5c6877d2c07f735c6d281a310335f027dc454c2fc2db",
         "rainbow-3.1.1": "039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a",
         "rake-13.4.2": "cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701",
         "rb-fsevent-0.11.2": "43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe",
@@ -349,7 +340,7 @@ ruby.bundle_fetch(
         "rbs-4.2.0-java": "a19282d89c307dd6d33c6a72cc60f75b10d6d35a5996796e864789c903cddb3c",
         "rchardet-1.10.2": "e041cb195f464dc10e49ab130f78c8b5956cd9a4f4f6df84e0c183b87c135f33",
         "rdoc-8.1.0": "befc37880a5cfd36dcb176c748b5fd5ee39dd3536a75e81824e4972ce230f60a",
-        "regexp_parser-2.13.1": "5aedb6b7c35688f51e86eef17a15374dfd287c83f4ca644b2c5f3ec50a33b44b",
+        "regexp_parser-2.13.4": "1d0547814f57e6f00946957bd0ca201bc42f42cfb08eee89df60998aedcd8a3b",
         "reline-0.7.0": "5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d",
         "rexml-3.4.4": "19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142",
         "rspec-3.13.2": "206284a08ad798e61f86d7ca3e376718d52c0bc944626b2349266f239f820587",
@@ -357,8 +348,8 @@ ruby.bundle_fetch(
         "rspec-expectations-3.13.6": "bf538ca6d367ff5b0d85a87fdb5c0c6038f2cd1308a0eeba07476caa02d22f35",
         "rspec-mocks-3.13.9": "ea5c7ff3054a6098ca6039aacef80aec69d5a8a3ef80be8fc88337359b672a30",
         "rspec-support-3.13.8": "e4160030309b7e3e9d9863dfe720a35dfcc577162f5402cd68fc8c5258a0ffd6",
-        "rubocop-1.92.2": "14fb31eed143a0dc6f78186c550c1715e81cd38f59d05d1165050e445c1f5382",
-        "rubocop-ast-1.51.0": "0ec311e36b191b3872d909078a35274e962ae97dbce64be6812d145ca59acfcb",
+        "rubocop-1.92.3": "fd77feac46e8e91c3a534f868a1702c59f5bf8173515fd00a3c6ce1198672ff6",
+        "rubocop-ast-1.53.0": "027984d28485d6502ae4c72f9341080f54f538599f5dbb54f81875a4ddcad574",
         "rubocop-performance-1.27.0": "eeeb1374d062a368ee1c787b70eb0b0cc4b184cb1f8565f424760946146d61ce",
         "rubocop-rake-0.7.1": "3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d",
         "rubocop-rspec-3.10.2": "0b3e2ecc592cd10ecbf0095bb58d1e357905276e069643523cc19eb7495f65e2",
@@ -373,7 +364,7 @@ ruby.bundle_fetch(
         "unicode-display_width-3.3.0": "4b7aa66a4b11db50f6f7e98411215cd0dd10eaecb665d36eec5bcacb3fa0b613",
         "unicode-emoji-4.3.0": "11c02fa73290378c066bb0562cd4c87d8e1b706fbbe0059ca12746a4244de8ce",
         "uri-1.1.2": "89292e98eabbef6248b0a0ed5e7e398e152f83f17560023a6d94a7f492b169fb",
-        "webmock-3.34.0": "72eed29dc8c00148d592acaedaaa6b869e2e397de57dfc8602b84aa834f46b33",
+        "webmock-3.38.0": "8fa3f656ee73c88fb85f1b136eb5467443cfa1424bfe2b44a538e224c5fbfde7",
         "webrick-1.9.2": "beb4a15fc474defed24a3bda4ffd88a490d517c9e4e6118c3edce59e45864131",
         "websocket-1.2.11": "b7e7a74e2410b5e85c25858b26b3322f29161e300935f70a0e0d3c35e0462737",
         "yard-0.9.45": "52e211493f7cb8a3ebf7e104a25a1e73937a3103092545d34cb88fafebb3dc51",
@@ -382,6 +373,8 @@ ruby.bundle_fetch(
     gemfile_lock = "//:rb/Gemfile.lock",
     generated_srcs = ["//rb/lib/selenium/webdriver:version.rb"],
     jar_checksums = {
+        "com.dylibso.chicory:compiler:1.7.5": "1a54cc0b3a79aa914f7f2fa5e7b7ed902702f3ce7aa155ec0cfc74b386a97377",
+        "com.dylibso.chicory:wasi:1.7.5": "52f68c155b1dc4ff6df9a6b9eb84201029886561e87bc77a858bd14333c1cfbc",
         "org.snakeyaml:snakeyaml-engine:2.10": "c99d9fd66c7c251d881a9cd95089b7c8044c29a1b02983d7036981bd4354ec37",
     },
 )
