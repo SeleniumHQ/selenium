@@ -24,9 +24,12 @@ module Selenium
     describe PortLock do
       subject(:port_lock) { described_class.new(port, 2) }
 
-      # The lock file is named after the port, so a fixed one would collide with a real
-      # driver on 4444 and with any other run of this spec on the same machine.
-      let(:port) { 40_000 + (Process.pid % 10_000) }
+      let(:port) { 4444 }
+      let(:tmpdir) { Dir.mktmpdir }
+
+      before { allow(Dir).to receive(:tmpdir).and_return(tmpdir) }
+
+      after { FileUtils.remove_entry(tmpdir) }
 
       it 'yields to the block' do
         expect { |block| port_lock.locked(&block) }.to yield_control
@@ -64,6 +67,33 @@ module Selenium
 
       it 'lets a lock on a different port through' do
         expect(port_lock.locked { described_class.new(port + 1, 0).locked { :other } }).to be(:other)
+      end
+
+      it 'gives each user a lock file of their own' do
+        allow(Process).to receive(:uid).and_return(1000)
+
+        result = port_lock.locked do
+          allow(Process).to receive(:uid).and_return(1001)
+          described_class.new(port, 0).locked { :other_user }
+        end
+
+        expect(result).to be(:other_user)
+      end
+
+      it 'fails without waiting out the timeout when the lock file cannot be opened' do
+        allow(Platform).to receive(:windows?).and_return(false)
+        allow(File).to receive(:open).and_raise(Errno::EACCES)
+
+        expect { port_lock.locked { :never } }
+          .to raise_error(Error::WebDriverError, /unable to open the lock file/)
+      end
+
+      it 'retries a lock file Windows will not open while another process holds it' do
+        allow(Platform).to receive(:windows?).and_return(true)
+        allow(File).to receive(:open).and_raise(Errno::EACCES)
+
+        expect { described_class.new(port, 0).locked { :never } }
+          .to raise_error(Error::WebDriverError, /unable to acquire/)
       end
 
       it 'fails without waiting out the timeout when the lock file cannot be created' do

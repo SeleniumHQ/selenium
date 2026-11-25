@@ -31,7 +31,8 @@ module Selenium
 
     class PortLock
       def initialize(port, timeout)
-        @path = File.join(Dir.tmpdir, "selenium-port-#{port}.lock")
+        # Named per user: the file is 0600 and stays behind, so a shared /tmp would lock other users out.
+        @path = File.join(Dir.tmpdir, "selenium-port-#{port}-#{Process.uid}.lock")
         @timeout = timeout
       end
 
@@ -78,6 +79,8 @@ module Selenium
       rescue Errno::EROFS => e
         raise Error::WebDriverError, "unable to create the lock file #{@path}: #{e.message}"
       rescue Errno::EACCES => e
+        raise Error::WebDriverError, "unable to open the lock file #{@path}: #{e.message}" unless Platform.windows?
+
         WebDriver.logger.debug("#{self}: #{e.message}", id: :driver_service)
         nil
       end
