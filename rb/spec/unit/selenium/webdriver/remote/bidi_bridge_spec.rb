@@ -55,8 +55,43 @@ module Selenium
           end
         end
 
+        describe 'listener errors' do
+          let(:connection) { instance_double(WebSocketConnection, before_send: []) }
+          let(:session_url) { URI('http://localhost/session/foo') }
+
+          before do
+            stub_new_session('ws://localhost/session/foo')
+            allow(http).to receive(:request).with(:get, URI("#{session_url}/window"), any_args)
+                                            .and_return('value' => 'window-1')
+            allow(http).to receive(:request).with(:get, URI("#{session_url}/title"), any_args)
+                                            .and_return('value' => 'title')
+            allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection, close: nil))
+            bridge.create_session(Capabilities.new)
+            bridge.listener_errors.add(ArgumentError.new('boom'))
+          end
+
+          it 'raises a stored error at the next classic command, without sending it' do
+            expect { bridge.title }.to raise_error(ArgumentError, 'boom')
+            expect(http).not_to have_received(:request).with(:get, URI("#{session_url}/title"), any_args)
+            expect(bridge.title).to eq('title')
+          end
+
+          it 'raises a stored error before the next BiDi command is sent' do
+            expect { connection.before_send.each { |callable| callable.call(method: 'foo') } }
+              .to raise_error(ArgumentError, 'boom')
+          end
+
+          it 'ends the session on quit before raising a stored error' do
+            allow(http).to receive(:close)
+
+            expect { bridge.quit }.to raise_error(ArgumentError, 'boom')
+            expect(http).to have_received(:request).with(:delete, session_url, any_args)
+            expect(http).to have_received(:close)
+          end
+        end
+
         describe 'navigation' do
-          let(:connection) { instance_double(WebSocketConnection) }
+          let(:connection) { instance_double(WebSocketConnection, before_send: []) }
           let(:window_url) { URI('http://localhost/session/foo/window') }
 
           before do

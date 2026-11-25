@@ -27,6 +27,8 @@ module Selenium
 
       @write_mtx: Thread::Mutex
 
+      @before_send: Array[^(Hash[Symbol, untyped]) -> void]
+
       @callback_threads: untyped
 
       @protocol: Symbol?
@@ -72,6 +74,8 @@ module Selenium
       def callbacks: () -> untyped
 
       def remove_callback: (untyped event, untyped id) -> untyped
+
+      attr_reader before_send: Array[^(Hash[Symbol, untyped]) -> void]
 
       def send_cmd: (**untyped payload) -> untyped
 

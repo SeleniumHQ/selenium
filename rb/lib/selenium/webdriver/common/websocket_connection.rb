@@ -57,6 +57,7 @@ module Selenium
         @closing = false
         @session_id = nil
         @url = url
+        @before_send = []
 
         apply_frame_size_limit
         process_handshake
@@ -111,6 +112,9 @@ module Selenium
         end
       end
 
+      # Callables given each command's payload before it is sent; one may raise to refuse it
+      attr_reader :before_send
+
       def send_cmd(**payload)
         # IOError to match what writing to an already-closed socket raises
         raise IOError, 'WebSocket connection is closed' if @closing
@@ -122,6 +126,7 @@ module Selenium
         end
 
         begin
+          before_send.each { |callable| callable.call(payload) }
           data = payload.merge(id: id)
           WebDriver.logger.debug('WebSocket ->', id: :ws) { data.to_s[...MAX_LOG_MESSAGE_SIZE] }
           write_frame(JSON.generate(data))
@@ -267,6 +272,7 @@ module Selenium
         Thread.new do
           Thread.current.abort_on_exception = false
           Thread.current.report_on_exception = false
+          ListenerErrors.listener_thread!
           next if @closing
 
           yield params

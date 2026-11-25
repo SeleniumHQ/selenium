@@ -80,6 +80,7 @@ module Selenium
           connection.instance_variable_set(:@closing_mtx, Mutex.new)
           connection.instance_variable_set(:@messages_mtx, Mutex.new)
           connection.instance_variable_set(:@write_mtx, Mutex.new)
+          connection.instance_variable_set(:@before_send, [])
           connection.instance_variable_set(:@socket, socket)
           connection.instance_variable_set(:@url, 'ws://localhost:9222/session')
         end
@@ -182,6 +183,25 @@ module Selenium
           responses = Array.new(3) { Thread.new { connection.send_cmd(method: 'foo') } }.map(&:value)
 
           expect(responses.size).to eq(3)
+        end
+
+        it 'gives each command to the before-send callables' do
+          seen = []
+          connection.before_send << ->(payload) { seen << payload }
+          reply_with('{"id":1,"result":{}}')
+
+          connection.send_cmd(method: 'foo', params: {})
+
+          expect(seen).to eq([{method: 'foo', params: {}}])
+        end
+
+        it 'sends nothing and stops tracking the command when a before-send callable raises' do
+          connection.before_send << ->(_payload) { raise ArgumentError, 'refused' }
+          allow(socket).to receive(:write)
+
+          expect { connection.send_cmd(method: 'foo') }.to raise_error(ArgumentError, 'refused')
+          expect(socket).not_to have_received(:write)
+          expect(pending_state).to eq([{}, {}])
         end
 
         it 'stops tracking the command when the write fails' do
