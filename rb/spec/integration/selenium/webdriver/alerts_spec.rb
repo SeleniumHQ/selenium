@@ -215,28 +215,87 @@ module Selenium
         end
       end
 
-      describe 'does not implement unhandledPromptBehavior' do
-        %w[alert confirm prompt].each do |id|
-          it "raises from a classic command and leaves the #{id} open" do
-            open_alert(id)
-            text = alert_text(driver)
+      describe 'applies unhandledPromptBehavior on the client' do
+        # what the prompt returns to the page once the behavior has closed the dialog
+        accepted = {'alert' => '', 'confirm' => 'Hello WebDriver', 'prompt' => ''}
+        dismissed = {'alert' => '', 'confirm' => 'Testing Alerts', 'prompt' => 'null'}
 
-            expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
-            expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
-            expect(driver.switch_to.alert.text).to eq(text)
-            driver.switch_to.alert.dismiss
-            expect(driver.title).to eq('Testing Alerts')
+        def result_of(id, driver)
+          return driver.find_element(id: 'text').text unless id == 'confirm'
+
+          # accepting the confirm follows the link, which takes a moment to change the page
+          Wait.new(timeout: 2).until { driver.title == 'Hello WebDriver' }
+          driver.title
+        rescue Error::TimeoutError
+          driver.title
+        end
+
+        {'dismiss' => dismissed, 'accept' => accepted}.each do |behavior, results|
+          it "closes the dialog and runs the command with '#{behavior}'" do
+            driver = local_driver(unhandled_prompt_behavior: behavior)
+            results.each do |id, result|
+              open_alert(id, driver)
+              expect(result_of(id, driver)).to eq(result)
+            end
           end
 
-          it "raises from a BiDi command and leaves the #{id} open" do
-            open_alert(id)
-            text = alert_text(driver)
+          it "closes the dialog and raises with '#{behavior} and notify'" do
+            driver = local_driver(unhandled_prompt_behavior: "#{behavior} and notify")
+            results.each do |id, result|
+              open_alert(id, driver)
+              expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
+              expect(result_of(id, driver)).to eq(result)
+            end
+          end
+        end
 
-            expect { driver.navigate.refresh }.to raise_error(Error::UnexpectedAlertOpenError, /#{text}/)
-            expect { driver.navigate.to url_for('blank.html') }.to raise_error(Error::UnexpectedAlertOpenError)
-            expect(driver.switch_to.alert.text).to eq(text)
+        it "raises and leaves the dialog open with 'ignore'" do
+          driver = local_driver(unhandled_prompt_behavior: 'ignore')
+          %w[alert confirm prompt].each do |id|
+            open_alert(id, driver)
+            alert_text(driver)
+            expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
+            expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
             driver.switch_to.alert.dismiss
-            expect(driver.title).to eq('Testing Alerts')
+          end
+        end
+
+        it 'logs the alert it closes' do
+          driver = local_driver(unhandled_prompt_behavior: 'accept')
+          open_alert('alert', driver)
+
+          expect { driver.title }.to have_info(:alerts, "Closing alert 'cheese' for unhandledPromptBehavior 'accept'")
+        end
+
+        it "defaults to 'dismiss and notify'" do
+          {'alert' => '', 'confirm' => 'Testing Alerts', 'prompt' => 'null'}.each do |id, result|
+            open_alert(id)
+            expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
+            expect(result_of(id, driver)).to eq(result)
+          end
+        end
+
+        # whether the BiDi command raises, and what the prompt returns to the page once it is closed
+        {'accept' => [false, ''], 'dismiss' => [false, 'null'], 'accept and notify' => [true, ''],
+         'dismiss and notify' => [true, 'null'], 'ignore' => [true, nil]}.each do |behavior, (raises, text)|
+          it "applies '#{behavior}' to a BiDi command sent while a dialog is open" do
+            driver = local_driver(unhandled_prompt_behavior: behavior)
+            window = driver.window_handle
+            open_alert('prompt', driver)
+            alert_text(driver)
+            command = -> { BiDi::Protocol::BrowsingContext.new(driver).capture_screenshot(context: window) }
+
+            if raises
+              expect(&command).to raise_error(Error::UnexpectedAlertOpenError, /Enter something/)
+            else
+              command.call
+            end
+            if text
+              expect(driver.find_element(id: 'text').text).to eq(text)
+            else
+              expect(driver.switch_to.alert.text).to eq('Enter something')
+              driver.switch_to.alert.dismiss
+            end
           end
         end
 
@@ -269,14 +328,18 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        ['accept', {default: 'accept'}].each do |behavior|
-          it "deprecates and ignores the capability when it is set to #{behavior.inspect}" do
-            expect {
-              driver = local_driver(unhandled_prompt_behavior: behavior)
-              open_alert('alert', driver)
-              expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
-            }.to have_deprecated(:unhandled_prompt_behavior)
-          end
+        it 'reports the behavior it applies in the capabilities' do
+          expect(driver.capabilities.unhandled_prompt_behavior).to eq('dismiss and notify')
+          accepting = local_driver(unhandled_prompt_behavior: 'accept')
+          expect(accepting.capabilities.unhandled_prompt_behavior).to eq('accept')
+        end
+
+        it 'deprecates the map form of the capability and applies its default entry' do
+          expect {
+            driver = local_driver(unhandled_prompt_behavior: {default: 'accept'})
+            open_alert('prompt', driver)
+            expect(driver.find_element(id: 'text').text).to eq('')
+          }.to have_deprecated(:unhandled_prompt_behavior)
         end
       end
 
@@ -351,9 +414,6 @@ module Selenium
           driver.find_element(id: 'alert').click
           expect(wait_for_alert.text).to eq('cheese')
           expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
-          # Differs from Option 3, where 'dismiss and notify' has closed the alert by now and this succeeds
-          expect { driver.title }.to raise_error(Error::UnexpectedAlertOpenError)
-          driver.switch_to.alert.accept
           expect(driver.title).to eq('Testing Alerts')
         end
       end

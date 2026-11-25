@@ -17,6 +17,8 @@
 module Selenium
   module WebDriver
     class Alerts
+      BEHAVIORS: Array[String]
+
       class Prompt
         attr_reader context: String
 
@@ -35,7 +37,9 @@ module Selenium
 
       @bridge: untyped
 
-      @requested: Array[true?]
+      @requested: Array[[Hash[String, untyped], String]?]
+
+      @unhandled_prompt_behavior: String
 
       @handlers: Hash[Object, ^(Alert) -> void]
 
@@ -53,6 +57,8 @@ module Selenium
 
       def handles_prompts?: (Remote::Capabilities capabilities) -> bool
 
+      def unhandled_prompt_behavior: (Remote::Capabilities capabilities) -> String
+
       def subscribe: () -> void
 
       def current: () -> Prompt
@@ -63,9 +69,11 @@ module Selenium
 
       private
 
-      def manage_prompts_locally: (Hash[String, untyped] candidate) -> true?
+      def manage_prompts_locally: (Hash[String, untyped] candidate) -> [Hash[String, untyped], String]?
 
-      def ignore_prompts: (Hash[String, untyped] candidate) -> true
+      def ignore_prompts: (Hash[String, untyped] candidate) -> String
+
+      def matches?: (Hash[String, untyped] candidate, Remote::Capabilities capabilities) -> bool
 
       def listen_prompt_opened: () -> void
 
@@ -73,9 +81,15 @@ module Selenium
 
       def wait_for_beforeunload_to_close: () -> void
 
+      def refusing_prompt: () -> Prompt?
+
       def user_handler?: () -> bool
 
+      def behavior: () -> String
+
       def default_handler: (Alert alert) -> void
+
+      def apply_behavior: (Prompt prompt) -> void
 
       def release_commands: (Prompt prompt, Array[Hash[Symbol, untyped]] waiting) -> void
 

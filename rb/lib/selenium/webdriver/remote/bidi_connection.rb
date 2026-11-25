@@ -73,7 +73,7 @@ module Selenium
 
           @alerts = alerts
           # The remote end reports the 'ignore' it was sent, which is not what applies
-          @capabilities[:unhandled_prompt_behavior] = nil
+          @capabilities[:unhandled_prompt_behavior] = alerts.unhandled_prompt_behavior(@capabilities)
         end
 
         def execute(command, *)

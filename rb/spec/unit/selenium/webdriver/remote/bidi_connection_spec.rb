@@ -77,14 +77,17 @@ module Selenium
             )
           end
 
-          it 'deprecates unhandledPromptBehavior and sends ignore in its place' do
+          it 'sends a shared unhandledPromptBehavior to the firstMatch candidates that do not ask for BiDi' do
             stub_new_session(true)
+            capabilities = {'alwaysMatch' => {'unhandledPromptBehavior' => 'accept'},
+                            'firstMatch' => [{'browserName' => 'chrome', 'webSocketUrl' => true},
+                                             {'browserName' => 'safari'}]}
 
-            capabilities = {'browserName' => 'firefox', 'webSocketUrl' => true, 'unhandledPromptBehavior' => 'accept'}
-            expect { expect { bridge.create_session(capabilities) }.to raise_error(Error::WebDriverError) }
-              .to have_deprecated(:unhandled_prompt_behavior)
+            expect { bridge.create_session(capabilities) }.to raise_error(Error::WebDriverError)
+            first_match = [{unhandledPromptBehavior: {default: 'ignore'}, browserName: 'chrome', webSocketUrl: true},
+                           {unhandledPromptBehavior: 'accept', browserName: 'safari'}]
             expect(http).to have_received(:request).with(
-              :post, anything, anything, include('"unhandledPromptBehavior":{"default":"ignore"}')
+              :post, anything, anything, {capabilities: {firstMatch: first_match}}.to_json
             )
           end
 
