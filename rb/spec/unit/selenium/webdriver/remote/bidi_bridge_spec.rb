@@ -58,6 +58,7 @@ module Selenium
         describe 'listener errors' do
           let(:connection) { instance_double(WebSocketConnection, before_send: []) }
           let(:session_url) { URI('http://localhost/session/foo') }
+          let(:error) { ArgumentError.new('boom') }
 
           before do
             stub_new_session('ws://localhost/session/foo')
@@ -67,7 +68,7 @@ module Selenium
                                             .and_return('value' => 'title')
             allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection, close: nil))
             bridge.create_session(Capabilities.new)
-            bridge.listener_errors.add(ArgumentError.new('boom'))
+            bridge.listener_errors.add(error)
           end
 
           it 'raises a stored error at the next classic command, without sending it' do
@@ -87,6 +88,23 @@ module Selenium
             expect { bridge.quit }.to raise_error(ArgumentError, 'boom')
             expect(http).to have_received(:request).with(:delete, session_url, any_args)
             expect(http).to have_received(:close)
+          end
+
+          it 'raises a stored error on quit when ending the session fails on the connection' do
+            allow(http).to receive(:close)
+            allow(http).to receive(:request).with(:delete, session_url, any_args).and_raise(IOError)
+
+            expect { bridge.quit }.to raise_error(ArgumentError, 'boom')
+          end
+
+          context 'when the stored error is a connection error' do
+            let(:error) { IOError.new('from the handler') }
+
+            it 'raises it on quit' do
+              allow(http).to receive(:close)
+
+              expect { bridge.quit }.to raise_error(IOError, 'from the handler')
+            end
           end
         end
 

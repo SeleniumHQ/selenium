@@ -45,12 +45,14 @@ module Selenium
           end
         end
 
+        # A stored error is raised once the session has ended, and outside Bridge#quit's rescue of connection errors
         def quit
           bidi&.close
         rescue *QUIT_ERRORS
           nil
         ensure
           super
+          @listener_errors.check
         end
 
         def close
@@ -59,11 +61,8 @@ module Selenium
 
         private
 
-        # A stored error is raised once #quit has ended the session, not instead of ending it
         def execute(command, *)
-          return super.tap { @listener_errors.check } if command == :delete_session
-
-          @listener_errors.check
+          @listener_errors.check unless command == :delete_session
           super
         end
 
