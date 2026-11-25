@@ -175,7 +175,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @deprecated use {@link #installWebExtension(java.nio.file.Path)}.
    */
   @Override
-  @Deprecated(since = "4.49", forRemoval = true)
+  @Deprecated(since = "4.55", forRemoval = true)
   public String installExtension(Path path) {
     Require.nonNull("Path", path);
     return extensions.installExtension(path);
@@ -187,7 +187,7 @@ public class FirefoxDriver extends RemoteWebDriver
    *     org.openqa.selenium.webextension.FirefoxWebExtensionOptions#permanent(boolean)}.
    */
   @Override
-  @Deprecated(since = "4.49", forRemoval = true)
+  @Deprecated(since = "4.55", forRemoval = true)
   public String installExtension(Path path, Boolean temporary) {
     Require.nonNull("Path", path);
     Require.nonNull("Temporary", temporary);
@@ -198,7 +198,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @deprecated use {@link #uninstallWebExtension(org.openqa.selenium.webextension.WebExtension)}.
    */
   @Override
-  @Deprecated(since = "4.49", forRemoval = true)
+  @Deprecated(since = "4.55", forRemoval = true)
   public void uninstallExtension(String extensionId) {
     Require.nonNull("Extension ID", extensionId);
     extensions.uninstallExtension(extensionId);
