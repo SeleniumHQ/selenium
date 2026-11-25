@@ -22,6 +22,7 @@ import pytest
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common._bidi.browsing_context import BrowsingContext, ReadinessState
 from selenium.webdriver.common._bidi.network import (
+    AuthRequiredParameters,
     BeforeRequestSentParameters,
     Header,
     InterceptPhase,
@@ -133,8 +134,6 @@ def test_fetch_error_event(driver, pages):
     assert error.error_text
 
 
-@pytest.mark.xfail_chrome(reason="Chromium reports a response status of -1, which the layer rejects before delivery")
-@pytest.mark.xfail_edge(reason="Chromium reports a response status of -1, which the layer rejects before delivery")
 def test_auth_required_event(driver, pages):
     driver.get(pages.url("simpleTest.html"))
     events = []
@@ -149,4 +148,5 @@ def test_auth_required_event(driver, pages):
         Network(driver).remove_intercept(intercept=intercept)
         Session(driver).unsubscribe(subscriptions=[subscription])
         Network(driver).remove_listener(listener)
-    assert events[0].response.status == 401
+    assert isinstance(events[0], AuthRequiredParameters)
+    assert events[0].intercepts == [intercept]
