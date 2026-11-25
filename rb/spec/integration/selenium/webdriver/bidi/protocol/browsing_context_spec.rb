@@ -179,6 +179,33 @@ module Selenium
               browsing_context.remove_listener(listener) if listener
             end
 
+            it 'reports whether a created context has a planned navigation',
+               pending_if: [{browser_family: :chromium,
+                             reason: 'Chrome does not send hasPlannedNavigation; when this passes on Firefox too, ' \
+                                     'delete common/bidi/browsing-context-created-params.cddl'},
+                            {browser: :firefox,
+                             reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=2070248; when this passes on ' \
+                                     'Chrome too, delete common/bidi/browsing-context-created-params.cddl'},
+                            {browser_family: :safari, exception: {class: Error::SerializationError},
+                             reason: 'Safari session.subscribe result fails strict deserialization'}] do
+              event_name = 'browsingContext.contextCreated'
+              session = Session.new(driver)
+              events = Queue.new
+              listener = browsing_context.add_context_created_listener { |payload| events << payload }
+              session.subscribe(events: [event_name])
+
+              context = browsing_context.create(type: :tab).context
+              created = wait.until do
+                payload = events.pop(timeout: 0)
+                payload if payload&.context == context
+              end
+
+              expect(created.has_planned_navigation).to be(true).or be(false)
+            ensure
+              session&.unsubscribe(events: [event_name])
+              browsing_context.remove_listener(listener) if listener
+            end
+
             it 'accepts reference, background, and user context parameters',
                pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                             reason: 'Safari create_user_context result fails strict deserialization'} do
