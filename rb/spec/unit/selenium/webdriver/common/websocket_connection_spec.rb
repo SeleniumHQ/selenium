@@ -79,6 +79,7 @@ module Selenium
           connection.instance_variable_set(:@closing, false)
           connection.instance_variable_set(:@closing_mtx, Mutex.new)
           connection.instance_variable_set(:@messages_mtx, Mutex.new)
+          connection.instance_variable_set(:@write_mtx, Mutex.new)
           connection.instance_variable_set(:@socket, socket)
           connection.instance_variable_set(:@url, 'ws://localhost:9222/session')
         end
@@ -167,6 +168,20 @@ module Selenium
 
           expect(responses.map { |response| response['id'] }).to match_array(1..10)
           expect(pending_state).to eq([{}, {}])
+        end
+
+        it 'writes one frame at a time' do
+          stub_const("#{described_class}::RESPONSE_WAIT_TIMEOUT", 5)
+          write_mtx = connection.instance_variable_get(:@write_mtx)
+          allow(socket).to receive(:write) do |data|
+            expect(write_mtx).to be_owned
+            id = WebSocket::Frame::Incoming::Server.new(version: 13).tap { |frame| frame << data }.next.to_s
+            Thread.new { connection.send(:process_frame, %({"id":#{JSON.parse(id)['id']},"result":{}})) }
+          end
+
+          responses = Array.new(3) { Thread.new { connection.send_cmd(method: 'foo') } }.map(&:value)
+
+          expect(responses.size).to eq(3)
         end
 
         it 'stops tracking the command when the write fails' do

@@ -25,6 +25,8 @@ module Selenium
 
       @event_receiver_mtx: Thread::Mutex
 
+      @write_mtx: Thread::Mutex
+
       @callback_threads: untyped
 
       @protocol: Symbol?
@@ -82,6 +84,8 @@ module Selenium
       def messages: () -> untyped
 
       def pending_responses: () -> Hash[Integer, Thread::ConditionVariable]
+
+      def write_frame: (String data) -> void
 
       def await_response: (Integer id) -> untyped
 
