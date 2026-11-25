@@ -253,6 +253,73 @@ module Selenium
               unsubscribe('network.authRequired', callback) if callback
               network.remove_intercept(intercept: intercept.intercept) if intercept&.intercept
             end
+
+            def provide_credentials(request)
+              username, password = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS
+              network.continue_with_auth(
+                request: request,
+                action: :provide_credentials,
+                credentials: Network::AuthCredentials.new(username: username, password: password)
+              )
+            end
+
+            def answered_auth_required_payload
+              payloads = Queue.new
+              listener = network.add_auth_required_listener do |payload|
+                payloads << payload
+                provide_credentials(payload.request.request)
+              end
+              session.subscribe(events: ['network.authRequired'])
+              yield
+              payloads.pop(timeout: 0)
+            ensure
+              session.unsubscribe(events: ['network.authRequired'])
+              network.remove_listener(listener) if listener
+            end
+
+            def add_basic_auth_intercept(context)
+              network.add_intercept(
+                phases: [:auth_required],
+                contexts: [context],
+                url_patterns: [Network::UrlPatternString.new(pattern: url_for('basicAuth'))]
+              ).intercept
+            end
+
+            # Credentials another example provided are cached for the default user context.
+            def authenticate_in_new_user_context
+              browser = Browser.new(driver)
+              user_context = browser.create_user_context.user_context
+              context = browsing_context.create(type: :tab, user_context: user_context).context
+              intercept = add_basic_auth_intercept(context)
+              payload = answered_auth_required_payload do
+                browsing_context.navigate(context: context, url: url_for('basicAuth'), wait: :complete)
+              end
+              driver.switch_to.window(context)
+
+              {payload: payload, intercept: intercept, heading: driver.find_element(tag_name: 'h1').text}
+            ensure
+              network.remove_intercept(intercept: intercept) if intercept
+              browser.remove_user_context(user_context: user_context) if user_context
+              driver.switch_to.window(driver.window_handles.first)
+            end
+
+            it 'provides credentials from a listener given the typed auth required payload' do
+              exchange = authenticate_in_new_user_context
+
+              expect(exchange[:payload]).to be_a(Network::AuthRequiredParameters)
+              expect(exchange[:payload].intercepts).to eq([exchange[:intercept]])
+              expect(exchange[:heading]).to eq('authorized')
+            end
+
+            it 'receives the challenge response with the auth required payload',
+               pending_if: {browser_family: :chromium,
+                            reason: 'https://issues.chromium.org/issues/582770639; ' \
+                                    'when this passes, delete common/bidi/network-response-data.cddl'} do
+              response = authenticate_in_new_user_context[:payload].response
+
+              expect(response.status).to eq(401)
+              expect(response.auth_challenges.map(&:scheme)).to eq(['Basic'])
+            end
           end
 
           describe '#fail_request',

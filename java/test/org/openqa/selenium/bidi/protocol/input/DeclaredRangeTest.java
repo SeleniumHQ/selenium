@@ -26,7 +26,7 @@ import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.ConverterFunctions;
 import org.openqa.selenium.bidi.protocol.browsingcontext.SetViewportParameters;
 import org.openqa.selenium.bidi.protocol.emulation.GeolocationCoordinates;
-import org.openqa.selenium.bidi.protocol.network.ResponseData;
+import org.openqa.selenium.bidi.protocol.network.ResponseContent;
 import org.openqa.selenium.json.JsonException;
 
 /** Numbers held to the bounds the schema declares on the field itself, not only on js-int/uint. */
@@ -78,14 +78,9 @@ class DeclaredRangeTest {
   }
 
   @Test
-  void negativeStatusIsRejectedOnReceipt() {
-    String raw =
-        "{\"url\":\"u\",\"protocol\":\"http/1.1\",\"status\":-1,\"statusText\":\"\","
-            + "\"fromCache\":false,\"headers\":[],\"mimeType\":\"\",\"bytesReceived\":0,"
-            + "\"headersSize\":null,\"bodySize\":null,\"content\":{\"size\":0}}";
-
-    assertThatThrownBy(() -> ConverterFunctions.JSON.toType(raw, ResponseData.class))
+  void negativeSizeIsRejectedOnReceipt() {
+    assertThatThrownBy(() -> ConverterFunctions.JSON.toType("{\"size\":-1}", ResponseContent.class))
         .isInstanceOf(JsonException.class)
-        .hasStackTraceContaining("status must be");
+        .hasStackTraceContaining("size must be");
   }
 }

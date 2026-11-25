@@ -240,30 +240,6 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#type-network-ResponseData
-          ResponseData = Serialization::Record.define(
-            url: {wire_key: 'url', primitive: 'string'},
-            protocol: {wire_key: 'protocol', primitive: 'string'},
-            status: {wire_key: 'status', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
-            status_text: {wire_key: 'statusText', primitive: 'string'},
-            from_cache: {wire_key: 'fromCache', primitive: 'boolean'},
-            headers: {wire_key: 'headers', ref: 'Network::Header', list: true},
-            mime_type: {wire_key: 'mimeType', primitive: 'string'},
-            bytes_received: {wire_key: 'bytesReceived', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
-            headers_size: {
-              wire_key: 'headersSize',
-              nullable: true,
-              primitive: 'integer',
-              min: 0,
-              max: 9_007_199_254_740_991
-            },
-            body_size: {wire_key: 'bodySize', nullable: true, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
-            content: {wire_key: 'content', ref: 'Network::ResponseContent'},
-            auth_challenges: {wire_key: 'authChallenges', required: false, ref: 'Network::AuthChallenge', list: true}
-          )
-
-          # @api private
-          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-network-SetCookieHeader
           SetCookieHeader = Serialization::Record.define(
             name: {wire_key: 'name', primitive: 'string'},
@@ -563,6 +539,30 @@ module Selenium
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
             intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             response: {wire_key: 'response', ref: 'Network::ResponseData'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-network-ResponseData
+          ResponseData = Serialization::Record.define(
+            url: {wire_key: 'url', primitive: 'string'},
+            protocol: {wire_key: 'protocol', primitive: 'string'},
+            status: {wire_key: 'status', primitive: 'integer', min: -1, max: 9_007_199_254_740_991},
+            status_text: {wire_key: 'statusText', primitive: 'string'},
+            from_cache: {wire_key: 'fromCache', primitive: 'boolean'},
+            headers: {wire_key: 'headers', ref: 'Network::Header', list: true},
+            mime_type: {wire_key: 'mimeType', primitive: 'string'},
+            bytes_received: {wire_key: 'bytesReceived', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            headers_size: {
+              wire_key: 'headersSize',
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
+            body_size: {wire_key: 'bodySize', nullable: true, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            content: {wire_key: 'content', ref: 'Network::ResponseContent'},
+            auth_challenges: {wire_key: 'authChallenges', required: false, ref: 'Network::AuthChallenge', list: true}
           )
 
           EVENT_TYPES = {
