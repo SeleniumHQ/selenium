@@ -96,6 +96,9 @@ class WebSocketConnection:
         self.response_wait_interval = interval
 
         self.callbacks = {}
+        self._event_receiver = None
+        self._event_receiver_lock = threading.Lock()
+        self._closing = False
         self.session_id = None
         self._id = 0
         self._id_lock = threading.Lock()
@@ -111,6 +114,7 @@ class WebSocketConnection:
             raise WebDriverException("Timed out waiting for connection to start")
 
     def close(self):
+        self._closing = True
         # Close the socket first so ``run_forever`` returns; only then join the
         # thread. Joining first would block for the full ``response_wait_timeout``
         # because the thread does not exit until the connection is closed.
@@ -123,6 +127,31 @@ class WebSocketConnection:
             self._ws_thread.join(timeout=self.response_wait_timeout)
         self._started.clear()
         self._ws = None
+        self._close_event_receiver()
+
+    @property
+    def event_receiver(self):
+        return self._event_receiver
+
+    def attach_event_receiver(self, factory):
+        """Return the receiver of every event, creating it with ``factory`` if none is attached yet.
+
+        Every event is handed to ``receiver.receive(method, params)`` alongside the callbacks registered
+        here. ``receive`` runs on the socket's reader thread, so it must return quickly. The receiver is
+        closed with ``receiver.close()`` when the connection closes.
+        """
+        with self._event_receiver_lock:
+            if self._event_receiver is None:
+                self._event_receiver = factory()
+            # Checked after assigning so a close racing the attach still closes it.
+            if self._closing:
+                self._event_receiver.close()
+            return self._event_receiver
+
+    def _close_event_receiver(self):
+        with self._event_receiver_lock:
+            if self._event_receiver is not None:
+                self._event_receiver.close()
 
     def _round_trip(self, payload):
         """Assign an id, envelope and send the frame, and return the correlated raw reply.
@@ -231,7 +260,9 @@ class WebSocketConnection:
                 else:
                     ws.run_forever(suppress_origin=True)
             finally:
+                self._closing = True
                 self._release_pending()
+                self._close_event_receiver()
 
         ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
         self._ws = ws
@@ -255,6 +286,8 @@ class WebSocketConnection:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
                 Thread(target=callback, args=(params,), daemon=True).start()
+            if self._event_receiver is not None:
+                self._event_receiver.receive(message["method"], params)
 
     def _release_pending(self):
         # Once the socket is gone no reply can arrive, so wake waiters instead of letting them run out the timeout
