@@ -163,7 +163,7 @@ module Selenium
               session = Session.new(driver)
               events = Queue.new
               listener = browsing_context.add_context_created_listener { |payload| events << payload }
-              session.subscribe(events: [event_name])
+              subscription = session.subscribe(events: [event_name]).subscription
 
               context = browsing_context.create(type: :tab).context
               created = wait.until do
@@ -175,7 +175,7 @@ module Selenium
               expect(created.user_context).to eq('default')
               expect(created.parent).to be_nil
             ensure
-              session&.unsubscribe(events: [event_name])
+              session.unsubscribe(subscriptions: [subscription]) if subscription
               browsing_context.remove_listener(listener) if listener
             end
 

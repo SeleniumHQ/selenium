@@ -26,7 +26,7 @@ module Selenium
       class BiDiBridge < Bridge
         include BiDiCommands
 
-        attr_reader :bidi, :connection
+        attr_reader :bidi, :connection, :context_tree
 
         def create_session(capabilities)
           super
@@ -35,6 +35,7 @@ module Selenium
             @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
             # Reuse the BiDi object's socket as the connection until the bridge owns it directly.
             @connection = @bidi.ws
+            @context_tree = BiDi::ContextTree.new(@connection)
             @current_window = window_handle
           rescue StandardError
             quit
