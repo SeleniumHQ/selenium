@@ -28,6 +28,8 @@ module Selenium
 
         attr_reader connection: untyped
 
+        attr_reader context_tree: BiDi::ContextTree
+
         def create_session: (untyped capabilities) -> void
 
         def quit: () -> void

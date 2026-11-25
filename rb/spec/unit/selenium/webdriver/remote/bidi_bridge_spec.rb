@@ -65,7 +65,12 @@ module Selenium
             allow(http).to receive(:request).with(:post, window_url, any_args).and_return('value' => nil)
             allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection))
             navigate_result = {'navigation' => nil, 'url' => 'about:blank'}
-            allow(connection).to receive(:send_cmd).and_return('result' => navigate_result)
+            allow(connection).to receive_messages(event_receiver: BiDi::Dispatcher.new,
+                                                  send_cmd: {'result' => navigate_result})
+            allow(connection).to receive(:send_cmd).with(hash_including(method: 'session.subscribe'))
+                                                   .and_return('result' => {'subscription' => 'sub-1'})
+            allow(connection).to receive(:send_cmd).with(hash_including(method: 'browsingContext.getTree'))
+                                                   .and_return('result' => {'contexts' => []})
             bridge.create_session(Capabilities.new)
           end
 
