@@ -23,7 +23,10 @@ require 'selenium/webdriver/bidi/protocol'
 module Selenium
   module WebDriver
     class BiDi
-      describe ContextTree, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
+      describe ContextTree,
+               pending_if: {browser_family: :safari,
+                            reason: 'Safari session.subscribe result fails strict deserialization'},
+               skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
         let(:tree) { driver.send(:bridge).context_tree }
         let!(:window) { driver.window_handle }
 
