@@ -69,6 +69,13 @@ module Selenium
 
             expect(running).not_to include(manager)
           end
+
+          it 'releases a service whose start failed' do
+            allow(manager).to receive(:connect_until_stable).and_raise(Error::WebDriverError, 'unable to connect')
+
+            expect { manager.start }.to raise_error(Error::WebDriverError, 'unable to connect')
+            expect(running).not_to include(manager)
+          end
         end
 
         describe '.stop_running' do

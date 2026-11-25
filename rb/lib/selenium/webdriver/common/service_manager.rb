@@ -107,6 +107,7 @@ module Selenium
           connect_until_stable
         rescue StandardError
           stop_process
+          self.class.untrack(self)
           raise
         end
       end
