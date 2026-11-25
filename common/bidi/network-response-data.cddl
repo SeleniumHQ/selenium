@@ -1,0 +1,19 @@
+; Chrome emits network.authRequired before it has recorded the response, so status arrives
+; as the placeholder -1 where the spec declares a js-uint. Bindings that reject an out-of-range
+; value drop the event, and the blocked request is never continued. Admit -1 and nothing else.
+; Delete once Chrome sends the real status: https://issues.chromium.org/issues/582770639
+; https://w3c.github.io/webdriver-bidi/#type-network-ResponseData
+network.ResponseData = {
+  url: text,
+  protocol: text,
+  status: -1..9007199254740991,
+  statusText: text,
+  fromCache: bool,
+  headers: [*network.Header],
+  mimeType: text,
+  bytesReceived: js-uint,
+  headersSize: js-uint / null,
+  bodySize: js-uint / null,
+  content: network.ResponseContent,
+  ? authChallenges: [*network.AuthChallenge],
+}

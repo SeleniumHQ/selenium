@@ -156,22 +156,6 @@ module Selenium
             def self.new: (size: Integer) -> instance
           end
 
-          class ResponseData < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader url: String
-            attr_reader protocol: String
-            attr_reader status: Integer
-            attr_reader status_text: String
-            attr_reader from_cache: bool
-            attr_reader headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header]
-            attr_reader mime_type: String
-            attr_reader bytes_received: Integer
-            attr_reader headers_size: Integer?
-            attr_reader body_size: Integer?
-            attr_reader content: ::Selenium::WebDriver::BiDi::Protocol::Network::ResponseContent
-            attr_reader auth_challenges: untyped
-            def self.new: (url: String, protocol: String, status: Integer, status_text: String, from_cache: bool, headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header], mime_type: String, bytes_received: Integer, headers_size: Integer?, body_size: Integer?, content: ::Selenium::WebDriver::BiDi::Protocol::Network::ResponseContent, ?auth_challenges: Array[::Selenium::WebDriver::BiDi::Protocol::Network::AuthChallenge]) -> instance
-          end
-
           class SetCookieHeader < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader name: String
             attr_reader value: ::Selenium::WebDriver::BiDi::Protocol::Network::bytes_value
@@ -388,6 +372,22 @@ module Selenium
             attr_reader intercepts: untyped
             attr_reader response: ::Selenium::WebDriver::BiDi::Protocol::Network::ResponseData
             def self.new: (context: String?, is_blocked: bool, navigation: String?, redirect_count: Integer, request: ::Selenium::WebDriver::BiDi::Protocol::Network::RequestData, timestamp: Integer, ?user_context: String?, ?intercepts: Array[String], response: ::Selenium::WebDriver::BiDi::Protocol::Network::ResponseData) -> instance
+          end
+
+          class ResponseData < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader url: String
+            attr_reader protocol: String
+            attr_reader status: Integer
+            attr_reader status_text: String
+            attr_reader from_cache: bool
+            attr_reader headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header]
+            attr_reader mime_type: String
+            attr_reader bytes_received: Integer
+            attr_reader headers_size: Integer?
+            attr_reader body_size: Integer?
+            attr_reader content: ::Selenium::WebDriver::BiDi::Protocol::Network::ResponseContent
+            attr_reader auth_challenges: untyped
+            def self.new: (url: String, protocol: String, status: Integer, status_text: String, from_cache: bool, headers: Array[::Selenium::WebDriver::BiDi::Protocol::Network::Header], mime_type: String, bytes_received: Integer, headers_size: Integer?, body_size: Integer?, content: ::Selenium::WebDriver::BiDi::Protocol::Network::ResponseContent, ?auth_challenges: Array[::Selenium::WebDriver::BiDi::Protocol::Network::AuthChallenge]) -> instance
           end
 
           EVENT_TYPES: Hash[String, untyped]
