@@ -31,6 +31,7 @@ use std::path::PathBuf;
 use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
+use walkdir::DirEntry;
 
 pub const GRID_NAME: &str = "grid";
 const GRID_RELEASE: &str = "selenium-server";
@@ -296,6 +297,24 @@ impl SeleniumManager for GridManager {
 
     fn is_snap(&self, _browser_path: &str) -> bool {
         false
+    }
+
+    // The cached Grid artifact is a jar with the version in its name,
+    // e.g. <cache>/grid/4.54.0/selenium-server-4.54.0.jar. The shared matcher
+    // expects the driver name plus the binary extension, which is
+    // "selenium-server" on Linux and "selenium-server.exe" on Windows, so it
+    // only finds the jar on macOS, where the name match is "contains".
+    // This manager matches the jar by name and extension instead.
+    fn is_driver(&self, entry: &DirEntry) -> bool {
+        let prefix = format!("{GRID_RELEASE}-");
+        let suffix = format!(".{GRID_EXTENSION}");
+        let is_grid_jar = entry
+            .file_name()
+            .to_str()
+            .map(|name| name.starts_with(&prefix) && name.ends_with(&suffix))
+            .unwrap_or(false);
+
+        entry.path().is_file() && is_grid_jar
     }
 
     fn get_snap_path(&self) -> Option<PathBuf> {
