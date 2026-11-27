@@ -24,7 +24,7 @@ module Selenium
 
       @log_handler: BiDi::LogHandler
 
-      def initialize: (Remote::BiDiBridge bidi) -> void
+      def initialize: (Remote::Bridge bidi) -> void
 
       def add_console_message_handler: ?{ (untyped) -> untyped } -> Integer
 

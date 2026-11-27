@@ -185,6 +185,46 @@ module Selenium
             end
           end
         end
+
+        describe 'bridge selection' do
+          let(:session_url) { 'http://127.0.0.1:4444/wd/hub/session' }
+          let(:returned_capabilities) { {browserName: 'chrome', webSocketUrl: true} }
+
+          before do
+            headers = {content_type: 'application/json'}
+            new_session = {value: {sessionId: 'foo', capabilities: returned_capabilities}}
+            stub_request(:post, session_url).to_return(status: 200, body: new_session.to_json, headers: headers)
+            stub_request(:delete, "#{session_url}/foo").to_return(status: 200, body: {value: nil}.to_json,
+                                                                  headers: headers)
+          end
+
+          def bridge_for(capabilities)
+            described_class.new(capabilities: capabilities).send(:bridge)
+          end
+
+          it 'uses BiDi when an alwaysMatch request gets a webSocketUrl back' do
+            capabilities = Remote::Capabilities.always_match(browser_name: 'chrome', web_socket_url: true)
+
+            expect { bridge_for(capabilities) }.to raise_error(Error::WebDriverError, /did not return a valid/)
+          end
+
+          it 'uses BiDi when a firstMatch request gets a webSocketUrl back' do
+            capabilities = Remote::Capabilities.first_match({browser_name: 'chrome', web_socket_url: true},
+                                                            {browser_name: 'firefox'})
+
+            expect { bridge_for(capabilities) }.to raise_error(Error::WebDriverError, /did not return a valid/)
+          end
+
+          context 'when the response has no webSocketUrl' do
+            let(:returned_capabilities) { {browserName: 'chrome'} }
+
+            it 'does not use BiDi' do
+              capabilities = Remote::Capabilities.always_match(browser_name: 'chrome', web_socket_url: true)
+
+              expect(bridge_for(capabilities)).not_to be_a(BiDiConnection)
+            end
+          end
+        end
       end
     end # Remote
   end # WebDriver

@@ -22,9 +22,9 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     module Remote
-      describe BiDiBridge do
+      describe BiDiConnection do
         let(:http) { WebDriver::Remote::Http::Default.new.tap { |client| client.server_url = 'http://localhost' } }
-        let(:bridge) { described_class.new(http_client: http) }
+        let(:bridge) { Bridge.new(http_client: http) }
 
         def stub_new_session(web_socket_url)
           capabilities = {'browserName' => 'safari', 'webSocketUrl' => web_socket_url}

@@ -19,9 +19,7 @@
 module Selenium
   module WebDriver
     module Remote
-      class BiDiBridge < Bridge
-        include BiDiCommands
-
+      module BiDiConnection : Bridge
         @connection: untyped
 
         attr_reader bidi: BiDi
@@ -32,13 +30,13 @@ module Selenium
 
         attr_reader listener_errors: ListenerErrors
 
-        def create_session: (untyped capabilities) -> void
-
         def quit: () -> void
 
         def close: () -> void
 
         private
+
+        def connect_bidi: () -> void
 
         def execute: (Symbol command, *untyped) -> untyped
 
