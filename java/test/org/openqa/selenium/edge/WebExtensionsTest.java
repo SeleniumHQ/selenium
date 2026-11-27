@@ -19,7 +19,6 @@ package org.openqa.selenium.edge;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 import java.io.IOException;
@@ -27,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.openqa.selenium.By;
@@ -38,7 +36,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.webextension.HasWebExtensions;
 import org.openqa.selenium.webextension.WebExtension;
 
@@ -52,38 +49,22 @@ class WebExtensionsTest extends JupiterTestBase {
   private static final String EXT_CRX = "common/extensions/webextensions-selenium-example.crx";
   private static final String INJECTED = "Content injected by webextensions-selenium-example";
 
-  @AfterAll
-  public static void resetBrowser() {
-    seleniumExtension.removeDriver();
-  }
-
   @Test
-  @NoDriverBeforeTest
   void installsAndUninstallsAnUnpackedDirectory(@TempDir Path tmp) throws IOException {
-    // The shared test options launch Edge with disable-extensions, which Edge (unlike Chrome) also
-    // applies to extensions installed over BiDi. Exempting the extension needs its path on the
-    // browser's machine, which a Grid session only learns when the directory is uploaded.
-    assumeFalse(
-        Boolean.getBoolean("selenium.browser.remote"),
-        "Edge can't be exempted from disable-extensions for an uploaded directory");
-    Path directory = copyOutOfRunfiles(EXT_DIR, tmp);
-    EdgeOptions options = new EdgeOptions();
-    options.addArguments("--disable-extensions-except=" + directory);
-    localDriver = seleniumExtension.createNewDriver(options);
-    HasWebExtensions extensions = (HasWebExtensions) localDriver;
+    HasWebExtensions extensions = (HasWebExtensions) driver;
 
-    WebExtension extension = extensions.installWebExtension(directory);
+    WebExtension extension = extensions.installWebExtension(copyOutOfRunfiles(EXT_DIR, tmp));
     assertThat(extension.getId()).isNotBlank();
 
-    localDriver.get(pages.blankPage);
+    driver.get(pages.blankPage);
     // The content script injects asynchronously after the page loads.
     WebElement injected =
-        wait(localDriver).until(presenceOfElementLocated(By.id("webextensions-selenium-example")));
+        wait.until(presenceOfElementLocated(By.id("webextensions-selenium-example")));
     assertThat(injected.getText()).isEqualTo(INJECTED);
 
     extensions.uninstallWebExtension(extension);
-    localDriver.navigate().refresh();
-    assertStaysAbsent(localDriver, By.id("webextensions-selenium-example"));
+    driver.navigate().refresh();
+    assertStaysAbsent(driver, By.id("webextensions-selenium-example"));
   }
 
   @Test

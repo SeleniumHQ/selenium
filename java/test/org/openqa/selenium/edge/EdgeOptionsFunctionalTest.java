@@ -31,7 +31,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 class EdgeOptionsFunctionalTest extends JupiterTestBase {
@@ -74,7 +73,6 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented
   @NoDriverBeforeTest
   public void canAddExtensionFromFile() {
     EdgeOptions options = new EdgeOptions();
@@ -90,7 +88,6 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented
   @NoDriverBeforeTest
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     EdgeOptions options = new EdgeOptions();
