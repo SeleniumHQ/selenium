@@ -337,11 +337,12 @@ public class JdkHttpClient implements HttpClient {
                 }
                 // The peer can close first, and the JDK answers its close frame on its own; when
                 // that lands between the output check above and our send, there is nothing left
-                // to close.
+                // to close. Only the peer's close frame proves that: the JDK also closes the output
+                // when our own close frame fails to write.
                 if (message instanceof CloseMessage
                     && cause instanceof IOException
-                    && underlyingSocket.isOutputClosed()) {
-                  LOG.log(Level.FINE, "Output closed before the close message was sent", cause);
+                    && closed.isDone()) {
+                  LOG.log(Level.FINE, "Peer closed before the close message was sent", cause);
                   return this;
                 }
                 throw new WebDriverException(cause);
