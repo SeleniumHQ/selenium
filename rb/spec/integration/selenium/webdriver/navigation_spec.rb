@@ -75,6 +75,7 @@ module Selenium
 
         it 'raises when refreshing a closed window',
            pending_if: {browser: :safari_preview, bidi: true,
+                        exception: {class: RSpec::Expectations::ExpectationNotMetError, message: /WindowNotFound/},
                         reason: 'reload fails with "no such browsing context", which is not a BiDi error code'} do
           driver.switch_to.new_window(:tab)
           driver.close
