@@ -252,15 +252,16 @@ module Selenium
           expect { errors.check }.to raise_error(ArgumentError, /username expected string/)
         end
 
-        it 'stores an answer the browser refuses, to raise at the next command' do
+        it 'logs an answer the browser refuses, since no handler caused it' do
+          logged = Queue.new
+          allow(WebDriver.logger).to receive(:error) { |message, **opts| logged << message if opts[:id] == :network }
           connection.errors['network.continueWithAuth'] = 'no such request'
           handle = add
 
           emit_challenge(intercepts: [registry.intercept(handle)])
-          answered
 
-          expect { Wait.new(timeout: 5, interval: 0.01).until { errors.check } }
-            .to raise_error(Error::NoSuchRequestError)
+          expect(logged.pop(timeout: 5)).to match(/Could not answer the authentication challenge: .*NoSuchRequestError/)
+          expect { errors.check }.not_to raise_error
         end
 
         it 'keeps consulting the handlers an event started with when one is removed meanwhile' do

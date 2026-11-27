@@ -131,10 +131,12 @@ module Selenium
           {action: :cancel}
         end
 
+        # TODO: consider letting users register their own handler for errors their code can neither cause nor prevent
         def answer(challenge, args)
           @network.continue_with_auth(request: challenge.id, **args)
         rescue Error::WebDriverError => e
-          @errors.add(e)
+          WebDriver.logger.error("Could not answer the authentication challenge: #{e.class}: #{e.message}",
+                                 id: :network)
         end
       end # HandlerRegistry
     end # Network
