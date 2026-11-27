@@ -95,3 +95,38 @@ def test_set_socket_url():
     options.web_socket_url = "socket_url"
     assert options.enable_bidi is True
     assert options.web_socket_url == "socket_url"
+
+
+def test_record_is_unset_by_default(options):
+    assert options.record is None
+
+
+def test_record_returns_a_path(options, tmp_path):
+    options.record = str(tmp_path / "trace.zip")
+    assert options.record == tmp_path / "trace.zip"
+
+
+def test_record_accepts_path_like(options, tmp_path):
+    options.record = tmp_path / "trace.zip"
+    assert options.record == tmp_path / "trace.zip"
+
+
+def test_record_can_be_cleared(options):
+    options.record = "trace.zip"
+    options.record = None
+    assert options.record is None
+
+
+def test_record_is_not_sent_as_a_capability(options):
+    options.record = "trace.zip"
+    assert "trace.zip" not in str(options.to_capabilities())
+
+
+def test_record_rejects_non_paths(options):
+    with pytest.raises(TypeError):
+        options.record = 42
+
+
+def test_record_rejects_empty_path(options):
+    with pytest.raises(ValueError):
+        options.record = ""

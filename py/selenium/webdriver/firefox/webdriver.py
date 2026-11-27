@@ -57,13 +57,18 @@ class WebDriver(LocalWebDriver):
             self.options.browser_version = None
 
         self.service.path = self.service.env_path() or finder.get_driver_path()
-        self.service.start()
+        server_addr = self._start_driver("firefox", self.service, self.options)
 
-        executor = FirefoxRemoteConnection(
-            remote_server_addr=self.service.service_url,
-            keep_alive=keep_alive,
-            ignore_proxy=self.options._ignore_local_proxy,
-        )
+        try:
+            executor = FirefoxRemoteConnection(
+                remote_server_addr=server_addr,
+                keep_alive=keep_alive,
+                ignore_proxy=self.options._ignore_local_proxy,
+            )
+        except Exception:
+            # The driver (or the recording proxy) is already running.
+            self._stop_driver(session_deleted=False)
+            raise
 
         try:
             super().__init__(command_executor=executor, options=self.options)
