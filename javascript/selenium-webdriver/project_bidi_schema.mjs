@@ -29,13 +29,16 @@
  *             | { ordered: [{ ref, requires: [key] }] }        // structural, spec order
  *             | { correlated: true }                           // resolved by request id, not the payload
  *   field:      { name, wire, required, type }
- *   type ref:   { primitive } | { const } | { ref } | { enum, primitive? } | { list } | { map, extensible? } | { union, scalar?, scalarValues? }
+ *   type ref:   { primitive } | { const } | { ref } | { enum, primitive? } | { list, tuple? } | { map, extensible? } | { union, scalar?, scalarValues? }
  *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
  *               record node, `map` is the value type of `* key => value` entries and
  *               `extensible: true` marks an open `* text => any` record.
  *               A numeric `primitive`, or a `ref` to an alias of one, may carry `min` / `max`, with
  *               `exclusiveMin` / `exclusiveMax: true` for an exclusive bound. On a `ref` they narrow
  *               the alias's own bounds, so a value must satisfy both.
+ *               `tuple` on a `list` is the exact positional shape of a fixed-length array (a map
+ *               entry's `[key, value]`); `list` then keeps the first position's type, so a binding
+ *               that does not read `tuple` still sees the shape it did before.
  *
  * `specHref` (present only when known) is the URL of the element's definition in the
  * live spec — a binding can render it as a doc-comment link. It is carried on each
@@ -188,6 +191,16 @@ function projectRef(type) {
   return node
 }
 
+// Every member of a multi-member array must occur exactly once for its positions to be fixed;
+// anything else fails closed rather than projecting a wrong arity.
+function arrayNode(members) {
+  const node = { list: projectRef(members[0]?.Type) }
+  if (members.length < 2) return node
+  const once = ({ Occurrence: occ }) => !occ || (!isUnbounded(occ) && (occ.n ?? 1) === 1 && (occ.m ?? 1) === 1)
+  node.tuple = members.map((m) => (once(m) ? projectRef(m.Type) : { primitive: 'unknown' }))
+  return node
+}
+
 const BOUND_OPERATORS = {
   ge: { side: 'min', exclusive: false },
   gt: { side: 'min', exclusive: true },
@@ -243,7 +256,7 @@ function projectEntry(e) {
         .map(projectField),
     }
   }
-  if (e.Type === 'array') return { list: projectRef(e.Values?.[0]?.Type) }
+  if (e.Type === 'array') return arrayNode(e.Values ?? [])
   if (e.Type === 'map') return { map: projectRef(e.ValueType ?? e.Values?.[0]?.Type), extensible: true }
   if (e.Type === 'range') {
     const min = boundValue(e.Value?.Min)
@@ -620,6 +633,7 @@ export function buildSpecLinks(dfnsDocs, anchors = {}) {
 function refsInType(node) {
   if (!node) return []
   if (node.ref) return [node.ref]
+  if (node.tuple) return [node.list, ...node.tuple].flatMap(refsInType)
   if (node.list) return refsInType(node.list)
   if (node.map) return refsInType(node.map)
   if (node.union) return node.union.flatMap(refsInType)
@@ -881,7 +895,7 @@ export function checkSchema(source) {
       : node.primitive === 'unknown'
         ? true
         : node.list
-          ? hasUnknown(node.list)
+          ? [node.list, ...(node.tuple ?? [])].some(hasUnknown)
           : node.map
             ? hasUnknown(node.map)
             : node.union
@@ -895,7 +909,7 @@ export function checkSchema(source) {
       : Array.isArray(node.record)
         ? node.record.length === 0 || node.record.some((f) => hasEmptyInlineRecord(f.type))
         : node.list
-          ? hasEmptyInlineRecord(node.list)
+          ? [node.list, ...(node.tuple ?? [])].some(hasEmptyInlineRecord)
           : node.map
             ? hasEmptyInlineRecord(node.map)
             : node.union
@@ -908,7 +922,13 @@ export function checkSchema(source) {
     const target = allTypes[node.ref]
     return target?.kind === 'alias' && isNumeric(target.type, seen)
   }
-  const nestedTypes = (node) => [node.list, node.map, ...(node.union ?? []), ...(node.record ?? []).map((f) => f.type)]
+  const nestedTypes = (node) => [
+    node.list,
+    ...(node.tuple ?? []),
+    node.map,
+    ...(node.union ?? []),
+    ...(node.record ?? []).map((f) => f.type),
+  ]
   const hasMisplacedBound = (node) =>
     !!node && ((BOUND_KEYS.some((k) => k in node) && !isNumeric(node)) || nestedTypes(node).some(hasMisplacedBound))
   const report = (where, node) => {
