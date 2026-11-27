@@ -78,6 +78,7 @@ public class SeleniumExtension
   private final CaptureLoggingRule captureLoggingRule = new CaptureLoggingRule();
   private boolean failedWithNotYetImplemented = false;
   private boolean failedWithRemoteBuild = false;
+  private boolean failedWithExpectedFailure = false;
 
   public SeleniumExtension() {
     this(Duration.ofSeconds(10), Duration.ofSeconds(5));
@@ -130,6 +131,9 @@ public class SeleniumExtension
 
     // Remote builds
     failedWithRemoteBuild = false;
+
+    // Expected failures
+    failedWithExpectedFailure = false;
   }
 
   @NonNull
@@ -156,6 +160,17 @@ public class SeleniumExtension
     captureLoggingRule.endLogCapture(logLevel);
 
     LOG.info(() -> "<<< Finished  " + displayName(context));
+
+    // ExpectedFailureRule
+    if (ExpectedFailureMatcher.matches(context) && !failedWithExpectedFailure) {
+      Optional<Class<?>> testClass = context.getTestClass();
+      Optional<Method> testMethod = context.getTestMethod();
+      throw new Exception(
+          String.format(
+              "%s.%s matched @ExpectedFailure but already works!",
+              testClass.map(Class::getName).orElse(""),
+              testMethod.map(Method::getName).orElse("")));
+    }
 
     // NotYetImplementedRule
     NotYetImplementedRule notYetImplementedRule = new NotYetImplementedRule(context);
@@ -240,6 +255,11 @@ public class SeleniumExtension
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable throwable)
       throws Throwable {
+    // ExpectedFailureRule
+    if (ExpectedFailureMatcher.matches(context)) {
+      failedWithExpectedFailure = true;
+    }
+
     // NotYetImplementedRule
     NotYetImplementedRule notYetImplementedRule = new NotYetImplementedRule(context);
     if (notYetImplementedRule.check()) {
@@ -252,7 +272,7 @@ public class SeleniumExtension
       failedWithRemoteBuild = true;
     }
 
-    if (failedWithNotYetImplemented || failedWithRemoteBuild) {
+    if (failedWithExpectedFailure || failedWithNotYetImplemented || failedWithRemoteBuild) {
       // Expected failures.
       return;
     }
