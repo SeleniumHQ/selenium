@@ -265,6 +265,19 @@ def test_should_find_elements_by_class_when_its_name_is_surrounded_by_whitespace
     assert elements[0].text == "Spaced out"
 
 
+def test_should_be_able_to_find_a_single_element_by_a_weird_looking_class_name(driver, pages):
+    pages.load("xhtmlTest.html")
+    element = driver.find_element(By.CLASS_NAME, "cls-!@#$%^&*")
+    assert element.get_attribute("class") == "cls-!@#$%^&*"
+
+
+def test_should_be_able_to_find_multiple_elements_by_a_weird_looking_class_name(driver, pages):
+    pages.load("xhtmlTest.html")
+    elements = driver.find_elements(By.CLASS_NAME, "cls-!@#$%^&*")
+    assert len(elements) == 1
+    assert elements[0].get_attribute("class") == "cls-!@#$%^&*"
+
+
 # By.CLASS_NAME negative
 
 
@@ -293,20 +306,6 @@ def test_finding_asingle_element_by_compound_class_name_should_throw(driver, pag
     pages.load("xhtmlTest.html")
     with pytest.raises(InvalidSelectorException):
         driver.find_element(By.CLASS_NAME, "a b")
-
-
-@pytest.mark.xfail_safari(reason="unlike chrome, safari raises TimeoutException")
-def test_finding_asingle_element_by_invalid_class_name_should_throw(driver, pages):
-    pages.load("xhtmlTest.html")
-    with pytest.raises(InvalidSelectorException):
-        driver.find_element(By.CLASS_NAME, "!@#$%^&*")
-
-
-@pytest.mark.xfail_safari(reason="unlike chrome, safari raises TimeoutException")
-def test_finding_multiple_elements_by_invalid_class_name_should_throw(driver, pages):
-    pages.load("xhtmlTest.html")
-    with pytest.raises(InvalidSelectorException):
-        driver.find_elements(By.CLASS_NAME, "!@#$%^&*")
 
 
 # By.XPATH positive
