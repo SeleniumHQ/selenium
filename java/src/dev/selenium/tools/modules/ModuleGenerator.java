@@ -307,20 +307,22 @@ public class ModuleGenerator {
       }
     }
 
-    openTo.forEach(module ->
-        moduleDeclaration.addDirective(
-            new ModuleOpensDirective(
-                new Name(module),
-                new NodeList(
-                    exportedPackages.stream().map(Name::new).collect(Collectors.toSet())))));
+    // A package may appear in only one "opens" directive, so open each package once to all
+    // of the requested modules.
+    if (!openTo.isEmpty()) {
+      exportedPackages.forEach(pkg ->
+          moduleDeclaration.addDirective(
+              new ModuleOpensDirective(
+                  new Name(pkg),
+                  new NodeList<>(openTo.stream().map(Name::new).collect(Collectors.toList())))));
+    }
 
     ClassWriter classWriter = new ClassWriter(0);
     classWriter.visit(V11, ACC_MODULE, "module-info", null, null, null);
     ModuleVisitor moduleVisitor = classWriter.visitModule(moduleName, isOpen ? ACC_OPEN : 0, null);
     moduleVisitor.visitRequire("java.base", ACC_MANDATED, null);
 
-    moduleDeclaration.accept(
-        new MyModuleVisitor(classLoader, exportedPackages, hides, moduleVisitor), null);
+    moduleDeclaration.accept(new MyModuleVisitor(classLoader, hides, moduleVisitor), null);
 
     moduleVisitor.visitEnd();
 
@@ -452,19 +454,12 @@ public class ModuleGenerator {
 
     private final ClassLoader classLoader;
     private final Set<String> seenExports;
-    private final Set<String> packages;
     private final ModuleVisitor byteBuddyVisitor;
 
-    MyModuleVisitor(
-        ClassLoader classLoader,
-        Set<String> packages,
-        Set<String> excluded,
-        ModuleVisitor byteBuddyVisitor) {
+    MyModuleVisitor(ClassLoader classLoader, Set<String> excluded, ModuleVisitor byteBuddyVisitor) {
       this.classLoader = classLoader;
       this.byteBuddyVisitor = byteBuddyVisitor;
 
-      // Set is modifiable
-      this.packages = new HashSet<>(packages);
       this.seenExports = new HashSet<>(excluded);
     }
 
@@ -514,8 +509,10 @@ public class ModuleGenerator {
 
     @Override
     public void visit(ModuleOpensDirective n, Void arg) {
-      packages.forEach(
-          pkg -> byteBuddyVisitor.visitOpen(pkg.replace('.', '/'), 0, n.getNameAsString()));
+      byteBuddyVisitor.visitOpen(
+          n.getNameAsString().replace('.', '/'),
+          0,
+          n.getModuleNames().stream().map(Name::asString).toArray(String[]::new));
     }
 
     private int getByteBuddyModifier(NodeList<Modifier> modifiers) {

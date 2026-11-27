@@ -9,6 +9,7 @@ java_export(
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
     opens_to = [
+        "org.seleniumhq.selenium.api",
         "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
