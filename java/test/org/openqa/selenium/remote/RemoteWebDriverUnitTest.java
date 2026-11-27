@@ -60,6 +60,7 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -329,6 +330,62 @@ class RemoteWebDriverUnitTest {
         new CommandPayload(
             DriverCommand.EXECUTE_SCRIPT, Map.of("script", "return window.name", "args", List.of())),
         new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "original")));
+  }
+
+  @Test
+  void windowNameAfterAnAlertWindowIsStillFound() {
+    WebDriverFixture fixture =
+        new WebDriverFixture(
+            echoCapabilities,
+            errorResponder("no such window", "missing"),
+            valueResponder("original"),
+            valueResponder(List.of("original", "blocked", "target")),
+            nullValueResponder,
+            valueResponder(""),
+            nullValueResponder,
+            errorResponder("unexpected alert open", "alert open"),
+            nullValueResponder,
+            valueResponder("wanted"));
+
+    WebDriver switched = fixture.driver.switchTo().window("wanted");
+
+    assertThat(switched).isSameAs(fixture.driver);
+    fixture.verifyCommands(
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "wanted")),
+        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, emptyMap()),
+        new CommandPayload(DriverCommand.GET_WINDOW_HANDLES, emptyMap()),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "original")),
+        new CommandPayload(
+            DriverCommand.EXECUTE_SCRIPT, Map.of("script", "return window.name", "args", List.of())),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "blocked")),
+        new CommandPayload(
+            DriverCommand.EXECUTE_SCRIPT, Map.of("script", "return window.name", "args", List.of())),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "target")),
+        new CommandPayload(
+            DriverCommand.EXECUTE_SCRIPT, Map.of("script", "return window.name", "args", List.of())));
+  }
+
+  @Test
+  void scriptErrorDuringNameSearchIsNotReportedAsAMissingWindow() {
+    WebDriverFixture fixture =
+        new WebDriverFixture(
+            echoCapabilities,
+            errorResponder("no such window", "missing"),
+            valueResponder("original"),
+            valueResponder(List.of("original", "other")),
+            nullValueResponder,
+            errorResponder("timeout", "timed out"));
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> fixture.driver.switchTo().window("missing"));
+
+    fixture.verifyCommands(
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "missing")),
+        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, emptyMap()),
+        new CommandPayload(DriverCommand.GET_WINDOW_HANDLES, emptyMap()),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "original")),
+        new CommandPayload(
+            DriverCommand.EXECUTE_SCRIPT, Map.of("script", "return window.name", "args", List.of())));
   }
 
   @Test

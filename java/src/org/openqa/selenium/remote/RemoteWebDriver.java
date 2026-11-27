@@ -74,6 +74,7 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -1418,11 +1419,8 @@ public class RemoteWebDriver
             }
           } catch (NoSuchWindowException ignored) {
             // Closed between listing the handles and switching to this one.
-          } catch (WebDriverException blocked) {
-            // An alert blocks the name read. Get back before reporting the miss.
-            execute(DriverCommand.SWITCH_TO_WINDOW(original));
-            nsw.addSuppressed(blocked);
-            throw nsw;
+          } catch (UnhandledAlertException ignored) {
+            // This window cannot be read. A later handle may still match.
           }
         }
         execute(DriverCommand.SWITCH_TO_WINDOW(original));

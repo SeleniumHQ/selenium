@@ -30,6 +30,8 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
@@ -271,6 +273,50 @@ class WindowSwitchingTest extends JupiterTestBase {
         // The suite still closes leftover windows.
       }
       driver.switchTo().window(original);
+    }
+  }
+
+  @NoDriverAfterTest(failedOnly = true)
+  @Test
+  void testWindowNameIsFoundWhenTheFirstListedWindowHasAnAlert() {
+    driver.get(pages.xhtmlTestPage);
+    executeScriptNullable("window.open('about:blank')");
+    wait.until(windowHandleCountToBe(2));
+    executeScriptNullable("window.open('about:blank')");
+    wait.until(windowHandleCountToBe(3));
+
+    // Follow the handle list this browser returns, so the alert is scanned before the match.
+    List<String> handles = new ArrayList<>(driver.getWindowHandles());
+    String blocked = handles.get(0);
+    String named = handles.get(handles.size() - 1);
+    assertThat(named).isNotEqualTo(blocked);
+
+    try {
+      driver.switchTo().window(named);
+      executeScriptNullable("window.name = 'wanted'");
+      driver.switchTo().window(blocked);
+      executeScriptNullable("alert('open')");
+      driver.switchTo().window(named);
+
+      driver.switchTo().window("wanted");
+      assertThat(driver.getWindowHandle()).isEqualTo(named);
+    } finally {
+      try {
+        driver.switchTo().window(blocked);
+        driver.switchTo().alert().accept();
+      } catch (Exception ignored) {
+        // The alert may already be gone.
+      }
+      for (String handle : new ArrayList<>(driver.getWindowHandles())) {
+        if (!mainWindow.equals(handle)) {
+          try {
+            driver.switchTo().window(handle).close();
+          } catch (Exception ignored) {
+            // The suite still closes leftover windows.
+          }
+        }
+      }
+      driver.switchTo().window(mainWindow);
     }
   }
 
