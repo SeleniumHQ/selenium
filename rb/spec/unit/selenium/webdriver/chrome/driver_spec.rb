@@ -35,8 +35,9 @@ module Selenium
         end
         let(:finder) { instance_double(DriverFinder, browser_path?: false, driver_path: '/path/to/driver') }
 
-        def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': {}}}}).to_json
+        def expect_request(capabilities: nil, endpoint: nil)
+          capabilities ||= {browserName: 'chrome', 'goog:chromeOptions': {}}
+          body = {capabilities: {firstMatch: [capabilities]}}.to_json
           endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
@@ -75,7 +76,7 @@ module Selenium
           allow(DriverFinder).to receive(:new).and_return(finder)
 
           opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': opts}}})
+          expect_request(capabilities: {browserName: 'chrome', 'goog:chromeOptions': opts})
 
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
         end

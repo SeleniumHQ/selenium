@@ -691,8 +691,15 @@ module Selenium
         end
 
         def prepare_capabilities_payload(capabilities)
-          capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
-          {capabilities: capabilities}
+          always_match = capabilities.fetch('alwaysMatch', {})
+          top_level = capabilities.except('alwaysMatch', 'firstMatch')
+          first_match = capabilities.fetch('firstMatch', [{}]).map do |entry|
+            merged = always_match.merge(entry) do |key|
+              raise ArgumentError, "#{key} is set in both alwaysMatch and firstMatch"
+            end
+            top_level.merge(merged)
+          end
+          {capabilities: {firstMatch: first_match}}
         end
       end # Bridge
     end # Remote

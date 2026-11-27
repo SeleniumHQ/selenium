@@ -61,66 +61,74 @@ module Selenium
         end
 
         describe '#create_session' do
-          it 'accepts Hash' do
-            payload = JSON.generate(
-              capabilities: {
-                alwaysMatch: {
-                  browserName: 'internet explorer'
-                }
-              }
-            )
-
+          def stub_first_match(*first_match)
+            payload = JSON.generate(capabilities: {firstMatch: first_match})
             allow(http).to receive(:request)
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+            payload
+          end
+
+          it 'sends a Hash as a single firstMatch entry' do
+            payload = stub_first_match({browserName: 'internet explorer'})
 
             bridge.create_session(browserName: 'internet explorer')
             expect(http).to have_received(:request).with(any_args, payload)
           end
 
-          it 'uses alwaysMatch when passed' do
-            payload = JSON.generate(
-              capabilities: {
-                alwaysMatch: {
-                  browserName: 'chrome'
-                }
-              }
-            )
-
-            allow(http).to receive(:request)
-              .with(any_args, payload)
-              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+          it 'sends alwaysMatch as a single firstMatch entry' do
+            payload = stub_first_match({browserName: 'chrome'})
 
             bridge.create_session('alwaysMatch' => {'browserName' => 'chrome'})
             expect(http).to have_received(:request).with(any_args, payload)
           end
 
-          it 'uses firstMatch when passed' do
-            payload = JSON.generate(
-              capabilities: {
-                firstMatch: [
-                  {browserName: 'chrome'},
-                  {browserName: 'firefox'}
-                ]
-              }
-            )
+          it 'sends firstMatch entries as passed' do
+            payload = stub_first_match({browserName: 'chrome'}, {browserName: 'firefox'})
 
-            allow(http).to receive(:request)
-              .with(any_args, payload)
-              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
-
-            bridge.create_session('firstMatch' => [
-                                    {'browserName' => 'chrome'},
-                                    {'browserName' => 'firefox'}
-                                  ])
+            bridge.create_session('firstMatch' => [{'browserName' => 'chrome'}, {'browserName' => 'firefox'}])
             expect(http).to have_received(:request).with(any_args, payload)
+          end
+
+          it 'merges alwaysMatch into every firstMatch entry' do
+            payload = stub_first_match({acceptInsecureCerts: true, browserName: 'chrome'},
+                                       {acceptInsecureCerts: true, browserName: 'firefox'})
+
+            bridge.create_session('alwaysMatch' => {'acceptInsecureCerts' => true},
+                                  'firstMatch' => [{'browserName' => 'chrome'}, {'browserName' => 'firefox'}])
+            expect(http).to have_received(:request).with(any_args, payload)
+          end
+
+          it 'merges capabilities beside firstMatch into every firstMatch entry' do
+            payload = stub_first_match({'se:remoteUrl': 'http://grid', browserName: 'chrome'},
+                                       {'se:remoteUrl': 'http://grid', browserName: 'firefox'})
+
+            bridge.create_session('firstMatch' => [{'browserName' => 'chrome'}, {'browserName' => 'firefox'}],
+                                  'se:remoteUrl' => 'http://grid')
+            expect(http).to have_received(:request).with(any_args, payload)
+          end
+
+          it 'keeps alwaysMatch and firstMatch values over capabilities beside them' do
+            payload = stub_first_match({browserName: 'firefox', platformName: 'mac'})
+
+            bridge.create_session('alwaysMatch' => {'browserName' => 'firefox'},
+                                  'firstMatch' => [{'platformName' => 'mac'}],
+                                  'browserName' => 'chrome', 'platformName' => 'windows')
+            expect(http).to have_received(:request).with(any_args, payload)
+          end
+
+          it 'raises ArgumentError when alwaysMatch and a firstMatch entry set the same capability' do
+            capabilities = {'alwaysMatch' => {'browserName' => 'chrome'},
+                            'firstMatch' => [{'acceptInsecureCerts' => true}, {'browserName' => 'firefox'}]}
+
+            expect { bridge.create_session(capabilities) }.to raise_error(ArgumentError, /browserName/)
           end
 
           it 'supports responses with "value" -> "capabilities" capabilities' do
             allow(http).to receive(:request)
               .and_return('value' => {'sessionId' => '', 'capabilities' => {'browserName' => 'firefox'}})
 
-            bridge.create_session(Capabilities.new)
+            bridge.create_session({})
             expect(bridge.capabilities[:browser_name]).to eq('firefox')
           end
 
