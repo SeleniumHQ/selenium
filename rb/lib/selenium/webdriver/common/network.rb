@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'uri'
 require_relative 'network/url_patterns'
 require_relative 'network/authentication_challenge'
 require_relative 'network/handler_registry'
@@ -223,20 +224,37 @@ module Selenium
 
       def legacy_authentication_handler(username, password, filter, pattern_type, url_patterns:, window_handle:,
                                         user_context:, &block)
-        unless filter.empty? && pattern_type.nil?
-          raise ArgumentError, 'give url_patterns: or the deprecated URL filters, not both' if url_patterns
-
-          WebDriver.logger.deprecate('positional URL filters and pattern_type:', 'url_patterns:',
-                                     id: :network_url_filters, reference: REFERENCE)
-          url_patterns = filter unless filter.empty?
-        end
-        scope = {url_patterns: url_patterns, window_handle: window_handle, user_context: user_context}
+        scope = {url_patterns: legacy_url_patterns(filter, pattern_type, url_patterns), window_handle: window_handle,
+                 user_context: user_context}
         return add_authentication_handler(**scope, &block) unless username && password
 
         WebDriver.logger.deprecate('Network#add_authentication_handler with a username and password',
                                    'Network#add_authentication(username:, password:)',
                                    id: :network_auth_credentials, reference: REFERENCE)
         add_authentication(username: username, password: password, **scope)
+      end
+
+      # Filters were only sent with a pattern_type, so without one they match every request
+      def legacy_url_patterns(filter, pattern_type, url_patterns)
+        return url_patterns if filter.empty? && pattern_type.nil?
+        raise ArgumentError, 'give url_patterns: or the deprecated URL filters, not both' if url_patterns
+
+        WebDriver.logger.deprecate('positional URL filters and pattern_type:', 'url_patterns:',
+                                   id: :network_url_filters, reference: REFERENCE)
+        return if filter.empty?
+
+        case pattern_type
+        when nil then nil
+        when :string then filter
+        when :url then filter.map { |url| url_components(url) }
+        else raise ArgumentError, "Unknown pattern type: #{pattern_type}"
+        end
+      end
+
+      def url_components(url)
+        uri = URI.parse(url)
+        {protocol: uri.scheme || '', hostname: uri.host || '', port: uri.port.to_s, pathname: uri.path || '',
+         search: uri.query || ''}
       end
 
       # TODO: remove once request and response handlers use HandlerRegistry

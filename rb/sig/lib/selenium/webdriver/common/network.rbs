@@ -59,6 +59,10 @@ module Selenium
 
       def deprecate_network_accessor: (String old) -> BiDi::Network
 
+      def legacy_url_patterns: (Array[String] filter, Symbol? pattern_type, untyped url_patterns) -> untyped
+
+      def url_components: (String url) -> Hash[Symbol, String]
+
       def legacy_authentication_handler: (String? username, String? password, Array[String] filter, Symbol? pattern_type, url_patterns: untyped, window_handle: String?, user_context: String?) ?{ (AuthenticationChallenge) -> untyped } -> Object
 
       def add_handler: (Symbol event_type, String phase, untyped intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> Integer

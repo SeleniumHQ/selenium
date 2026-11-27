@@ -59,16 +59,31 @@ module Selenium
           expect(challenge(connection.intercepts.last)['action']).to eq('provideCredentials')
         end
 
-        it 'deprecates positional filters, and sends them as pattern strings whatever the pattern type' do
-          expect {
-            network.add_authentication_handler('user', 'pass', 'https://example.com/a', 'https://example.com/b')
-            network.add_authentication_handler('user', 'pass', 'https://example.com/c', pattern_type: :url)
-          }.to have_deprecated(%i[network_url_filters network_auth_credentials])
+        it 'deprecates positional filters without a pattern type, which still match every challenge' do
+          expect { network.add_authentication_handler('user', 'pass', 'https://*.example.com/', '/login') }
+            .to have_deprecated(%i[network_url_filters network_auth_credentials])
+          expect(intercepts).to eq([{'phases' => ['authRequired']}])
+        end
 
-          expect(intercepts.map { |params| params['urlPatterns'] })
-            .to eq([[{'type' => 'string', 'pattern' => 'https://example.com/a'},
-                     {'type' => 'string', 'pattern' => 'https://example.com/b'}],
-                    [{'type' => 'string', 'pattern' => 'https://example.com/c'}]])
+        it 'sends positional filters with the string pattern type as pattern strings' do
+          expect { network.add_authentication_handler('user', 'pass', 'https://example.com/a', pattern_type: :string) }
+            .to have_deprecated(%i[network_url_filters network_auth_credentials])
+          expect(intercepts.first['urlPatterns']).to eq([{'type' => 'string', 'pattern' => 'https://example.com/a'}])
+        end
+
+        it 'sends positional filters with the url pattern type as URL components' do
+          url = 'https://example.com:8443/a?b=c'
+
+          expect { network.add_authentication_handler('user', 'pass', url, pattern_type: :url) }
+            .to have_deprecated(%i[network_url_filters network_auth_credentials])
+          expect(intercepts.first['urlPatterns'])
+            .to eq([{'type' => 'pattern', 'protocol' => 'https', 'hostname' => 'example.com', 'port' => '8443',
+                     'pathname' => '/a', 'search' => 'b=c'}])
+        end
+
+        it 'refuses an unknown pattern type, as before' do
+          expect { network.add_authentication_handler('user', 'pass', 'https://example.com/', pattern_type: :glob) }
+            .to raise_error(ArgumentError, /Unknown pattern type/)
         end
 
         it 'matches every request when given a pattern type with no filters' do
