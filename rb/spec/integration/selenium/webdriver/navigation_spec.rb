@@ -71,6 +71,13 @@ module Selenium
           expect { driver.navigate.to url_for('formPage.html') }.to raise_error(Error::NoSuchWindowError)
           expect { driver.navigate.back }.to raise_error(Error::NoSuchWindowError)
           expect { driver.navigate.forward }.to raise_error(Error::NoSuchWindowError)
+        end
+
+        it 'raises on refresh when the current window is closed',
+           pending_if: {browser: :safari_preview, reason: 'https://bugs.webkit.org/show_bug.cgi?id=333312'} do
+          driver.switch_to.new_window(:tab)
+          driver.close
+
           expect { driver.navigate.refresh }.to raise_error(Error::NoSuchWindowError)
         end
       end
