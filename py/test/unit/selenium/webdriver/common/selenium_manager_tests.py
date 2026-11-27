@@ -51,45 +51,58 @@ def test_uses_environment_variable(monkeypatch):
 
 
 def test_uses_windows(monkeypatch):
+    project_root = Path(selenium.__file__).parent.parent
+    expected = project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
+    monkeypatch.setattr(Path, "is_file", lambda p: p == expected)
     monkeypatch.setattr(sys, "platform", "win32")
     monkeypatch.setattr("platform.machine", lambda: "AMD64")
     binary = SeleniumManager()._get_binary()
-    project_root = Path(selenium.__file__).parent.parent
-    assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
+    assert binary == expected
 
 
 def test_uses_windows_arm64(monkeypatch):
+    project_root = Path(selenium.__file__).parent.parent
+    expected = project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
+    monkeypatch.setattr(Path, "is_file", lambda p: p == expected)
     monkeypatch.setattr(sys, "platform", "win32")
     monkeypatch.setattr("platform.machine", lambda: "ARM64")
     binary = SeleniumManager()._get_binary()
-    project_root = Path(selenium.__file__).parent.parent
-    assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
+    assert binary == expected
 
 
 def test_uses_linux(monkeypatch):
+    project_root = Path(selenium.__file__).parent.parent
+    expected = project_root.joinpath("selenium/webdriver/common/linux-x86_64/selenium-manager")
+    monkeypatch.setattr(Path, "is_file", lambda p: p == expected)
     monkeypatch.setattr(sys, "platform", "linux")
     monkeypatch.setattr("platform.machine", lambda: "x86_64")
     binary = SeleniumManager()._get_binary()
-    project_root = Path(selenium.__file__).parent.parent
-    assert binary == project_root.joinpath("selenium/webdriver/common/linux-x86_64/selenium-manager")
+    assert binary == expected
 
 
 def test_uses_linux_aarch64(monkeypatch):
+    project_root = Path(selenium.__file__).parent.parent
+    expected = project_root.joinpath("selenium/webdriver/common/linux-arm64/selenium-manager")
+    monkeypatch.setattr(Path, "is_file", lambda p: p == expected)
     monkeypatch.setattr(sys, "platform", "linux")
     monkeypatch.setattr("platform.machine", lambda: "aarch64")
     binary = SeleniumManager()._get_binary()
-    project_root = Path(selenium.__file__).parent.parent
-    assert binary == project_root.joinpath("selenium/webdriver/common/linux-arm64/selenium-manager")
+    assert binary == expected
 
 
 def test_uses_mac(monkeypatch):
+    project_root = Path(selenium.__file__).parent.parent
+    expected = project_root.joinpath("selenium/webdriver/common/macos/selenium-manager")
+    monkeypatch.setattr(Path, "is_file", lambda p: p == expected)
     monkeypatch.setattr(sys, "platform", "darwin")
     binary = SeleniumManager()._get_binary()
-    project_root = Path(selenium.__file__).parent.parent
-    assert binary == project_root.joinpath("selenium/webdriver/common/macos/selenium-manager")
+    assert binary == expected
 
 
 def test_uses_freebsd(monkeypatch, caplog):
+    project_root = Path(selenium.__file__).parent.parent
+    expected = project_root.joinpath("selenium/webdriver/common/linux-x86_64/selenium-manager")
+    monkeypatch.setattr(Path, "is_file", lambda p: p == expected)
     monkeypatch.setattr(sys, "platform", "freebsd15")
     monkeypatch.setattr("platform.machine", lambda: "amd64")
     root = logging.getLogger()
@@ -98,8 +111,7 @@ def test_uses_freebsd(monkeypatch, caplog):
     root.handlers = [caplog_handler]
     try:
         binary = SeleniumManager()._get_binary()
-        project_root = Path(selenium.__file__).parent.parent
-        assert binary == project_root.joinpath("selenium/webdriver/common/linux-x86_64/selenium-manager")
+        assert binary == expected
         assert "Selenium Manager binary may not be compatible with FreeBSD" in caplog.text
     finally:
         root.handlers = old_handlers
@@ -150,3 +162,21 @@ def test_run_non_zero_exit_code():
         with pytest.raises(WebDriverException) as excinfo:
             SeleniumManager._run(["/path/to/sm", "arg1"])
     assert "Unsuccessful command executed: /path/to/sm arg1; code: 1\n\nError Message" in str(excinfo.value)
+
+
+def test_process_logs(caplog):
+    log_items = [
+        {"level": "WARN", "message": "warning message"},
+        {"level": "ERROR", "message": "error message"},
+        {"level": "INFO", "message": "info message"},
+        {"level": "DEBUG", "message": "debug message"},
+    ]
+    with caplog.at_level(logging.DEBUG):
+        SeleniumManager._process_logs(log_items)
+
+    assert [(r.levelno, r.getMessage()) for r in caplog.records] == [
+        (logging.WARNING, "warning message"),
+        (logging.ERROR, "error message"),
+        (logging.DEBUG, "info message"),
+        (logging.DEBUG, "debug message"),
+    ]

@@ -166,5 +166,7 @@ class SeleniumManager:
         for item in log_items:
             if item["level"] == "WARN":
                 logger.warning(item["message"])
+            elif item["level"] == "ERROR":
+                logger.error(item["message"])
             elif item["level"] in ["DEBUG", "INFO"]:
                 logger.debug(item["message"])
