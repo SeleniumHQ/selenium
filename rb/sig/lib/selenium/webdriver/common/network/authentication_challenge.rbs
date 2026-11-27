@@ -20,13 +20,15 @@ module Selenium
   module WebDriver
     class Network
       class AuthenticationChallenge
-        @data: BiDi::Protocol::Network::AuthRequiredParameters
+        @params: BiDi::Protocol::Network::AuthRequiredParameters
 
         @answer: Hash[Symbol, untyped]?
 
         attr_reader answer: Hash[Symbol, untyped]?
 
-        def initialize: (BiDi::Protocol::Network::AuthRequiredParameters data) -> void
+        attr_reader params: BiDi::Protocol::Network::AuthRequiredParameters
+
+        def initialize: (BiDi::Protocol::Network::AuthRequiredParameters params) -> void
 
         def id: () -> String
 

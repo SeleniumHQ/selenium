@@ -33,6 +33,11 @@ module Selenium
         expect(challenge).to have_attributes(id: 'request-1', url: 'https://example.com/secure')
       end
 
+      it 'gives the event as the browser sent it' do
+        expect(challenge.params).to be_a(BiDi::Protocol::Network::AuthRequiredParameters)
+        expect(challenge.params.response.auth_challenges.map(&:realm)).to eq(['test'])
+      end
+
       it 'deprecates a positional username and password, still answering with them' do
         expect { challenge.authenticate('user', 'pass') }.to have_deprecated(:network_auth_authenticate)
         expect(challenge.answer).to include(action: :provide_credentials)

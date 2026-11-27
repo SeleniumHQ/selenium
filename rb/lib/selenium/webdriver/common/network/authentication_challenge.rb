@@ -30,20 +30,26 @@ module Selenium
         # @return [Hash, nil] the continueWithAuth arguments a handler answered with, or nil while none has
         attr_reader :answer
 
+        # The event as the browser sent it, with everything it carries, such as the realm in
+        # params.response.auth_challenges. Its fields follow the WebDriver BiDi spec, not the deprecation policy.
+        # @return [BiDi::Protocol::Network::AuthRequiredParameters]
+        # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+        attr_reader :params
+
         # @api private
-        def initialize(data)
-          @data = data
+        def initialize(params)
+          @params = params
           @answer = nil
         end
 
         # @return [String] the id the browser gave the request
         def id
-          @data.request.request
+          params.request.request
         end
 
         # @return [String] the URL of the request that was challenged
         def url
-          @data.request.url
+          params.request.url
         end
 
         # Answers the challenge with these credentials.
