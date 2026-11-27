@@ -123,6 +123,23 @@ module Selenium
             bridge.create_session(Capabilities.new)
             expect(bridge.capabilities[:browser_name]).to eq('firefox')
           end
+
+          it 'does not add BiDi when a subclass creates the session itself' do
+            capabilities = {'webSocketUrl' => 'ws://localhost/session/foo'}
+            allow(http).to receive(:request).and_return('value' => {'sessionId' => 'foo',
+                                                                    'capabilities' => capabilities})
+            subclass = Class.new(described_class) do
+              def create_session(capabilities)
+                response = execute(:new_session, {}, {capabilities: {alwaysMatch: capabilities}})
+                @session_id = response['sessionId']
+                @capabilities = Capabilities.json_create(response['capabilities'])
+              end
+            end
+
+            bridge = subclass.new(http_client: http)
+            bridge.create_session('webSocketUrl' => true)
+            expect(bridge).not_to be_a(BiDiConnection)
+          end
         end
 
         describe '#upload_if_necessary' do

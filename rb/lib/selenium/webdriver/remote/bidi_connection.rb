@@ -23,14 +23,27 @@ module Selenium
   module WebDriver
     module Remote
       # @api private
-      class BiDiBridge < Bridge
-        include BiDiCommands
-
+      module BiDiConnection
         attr_reader :bidi, :connection, :context_tree, :listener_errors
 
-        def create_session(capabilities)
-          @listener_errors = ListenerErrors.new
+        # A stored error is raised once the session has ended, and outside Bridge#quit's rescue of connection errors
+        def quit
+          bidi&.close
+        rescue *Bridge::QUIT_ERRORS
+          nil
+        ensure
           super
+          @listener_errors.check
+        end
+
+        def close
+          execute(:close_window).tap { |handles| bidi.close if handles.empty? }
+        end
+
+        private
+
+        def connect_bidi
+          @listener_errors = ListenerErrors.new
 
           begin
             @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
@@ -45,22 +58,6 @@ module Selenium
           end
         end
 
-        # A stored error is raised once the session has ended, and outside Bridge#quit's rescue of connection errors
-        def quit
-          bidi&.close
-        rescue *QUIT_ERRORS
-          nil
-        ensure
-          super
-          @listener_errors.check
-        end
-
-        def close
-          execute(:close_window).tap { |handles| bidi.close if handles.empty? }
-        end
-
-        private
-
         def execute(command, *)
           @listener_errors.check unless command == :delete_session
           super
@@ -73,7 +70,7 @@ module Selenium
           raise Error::WebDriverError,
                 "BiDi was enabled, but the remote end did not return a valid webSocketUrl: #{url.inspect}."
         end
-      end # BiDiBridge
+      end # BiDiConnection
     end # Remote
   end # WebDriver
 end # Selenium

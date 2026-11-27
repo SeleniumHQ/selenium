@@ -22,9 +22,9 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     module Remote
-      describe BiDiBridge do
+      describe BiDiConnection do
         let(:http) { WebDriver::Remote::Http::Default.new.tap { |client| client.server_url = 'http://localhost' } }
-        let(:bridge) { described_class.new(http_client: http) }
+        let(:bridge) { Bridge.new(http_client: http) }
 
         def stub_new_session(web_socket_url)
           capabilities = {'browserName' => 'safari', 'webSocketUrl' => web_socket_url}
@@ -105,6 +105,21 @@ module Selenium
 
               expect { bridge.quit }.to raise_error(IOError, 'from the handler')
             end
+          end
+        end
+
+        describe 'browser features' do
+          it 'keeps the Firefox extension commands' do
+            capabilities = {'browserName' => 'firefox', 'webSocketUrl' => 'ws://localhost/session/foo'}
+            allow(http).to receive(:request).and_return('value' => {'sessionId' => 'foo',
+                                                                    'capabilities' => capabilities})
+            connection = instance_double(WebSocketConnection, before_send: [])
+            allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection))
+
+            bridge.create_session(Capabilities.new)
+
+            expect(bridge.method(:install_web_extension).owner).to eq(Firefox::Features)
+            expect(bridge.method(:uninstall_web_extension).owner).to eq(Firefox::Features)
           end
         end
 
