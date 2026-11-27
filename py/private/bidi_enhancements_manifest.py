@@ -50,6 +50,7 @@ from typing import Any
 #         'extract_property': str, # Extract property from extracted items
 #         'validate': str,         # Validation function name
 #         'transform': str,        # Transformation function name
+#         'before_execute': [str], # Statements run before the command is sent
 #     }
 # }
 # ============================================================================
@@ -220,6 +221,16 @@ class SetClientWindowStateParameters:
     "browsingContext": {
         # Method enhancements
         "exclude_methods": ["set_viewport"],
+        "navigate": {
+            "before_execute": [
+                "# Register the quiescence preload (once) so window.__quiescence is",
+                "# installed on the document this navigation creates. Unlike the classic",
+                "# GET command, browsingContext.navigate does not wait for the page to",
+                "# load, so the quiescence oracle is registered here rather than in get().",
+                "if self._driver is not None:",
+                "    self._driver._ensure_quiescence_preload()",
+            ],
+        },
         "create": {
             "extract_field": "context",
         },

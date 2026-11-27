@@ -189,6 +189,10 @@
     "./accessibility-snapshot-wire": {
       "types": "./dist/typescript/accessibility-snapshot-wire.d.ts",
       "default": "./dist/typescript/accessibility-snapshot-wire.js"
+    },
+    "./quiescence": {
+      "types": "./dist/typescript/quiescence.d.ts",
+      "default": "./dist/typescript/quiescence.js"
     }
   },
   "typesVersions": {
@@ -237,7 +241,8 @@
       "clear": ["./dist/typescript/clear.d.ts"],
       "submit": ["./dist/typescript/submit.d.ts"],
       "accessibility-snapshot": ["./dist/typescript/accessibility-snapshot.d.ts"],
-      "accessibility-snapshot-wire": ["./dist/typescript/accessibility-snapshot-wire.d.ts"]
+      "accessibility-snapshot-wire": ["./dist/typescript/accessibility-snapshot-wire.d.ts"],
+      "quiescence": ["./dist/typescript/quiescence.d.ts"]
     }
   },
   "engines": {

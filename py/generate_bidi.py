@@ -268,6 +268,13 @@ class CddlCommand:
             body += f"        {validate_func}({param_args})\n"
             body += "\n"
 
+        # Statements to run before the command is sent, so a method can gain a
+        # side effect without replacing its generated signature and docstring.
+        if enhancements.get("before_execute"):
+            for line in enhancements["before_execute"]:
+                body += f"        {line}\n" if line else "\n"
+            body += "\n"
+
         # Add transformation and preprocessing
         # First, check if any transform is needed
         if "transform" in enhancements:
@@ -864,7 +871,7 @@ class CddlModule:
         if self.events:
             code += "    EVENT_CONFIGS: dict[str, EventConfig] = {}\n"  # Will be populated after types are defined
 
-        if self.name == "script":
+        if self.name in ("script", "browsingContext"):
             code += "    def __init__(self, conn, driver=None) -> None:\n"
             code += "        self._conn = conn\n"
             code += "        self._driver = driver\n"

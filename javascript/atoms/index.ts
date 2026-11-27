@@ -65,3 +65,4 @@ export { default as accessibilitySnapshot } from './typescript/accessibility-sna
 export type { AccessibilityNode, StateValue } from './typescript/accessibility-snapshot.js'
 export { default as accessibilitySnapshotWire } from './typescript/accessibility-snapshot-wire.js'
 export type { WireError, WireNode, WireSnapshot } from './typescript/accessibility-snapshot-wire.js'
+export { default as installQuiescence } from './typescript/quiescence.js'

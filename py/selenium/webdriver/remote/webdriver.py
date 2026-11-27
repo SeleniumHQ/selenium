@@ -85,9 +85,9 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 from selenium.webdriver.support.relative_locator import RelativeBy
 
-cdp = None
-
 logger = logging.getLogger(__name__)
+
+cdp = None
 
 # Remote ends that do not implement a command answer in one of these shapes.
 _UNSUPPORTED_COMMAND_MARKERS = (
@@ -139,10 +139,37 @@ def _encode_extension(path: str) -> str:
     return path
 
 
+_quiescence_source_cache: str | None = None
+
+
 def import_cdp() -> None:
     global cdp
     if not cdp:
         cdp = import_module("selenium.webdriver.common.bidi.cdp")
+
+
+def _quiescence_source() -> str:
+    """Return a script that installs the quiescence polyfill, cached.
+
+    The atom evaluates to its install function rather than running itself,
+    like every TypeScript atom, so the script calls it with the page's window.
+    """
+    global _quiescence_source_cache
+    if _quiescence_source_cache is None:
+        data = pkgutil.get_data("selenium.webdriver.common", "quiescence.js")
+        if data is None:
+            raise WebDriverException("Failed to load quiescence.js preload script")
+        _quiescence_source_cache = "(" + data.decode("utf-8") + ")(window);"
+    return _quiescence_source_cache
+
+
+def _load_quiescence_preload() -> str:
+    """Wrap the install script as a BiDi preload declaration.
+
+    ``script.addPreloadScript`` expects a function declaration, so the install
+    script is wrapped in an arrow function.
+    """
+    return "() => {\n" + _quiescence_source() + "\n}"
 
 
 def _create_caps(caps) -> dict:
@@ -372,6 +399,9 @@ class WebDriver(BaseWebDriver):
         self._input: Input | None = None
         self._request: APIRequestContext | None = None
         self._devtools: Any | None = None
+        self._quiescence_script_id: str | None = None
+        self._quiescence_preload_attempted: bool = False
+        self._quiescence_preload_warned: bool = False
 
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
@@ -587,6 +617,167 @@ class WebDriver(BaseWebDriver):
             `driver.get("https://example.com")`
         """
         self.execute(Command.GET, {"url": url})
+
+    def _ensure_quiescence_preload(self) -> None:
+        """Register the quiescence polyfill as a BiDi preload script (once).
+
+        The polyfill installs ``window.__quiescence`` before any page script
+        runs, letting callers observe when the document has no pending timers,
+        network requests, or animation loops. It is registered from
+        ``browsing_context.navigate()`` (which, unlike ``get()``, does not wait
+        for the page to load) so the oracle is available on the document that
+        navigation creates and on every subsequent one.
+
+        Injection is best-effort: it only runs when the session negotiated a
+        BiDi WebSocket (``webSocketUrl`` capability), and any failure is logged
+        rather than raised so navigation is never affected.
+        """
+        if self._quiescence_preload_attempted:
+            return
+        if not self.caps.get("webSocketUrl"):
+            self._quiescence_preload_attempted = True
+            return
+        try:
+            # The BiDi module directly: driver.script is the public wrapper, which
+            # would raise a DeprecationWarning for an internal call the user never made.
+            self._quiescence_script_id = self.script._script._add_preload_script(_load_quiescence_preload())
+            self._quiescence_preload_attempted = True
+        except Exception as exc:
+            # Left unmarked so the next navigation retries: the failure may be
+            # transient (the BiDi socket not ready yet). Warned once, not debugged:
+            # until it succeeds every report is lower fidelity.
+            if self._quiescence_preload_warned:
+                logger.debug("Could not register quiescence preload script: %s", exc)
+            else:
+                self._quiescence_preload_warned = True
+                logger.warning("Could not register quiescence preload script: %s", exc)
+
+    @contextmanager
+    def _script_timeout_of_at_least(self, seconds: float):
+        """Raise the session's script timeout to ``seconds`` for the block, then restore it.
+
+        ``driver.timeouts`` returns a fresh ``Timeouts`` each time, so assigning to
+        its ``script`` attribute changes nothing; the commands are sent directly,
+        with only the script timeout, so the other timeouts are left as they are.
+        That also keeps this independent of the ``Timeouts`` class, which is
+        packaged separately in the Bazel build.
+        """
+        previous = None
+        try:
+            current = self.execute(Command.GET_TIMEOUTS)["value"].get("script")  # ms; None = no limit
+            if current is not None and current < seconds * 1000:
+                self.execute(Command.SET_TIMEOUTS, {"script": int(seconds * 1000)})
+                previous = current
+        except Exception as exc:
+            # Warned: if the browser's script timeout is shorter than this wait,
+            # it aborts the wait with a script timeout instead of its diagnosis.
+            logger.warning("Could not raise the script timeout for this wait: %s", exc)
+        try:
+            yield
+        finally:
+            if previous is not None:
+                self.execute(Command.SET_TIMEOUTS, {"script": previous})
+
+    def wait_for_dom_settled(
+        self,
+        root=None,
+        timeout: float = 10,
+        settle_time: float = 0.1,
+        require_pending_quiet: bool = True,
+    ) -> dict:
+        """Block until the DOM has stopped meaningfully mutating.
+
+        Backed by the quiescence polyfill's ``awaitDomSettled``: resolves once
+        no meaningful mutation (structural change, content text, layout-affecting
+        attribute, or running CSS animation) has occurred for ``settle_time``,
+        discounting periodic noise (clocks, spinners) and cooperatively inert
+        regions.
+
+        Args:
+            root: Limit the wait to a subtree. A ``WebElement`` or a CSS
+                selector string; ``None`` waits on the whole document.
+            timeout: Seconds to wait before giving up (returns ``settled=False``
+                with the still-active regions).
+            settle_time: Seconds of quiet required before declaring settled, like
+                every other timeout in this binding.
+            require_pending_quiet: Also require the timer/network ledger to be
+                quiet (compose with pending-work quiescence).
+
+        Returns:
+            A dict: ``{settled, elapsedMs, activeRegions, lastMutationAgeMs,
+            unobservable}``.
+
+        Example:
+            `driver.wait_for_dom_settled(root="#results", timeout=5)`
+        """
+        self._ensure_quiescence_preload()
+        # The preload applies to future navigations; if it never ran on the
+        # current document (e.g. only classic get() was used), install it now.
+        if not self.execute_script("return !!window.__quiescence;"):
+            self.execute_script(_quiescence_source())
+
+        # The async script must outlive our own timeout, or the browser aborts
+        # it first.
+        with self._script_timeout_of_at_least(timeout + 5):
+            return self.execute_async_script(
+                "const done = arguments[arguments.length - 1];"
+                "window.__quiescence.awaitDomSettled({"
+                "  root: arguments[0], settleMs: arguments[1],"
+                "  timeoutMs: arguments[2], requirePendingQuiet: arguments[3]"
+                "}).then(done);",
+                root,
+                int(settle_time * 1000),
+                int(timeout * 1000),
+                require_pending_quiet,
+            )
+
+    def wait_until_actionable(
+        self,
+        element: WebElement,
+        interaction: str = "click",
+        timeout: float = 10,
+        settled: bool = False,
+    ) -> dict:
+        """Block until `element` is safe to act on.
+
+        Resolves once the element itself is visible, enabled, (editable, for
+        ``interaction="type"``/``"clear"``), in view, unobstructed, and not
+        moving. Scrolls the element into view if it starts out of viewport.
+
+        Page settledness is a separate signal and is *not* required by default:
+        an application that long-polls or animates continuously never settles,
+        so requiring it would make every interaction pay the settle timeout for
+        a signal that says nothing about this element.
+
+        Args:
+            element: The element to check.
+            interaction: The kind of interaction planned (``"click"`` by
+                default; ``"type"``/``"clear"`` additionally require the
+                element to be editable).
+            timeout: Seconds to wait before giving up.
+            settled: Also require the document to stop meaningfully mutating
+                first. For a page known to quiesce, such as one doing a slow
+                re-render. A page that never settles reports ``ready=False``
+                with the cause rather than acting anyway.
+
+        Returns:
+            A dict: ``{ready, interactionPoint, reason, elapsedMs}``.
+        """
+        self._ensure_quiescence_preload()
+        if not self.execute_script("return !!window.__quiescence;"):
+            self.execute_script(_quiescence_source())
+
+        with self._script_timeout_of_at_least(timeout + 5):
+            return self.execute_async_script(
+                "const done = arguments[arguments.length - 1];"
+                "window.__quiescence.waitUntilActionable(arguments[0], {"
+                "  interaction: arguments[1], timeoutMs: arguments[2], settled: arguments[3]"
+                "}).then(done);",
+                element,
+                interaction,
+                int(timeout * 1000),
+                settled,
+            )
 
     @property
     def title(self) -> str:
@@ -1403,7 +1594,7 @@ class WebDriver(BaseWebDriver):
             self._start_bidi()
 
         if self._browsing_context is None:
-            self._browsing_context = BrowsingContext(self._websocket_connection)
+            self._browsing_context = BrowsingContext(self._websocket_connection, self)
 
         return self._browsing_context
 
