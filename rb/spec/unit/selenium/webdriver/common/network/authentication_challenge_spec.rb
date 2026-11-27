@@ -38,6 +38,13 @@ module Selenium
         expect(challenge.params.response.auth_challenges.map(&:realm)).to eq(['test'])
       end
 
+      it 'deprecates the request hash, which still reads as it did' do
+        request = nil
+
+        expect { request = challenge.request }.to have_deprecated(:network_auth_request)
+        expect(request).to include('request' => 'request-1', 'url' => 'https://example.com/secure', 'method' => 'GET')
+      end
+
       it 'deprecates a positional username and password, still answering with them' do
         expect { challenge.authenticate('user', 'pass') }.to have_deprecated(:network_auth_authenticate)
         expect(challenge.answer).to include(action: :provide_credentials)

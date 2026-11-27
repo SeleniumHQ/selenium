@@ -52,6 +52,14 @@ module Selenium
           params.request.url
         end
 
+        # @deprecated Use #url, or #params for the rest of the request.
+        # @return [Hash] the request that was challenged, keyed by its wire names
+        def request
+          WebDriver.logger.deprecate('AuthenticationChallenge#request', '#url, or #params for the rest of the request',
+                                     id: :network_auth_request, reference: REFERENCE)
+          params.request.as_json
+        end
+
         # Answers the challenge with these credentials.
         # @param username [String]
         # @param password [String]

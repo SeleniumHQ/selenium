@@ -34,6 +34,8 @@ module Selenium
 
         def url: () -> String
 
+        def request: () -> Hash[String, untyped]
+
         def authenticate: (*String positional, **String credentials) -> nil
 
         def skip: () -> nil
