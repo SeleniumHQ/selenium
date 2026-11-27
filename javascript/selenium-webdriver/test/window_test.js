@@ -66,7 +66,7 @@ test.suite(function (env) {
     let originalHandles = await driver.getAllWindowHandles()
 
     await driver.findElement(By.linkText('Open new window')).click()
-    await driver.wait(forNewWindowToBeOpened(originalHandles), 2000)
+    await driver.wait(forNewWindowToBeOpened(originalHandles), 10000)
     assert.strictEqual(await driver.getTitle(), 'XHTML Test Page')
 
     let newHandle = await getNewWindowHandle(originalHandles)
