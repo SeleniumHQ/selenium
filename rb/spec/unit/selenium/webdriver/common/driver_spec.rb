@@ -18,12 +18,18 @@
 # under the License.
 
 require File.expand_path('../spec_helper', __dir__)
+require File.expand_path('../../../../../lib/selenium/webdriver/bidi/protocol', __dir__)
 
 module Selenium
   module WebDriver
     describe Driver do
       let(:bidi) { instance_double(BiDi).as_null_object }
-      let(:bridge) { instance_double(Remote::Bridge, browser: nil, bidi: bidi) }
+      let(:bridge) do
+        instance_double(Remote::Bridge, browser: nil, bidi: bidi,
+                                        bidi_network: instance_double(BiDi::Protocol::Network).as_null_object,
+                                        bidi_session: instance_double(BiDi::Protocol::Session).as_null_object)
+          .extend(Remote::BiDiConnection)
+      end
       let(:driver) { described_class.new(bridge: bridge) }
 
       before { allow(WebDriver.logger).to receive(:deprecate) }

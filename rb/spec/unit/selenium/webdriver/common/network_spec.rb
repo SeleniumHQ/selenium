@@ -18,44 +18,135 @@
 # under the License.
 
 require File.expand_path('../spec_helper', __dir__)
+require_relative 'network/network_spec_support'
 
 module Selenium
   module WebDriver
     describe Network do
-      let(:reference) { 'https://www.selenium.dev/documentation/warnings/bidi-implementation/' }
-      let(:bidi) do
+      include NetworkSpecSupport
+
+      let(:connection) { NetworkSpecSupport::RecordingConnection.new }
+      let(:legacy_bidi) do
         instance_double(BiDi).as_null_object.tap do |bidi|
           allow(bidi).to receive_messages(session: BiDi::Session.new(bidi), send_cmd: {'intercept' => 'intercept-id'})
         end
       end
-      let(:network) { described_class.new(instance_double(Remote::Bridge, bidi: bidi)) }
+      let(:network) { described_class.new(NetworkSpecSupport::RecordingBridge.over(connection, bidi: legacy_bidi)) }
 
-      before { allow(WebDriver.logger).to receive(:deprecate) }
-
-      it 'deprecates #network once per call in favor of BiDi::Protocol::Network' do
-        expect(network.network).to be_a BiDi::Network
-
-        expect(WebDriver.logger).to have_received(:deprecate)
-          .with('Network#network', 'BiDi::Protocol::Network.new(driver)', id: :network_bidi, reference: reference)
-          .once
+      def intercepts
+        connection.sent('network.addIntercept').map { |payload| payload[:params] }
       end
 
-      it 'deprecates #bidi once per call under its own name' do
-        expect(network.bidi).to be_a BiDi::Network
-
-        expect(WebDriver.logger).to have_received(:deprecate)
-          .with('Network#bidi', 'BiDi::Protocol::Network.new(driver)', id: :network_bidi, reference: reference)
-          .once
+      def challenge(intercept)
+        connection.emit('network.authRequired', auth_required(intercepts: [intercept]))
+        connection.await('network.continueWithAuth').first[:params]
       end
 
-      it 'does not deprecate its own handler bookkeeping' do
-        id = network.add_request_handler(&:continue)
-        network.add_response_handler(&:continue)
-        network.add_authentication_handler('user', 'pass')
-        network.remove_handler(id)
-        network.clear_handlers
+      describe '#add_authentication' do
+        it 'answers the challenges of the URLs it applies to with the credentials' do
+          network.add_authentication(username: 'user', password: 'pass', url_patterns: 'https://example.com/')
 
-        expect(WebDriver.logger).not_to have_received(:deprecate)
+          expect(intercepts).to eq([{'phases' => ['authRequired'],
+                                     'urlPatterns' => [{'type' => 'string', 'pattern' => 'https://example.com/'}]}])
+          expect(challenge(connection.intercepts.last))
+            .to include('action' => 'provideCredentials',
+                        'credentials' => {'type' => 'password', 'username' => 'user', 'password' => 'pass'})
+        end
+      end
+
+      describe '#add_authentication_handler' do
+        it 'deprecates a username and password for #add_authentication' do
+          expect { network.add_authentication_handler('user', 'pass') }.to have_deprecated(:network_auth_credentials)
+          expect(challenge(connection.intercepts.last)['action']).to eq('provideCredentials')
+        end
+
+        it 'deprecates positional filters, and sends them as pattern strings whatever the pattern type' do
+          expect {
+            network.add_authentication_handler('user', 'pass', 'https://example.com/a', 'https://example.com/b')
+            network.add_authentication_handler('user', 'pass', 'https://example.com/c', pattern_type: :url)
+          }.to have_deprecated(%i[network_url_filters network_auth_credentials])
+
+          expect(intercepts.map { |params| params['urlPatterns'] })
+            .to eq([[{'type' => 'string', 'pattern' => 'https://example.com/a'},
+                     {'type' => 'string', 'pattern' => 'https://example.com/b'}],
+                    [{'type' => 'string', 'pattern' => 'https://example.com/c'}]])
+        end
+
+        it 'matches every request when given a pattern type with no filters' do
+          expect { network.add_authentication_handler(pattern_type: :string, &:cancel) }
+            .to have_deprecated(:network_url_filters)
+          expect(intercepts).to eq([{'phases' => ['authRequired']}])
+        end
+
+        it 'refuses url patterns given with the deprecated filters' do
+          url = 'https://example.com/'
+
+          expect { network.add_authentication_handler(nil, nil, url, url_patterns: url, &:cancel) }
+            .to raise_error(ArgumentError, /not both/)
+        end
+      end
+
+      describe '#remove_authentication_handler and #clear_authentication_handlers' do
+        it 'remove handlers without deprecations' do
+          expect {
+            handle = network.add_authentication_handler(url_patterns: 'https://example.com/', &:cancel)
+            network.add_authentication(username: 'user', password: 'pass')
+            network.remove_authentication_handler(handle)
+            network.clear_authentication_handlers
+          }.to have_deprecated([])
+
+          expect(connection.sent('network.removeIntercept').size).to eq(2)
+          expect(connection.sent('session.unsubscribe').size).to eq(1)
+        end
+      end
+
+      describe '#remove_handler and #clear_handlers' do
+        it 'take authentication handlers as well as the others, without deprecations' do
+          expect {
+            request = network.add_request_handler(&:continue)
+            auth = network.add_authentication(username: 'user', password: 'pass')
+            network.add_authentication_handler(&:cancel)
+            network.remove_handler(request)
+            network.remove_handler(auth)
+            network.clear_handlers
+          }.to have_deprecated([])
+
+          expect(connection.sent('network.removeIntercept').size).to eq(2)
+          expect(connection.sent('session.unsubscribe').size).to eq(1)
+        end
+      end
+
+      describe '#callbacks' do
+        it 'is deprecated, and lists every handler with the intercept it added' do
+          request = network.add_request_handler(&:continue)
+          auth = network.add_authentication(username: 'user', password: 'pass')
+
+          expect {
+            expect(network.callbacks).to eq(auth => {'intercept' => connection.intercepts.last},
+                                            request => {'intercept' => 'intercept-id'})
+          }.to have_deprecated(:network_callbacks)
+        end
+      end
+
+      describe '#continue_with_auth' do
+        it 'is deprecated, and still answers the challenge it names' do
+          allow(legacy_bidi).to receive(:send_cmd)
+
+          expect { network.continue_with_auth('request-1', 'user', 'pass') }
+            .to have_deprecated(:network_continue_with_auth)
+          expect(legacy_bidi).to have_received(:send_cmd)
+            .with('network.continueWithAuth', request: 'request-1', action: 'provideCredentials',
+                                              credentials: {type: 'password', username: 'user', password: 'pass'})
+        end
+      end
+
+      describe '#network and #bidi' do
+        it 'are deprecated for BiDi::Protocol::Network, and return the old implementation' do
+          expect {
+            expect(network.network).to be_a BiDi::Network
+            expect(network.bidi).to be_a BiDi::Network
+          }.to have_deprecated(:network_bidi)
+        end
       end
     end
   end
