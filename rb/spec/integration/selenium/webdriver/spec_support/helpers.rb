@@ -119,7 +119,8 @@ module Selenium
         end
 
         def wait_for_title(title:)
-          wait = Wait.new(timeout: 15)
+          # Safari reports the window as gone to a command that arrives while the page is unloading.
+          wait = Wait.new(timeout: 15, ignore: [Error::NoSuchWindowError])
           wait.until { driver.title == title }
         end
 

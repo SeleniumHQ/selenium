@@ -226,7 +226,10 @@ def test_should_continue_to_refer_to_the_same_frame_once_it_has_been_selected(dr
     # TODO(simon): this should not be needed, and is only here because IE's submit returns too
     # soon.
 
-    WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, "//p"), "Success!"))
+    # Safari reports the frame as gone to a command that arrives while the submit is still unloading it.
+    WebDriverWait(driver, 3, ignored_exceptions=[NoSuchWindowException]).until(
+        EC.text_to_be_present_in_element((By.XPATH, "//p"), "Success!")
+    )
 
 
 @pytest.mark.xfail_firefox(raises=WebDriverException, reason="https://github.com/mozilla/geckodriver/issues/610")
