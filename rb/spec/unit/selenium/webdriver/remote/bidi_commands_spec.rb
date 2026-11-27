@@ -39,7 +39,7 @@ module Selenium
         end
         let(:bridge) do
           bridge_class.new(http_client: http).tap do |bridge|
-            bridge.create_session(Capabilities.new)
+            bridge.create_session({})
             bridge.connection = socket
           end
         end

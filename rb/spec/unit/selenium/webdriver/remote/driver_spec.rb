@@ -29,12 +29,12 @@ module Selenium
            headers: {content_type: 'application/json'}}
         end
 
-        def expect_request(body: nil, endpoint: nil)
+        def expect_request(capabilities: nil, endpoint: nil)
           endpoint ||= 'http://127.0.0.1:4444/wd/hub/session'
-          body ||= {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': {}}}}
-          always_match = body.dig(:capabilities, :alwaysMatch)
-          always_match['se:remoteUrl'] = endpoint.delete_suffix('/session') if always_match
-          stub_request(:post, endpoint).with(body: body.to_json).to_return(valid_response)
+          capabilities ||= {browserName: 'chrome', 'goog:chromeOptions': {}}
+          capabilities = capabilities.merge('se:remoteUrl': endpoint.delete_suffix('/session'))
+          body = {capabilities: {firstMatch: [capabilities]}}
+          stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
 
         it 'requires parameters' do
@@ -101,7 +101,7 @@ module Selenium
 
         it 'accepts Options as sole parameter' do
           opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': opts}}})
+          expect_request(capabilities: {browserName: 'chrome', 'goog:chromeOptions': opts})
 
           expect { described_class.new(options: Options.chrome(**opts)) }.not_to raise_exception
         end
@@ -122,21 +122,21 @@ module Selenium
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
             capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', invalid: 'foobar'}}})
+            expect_request(capabilities: {browserName: 'chrome', invalid: 'foobar'})
 
             expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
             capabilities = Remote::Capabilities.new(browserName: 'chrome', invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', invalid: 'foobar'}}})
+            expect_request(capabilities: {browserName: 'chrome', invalid: 'foobar'})
 
             expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
             capabilities = Remote::Capabilities.new('browserName' => 'chrome', 'invalid' => 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', invalid: 'foobar'}}})
+            expect_request(capabilities: {browserName: 'chrome', invalid: 'foobar'})
 
             expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
@@ -152,38 +152,45 @@ module Selenium
 
             it 'with Options instance' do
               options = Options.chrome(args: ['-f'])
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome',
-                                                                 'goog:chromeOptions': {args: ['-f']}}}})
+              expect_request(capabilities: {browserName: 'chrome',
+                                            'goog:chromeOptions': {args: ['-f']}})
 
               expect { described_class.new(capabilities: [options]) }.not_to raise_exception
             end
 
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', invalid: 'foobar'}}})
+              expect_request(capabilities: {browserName: 'chrome', invalid: 'foobar'})
 
               expect { described_class.new(capabilities: [capabilities]) }.not_to raise_exception
             end
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome',
-                                                                 'goog:chromeOptions': {},
-                                                                 'company:key': 'value'}}})
+              expect_request(capabilities: {browserName: 'chrome',
+                                            'goog:chromeOptions': {},
+                                            'company:key': 'value'})
               expect { described_class.new(capabilities: [Options.chrome, as_json_object.new]) }.not_to raise_exception
             end
 
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
               options = Options.chrome(args: ['-f'])
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', invalid: 'foobar',
-                                                                 'goog:chromeOptions': {args: ['-f']},
-                                                                 'company:key': 'value'}}})
+              expect_request(capabilities: {browserName: 'chrome', invalid: 'foobar',
+                                            'goog:chromeOptions': {args: ['-f']},
+                                            'company:key': 'value'})
 
               expect {
                 described_class.new(capabilities: [capabilities, options, as_json_object.new])
               }.not_to raise_exception
             end
           end
+        end
+
+        it 'sends se:remoteUrl inside the firstMatch entry for an alwaysMatch request' do
+          expect_request(capabilities: {browserName: 'chrome'})
+
+          capabilities = Remote::Capabilities.always_match(browser_name: 'chrome')
+          expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
         end
 
         describe 'bridge selection' do

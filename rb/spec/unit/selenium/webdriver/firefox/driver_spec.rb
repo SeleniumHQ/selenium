@@ -35,11 +35,12 @@ module Selenium
         end
         let(:finder) { instance_double(DriverFinder, browser_path?: false, driver_path: '/path/to/driver') }
 
-        def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
-                                                        browserName: 'firefox',
-                                                        'moz:firefoxOptions': {prefs: {'remote.active-protocols' => 1}},
-                                                        'moz:debuggerAddress': true}}}).to_json
+        def expect_request(capabilities: nil, endpoint: nil)
+          capabilities ||= {acceptInsecureCerts: true,
+                            browserName: 'firefox',
+                            'moz:firefoxOptions': {prefs: {'remote.active-protocols' => 1}},
+                            'moz:debuggerAddress': true}
+          body = {capabilities: {firstMatch: [capabilities]}}.to_json
           endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
@@ -78,13 +79,13 @@ module Selenium
           allow(DriverFinder).to receive(:new).and_return(finder)
 
           opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
-                                                             browserName: 'firefox',
-                                                             'moz:firefoxOptions': {
-                                                               args: ['-f'],
-                                                               prefs: {'remote.active-protocols' => 1}
-                                                             },
-                                                             'moz:debuggerAddress': true}}})
+          expect_request(capabilities: {acceptInsecureCerts: true,
+                                        browserName: 'firefox',
+                                        'moz:firefoxOptions': {
+                                          args: ['-f'],
+                                          prefs: {'remote.active-protocols' => 1}
+                                        },
+                                        'moz:debuggerAddress': true})
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
         end
 
