@@ -173,6 +173,14 @@ module Selenium
         expect(contexts.get_tree.contexts).to eq([])
       end
 
+      it 'marks the thread a listener runs on, so its commands leave stored listener errors alone' do
+        contexts.add_load_listener { received << ListenerErrors.listener_thread? }
+
+        emit_load('https://example.com')
+
+        expect(take).to be true
+      end
+
       it 'a listener can send a command' do
         contexts.add_load_listener { received << contexts.get_tree.contexts }
 

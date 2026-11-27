@@ -19,7 +19,7 @@
 
 Hand-written (not generated). :class:`Transport` serializes a command's params,
 sends them over the session websocket, parses the reply into its declared result
-type, and exposes the underlying connection for event subscription.
+type, and relays event listeners to the connection's dispatcher, which stores them.
 
 This is internal, unsupported implementation. See
 https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -27,8 +27,10 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
 
+from selenium.webdriver.common._bidi.dispatcher import EventDispatcher
 from selenium.webdriver.common._bidi.errors import exception_for
 
 
@@ -36,9 +38,10 @@ class Transport:
     """Serializes params, sends over a websocket connection, parses the reply.
 
     Deliberately narrow: it holds only an immutable connection reference (the id
-    counter and callbacks live on the shared ``WebSocketConnection``). Each domain
-    wraps the session's connection in its own ``Transport``; all the state that
-    matters lives on the shared connection, so those transports are equivalent.
+    counter lives on the shared ``WebSocketConnection``, and event listeners on the
+    dispatcher attached to it). Each domain wraps the session's connection in its
+    own ``Transport``; all the state that matters lives on the shared connection,
+    so those transports are equivalent.
     """
 
     def __init__(self, connection: Any) -> None:
@@ -46,7 +49,7 @@ class Transport:
 
     @property
     def connection(self) -> Any:
-        """The underlying websocket, for event subscription (which lives on it, not here)."""
+        """The websocket connection this transport sends over."""
         return self._connection
 
     def execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
@@ -55,6 +58,16 @@ class Transport:
             raise self._error(reply)
         value = reply["result"]
         return result.from_json(value) if result is not None else value
+
+    def add_listener(self, event: str, payload_type: Any, listener: Callable[[Any], Any]) -> str:
+        """Add ``listener`` for the ``payload_type`` payloads of ``event`` to the connection's dispatcher."""
+        return self._dispatcher().add_listener(event, payload_type, listener)
+
+    def remove_listener(self, listener_id: str) -> None:
+        self._dispatcher().remove_listener(listener_id)
+
+    def _dispatcher(self) -> EventDispatcher:
+        return self._connection.attach_event_receiver(EventDispatcher)
 
     @staticmethod
     def _error(reply: dict) -> Exception:

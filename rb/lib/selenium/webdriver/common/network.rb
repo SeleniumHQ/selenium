@@ -24,19 +24,28 @@ module Selenium
     class Network
       extend Forwardable
 
-      attr_reader :callbacks, :network
-      alias bidi network
+      attr_reader :callbacks
 
-      def_delegators :network, :continue_with_auth, :continue_with_request, :continue_with_response
+      def_delegators :@network, :continue_with_auth, :continue_with_request, :continue_with_response
 
       def initialize(bridge)
         @network = BiDi::Network.new(bridge.bidi)
         @callbacks = {}
       end
 
+      # @deprecated Use BiDi::Protocol::Network.new(driver) instead.
+      def network
+        deprecate_network_accessor('Network#network')
+      end
+
+      # @deprecated Use BiDi::Protocol::Network.new(driver) instead.
+      def bidi
+        deprecate_network_accessor('Network#bidi')
+      end
+
       def remove_handler(id)
         intercept = callbacks[id]
-        network.remove_intercept(intercept['intercept'])
+        @network.remove_intercept(intercept['intercept'])
         callbacks.delete(id)
       end
 
@@ -86,11 +95,19 @@ module Selenium
 
       private
 
+      def deprecate_network_accessor(old)
+        WebDriver.logger.deprecate(old,
+                                   'BiDi::Protocol::Network.new(driver)',
+                                   id: :network_bidi,
+                                   reference: 'https://www.selenium.dev/documentation/warnings/bidi-implementation/')
+        @network
+      end
+
       def add_handler(event_type, phase, intercept_type, filter, pattern_type: nil)
-        intercept = network.add_intercept(phases: [phase], url_patterns: [filter].flatten, pattern_type: pattern_type)
-        callback_id = network.on(event_type) do |event|
+        intercept = @network.add_intercept(phases: [phase], url_patterns: [filter].flatten, pattern_type: pattern_type)
+        callback_id = @network.on(event_type) do |event|
           request = event['request']
-          intercepted_item = intercept_type.new(network, request)
+          intercepted_item = intercept_type.new(@network, request)
           yield(intercepted_item)
         end
 

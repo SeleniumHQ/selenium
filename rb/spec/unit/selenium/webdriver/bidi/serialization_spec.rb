@@ -581,8 +581,15 @@ module Selenium
             end
 
             it 'rejects a value outside the range of the alias it names on receipt' do
-              expect { Network::ResponseData.from_json(response_wire(-1)) }
-                .to raise_error(Error::SerializationError, /ResponseData#status expected >= 0, got -1/)
+              expect { Network::ResponseContent.from_json('size' => -1) }
+                .to raise_error(Error::SerializationError, /ResponseContent#size expected >= 0, got -1/)
+            end
+
+            # https://issues.chromium.org/issues/582770639
+            it 'accepts the -1 status Chrome sends before it has recorded a response, and nothing lower' do
+              expect(Network::ResponseData.from_json(response_wire(-1)).status).to eq(-1)
+              expect { Network::ResponseData.from_json(response_wire(-2)) }
+                .to raise_error(Error::SerializationError, /ResponseData#status expected >= -1, got -2/)
             end
 
             it 'rejects a value outside a field-declared range on receipt' do

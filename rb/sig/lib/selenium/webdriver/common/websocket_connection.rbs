@@ -25,6 +25,10 @@ module Selenium
 
       @event_receiver_mtx: Thread::Mutex
 
+      @write_mtx: Thread::Mutex
+
+      @before_send: Array[^(Hash[Symbol, untyped]) -> void]
+
       @callback_threads: untyped
 
       @protocol: Symbol?
@@ -71,6 +75,8 @@ module Selenium
 
       def remove_callback: (untyped event, untyped id) -> untyped
 
+      attr_reader before_send: Array[^(Hash[Symbol, untyped]) -> void]
+
       def send_cmd: (**untyped payload) -> untyped
 
       private
@@ -82,6 +88,8 @@ module Selenium
       def messages: () -> untyped
 
       def pending_responses: () -> Hash[Integer, Thread::ConditionVariable]
+
+      def write_frame: (String data) -> void
 
       def await_response: (Integer id) -> untyped
 

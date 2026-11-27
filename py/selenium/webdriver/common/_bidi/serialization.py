@@ -36,7 +36,7 @@ import dataclasses
 import logging
 import math
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Hashable
 from dataclasses import dataclass
 from enum import Enum
 from importlib import import_module
@@ -677,7 +677,7 @@ class Union:
     def _select(cls, payload: dict) -> str | None:
         if cls._DISCRIMINATOR is not None and cls._DISCRIMINATOR in payload:
             tag = payload[cls._DISCRIMINATOR]
-            if tag in cls._VARIANTS:
+            if isinstance(tag, Hashable) and tag in cls._VARIANTS:
                 return cls._VARIANTS[tag]
         for variant, keys in cls._PRESENCE:
             if all(key in payload for key in keys):

@@ -49,6 +49,8 @@ module Selenium
           def invoke(payload)
             return unless @mutex.synchronize { @active }
 
+            ListenerErrors.listener_thread!
+
             @block.call(payload)
           # Nothing above a listener's thread can handle what escapes it, and test assertions are not StandardErrors.
           rescue Exception => e # rubocop:disable Lint/RescueException

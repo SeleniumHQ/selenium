@@ -25,6 +25,7 @@ module Selenium
       # Continue to use functionality from existing `driver.manager.window` method
       #
       # @api private
+      # @deprecated Use BiDi::Protocol::Browser.new(driver) instead.
       #
 
       class Browser
@@ -34,6 +35,10 @@ module Selenium
           end
         end
         def initialize(bidi)
+          WebDriver.logger.deprecate('BiDi::Browser',
+                                     'BiDi::Protocol::Browser.new(driver)',
+                                     id: :bidi_browser,
+                                     reference: 'https://www.selenium.dev/documentation/warnings/bidi-implementation/')
           @bidi = bidi
         end
 

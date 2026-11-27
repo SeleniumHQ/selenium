@@ -93,11 +93,16 @@ module Selenium
       #
       # Returns the WebDriver BiDi connection for this session.
       #
+      # @deprecated Use BiDi::Protocol::<Domain>.new(driver) instead.
       # @return [BiDi]
       # @raise [Error::WebDriverError] if BiDi was not enabled for this session
       #
 
       def bidi
+        WebDriver.logger.deprecate('Driver#bidi',
+                                   'BiDi::Protocol::<Domain>.new(driver)',
+                                   id: :driver_bidi,
+                                   reference: 'https://www.selenium.dev/documentation/warnings/bidi-implementation/')
         @bridge.bidi
       end
 

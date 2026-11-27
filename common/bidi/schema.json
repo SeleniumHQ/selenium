@@ -8075,116 +8075,6 @@
       "outbound": false,
       "inbound": true
     },
-    "network.ResponseData": {
-      "kind": "record",
-      "fields": [
-        {
-          "name": "url",
-          "wire": "url",
-          "required": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "name": "protocol",
-          "wire": "protocol",
-          "required": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "name": "status",
-          "wire": "status",
-          "required": true,
-          "type": {
-            "ref": "js-uint"
-          }
-        },
-        {
-          "name": "statusText",
-          "wire": "statusText",
-          "required": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "name": "fromCache",
-          "wire": "fromCache",
-          "required": true,
-          "type": {
-            "primitive": "boolean"
-          }
-        },
-        {
-          "name": "headers",
-          "wire": "headers",
-          "required": true,
-          "type": {
-            "list": {
-              "ref": "network.Header"
-            }
-          }
-        },
-        {
-          "name": "mimeType",
-          "wire": "mimeType",
-          "required": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "name": "bytesReceived",
-          "wire": "bytesReceived",
-          "required": true,
-          "type": {
-            "ref": "js-uint"
-          }
-        },
-        {
-          "name": "headersSize",
-          "wire": "headersSize",
-          "required": true,
-          "type": {
-            "ref": "js-uint",
-            "nullable": true
-          }
-        },
-        {
-          "name": "bodySize",
-          "wire": "bodySize",
-          "required": true,
-          "type": {
-            "ref": "js-uint",
-            "nullable": true
-          }
-        },
-        {
-          "name": "content",
-          "wire": "content",
-          "required": true,
-          "type": {
-            "ref": "network.ResponseContent"
-          }
-        },
-        {
-          "name": "authChallenges",
-          "wire": "authChallenges",
-          "required": false,
-          "type": {
-            "list": {
-              "ref": "network.AuthChallenge"
-            }
-          }
-        }
-      ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#type-network-ResponseData",
-      "outbound": false,
-      "inbound": true
-    },
     "network.SetCookieHeader": {
       "kind": "record",
       "fields": [
@@ -16827,6 +16717,118 @@
       "type": {
         "ref": "digitalCredentials.SetVirtualWalletBehavior"
       }
+    },
+    "network.ResponseData": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "url",
+          "wire": "url",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "protocol",
+          "wire": "protocol",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "status",
+          "wire": "status",
+          "required": true,
+          "type": {
+            "primitive": "integer",
+            "min": -1,
+            "max": 9007199254740991
+          }
+        },
+        {
+          "name": "statusText",
+          "wire": "statusText",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "fromCache",
+          "wire": "fromCache",
+          "required": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "name": "headers",
+          "wire": "headers",
+          "required": true,
+          "type": {
+            "list": {
+              "ref": "network.Header"
+            }
+          }
+        },
+        {
+          "name": "mimeType",
+          "wire": "mimeType",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "bytesReceived",
+          "wire": "bytesReceived",
+          "required": true,
+          "type": {
+            "ref": "js-uint"
+          }
+        },
+        {
+          "name": "headersSize",
+          "wire": "headersSize",
+          "required": true,
+          "type": {
+            "ref": "js-uint",
+            "nullable": true
+          }
+        },
+        {
+          "name": "bodySize",
+          "wire": "bodySize",
+          "required": true,
+          "type": {
+            "ref": "js-uint",
+            "nullable": true
+          }
+        },
+        {
+          "name": "content",
+          "wire": "content",
+          "required": true,
+          "type": {
+            "ref": "network.ResponseContent"
+          }
+        },
+        {
+          "name": "authChallenges",
+          "wire": "authChallenges",
+          "required": false,
+          "type": {
+            "list": {
+              "ref": "network.AuthChallenge"
+            }
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#type-network-ResponseData",
+      "outbound": false,
+      "inbound": true
     },
     "BluetoothEvent": {
       "kind": "union",

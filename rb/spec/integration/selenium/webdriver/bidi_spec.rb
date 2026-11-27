@@ -22,13 +22,21 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe BiDi, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
+      def bidi
+        bidi = nil
+        expect { bidi = driver.bidi }.to have_deprecated(:driver_bidi)
+        bidi
+      end
+
       it 'errors when bidi not enabled' do
         driver = local_driver(web_socket_url: false)
-        expect { driver.bidi }.to raise_error(WebDriver::Error::WebDriverError)
+        expect {
+          expect { driver.bidi }.to raise_error(WebDriver::Error::WebDriverError)
+        }.to have_deprecated(:driver_bidi)
       end
 
       it 'gets session status' do
-        status = driver.bidi.session.status
+        status = bidi.session.status
         expect(status).to respond_to(:ready)
         expect(status.message).not_to be_empty
       end
@@ -36,7 +44,8 @@ module Selenium
       context 'when closing windows' do
         it 'does not close BiDi session if at least one window is opened',
            pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
-          status = driver.bidi.session.status
+          session = bidi.session
+          status = session.status
           expect(status.ready).to be false
           expect(status.message).to be_a String
 
@@ -46,7 +55,7 @@ module Selenium
 
           driver.close
 
-          status_after_closing = driver.bidi.session.status
+          status_after_closing = session.status
           expect(status_after_closing.ready).to be false
           expect(status_after_closing.message).to be_a String
         ensure
@@ -55,13 +64,14 @@ module Selenium
 
         it 'closes BiDi session if last window is closed',
            pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
-          status = driver.bidi.session.status
+          session = bidi.session
+          status = session.status
           expect(status.ready).to be false
           expect(status.message).to be_a String
 
           driver.close
 
-          expect { driver.bidi.session.status }.to raise_error(IOError)
+          expect { session.status }.to raise_error(IOError)
         ensure
           quit_driver
         end

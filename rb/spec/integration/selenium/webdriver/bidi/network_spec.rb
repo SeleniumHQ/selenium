@@ -25,10 +25,12 @@ module Selenium
       describe Network, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
         after { |example| quit_driver unless example.skipped? }
 
+        let(:bidi) { driver.send(:bridge).bidi }
+
         it 'adds an intercept',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
           expect(intercept).not_to be_nil
         end
@@ -36,7 +38,7 @@ module Selenium
         it 'adds an intercept with a default pattern type',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           pattern = 'http://localhost:4444/formPage.html'
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]], url_patterns: pattern)
           expect(intercept).not_to be_nil
@@ -45,7 +47,7 @@ module Selenium
         it 'adds an intercept with a url pattern',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           pattern = 'http://localhost:4444/formPage.html'
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]],
                                             url_patterns: pattern,
@@ -56,7 +58,7 @@ module Selenium
         it 'removes an intercept',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
           expect(network.remove_intercept(intercept['intercept'])).to be_empty
         end
@@ -66,7 +68,7 @@ module Selenium
                      reason: 'Safari does not support BiDi network interception'} do
           username = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first
           password = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           phases = [Selenium::WebDriver::BiDi::Network::PHASES[:auth_required]]
           network.add_intercept(phases: phases)
           network.on(:auth_required) do |event|
@@ -81,7 +83,7 @@ module Selenium
         it 'continues without auth',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           network.add_intercept(phases: [described_class::PHASES[:auth_required]])
           network.on(:auth_required) do |event|
             request_id = event['request']['request']
@@ -94,7 +96,7 @@ module Selenium
         it 'cancels auth',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           network.add_intercept(phases: [described_class::PHASES[:auth_required]])
           network.on(:auth_required) do |event|
             request_id = event['request']['request']
@@ -108,7 +110,7 @@ module Selenium
         it 'continues request',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           network.add_intercept(phases: [described_class::PHASES[:before_request]])
           network.on(:before_request) do |event|
             request_id = event['request']['request']
@@ -122,7 +124,7 @@ module Selenium
         it 'fails request',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           network.add_intercept(phases: [described_class::PHASES[:before_request]])
           network.on(:before_request) do |event|
             request_id = event['request']['request']
@@ -135,7 +137,7 @@ module Selenium
         it 'continues response',
            skip_if: {browser_family: :safari,
                      reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           network.add_intercept(phases: [described_class::PHASES[:response_started]])
           network.on(:response_started) do |event|
             request_id = event['request']['request']
@@ -149,7 +151,7 @@ module Selenium
         it 'provides response',
            pending_if: {browser: :firefox, reason: 'https://github.com/w3c/webdriver-bidi/issues/747'},
            skip_if: {browser_family: :safari, reason: 'Safari does not support BiDi network interception'} do
-          network = described_class.new(driver.bidi)
+          network = described_class.new(bidi)
           network.add_intercept(phases: [described_class::PHASES[:response_started]])
           network.on(:response_started) do |event|
             request_id = event['request']['request']
@@ -179,16 +181,14 @@ module Selenium
         end
 
         it 'sets the cache to bypass' do
-          browsing_context = BrowsingContext.new(driver).create
-          network = described_class.new(driver.bidi)
-          network.set_cache_behavior('bypass', browsing_context)
-          expect(network.set_cache_behavior('bypass', browsing_context)).to be_a(Hash)
+          network = described_class.new(bidi)
+          network.set_cache_behavior('bypass', driver.window_handle)
+          expect(network.set_cache_behavior('bypass', driver.window_handle)).to be_a(Hash)
         end
 
         it 'sets the cache to default' do
-          browsing_context = BrowsingContext.new(driver).create
-          network = described_class.new(driver.bidi)
-          expect(network.set_cache_behavior('default', browsing_context)).to be_a(Hash)
+          network = described_class.new(bidi)
+          expect(network.set_cache_behavior('default', driver.window_handle)).to be_a(Hash)
         end
       end
     end

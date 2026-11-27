@@ -52,10 +52,12 @@ module Selenium
         @event_receiver_mtx = Mutex.new
         @messages_mtx = Mutex.new
         @closing_mtx = Mutex.new
+        @write_mtx = Mutex.new
 
         @closing = false
         @session_id = nil
         @url = url
+        @before_send = []
 
         apply_frame_size_limit
         process_handshake
@@ -110,6 +112,9 @@ module Selenium
         end
       end
 
+      # Callables given each command's payload before it is sent; one may raise to refuse it
+      attr_reader :before_send
+
       def send_cmd(**payload)
         # IOError to match what writing to an already-closed socket raises
         raise IOError, 'WebSocket connection is closed' if @closing
@@ -121,17 +126,10 @@ module Selenium
         end
 
         begin
+          before_send.each { |callable| callable.call(payload) }
           data = payload.merge(id: id)
           WebDriver.logger.debug('WebSocket ->', id: :ws) { data.to_s[...MAX_LOG_MESSAGE_SIZE] }
-          data = JSON.generate(data)
-          out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
-
-          begin
-            socket.write(out_frame.to_s)
-          rescue *CONNECTION_ERRORS => e
-            raise e, "WebSocket is closed (#{e.class}: #{e.message})"
-          end
-
+          write_frame(JSON.generate(data))
           await_response(id)
         ensure
           @messages_mtx.synchronize do
@@ -149,6 +147,14 @@ module Selenium
 
       def pending_responses
         @pending_responses ||= {}
+      end
+
+      def write_frame(data)
+        out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
+        # Listener threads send commands too, and a large frame can go out in more than one write
+        @write_mtx.synchronize { socket.write(out_frame.to_s) }
+      rescue *CONNECTION_ERRORS => e
+        raise e, "WebSocket is closed (#{e.class}: #{e.message})"
       end
 
       def await_response(id)
@@ -266,6 +272,7 @@ module Selenium
         Thread.new do
           Thread.current.abort_on_exception = false
           Thread.current.report_on_exception = false
+          ListenerErrors.listener_thread!
           next if @closing
 
           yield params
