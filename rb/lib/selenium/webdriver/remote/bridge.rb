@@ -78,6 +78,14 @@ module Selenium
 
           @capabilities = Capabilities.json_create(response['capabilities'])
 
+          # Added before the browser Features so theirs win, such as Firefox's extension install options
+          if @capabilities[:web_socket_url]
+            extend(BiDiConnection)
+            extend(BiDiCommands)
+
+            connect_bidi
+          end
+
           case @capabilities[:browser_name]
           when 'chrome', 'chrome-headless-shell'
             extend(WebDriver::Chrome::Features)
@@ -90,13 +98,6 @@ module Selenium
           when 'internet explorer'
             extend(WebDriver::IE::Features)
           end
-
-          return unless @capabilities[:web_socket_url]
-
-          extend(BiDiConnection)
-          extend(BiDiCommands)
-
-          connect_bidi
         end
 
         #

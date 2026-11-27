@@ -108,6 +108,21 @@ module Selenium
           end
         end
 
+        describe 'browser features' do
+          it 'keeps the Firefox extension commands' do
+            capabilities = {'browserName' => 'firefox', 'webSocketUrl' => 'ws://localhost/session/foo'}
+            allow(http).to receive(:request).and_return('value' => {'sessionId' => 'foo',
+                                                                    'capabilities' => capabilities})
+            connection = instance_double(WebSocketConnection, before_send: [])
+            allow(BiDi).to receive(:new).and_return(instance_double(BiDi, ws: connection))
+
+            bridge.create_session(Capabilities.new)
+
+            expect(bridge.method(:install_web_extension).owner).to eq(Firefox::Features)
+            expect(bridge.method(:uninstall_web_extension).owner).to eq(Firefox::Features)
+          end
+        end
+
         describe 'navigation' do
           let(:connection) { instance_double(WebSocketConnection, before_send: []) }
           let(:window_url) { URI('http://localhost/session/foo/window') }
