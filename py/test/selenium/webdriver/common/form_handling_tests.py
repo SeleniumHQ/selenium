@@ -84,6 +84,7 @@ def test_should_be_able_to_enter_text_into_atext_area_by_setting_its_value(drive
     assert textarea.get_attribute("value") == cheesey
 
 
+@pytest.mark.xfail_safari(reason="Element Send Keys intermittently drops typed characters")
 def test_should_enter_data_into_form_fields(driver, pages):
     pages.load("xhtmlTest.html")
     element = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
