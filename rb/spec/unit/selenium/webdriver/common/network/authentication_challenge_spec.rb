@@ -51,9 +51,9 @@ module Selenium
         expect(challenge.answer[:credentials]).to have_attributes(username: 'user', password: 'pass')
       end
 
-      it 'deprecates skip, still leaving the challenge to the browser' do
+      it 'deprecates skip, which leaves the challenge unanswered as returning does' do
         expect { challenge.skip }.to have_deprecated(:network_auth_skip)
-        expect(challenge.answer).to eq(action: :default)
+        expect(challenge.answer).to be_nil
       end
 
       it 'raises when answered a second time, keeping the first answer' do

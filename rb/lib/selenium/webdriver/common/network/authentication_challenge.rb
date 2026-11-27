@@ -79,7 +79,7 @@ module Selenium
         def skip
           WebDriver.logger.deprecate('AuthenticationChallenge#skip', 'returning without answering',
                                      id: :network_auth_skip, reference: REFERENCE)
-          answer_with(action: :default)
+          nil
         end
 
         # Answers the challenge with none, so the request ends with the response that challenged it.
