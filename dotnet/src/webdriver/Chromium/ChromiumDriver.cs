@@ -167,6 +167,15 @@ public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
             options.BrowserVersion = null;
         }
 
+        // The job object that couples the driver process lifetime to this
+        // application would also terminate the browser at application exit,
+        // breaking the promise of LeaveBrowserRunning (detach), so the service
+        // must opt out of it before the driver process is started.
+        if (options is ChromiumOptions chromiumOptions)
+        {
+            service.KeepDriverChildProcessesAlive = chromiumOptions.LeaveBrowserRunning;
+        }
+
         try
         {
             await service.StartAsync().ConfigureAwait(false);
