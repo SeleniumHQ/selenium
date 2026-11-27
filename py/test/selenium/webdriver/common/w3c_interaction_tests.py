@@ -45,9 +45,9 @@ def test_can_create_pause_action_on_keyboard(driver, pages):
     key_actions.pause(1)
     actions1.perform()
     elapsed = time.monotonic() - start
-    # Only a pause sent in the wrong unit takes this long; a bound near the one second pause
-    # fails whenever a loaded machine is slow to dispatch the action.
-    assert elapsed < 30
+    # A loaded CI runner has taken over four seconds end to end for this one second pause, so the
+    # bound leaves room for that and still fails a pause that runs several times too long.
+    assert elapsed < 10
 
     # Add a filler step
     actions2 = ActionBuilder(driver)
@@ -63,9 +63,9 @@ def test_can_create_pause_action_on_pointer(driver, pages):
     key_actions.pause(1)
     actions1.perform()
     elapsed = time.monotonic() - start
-    # Only a pause sent in the wrong unit takes this long; a bound near the one second pause
-    # fails whenever a loaded machine is slow to dispatch the action.
-    assert elapsed < 30
+    # A loaded CI runner has taken over four seconds end to end for this one second pause, so the
+    # bound leaves room for that and still fails a pause that runs several times too long.
+    assert elapsed < 10
 
     # Add a filler step
     actions2 = ActionBuilder(driver)
