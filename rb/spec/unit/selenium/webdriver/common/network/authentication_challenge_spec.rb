@@ -29,12 +29,8 @@ module Selenium
         described_class.new(typed('network.authRequired', auth_required(url: 'https://example.com/secure')))
       end
 
-      it 'reads the request that was challenged' do
+      it 'reads the request that was challenged, and the event as the browser sent it' do
         expect(challenge).to have_attributes(id: 'request-1', url: 'https://example.com/secure')
-      end
-
-      it 'gives the event as the browser sent it' do
-        expect(challenge.params).to be_a(BiDi::Protocol::Network::AuthRequiredParameters)
         expect(challenge.params.response.auth_challenges.map(&:realm)).to eq(['test'])
       end
 

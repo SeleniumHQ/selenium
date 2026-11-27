@@ -200,7 +200,7 @@ module Selenium
             .to eq(['request-2'])
         end
 
-        it 'leaves to the browser a challenge blocked by the intercept of a handler removed since' do
+        it 'leaves to the browser a challenge none of its handlers applies to' do
           handle = add(logging(:first))
           intercept = registry.intercept(handle)
           add

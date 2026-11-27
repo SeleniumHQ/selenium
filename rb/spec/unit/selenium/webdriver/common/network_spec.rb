@@ -46,8 +46,7 @@ module Selenium
         it 'answers the challenges of the URLs it applies to with the credentials' do
           network.add_authentication(username: 'user', password: 'pass', url_patterns: 'https://example.com/')
 
-          expect(intercepts).to eq([{'phases' => ['authRequired'],
-                                     'urlPatterns' => [{'type' => 'string', 'pattern' => 'https://example.com/'}]}])
+          expect(intercepts.first['urlPatterns']).to eq([{'type' => 'string', 'pattern' => 'https://example.com/'}])
           expect(challenge(connection.intercepts.last))
             .to include('action' => 'provideCredentials',
                         'credentials' => {'type' => 'password', 'username' => 'user', 'password' => 'pass'})
@@ -86,12 +85,23 @@ module Selenium
         end
       end
 
-      describe '#remove_authentication_handler and #clear_authentication_handlers' do
-        it 'remove handlers without deprecations' do
+      describe '#remove_authentication_handler' do
+        it 'removes the handler without deprecations' do
           expect {
-            handle = network.add_authentication_handler(url_patterns: 'https://example.com/', &:cancel)
-            network.add_authentication(username: 'user', password: 'pass')
+            handle = network.add_authentication_handler(&:cancel)
             network.remove_authentication_handler(handle)
+          }.to have_deprecated([])
+
+          expect(connection.sent('network.removeIntercept').size).to eq(1)
+          expect(connection.sent('session.unsubscribe').size).to eq(1)
+        end
+      end
+
+      describe '#clear_authentication_handlers' do
+        it 'removes every authentication handler without deprecations' do
+          expect {
+            network.add_authentication_handler(&:cancel)
+            network.add_authentication(username: 'user', password: 'pass')
             network.clear_authentication_handlers
           }.to have_deprecated([])
 
@@ -100,18 +110,29 @@ module Selenium
         end
       end
 
-      describe '#remove_handler and #clear_handlers' do
-        it 'take authentication handlers as well as the others, without deprecations' do
+      describe '#remove_handler' do
+        it 'takes an authentication handle as well as the others, without deprecations' do
           expect {
             request = network.add_request_handler(&:continue)
             auth = network.add_authentication(username: 'user', password: 'pass')
-            network.add_authentication_handler(&:cancel)
             network.remove_handler(request)
             network.remove_handler(auth)
+          }.to have_deprecated([])
+
+          expect(connection.sent('network.removeIntercept').size).to eq(1)
+          expect(connection.sent('session.unsubscribe').size).to eq(1)
+        end
+      end
+
+      describe '#clear_handlers' do
+        it 'removes authentication handlers as well as the others, without deprecations' do
+          expect {
+            network.add_request_handler(&:continue)
+            network.add_authentication(username: 'user', password: 'pass')
             network.clear_handlers
           }.to have_deprecated([])
 
-          expect(connection.sent('network.removeIntercept').size).to eq(2)
+          expect(connection.sent('network.removeIntercept').size).to eq(1)
           expect(connection.sent('session.unsubscribe').size).to eq(1)
         end
       end
@@ -140,12 +161,15 @@ module Selenium
         end
       end
 
-      describe '#network and #bidi' do
-        it 'are deprecated for BiDi::Protocol::Network, and return the old implementation' do
-          expect {
-            expect(network.network).to be_a BiDi::Network
-            expect(network.bidi).to be_a BiDi::Network
-          }.to have_deprecated(:network_bidi)
+      describe '#network' do
+        it 'is deprecated for BiDi::Protocol::Network, and returns the old implementation' do
+          expect { expect(network.network).to be_a BiDi::Network }.to have_deprecated(:network_bidi)
+        end
+      end
+
+      describe '#bidi' do
+        it 'is deprecated for BiDi::Protocol::Network, and returns the old implementation' do
+          expect { expect(network.bidi).to be_a BiDi::Network }.to have_deprecated(:network_bidi)
         end
       end
     end

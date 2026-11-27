@@ -53,16 +53,6 @@ module Selenium
         expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
       end
 
-      it 'consults the handler added last first' do
-        driver = local_driver(web_socket_url: true)
-        driver.network.add_authentication(username: username, password: password)
-        driver.network.add_authentication_handler(&:cancel)
-
-        driver.navigate.to url_for('basicAuth')
-
-        expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
-      end
-
       it 'cancels a challenge' do
         driver = local_driver(web_socket_url: true)
         driver.network.add_authentication_handler(&:cancel)

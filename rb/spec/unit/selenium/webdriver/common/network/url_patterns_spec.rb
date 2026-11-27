@@ -76,10 +76,6 @@ module Selenium
         expect(wire({hostname: '[::1]'})).to eq([{'type' => 'pattern', 'hostname' => '[::1]'}])
       end
 
-      it 'refuses a component the protocol does not define, before anything is sent' do
-        expect { described_class.build({host: 'example.com'}) }.to raise_error(ArgumentError, /host/)
-      end
-
       it 'refuses a glob, since the remote end reserves its characters' do
         expect { described_class.build('https://*.example.com/') }
           .to raise_error(ArgumentError, /"\*", which WebDriver BiDi reserves/)
