@@ -26,9 +26,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.pagefactory.ByAll;
 
 /**
- * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
- * It will then search for all elements that match any of the FindBy criteria. Note that elements
- * are not guaranteed to be in document order.
+ * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy
+ * tags. It will then search for all elements that match any of the FindBy criteria. Note that
+ * elements are not guaranteed to be in document order.
  *
  * <p>It can be used on a types as well, but will not be processed by default.
  *
