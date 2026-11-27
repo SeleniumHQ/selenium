@@ -119,7 +119,7 @@ module Selenium
         end
 
         def wait_for_title(title:)
-          wait = Wait.new(timeout: 15)
+          wait = Wait.new(timeout: 15, ignore: Error::NoSuchWindowError)
           wait.until { driver.title == title }
         end
 
