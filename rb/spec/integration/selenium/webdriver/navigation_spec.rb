@@ -73,10 +73,8 @@ module Selenium
           expect { driver.navigate.forward }.to raise_error(Error::NoSuchWindowError)
         end
 
-        it 'raises when refreshing a closed window',
-           pending_if: {browser: :safari_preview, bidi: true,
-                        exception: {class: RSpec::Expectations::ExpectationNotMetError, message: /WindowNotFound/},
-                        reason: 'reload fails with "no such browsing context", which is not a BiDi error code'} do
+        it 'raises on refresh when the current window is closed',
+           pending_if: {browser: :safari_preview, reason: 'https://bugs.webkit.org/show_bug.cgi?id=333312'} do
           driver.switch_to.new_window(:tab)
           driver.close
 
