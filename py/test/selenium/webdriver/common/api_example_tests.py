@@ -95,6 +95,7 @@ def test_find_element_by_xpath_in_element_context_not_found(driver, pages):
         elem.find_element(By.XPATH, "div")
 
 
+@pytest.mark.xfail_safari(reason="Element Send Keys intermittently drops typed characters")
 def test_should_be_able_to_enter_data_into_form_fields(driver, pages):
     pages.load("xhtmlTest.html")
     elem = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
