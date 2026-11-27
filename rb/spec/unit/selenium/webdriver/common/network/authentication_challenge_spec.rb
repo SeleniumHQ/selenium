@@ -31,7 +31,7 @@ module Selenium
 
       it 'reads the request that was challenged, and the event as the browser sent it' do
         expect(challenge).to have_attributes(id: 'request-1', url: 'https://example.com/secure')
-        expect(challenge.params.response.auth_challenges.map(&:realm)).to eq(['test'])
+        expect(challenge.original.response.auth_challenges.map(&:realm)).to eq(['test'])
       end
 
       it 'deprecates the request hash, which still reads as it did' do

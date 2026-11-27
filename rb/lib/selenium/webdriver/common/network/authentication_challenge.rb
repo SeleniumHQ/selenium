@@ -31,33 +31,34 @@ module Selenium
         attr_reader :answer
 
         # The event as the browser sent it, with everything it carries, such as the realm in
-        # params.response.auth_challenges. Its fields follow the WebDriver BiDi spec, not the deprecation policy.
+        # original.response.auth_challenges. Its fields follow the WebDriver BiDi spec, not the deprecation policy.
         # @return [BiDi::Protocol::Network::AuthRequiredParameters]
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        attr_reader :params
+        attr_reader :original
 
         # @api private
-        def initialize(params)
-          @params = params
+        def initialize(original)
+          @original = original
           @answer = nil
         end
 
         # @return [String] the id the browser gave the request
         def id
-          params.request.request
+          original.request.request
         end
 
         # @return [String] the URL of the request that was challenged
         def url
-          params.request.url
+          original.request.url
         end
 
-        # @deprecated Use #url, or #params for the rest of the request.
+        # @deprecated Use #url, or #original for the rest of the request.
         # @return [Hash] the request that was challenged, keyed by its wire names
         def request
-          WebDriver.logger.deprecate('AuthenticationChallenge#request', '#url, or #params for the rest of the request',
+          WebDriver.logger.deprecate('AuthenticationChallenge#request',
+                                     '#url, or #original for the rest of the request',
                                      id: :network_auth_request, reference: REFERENCE)
-          params.request.as_json
+          original.request.as_json
         end
 
         # Answers the challenge with these credentials.
