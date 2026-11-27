@@ -27,7 +27,7 @@ import org.openqa.selenium.Beta;
  *     exposes and which also works over WebDriver BiDi and the Grid.
  */
 @Beta
-@Deprecated(since = "4.49", forRemoval = true)
+@Deprecated(since = "4.55", forRemoval = true)
 public interface HasExtensions {
 
   /**
