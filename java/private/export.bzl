@@ -17,6 +17,7 @@ def java_export(
         uses = [],
         opens_to = [],
         exports = [],
+        release_jars = [],
         stub_javadoc = False,
         tags = [],
         testonly = None,
@@ -63,6 +64,7 @@ def java_export(
         exports = exports,
         hides = hides,
         opens_to = opens_to,
+        release_jars = release_jars,
         tags = tags,
         uses = uses,
     )
@@ -72,7 +74,7 @@ def java_export(
         srcs = [
             ":%s-module" % name,
         ],
-        output_group = "module_jar",
+        output_group = "release_jar",
     )
 
     if stub_javadoc:

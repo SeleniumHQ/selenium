@@ -404,6 +404,9 @@ task :release do |_task, arguments|
   Rake::Task['java:build'].invoke("--config=#{config}")
   Rake::Task['java:package'].invoke("--config=#{config}")
 
+  puts 'Checking build info in the selenium-api jar...'
+  Bazel.execute('test', ["--config=#{config}"], '//java/test/org/openqa/selenium:ReleaseJarBuildInfoTest')
+
   next if !nightly && Sonatype.already_deployed?(java_version)
 
   puts "Deploying Java artifacts to '#{ENV.fetch('MAVEN_REPO', nil)}'"

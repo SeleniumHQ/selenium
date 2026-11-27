@@ -48,7 +48,7 @@ def _dist_aspect_impl(target, ctx):
     elif JavaModuleInfo in target and target[JavaModuleInfo].name:
         coordinates = read_coordinates(ctx.rule.attr.tags)
         name = _name(coordinates, target[JavaModuleInfo].name)
-        binary_jars = target[JavaInfo].runtime_output_jars
+        binary_jars = [target[JavaModuleInfo].release_jar]
         source_jars = target[JavaInfo].source_jars
     elif JavaInfo in target:
         coordinates = read_coordinates(ctx.rule.attr.tags)

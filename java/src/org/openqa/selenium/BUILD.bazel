@@ -29,12 +29,14 @@ java_export(
         "org.seleniumhq.selenium.json",
     ],
     pom_template = ":template-pom",
+    release_jars = [
+        ":manifest-jar",
+    ],
     tags = [
         "release-artifact",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        ":build-properties",
         "//java/src/org/openqa/selenium/io",
         artifact("org.jspecify:jspecify"),
     ],
@@ -86,13 +88,6 @@ javadoc(
     transitive = True,
     deps = [
         ":client-combined",
-    ],
-)
-
-java_import(
-    name = "build-properties",
-    jars = [
-        ":manifest-jar",
     ],
 )
 

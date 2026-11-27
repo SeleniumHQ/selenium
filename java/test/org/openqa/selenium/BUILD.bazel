@@ -1,6 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite", "java_test_suite")
-load("//java:version.bzl", "TOOLS_JAVA_VERSION")
+load("//java:version.bzl", "SE_VERSION", "TOOLS_JAVA_VERSION")
 
 SMALL_TESTS = [
     "ArchitectureTest.java",
@@ -42,6 +42,27 @@ java_test_suite(
     ] + JUNIT5_DEPS,
 )
 
+filegroup(
+    name = "core-release-jar",
+    srcs = ["//java/src/org/openqa/selenium:core"],
+    output_group = "release_jar",
+)
+
+java_test_suite(
+    name = "release-jar-tests",
+    size = "small",
+    srcs = ["ReleaseJarBuildInfoTest.java"],
+    data = [":core-release-jar"],
+    jvm_flags = ["-Dselenium.release.jar=$(rootpath :core-release-jar)"] + select({
+        "//common:stamp": ["-Dselenium.stamped.version=%s" % SE_VERSION],
+        "//conditions:default": [],
+    }),
+    deps = [
+        artifact("org.assertj:assertj-core"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+    ] + JUNIT5_DEPS,
+)
+
 java_library(
     name = "helpers",
     srcs = [
@@ -65,7 +86,7 @@ java_selenium_test_suite(
     size = "large",
     srcs = glob(
         ["*Test.java"],
-        exclude = SMALL_TESTS,
+        exclude = SMALL_TESTS + ["ReleaseJarBuildInfoTest.java"],
     ),
     env_inherit = [
         "DISPLAY",
