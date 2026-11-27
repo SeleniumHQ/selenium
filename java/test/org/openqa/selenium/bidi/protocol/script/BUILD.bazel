@@ -10,6 +10,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium/bidi:bidi-generated",
         "//java/src/org/openqa/selenium/json",
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
         artifact("org.assertj:assertj-core"),
     ] + JUNIT5_DEPS,
 )
