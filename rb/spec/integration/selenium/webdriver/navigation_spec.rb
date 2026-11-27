@@ -71,6 +71,14 @@ module Selenium
           expect { driver.navigate.to url_for('formPage.html') }.to raise_error(Error::NoSuchWindowError)
           expect { driver.navigate.back }.to raise_error(Error::NoSuchWindowError)
           expect { driver.navigate.forward }.to raise_error(Error::NoSuchWindowError)
+        end
+
+        it 'raises when refreshing a closed window',
+           pending_if: {browser: :safari_preview, bidi: true,
+                        reason: 'reload fails with "no such browsing context", which is not a BiDi error code'} do
+          driver.switch_to.new_window(:tab)
+          driver.close
+
           expect { driver.navigate.refresh }.to raise_error(Error::NoSuchWindowError)
         end
       end
