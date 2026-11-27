@@ -335,6 +335,15 @@ public class JdkHttpClient implements HttpClient {
                 if (cause == null) {
                   throw new WebDriverException(e);
                 }
+                // The peer can close first, and the JDK answers its close frame on its own; when
+                // that lands between the output check above and our send, there is nothing left
+                // to close.
+                if (message instanceof CloseMessage
+                    && cause instanceof IOException
+                    && underlyingSocket.isOutputClosed()) {
+                  LOG.log(Level.FINE, "Output closed before the close message was sent", cause);
+                  return this;
+                }
                 throw new WebDriverException(cause);
               } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
