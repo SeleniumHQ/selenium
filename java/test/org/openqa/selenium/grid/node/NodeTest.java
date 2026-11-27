@@ -58,6 +58,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.Capabilities;
@@ -102,6 +103,8 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 class NodeTest {
+
+  private static final String SHORT_SESSION_TIMEOUT = "short-session-timeout";
 
   private Tracer tracer;
   private EventBus bus;
@@ -153,7 +156,12 @@ class NodeTest {
             .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
             .maximumConcurrentSessions(2);
     if (isDownloadsTestCase) {
-      builder = builder.enableManagedDownloads(true).sessionTimeout(ofSeconds(1));
+      builder = builder.enableManagedDownloads(true);
+    }
+    // Only the test that outlives the timeout wants it this short; anywhere else a slow machine
+    // loses the session before the test stops it.
+    if (testInfo.getTags().contains(SHORT_SESSION_TIMEOUT)) {
+      builder = builder.sessionTimeout(ofSeconds(1));
     }
     local = builder.build();
     local2 = builder.build();
@@ -932,6 +940,7 @@ class NodeTest {
 
   @Test
   @DisplayName("DownloadsTestCase")
+  @Tag(SHORT_SESSION_TIMEOUT)
   void ensureImmunityToSessionTimeOutsForFileDownloads() throws InterruptedException {
     Consumer<HttpResponse> DOWNLOAD_RSP_VALIDATOR =
         response -> {
