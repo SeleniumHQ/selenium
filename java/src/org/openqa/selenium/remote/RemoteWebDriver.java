@@ -1408,16 +1408,21 @@ public class RemoteWebDriver
         execute(DriverCommand.SWITCH_TO_WINDOW(windowHandleOrName));
         return RemoteWebDriver.this;
       } catch (NoSuchWindowException nsw) {
-        // simulate search by name
+        // Not a handle. Look for a window whose window.name matches.
         String original = getWindowHandle();
         for (String handle : getWindowHandles()) {
           try {
             execute(DriverCommand.SWITCH_TO_WINDOW(handle));
             if (windowHandleOrName.equals(executeScript("return window.name"))) {
-              return RemoteWebDriver.this; // found by name
+              return RemoteWebDriver.this;
             }
-          } catch (NoSuchWindowException nswe) {
-            // swallow
+          } catch (NoSuchWindowException ignored) {
+            // Closed between listing the handles and switching to this one.
+          } catch (WebDriverException blocked) {
+            // An alert blocks the name read. Get back before reporting the miss.
+            execute(DriverCommand.SWITCH_TO_WINDOW(original));
+            nsw.addSuppressed(blocked);
+            throw nsw;
           }
         }
         execute(DriverCommand.SWITCH_TO_WINDOW(original));

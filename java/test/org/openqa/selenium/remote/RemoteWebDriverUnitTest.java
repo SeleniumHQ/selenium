@@ -57,6 +57,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -298,6 +299,36 @@ class RemoteWebDriverUnitTest {
 
     fixture.driver.quit();
     verifyNoMoreInteractions(fixture.executor);
+  }
+
+  @Test
+  void unknownWindowNameRestoresTheOriginalWindowWhenACandidateHasAnAlert() {
+    WebDriverFixture fixture =
+        new WebDriverFixture(
+            echoCapabilities,
+            errorResponder("no such window", "missing"),
+            valueResponder("original"),
+            valueResponder(List.of("original", "other")),
+            nullValueResponder,
+            valueResponder(""),
+            nullValueResponder,
+            errorResponder("unexpected alert open", "alert open"),
+            nullValueResponder);
+
+    assertThatExceptionOfType(NoSuchWindowException.class)
+        .isThrownBy(() -> fixture.driver.switchTo().window("missing"));
+
+    fixture.verifyCommands(
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "missing")),
+        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, emptyMap()),
+        new CommandPayload(DriverCommand.GET_WINDOW_HANDLES, emptyMap()),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "original")),
+        new CommandPayload(
+            DriverCommand.EXECUTE_SCRIPT, Map.of("script", "return window.name", "args", List.of())),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "other")),
+        new CommandPayload(
+            DriverCommand.EXECUTE_SCRIPT, Map.of("script", "return window.name", "args", List.of())),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "original")));
   }
 
   @Test

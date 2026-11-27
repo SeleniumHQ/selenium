@@ -234,6 +234,46 @@ class WindowSwitchingTest extends JupiterTestBase {
     assertThat(driver.getWindowHandle()).isNotNull();
   }
 
+  @NoDriverAfterTest(failedOnly = true)
+  @Test
+  void testMissingWindowNameRestoresTheOriginalWindowWhenAnotherWindowHasAnAlert() {
+    driver.get(pages.xhtmlTestPage);
+    String original = driver.getWindowHandle();
+    executeScriptNullable("window.open('about:blank')");
+    wait.until(windowHandleCountToBe(2));
+
+    String other = null;
+    for (String handle : driver.getWindowHandles()) {
+      if (!handle.equals(original)) {
+        other = handle;
+        break;
+      }
+    }
+
+    try {
+      driver.switchTo().window(other);
+      executeScriptNullable("alert('open')");
+      driver.switchTo().window(original);
+
+      assertThatExceptionOfType(NoSuchWindowException.class)
+          .isThrownBy(() -> driver.switchTo().window("no-such-window"));
+      assertThat(driver.getWindowHandle()).isEqualTo(original);
+    } finally {
+      try {
+        driver.switchTo().window(other);
+        driver.switchTo().alert().accept();
+      } catch (Exception ignored) {
+        // The alert may already be gone.
+      }
+      try {
+        driver.switchTo().window(other).close();
+      } catch (Exception ignored) {
+        // The suite still closes leftover windows.
+      }
+      driver.switchTo().window(original);
+    }
+  }
+
   @Test
   void testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs() {
     driver.get(pages.xhtmlTestPage);
