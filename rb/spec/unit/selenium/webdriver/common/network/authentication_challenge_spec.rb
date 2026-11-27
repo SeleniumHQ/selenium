@@ -33,6 +33,17 @@ module Selenium
         expect(challenge).to have_attributes(id: 'request-1', url: 'https://example.com/secure')
       end
 
+      it 'deprecates a positional username and password, still answering with them' do
+        expect { challenge.authenticate('user', 'pass') }.to have_deprecated(:network_auth_authenticate)
+        expect(challenge.answer).to include(action: :provide_credentials)
+        expect(challenge.answer[:credentials]).to have_attributes(username: 'user', password: 'pass')
+      end
+
+      it 'deprecates skip, still leaving the challenge to the browser' do
+        expect { challenge.skip }.to have_deprecated(:network_auth_skip)
+        expect(challenge.answer).to eq(action: :default)
+      end
+
       it 'raises when answered a second time, keeping the first answer' do
         challenge.cancel
 

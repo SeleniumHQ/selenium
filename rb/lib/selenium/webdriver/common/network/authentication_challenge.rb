@@ -49,9 +49,23 @@ module Selenium
         # Answers the challenge with these credentials.
         # @param username [String]
         # @param password [String]
-        def authenticate(username:, password:)
-          credentials = BiDi::Protocol::Network::AuthCredentials.new(username: username, password: password)
+        def authenticate(*positional, **credentials)
+          unless positional.empty?
+            WebDriver.logger.deprecate('AuthenticationChallenge#authenticate with a positional username and password',
+                                       '#authenticate(username:, password:)',
+                                       id: :network_auth_authenticate, reference: REFERENCE)
+            credentials = {username: positional[0], password: positional[1]}
+          end
+          credentials = BiDi::Protocol::Network::AuthCredentials.new(username: credentials.fetch(:username),
+                                                                     password: credentials.fetch(:password))
           answer_with(action: :provide_credentials, credentials: credentials)
+        end
+
+        # @deprecated Return without answering, which leaves the challenge to the next handler and then the browser.
+        def skip
+          WebDriver.logger.deprecate('AuthenticationChallenge#skip', 'returning without answering',
+                                     id: :network_auth_skip, reference: REFERENCE)
+          answer_with(action: :default)
         end
 
         # Answers the challenge with none, so the request ends with the response that challenged it.

@@ -32,7 +32,9 @@ module Selenium
 
         def url: () -> String
 
-        def authenticate: (username: String, password: String) -> nil
+        def authenticate: (*String positional, **String credentials) -> nil
+
+        def skip: () -> nil
 
         def cancel: () -> nil
 

@@ -82,26 +82,6 @@ module Selenium
         expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
       end
 
-      it 'answers a challenge with a deprecated username and password' do
-        driver = local_driver(web_socket_url: true)
-
-        expect { driver.network.add_authentication_handler(username, password) }
-          .to have_deprecated(:network_auth_credentials)
-        driver.navigate.to url_for('basicAuth')
-
-        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-      end
-
-      it 'answers a challenge for a deprecated positional filter' do
-        driver = local_driver(web_socket_url: true)
-
-        expect { driver.network.add_authentication_handler(username, password, url_for('basicAuth')) }
-          .to have_deprecated(%i[network_url_filters network_auth_credentials])
-        driver.navigate.to url_for('basicAuth')
-
-        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-      end
-
       it 'adds a request handler' do
         driver = local_driver(web_socket_url: true)
         network = driver.network
