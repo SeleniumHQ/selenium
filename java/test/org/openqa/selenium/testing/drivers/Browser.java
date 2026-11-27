@@ -95,11 +95,7 @@ public enum Browser {
       }
 
       options.addArguments(
-          "disable-extensions",
-          "disable-infobars",
-          "disable-breakpad",
-          "disable-dev-shm-usage",
-          "no-sandbox");
+          "disable-infobars", "disable-breakpad", "disable-dev-shm-usage", "no-sandbox");
 
       // Accept self-signed and invalid certificates for HTTPS testing
       options.setAcceptInsecureCerts(true);
