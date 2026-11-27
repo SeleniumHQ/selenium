@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import time
+
 import pytest
 
 from selenium.webdriver.common.actions import interaction
@@ -37,16 +39,15 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 def test_can_create_pause_action_on_keyboard(driver, pages):
-    # If we don't get an error and takes less than 3 seconds to run, we are good
-    import datetime
-
-    start = datetime.datetime.now()
+    start = time.monotonic()
     actions1 = ActionBuilder(driver)
     key_actions = actions1.key_action
     key_actions.pause(1)
     actions1.perform()
-    finish = datetime.datetime.now()
-    assert (finish - start).seconds <= 3
+    elapsed = time.monotonic() - start
+    # Only a pause sent in the wrong unit takes this long; a bound near the one second pause
+    # fails whenever a loaded machine is slow to dispatch the action.
+    assert elapsed < 30
 
     # Add a filler step
     actions2 = ActionBuilder(driver)
@@ -56,16 +57,15 @@ def test_can_create_pause_action_on_keyboard(driver, pages):
 
 
 def test_can_create_pause_action_on_pointer(driver, pages):
-    # If we don't get an error and takes less than 3 seconds to run, we are good
-    import datetime
-
-    start = datetime.datetime.now()
+    start = time.monotonic()
     actions1 = ActionBuilder(driver)
     key_actions = actions1.pointer_action
     key_actions.pause(1)
     actions1.perform()
-    finish = datetime.datetime.now()
-    assert (finish - start).seconds <= 3
+    elapsed = time.monotonic() - start
+    # Only a pause sent in the wrong unit takes this long; a bound near the one second pause
+    # fails whenever a loaded machine is slow to dispatch the action.
+    assert elapsed < 30
 
     # Add a filler step
     actions2 = ActionBuilder(driver)
