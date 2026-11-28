@@ -32,12 +32,13 @@ module Selenium
           'session.subscribe' => ->(n) { {'subscription' => "subscription-#{n}"} }
         }.freeze
 
-        attr_reader :errors
+        attr_reader :errors, :results
 
         def initialize
           @sent = []
           @intercepts = []
           @errors = {}
+          @results = {}
           @mutex = Mutex.new
           @arrived = ConditionVariable.new
           @last_id = 0
@@ -50,7 +51,8 @@ module Selenium
             error = errors[payload[:method]]
             next {'error' => error, 'message' => 'refused'} if error
 
-            result = RESULTS.fetch(payload[:method], ->(_) { {} }).call(@last_id += 1)
+            @last_id += 1
+            result = results.fetch(payload[:method]) { RESULTS.fetch(payload[:method], ->(_) { {} }).call(@last_id) }
             @intercepts << result['intercept'] if result.key?('intercept')
             {'result' => result}
           end

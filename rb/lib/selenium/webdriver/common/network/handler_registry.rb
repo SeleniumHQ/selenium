@@ -100,6 +100,8 @@ module Selenium
         # By id rather than event name, which would also end the subscriptions of other users of the connection
         def unsubscribe
           return unless @handlers.empty?
+          # Safari subscribes without returning an id, so it stays subscribed until the session ends
+          return if BiDi::Serialization::UNSET.equal?(@subscription)
 
           @session.unsubscribe(subscriptions: [@subscription])
           @subscription = nil

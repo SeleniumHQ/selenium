@@ -112,6 +112,16 @@ module Selenium
             .to eq([{'subscriptions' => ['subscription-1']}])
         end
 
+        it 'stays subscribed when the browser gave no subscription id, as Safari does' do
+          connection.results['session.subscribe'] = {}
+
+          registry.remove(add)
+          add
+
+          expect(connection.sent('session.unsubscribe')).to be_empty
+          expect(connection.sent('session.subscribe').size).to eq(1)
+        end
+
         it 'subscribes again when it gets a handler after emptying' do
           registry.remove(add)
           add
