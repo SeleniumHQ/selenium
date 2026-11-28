@@ -9,6 +9,15 @@ permissions:
   packages: read
 
 jobs:
+  lint:
+    name: Lint
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint
+      run: |
+        ./go rust:lint
+        ./scripts/github-actions/check-format-diff.sh
+
   tests:
     name: Tests
     uses: ./.github/workflows/bazel.yml

@@ -25,29 +25,22 @@ permissions:
 # or dispatch and exclude the smoke tags, so they are the nightly complement of
 # smoke rather than the whole tree.
 jobs:
-  lint-ruff:
-    name: Lint (ruff)
+  lint:
+    name: Lint
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Lint (ruff)
-      run: bazel run //py:ruff-check -- --no-fix
-
-  lint-mypy:
-    name: Lint (mypy)
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint (mypy)
-      run: bazel run //py:mypy
-
-  lint-docs:
-    name: Lint (docs)
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint (docs)
+      name: Lint
       run: |
-        bazel run //py:generate-api-listing
-        bazel run //py:sphinx-autogen
-        bazel build //py:docs
+        ./go py:lint
+        ./scripts/github-actions/check-format-diff.sh
+
+  docs:
+    name: Docs
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs
+      run: ./go py:docs_generate
 
   # Tests on 3.10.20 (earliest supported version) are run in smoke and RBE.
   # This job covers the latest supported version.

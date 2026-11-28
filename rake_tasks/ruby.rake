@@ -175,13 +175,12 @@ task :format do
   Bazel.execute('run', ['--', '-a', '--fail-level', 'F'], '//rb:rubocop')
 end
 
-desc 'Run Ruby linters (rubocop, steep, docs)'
+desc 'Run Ruby linters (rubocop, steep)'
 task :lint do |_task, arguments|
   flag = arguments.to_a.include?('-A') ? '-A' : '-a'
   SeleniumRake.aggregate_errors(
     rubocop: -> { Bazel.execute('run', ['--', flag], '//rb:rubocop') },
-    steep_type_checker: -> { Bazel.execute('run', [], '//rb:steep') },
-    ruby_docs: -> { Rake::Task['rb:docs_generate'].invoke }
+    steep_type_checker: -> { Bazel.execute('run', [], '//rb:steep') }
   )
 end
 

@@ -9,6 +9,25 @@ permissions:
   packages: read
 
 jobs:
+  lint:
+    name: Lint
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint
+      run: |
+        ./go java:lint
+        ./scripts/github-actions/check-format-diff.sh
+
+  docs:
+    name: Docs
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs
+      # Javadoc compiles all of Java, so reuse what trunk builds cached
+      remote-cache: true
+      run: ./go java:docs_generate
+
   smoke:
     name: Smoke Tests
     uses: ./.github/workflows/bazel.yml

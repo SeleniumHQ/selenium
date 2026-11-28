@@ -16,9 +16,9 @@ task :format do
   Bazel.execute('run', [], '@rules_rust//:rustfmt')
 end
 
-desc 'Run Rust linter (no-op, clippy not configured)'
+desc 'Run Rust linter (rustfmt; clippy not configured)'
 task :lint do
-  puts '  Rust linting not configured'
+  Rake::Task['rust:format'].invoke
 end
 
 desc 'Pin Rust dependencies'

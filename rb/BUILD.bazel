@@ -247,6 +247,19 @@ rb_binary(
     deps = _LINT_DEPS,
 )
 
+# CI lints the rake files even when no Ruby targets changed, so this skips building the gem and specs.
+rb_binary(
+    name = "rubocop-rake-tasks",
+    args = [
+        "--config=rb/.rubocop.yml",
+        "Rakefile",
+        "rake_tasks/",
+    ],
+    data = _LINT_DATA,
+    main = "@bundle//bin:rubocop",
+    deps = ["@bundle"],
+)
+
 rb_binary(
     name = "console",
     args = [

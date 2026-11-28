@@ -127,11 +127,10 @@ task :format do
   Bazel.execute('run', ['--', 'whitespace'], '//dotnet:format')
 end
 
-desc 'Run .NET linter (dotnet format analyzers, docs)'
+desc 'Run .NET linter (dotnet format analyzers)'
 task :lint do
   steps = {
-    dotnet_format_analyzers: -> { Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format') },
-    dotnet_docs: -> { Rake::Task['dotnet:docs_generate'].invoke }
+    dotnet_format_analyzers: -> { Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format') }
   }
 
   enforced_diagnostics = []

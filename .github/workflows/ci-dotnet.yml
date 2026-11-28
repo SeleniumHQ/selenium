@@ -17,6 +17,24 @@ jobs:
       os: windows
       run: ./go dotnet:lint
 
+  # Separate from the Windows lint job, which formatting would lengthen by over a minute.
+  format:
+    name: Format
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Format
+      run: |
+        ./go dotnet:format
+        ./scripts/github-actions/check-format-diff.sh
+
+  docs:
+    name: Docs
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs
+      run: ./go dotnet:docs_generate
+
   unit-tests:
     name: Unit Tests
     uses: ./.github/workflows/bazel.yml

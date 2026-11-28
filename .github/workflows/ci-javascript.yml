@@ -22,13 +22,22 @@ permissions:
 
 # RBE runs the Linux x86_64 tests; these jobs cover macOS and Windows.
 jobs:
-  # Prettier is checked by the Format job in ci.yml.
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
-      run: bazel test //javascript/selenium-webdriver:eslint-test
+      run: |
+        ./go node:lint
+        ./scripts/github-actions/check-format-diff.sh
+
+  docs:
+    name: Docs
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs
+      run: ./go node:docs_generate
 
   # Tests on 22.23.4 (earliest supported version) are run in smoke and RBE.
   # This job covers the latest supported version.

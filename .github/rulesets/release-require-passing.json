@@ -28,10 +28,6 @@
           {
             "context": "CI Success",
             "integration_id": 15368
-          },
-          {
-            "context": "Format / Check Format",
-            "integration_id": 15368
           }
         ]
       }
