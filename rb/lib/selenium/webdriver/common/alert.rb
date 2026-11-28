@@ -20,27 +20,47 @@
 module Selenium
   module WebDriver
     class Alert
-      def initialize(bridge)
+      # Without a prompt it acts on the alert in the window the driver is on; a handler's alert acts on its prompt
+      def initialize(bridge, prompt = nil)
         @bridge = bridge
+        @prompt = prompt
 
         # fail fast if the alert doesn't exist
-        bridge.alert_text
+        bridge.alert_text(prompt)
       end
 
       def accept
-        @bridge.accept_alert
+        @bridge.accept_alert(@prompt)
       end
 
       def dismiss
-        @bridge.dismiss_alert
+        @bridge.dismiss_alert(@prompt)
       end
 
       def send_keys(keys)
-        @bridge.alert = keys
+        @bridge.send_alert_text(keys, @prompt)
       end
 
       def text
-        @bridge.alert_text
+        @bridge.alert_text(@prompt)
+      end
+
+      #
+      # @return [String] 'alert', 'confirm', 'prompt' or 'beforeunload'
+      # @raise [Error::WebDriverError] without BiDi
+      #
+
+      def type
+        @bridge.alert_type(@prompt)
+      end
+
+      #
+      # @return [String, nil] the text a prompt opened with
+      # @raise [Error::WebDriverError] without BiDi
+      #
+
+      def default_value
+        @bridge.alert_default_value(@prompt)
       end
     end # Alert
   end # WebDriver

@@ -1,0 +1,107 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+module Selenium
+  module WebDriver
+    class Alerts
+      BEHAVIORS: Array[String]
+
+      class Prompt
+        attr_reader context: String
+
+        attr_reader window: String
+
+        attr_reader type: String
+
+        attr_reader text: String
+
+        attr_reader default_value: String?
+
+        attr_accessor keys: String?
+
+        def initialize: (untyped event, String window) -> void
+      end
+
+      @bridge: untyped
+
+      @requested: Array[[Hash[String, untyped], String]?]
+
+      @unhandled_prompt_behavior: String
+
+      @handlers: Hash[Object, ^(Alert) -> void]
+
+      @prompts: Hash[String, Prompt]
+
+      @mutex: Thread::Mutex
+
+      def initialize: (Remote::Bridge bridge, Array[Hash[String, untyped]] first_match) -> void
+
+      def add_handler: () { (Alert) -> void } -> Object
+
+      def remove_handler: (Object handle) -> nil
+
+      def bidi_required?: () -> bool
+
+      def handles_prompts?: (Remote::Capabilities capabilities) -> bool
+
+      def unhandled_prompt_behavior: (Remote::Capabilities capabilities) -> String
+
+      def subscribe: () -> void
+
+      def current: () -> Prompt
+
+      def manage_exception: (Error::WebDriverError error) -> void
+
+      def forget: (Prompt prompt) -> void
+
+      private
+
+      def manage_prompts_locally: (Hash[String, untyped] candidate) -> [Hash[String, untyped], String]?
+
+      def ignore_prompts: (Hash[String, untyped] candidate) -> String
+
+      def matches?: (Hash[String, untyped] candidate, Remote::Capabilities capabilities) -> bool
+
+      def listen_prompt_opened: () -> void
+
+      def listen_prompt_closed: () -> void
+
+      def wait_for_beforeunload_to_close: () -> void
+
+      def refusing_prompt: () -> Prompt?
+
+      def user_handler?: () -> bool
+
+      def behavior: () -> String
+
+      def default_handler: (Alert alert) -> void
+
+      def apply_behavior: (Prompt prompt) -> void
+
+      def release_commands: (Prompt prompt, Array[Hash[Symbol, untyped]] waiting) -> void
+
+      def prompt_in: (String? window) -> Prompt?
+
+      def before_bidi_command: (Hash[Symbol, untyped] payload) -> void
+
+      def window_of: (Hash[Symbol, untyped] payload) -> String?
+
+      def context_of: (Hash[Symbol, untyped] payload) -> String?
+
+      def legacy_context_of: (Hash[Symbol, untyped] params) -> String?
+    end
+  end
+end

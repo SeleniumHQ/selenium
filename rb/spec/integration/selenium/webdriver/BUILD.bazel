@@ -45,6 +45,7 @@ _OS_SENSITIVE = [
 # specs whose classes have both bidi implementations
 _BIDI_IMPLEMENTATIONS = [
     "navigation_spec.rb",
+    "target_locator_spec.rb",
 ]
 
 # bidi implementations that must also run over a Grid
@@ -54,6 +55,7 @@ _GRID_BIDI = [
 
 # tests that require bidi enabled
 _BIDI_ONLY = [
+    "alerts_spec.rb",
     "bidi_spec.rb",
     "network_spec.rb",
 ]

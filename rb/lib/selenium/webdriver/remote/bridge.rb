@@ -70,7 +70,9 @@ module Selenium
         #
 
         def create_session(capabilities)
-          response = execute(:new_session, {}, prepare_capabilities_payload(capabilities))
+          payload = prepare_capabilities_payload(capabilities)
+          alerts = Alerts.new(self, payload[:capabilities][:firstMatch])
+          response = execute(:new_session, {}, payload)
 
           @session_id = response['sessionId']
 
@@ -78,12 +80,12 @@ module Selenium
 
           @capabilities = Capabilities.json_create(response['capabilities'])
 
-          # Added before the browser Features so theirs win, such as Firefox's extension install options
-          if @capabilities[:web_socket_url]
-            extend(BiDiConnection)
-            extend(BiDiCommands)
+          # Added before the browser Features so theirs win, such as Firefox's extension install options;
+          # without BiDi nothing would handle the prompts the remote end was told to ignore, so its absence raises
+          if @capabilities[:web_socket_url] || alerts.bidi_required?
+            extend(BiDiCommands, BiDiConnection)
 
-            connect_bidi
+            connect_bidi(alerts)
           end
 
           case @capabilities[:browser_name]
@@ -139,19 +141,20 @@ module Selenium
         # alerts
         #
 
-        def accept_alert
+        # The prompt is the one a BiDi alert handler was given; classic commands act on the current window's alert
+        def accept_alert(_prompt = nil)
           execute :accept_alert
         end
 
-        def dismiss_alert
+        def dismiss_alert(_prompt = nil)
           execute :dismiss_alert
         end
 
-        def alert=(keys)
+        def send_alert_text(keys, _prompt = nil)
           execute :send_alert_text, {}, {value: keys.chars, text: keys}
         end
 
-        def alert_text
+        def alert_text(_prompt = nil)
           execute :get_alert_text
         end
 
@@ -608,6 +611,9 @@ module Selenium
           raise WebDriver::Error::WebDriverError, connection_error_message
         end
         alias connection bidi
+        alias alerts bidi
+        alias alert_type bidi
+        alias alert_default_value bidi
         alias install_web_extension bidi
         alias uninstall_web_extension bidi
 

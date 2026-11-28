@@ -115,15 +115,28 @@ module Selenium
       # Callables given each command's payload before it is sent; one may raise to refuse it
       attr_reader :before_send
 
+      # The payloads of the commands waiting for a reply
+      def waiting
+        @messages_mtx.synchronize { pending_payloads.values }
+      end
+
+      # Stops waiting on the pending commands the block selects by payload; each raises the error
+      def release(error)
+        @messages_mtx.synchronize do
+          pending_payloads.each do |id, payload|
+            next if messages.key?(id) || !yield(payload)
+
+            messages[id] = error
+            pending_responses[id].signal
+          end
+        end
+      end
+
       def send_cmd(**payload)
         # IOError to match what writing to an already-closed socket raises
         raise IOError, 'WebSocket connection is closed' if @closing
 
-        # Callbacks send commands from their own threads, so the id must be
-        # allocated and registered atomically or two commands can share one
-        id = @messages_mtx.synchronize do
-          next_id.tap { |new_id| pending_responses[new_id] = ConditionVariable.new }
-        end
+        id = register(payload)
 
         begin
           before_send.each { |callable| callable.call(payload) }
@@ -134,6 +147,7 @@ module Selenium
         ensure
           @messages_mtx.synchronize do
             pending_responses.delete(id)
+            pending_payloads.delete(id)
             messages.delete(id)
           end
         end
@@ -157,6 +171,21 @@ module Selenium
         raise e, "WebSocket is closed (#{e.class}: #{e.message})"
       end
 
+      def pending_payloads
+        @pending_payloads ||= {}
+      end
+
+      # Callbacks send commands from their own threads, so the id must be
+      # allocated and registered atomically or two commands can share one
+      def register(payload)
+        @messages_mtx.synchronize do
+          next_id.tap do |new_id|
+            pending_responses[new_id] = ConditionVariable.new
+            pending_payloads[new_id] = payload
+          end
+        end
+      end
+
       def await_response(id)
         deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + RESPONSE_WAIT_TIMEOUT
         @messages_mtx.synchronize do
@@ -168,7 +197,10 @@ module Selenium
 
             pending_responses[id].wait(@messages_mtx, remaining)
           end
-          messages.delete(id)
+          message = messages.delete(id)
+          raise message if message.is_a?(Exception)
+
+          message
         end
       end
 

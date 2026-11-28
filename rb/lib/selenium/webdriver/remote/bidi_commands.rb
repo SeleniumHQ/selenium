@@ -50,12 +50,16 @@ module Selenium
         def get(url)
           bidi_browsing_context.navigate(context: current_window, url: url, wait: readiness_state)
           nil
+        rescue Error::InterruptedByAlertError
+          nil
         rescue Error::NoSuchFrameError => e
           raise Error::NoSuchWindowError, e.message
         end
 
         def go_back
           bidi_browsing_context.traverse_history(context: current_window, delta: -1)
+          nil
+        rescue Error::InterruptedByAlertError
           nil
         rescue Error::NoSuchFrameError => e
           raise Error::NoSuchWindowError, e.message
@@ -64,12 +68,16 @@ module Selenium
         def go_forward
           bidi_browsing_context.traverse_history(context: current_window, delta: 1)
           nil
+        rescue Error::InterruptedByAlertError
+          nil
         rescue Error::NoSuchFrameError => e
           raise Error::NoSuchWindowError, e.message
         end
 
         def refresh
           bidi_browsing_context.reload(context: current_window, wait: readiness_state)
+          nil
+        rescue Error::InterruptedByAlertError
           nil
         rescue Error::NoSuchFrameError => e
           raise Error::NoSuchWindowError, e.message

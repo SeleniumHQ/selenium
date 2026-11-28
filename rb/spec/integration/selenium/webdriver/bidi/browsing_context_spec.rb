@@ -89,9 +89,6 @@ module Selenium
         end
 
         context 'when a prompt is open' do
-          # The default unhandled prompt behavior dismisses a prompt before the example can handle it
-          let(:driver) { local_driver(unhandled_prompt_behavior: :ignore) }
-
           it 'accepts users prompts without text' do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click

@@ -83,6 +83,7 @@ module Selenium
           connection.instance_variable_set(:@before_send, [])
           connection.instance_variable_set(:@socket, socket)
           connection.instance_variable_set(:@url, 'ws://localhost:9222/session')
+          connection.instance_variable_set(:@before_send, [])
         end
 
         def reply_with(frame)
@@ -204,11 +205,66 @@ module Selenium
           expect(pending_state).to eq([{}, {}])
         end
 
+        it 'releases a command its before_send callables passed when an alert opens before it is sent' do
+          stub_const("#{described_class}::RESPONSE_WAIT_TIMEOUT", 5)
+          error = Error::WebDriverError.new('released')
+          connection.before_send << ->(_payload) { connection.release(error) { true } }
+
+          expect { connection.send_cmd(method: 'foo') }.to raise_error(error)
+          expect(pending_state).to eq([{}, {}])
+        end
+
         it 'stops tracking the command when the write fails' do
           allow(socket).to receive(:write).and_raise(Errno::EPIPE)
 
           expect { connection.send_cmd(method: 'foo') }.to raise_error(Errno::EPIPE, /WebSocket is closed/)
           expect(pending_state).to eq([{}, {}])
+        end
+      end
+
+      describe '#release' do
+        let(:socket) { StringIO.new }
+        let(:error) { Error::WebDriverError.new('released') }
+
+        before do
+          stub_const("#{described_class}::RESPONSE_WAIT_TIMEOUT", 5)
+          connection.instance_variable_set(:@closing, false)
+          connection.instance_variable_set(:@messages_mtx, Mutex.new)
+          connection.instance_variable_set(:@write_mtx, Mutex.new)
+          connection.instance_variable_set(:@socket, socket)
+          connection.instance_variable_set(:@url, 'ws://localhost:9222/session')
+          connection.instance_variable_set(:@before_send, [])
+        end
+
+        it 'raises the error in a command the block selects' do
+          allow(socket).to receive(:write) do
+            Thread.new { connection.release(error) { |payload| payload[:params]['context'] == 'abc' } }
+          end
+
+          expect { connection.send_cmd(method: 'foo', params: {'context' => 'abc'}) }.to raise_error(error)
+        end
+
+        it 'leaves a command the block does not select waiting for its reply' do
+          allow(socket).to receive(:write) do
+            Thread.new do
+              connection.release(error) { false }
+              connection.send(:process_frame, '{"id":1,"result":{}}')
+            end
+          end
+
+          expect(connection.send_cmd(method: 'foo', params: {})).to eq('id' => 1, 'result' => {})
+        end
+
+        it 'lists the payloads of the commands waiting for a reply' do
+          waiting = nil
+          allow(socket).to receive(:write) do
+            waiting = connection.waiting
+            connection.send(:process_frame, '{"id":1,"result":{}}')
+          end
+
+          connection.send_cmd(method: 'foo', params: {})
+          expect(waiting).to eq([{method: 'foo', params: {}}])
+          expect(connection.waiting).to be_empty
         end
       end
 

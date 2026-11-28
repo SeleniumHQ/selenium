@@ -22,6 +22,8 @@ module Selenium
       module BiDiConnection : Bridge
         @connection: untyped
 
+        @alerts: Alerts?
+
         attr_reader bidi: BiDi
 
         attr_reader connection: untyped
@@ -34,9 +36,17 @@ module Selenium
 
         def close: () -> void
 
+        def alerts: (*untyped) -> bot
+
+        def alert_type: (*untyped) -> bot
+
+        def alert_default_value: (*untyped) -> bot
+
         private
 
-        def connect_bidi: () -> void
+        def connect_bidi: (Alerts alerts) -> void
+
+        def handle_prompts: (Alerts alerts) -> void
 
         def execute: (Symbol command, *untyped) -> untyped
 

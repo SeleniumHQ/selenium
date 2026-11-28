@@ -27,6 +27,10 @@ module Selenium
       # schema. It is not a protocol error code; the (de)serialization layer raises it directly.
       class SerializationError < WebDriverError; end
 
+      # Raised locally from a BiDi command that an alert opened in its window stopped waiting
+      # for a reply to. It is not a protocol error code.
+      class InterruptedByAlertError < UnexpectedAlertOpenError; end
+
       # Register each BiDi-only code as a WebDriverError subclass; shared codes keep their classic class.
       BiDi::Protocol::ErrorCode::CLASS_NAMES.each_value do |name|
         const_set(name, Class.new(WebDriverError)) unless const_defined?(name, false)

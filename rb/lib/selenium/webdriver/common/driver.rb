@@ -283,6 +283,15 @@ module Selenium
       end
 
       #
+      # @return [Alerts]
+      # @see Alerts
+      #
+
+      def alerts
+        bridge.alerts
+      end
+
+      #
       # Installs a browser extension from an unpacked directory, a packed extension (.xpi/.crx/.zip),
       # or base64-encoded bytes; works with remote (Grid) sessions.
       #
