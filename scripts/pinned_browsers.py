@@ -15,8 +15,13 @@ from scripts.generated_note import generated_note
 # support and the sha256 of these. That's useful for
 # updating `//common:repositories.bzl`
 
+TRANSIENT_STATUSES = [429, 500, 502, 503, 504]
 http = urllib3.PoolManager(
-    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=TRANSIENT_STATUSES, raise_on_status=False)
+)
+# GitHub intermittently answers release asset downloads from CI runners with 403
+DOWNLOAD_RETRIES = urllib3.Retry(
+    total=5, backoff_factor=2, status_forcelist=[403, *TRANSIENT_STATUSES], raise_on_status=False
 )
 API_HEADERS = {}
 if os.environ.get("GITHUB_TOKEN"):
@@ -26,7 +31,7 @@ if os.environ.get("GITHUB_TOKEN"):
 def calculate_hash(url):
     print(f"Calculate hash for {url}", file=sys.stderr)
     h = hashlib.sha256()
-    r = http.request("GET", url, preload_content=False)
+    r = http.request("GET", url, preload_content=False, retries=DOWNLOAD_RETRIES)
     if r.status != 200:
         raise ValueError(f"Download unavailable (HTTP {r.status}): {url}")
     for b in iter(lambda: r.read(4096), b""):
