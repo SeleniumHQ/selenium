@@ -17,7 +17,7 @@
 
 use crate::config::ManagerConfig;
 use crate::downloads::parse_json_from_url;
-use crate::files::BrowserPath;
+use crate::files::{BrowserPath, collect_files_from_cache, find_latest_from_cache};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
@@ -27,10 +27,11 @@ use anyhow::Error;
 use anyhow::anyhow;
 use reqwest::Client;
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
+use walkdir::DirEntry;
 
 pub const GRID_NAME: &str = "grid";
 const GRID_RELEASE: &str = "selenium-server";
@@ -298,7 +299,63 @@ impl SeleniumManager for GridManager {
         false
     }
 
+    // The cached Grid artifact is a jar with the version in its name,
+    // e.g. <cache>/grid/4.54.0/selenium-server-4.54.0.jar. The shared matcher
+    // expects the driver name plus the binary extension, which is
+    // "selenium-server" on Linux and "selenium-server.exe" on Windows, so it
+    // only finds the jar on macOS, where the name match is "contains".
+    // This manager matches the jar by name and extension instead.
+    fn is_driver(&self, entry: &DirEntry) -> bool {
+        let prefix = format!("{GRID_RELEASE}-");
+        let suffix = format!(".{GRID_EXTENSION}");
+        let is_grid_jar = entry
+            .file_name()
+            .to_str()
+            .map(|name| name.starts_with(&prefix) && name.ends_with(&suffix))
+            .unwrap_or(false);
+
+        entry.path().is_file() && is_grid_jar
+    }
+
+    // The shared cache lookup takes the last file of a lexicographic walk, so
+    // it ranks 4.9.0 above 4.54.0. This manager compares the version in each
+    // jar's parent directory instead.
+    fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Error> {
+        let cache_path = self.get_cache_path()?.unwrap_or_default();
+        let jars = collect_files_from_cache(&cache_path, |entry| self.is_driver(entry));
+
+        let mut best: Option<(Vec<u64>, PathBuf)> = None;
+        for jar in jars {
+            let Some(version) = jar.parent().and_then(version_from_dir_name) else {
+                continue;
+            };
+
+            let is_newer = match &best {
+                Some((best_version, _)) => version > *best_version,
+                None => true,
+            };
+
+            if is_newer {
+                best = Some((version, jar));
+            }
+        }
+
+        if let Some((_, jar)) = best {
+            return Ok(Some(jar));
+        }
+
+        // Keep the old behaviour for a jar outside a version-named directory.
+        find_latest_from_cache(&cache_path, |entry| self.is_driver(entry))
+    }
+
     fn get_snap_path(&self) -> Option<PathBuf> {
         None
     }
+}
+
+fn version_from_dir_name(dir: &Path) -> Option<Vec<u64>> {
+    let name = dir.file_name()?.to_str()?;
+    name.split('.')
+        .map(|part| part.parse::<u64>().ok())
+        .collect()
 }
