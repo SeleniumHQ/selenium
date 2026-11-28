@@ -47,7 +47,7 @@ module Selenium
       # @param password [String] deprecated; use #add_authentication
       # @param filter [Array<String>] deprecated; use url_patterns:
       # @param url_patterns [String, URI, Hash, Array] the URLs the handler applies to; see UrlPatterns
-      # @param pattern_type [Symbol] deprecated and ignored; use url_patterns:
+      # @param pattern_type [Symbol] deprecated; use url_patterns:
       # @param window_handle [String] limits the handler to one window
       # @param user_context [String] limits the handler to the windows of one user context
       # @yieldparam challenge [AuthenticationChallenge]
@@ -237,18 +237,19 @@ module Selenium
       # Filters were only sent with a pattern_type, so without one they match every request
       def legacy_url_patterns(filter, pattern_type, url_patterns)
         return url_patterns if filter.empty? && pattern_type.nil?
-        raise ArgumentError, 'give url_patterns: or the deprecated URL filters, not both' if url_patterns
 
+        check_legacy_url_patterns(filter, pattern_type, url_patterns)
         WebDriver.logger.deprecate('positional URL filters and pattern_type:', 'url_patterns:',
                                    id: :network_url_filters, reference: REFERENCE)
-        return if filter.empty?
+        return url_patterns if url_patterns
+        return if filter.empty? || pattern_type.nil?
 
-        case pattern_type
-        when nil then nil
-        when :string then filter
-        when :url then filter.map { |url| url_components(url) }
-        else raise ArgumentError, "Unknown pattern type: #{pattern_type}"
-        end
+        pattern_type == :url ? filter.map { |url| url_components(url) } : filter
+      end
+
+      def check_legacy_url_patterns(filter, pattern_type, url_patterns)
+        raise ArgumentError, "Unknown pattern type: #{pattern_type}" unless [nil, :string, :url].include?(pattern_type)
+        raise ArgumentError, 'give url_patterns: or the deprecated URL filters, not both' if url_patterns && filter.any?
       end
 
       def url_components(url)

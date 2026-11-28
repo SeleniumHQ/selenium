@@ -81,9 +81,20 @@ module Selenium
                      'pathname' => '/a', 'search' => 'b=c'}])
         end
 
-        it 'refuses an unknown pattern type, as before' do
+        it 'refuses an unknown pattern type, with or without filters, as before' do
           expect { network.add_authentication_handler('user', 'pass', 'https://example.com/', pattern_type: :glob) }
             .to raise_error(ArgumentError, /Unknown pattern type/)
+          expect { network.add_authentication_handler('user', 'pass', pattern_type: :glob) }
+            .to raise_error(ArgumentError, /Unknown pattern type/)
+          expect(connection.sent).to be_empty
+        end
+
+        it 'deprecates a pattern type given with url patterns, using the url patterns' do
+          url = 'https://example.com/'
+
+          expect { network.add_authentication_handler(url_patterns: url, pattern_type: :string, &:cancel) }
+            .to have_deprecated(:network_url_filters)
+          expect(intercepts.first['urlPatterns']).to eq([{'type' => 'string', 'pattern' => 'https://example.com/'}])
         end
 
         it 'matches every request when given a pattern type with no filters' do

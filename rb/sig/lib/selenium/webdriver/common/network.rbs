@@ -61,6 +61,8 @@ module Selenium
 
       def legacy_url_patterns: (Array[String] filter, Symbol? pattern_type, untyped url_patterns) -> untyped
 
+      def check_legacy_url_patterns: (Array[String] filter, Symbol? pattern_type, untyped url_patterns) -> void
+
       def url_components: (String url) -> Hash[Symbol, String]
 
       def legacy_authentication_handler: (String? username, String? password, Array[String] filter, Symbol? pattern_type, url_patterns: untyped, window_handle: String?, user_context: String?) ?{ (AuthenticationChallenge) -> untyped } -> Object
