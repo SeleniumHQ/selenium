@@ -1,0 +1,8 @@
+; Safari answers session.subscribe with an empty result: {} where the spec requires the
+; subscription id. Bindings that reject a missing required field fail the command, and with it
+; session setup that subscribes, so relax the id to optional.
+; Delete once Safari returns the subscription id.
+; https://w3c.github.io/webdriver-bidi/#command-session-subscribe
+session.SubscribeResult = {
+  ? subscription: session.Subscription,
+}

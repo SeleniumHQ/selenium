@@ -38,8 +38,11 @@ module Selenium
           end
 
           describe '#subscribe',
-                   pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
-                                reason: 'Safari session.subscribe result fails strict deserialization'} do
+                   pending_if: {browser_family: :safari,
+                                exception: {class: RSpec::Expectations::ExpectationNotMetError,
+                                            message: /expected UNSET to be a kind of String/},
+                                reason: 'Safari session.subscribe returns no subscription id; ' \
+                                        'when this passes, delete common/bidi/session-subscribe-result.cddl'} do
             it 'subscribes to an event globally' do
               result = session.subscribe(events: ['browsingContext.load'])
 
@@ -58,20 +61,21 @@ module Selenium
 
               expect(result.subscription).to be_a(String)
             ensure
-              session.unsubscribe(subscriptions: [result.subscription]) if result&.subscription
+              session.unsubscribe(subscriptions: [result.subscription]) if result&.subscription.is_a?(String)
             end
           end
 
-          describe '#unsubscribe',
-                   pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
-                                reason: 'Safari session.unsubscribe result fails strict deserialization'} do
+          describe '#unsubscribe' do
             it 'unsubscribes by event name' do
               session.subscribe(events: ['browsingContext.load'])
 
               expect(session.unsubscribe(events: ['browsingContext.load'])).to be_empty
             end
 
-            it 'unsubscribes by subscription id' do
+            it 'unsubscribes by subscription id',
+               pending_if: {browser_family: :safari,
+                            exception: {class: ArgumentError, message: /expected string, got UNSET/},
+                            reason: 'Safari session.subscribe returns no subscription id to unsubscribe by'} do
               result = session.subscribe(events: ['browsingContext.load'], contexts: [driver.window_handle])
 
               expect(session.unsubscribe(subscriptions: [result.subscription])).to be_empty

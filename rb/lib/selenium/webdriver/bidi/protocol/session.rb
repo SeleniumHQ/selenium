@@ -255,11 +255,6 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscriberesult
-          SubscribeResult = Serialization::Record.define(subscription: {wire_key: 'subscription', primitive: 'string'})
-
-          # @api private
-          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionunsubscribeparameters
           class UnsubscribeParameters < Serialization::Union
             presence(
@@ -268,6 +263,13 @@ module Selenium
             )
             object_only
           end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscriberesult
+          SubscribeResult = Serialization::Record.define(
+            subscription: {wire_key: 'subscription', required: false, primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
