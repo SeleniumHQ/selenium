@@ -25,7 +25,8 @@ module Selenium
     class BiDi
       describe ContextTree,
                pending_if: {browser_family: :safari,
-                            reason: 'Safari session.subscribe result fails strict deserialization'},
+                            exception: {class: Error::TimeoutError, message: /was announced/},
+                            reason: 'Safari sends no BiDi events, so no new context is announced'},
                skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
         let(:tree) { driver.send(:bridge).context_tree }
         let!(:window) { driver.window_handle }

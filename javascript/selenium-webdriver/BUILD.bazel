@@ -108,6 +108,7 @@ generate_bidi_library(
         "//common/bidi:browsing-context-created-params.cddl",
         "//common/bidi:digital-credentials-command.cddl",
         "//common/bidi:network-response-data.cddl",
+        "//common/bidi:session-subscribe-result.cddl",
         "//common/bidi:web-bluetooth-events.cddl",
     ],
     # The pinned rendered core spec. The schema step extracts its prose section anchors

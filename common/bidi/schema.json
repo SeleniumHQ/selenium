@@ -2511,22 +2511,6 @@
       "outbound": false,
       "inbound": false
     },
-    "session.SubscribeResult": {
-      "kind": "record",
-      "fields": [
-        {
-          "name": "subscription",
-          "wire": "subscription",
-          "required": true,
-          "type": {
-            "ref": "session.Subscription"
-          }
-        }
-      ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscriberesult",
-      "outbound": false,
-      "inbound": true
-    },
     "session.Unsubscribe": {
       "kind": "record",
       "fields": [
@@ -16827,6 +16811,22 @@
         }
       ],
       "specHref": "https://w3c.github.io/webdriver-bidi/#type-network-ResponseData",
+      "outbound": false,
+      "inbound": true
+    },
+    "session.SubscribeResult": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "subscription",
+          "wire": "subscription",
+          "required": false,
+          "type": {
+            "ref": "session.Subscription"
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscriberesult",
       "outbound": false,
       "inbound": true
     },

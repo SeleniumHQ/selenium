@@ -163,12 +163,12 @@ module Selenium
             def self.new: (session_id: String, capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityResponse) -> instance
           end
 
-          class SubscribeResult < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader subscription: String
-            def self.new: (subscription: String) -> instance
+          class UnsubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
-          class UnsubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
+          class SubscribeResult < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader subscription: untyped
+            def self.new: (?subscription: String) -> instance
           end
 
           class CapabilityRequestFirefoxOptions < ::Selenium::WebDriver::BiDi::Serialization::Record

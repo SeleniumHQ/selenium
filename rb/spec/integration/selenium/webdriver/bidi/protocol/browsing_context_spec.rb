@@ -157,8 +157,8 @@ module Selenium
             end
 
             it 'emits a context created event',
-               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
-                            reason: 'Safari session.subscribe result fails strict deserialization'} do
+               pending_if: {browser_family: :safari, exception: {class: Error::TimeoutError},
+                            reason: 'Safari sends no BiDi events'} do
               event_name = 'browsingContext.contextCreated'
               session = Session.new(driver)
               events = Queue.new
@@ -175,7 +175,7 @@ module Selenium
               expect(created.user_context).to eq('default')
               expect(created.parent).to be_nil
             ensure
-              session.unsubscribe(subscriptions: [subscription]) if subscription
+              session.unsubscribe(subscriptions: [subscription]) if subscription.is_a?(String)
               browsing_context.remove_listener(listener) if listener
             end
 
@@ -186,8 +186,8 @@ module Selenium
                             {browser: :firefox,
                              reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=2070248; when this passes on ' \
                                      'Chrome too, delete common/bidi/browsing-context-created-params.cddl'},
-                            {browser_family: :safari, exception: {class: Error::SerializationError},
-                             reason: 'Safari session.subscribe result fails strict deserialization'}] do
+                            {browser_family: :safari, exception: {class: Error::TimeoutError},
+                             reason: 'Safari sends no BiDi events'}] do
               event_name = 'browsingContext.contextCreated'
               session = Session.new(driver)
               events = Queue.new
