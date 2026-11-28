@@ -18,6 +18,7 @@
 """Mirror of ``../bidi/browsing_context_tests.py`` using the generated ``_bidi`` commands, not the ``driver`` facade."""
 
 import base64
+import struct
 
 import pytest
 
@@ -30,6 +31,7 @@ from selenium.webdriver.common._bidi.browsing_context import (
     CreateType,
     CssLocator,
     DownloadEndParamsCompleteParams,
+    ImageSize,
     InnerTextLocator,
     ReadinessState,
     UserPromptType,
@@ -344,6 +346,22 @@ def test_capture_screenshot_with_parameters(driver, pages):
     ).data
 
     assert len(screenshot) > 0
+
+
+@pytest.mark.xfail_safari(reason="Safari ignores the captureScreenshot imageSize parameter")
+def test_capture_screenshot_with_image_size(driver, pages):
+    bc = BrowsingContext(driver)
+    context_id = driver.current_window_handle
+    driver.get(pages.url("simpleTest.html"))
+
+    image_size = ImageSize(max_width=50, max_height=40)
+    screenshot = bc.capture_screenshot(context=context_id, image_size=image_size).data
+    png = base64.b64decode(screenshot)
+
+    assert png[12:16] == b"IHDR"
+    width, height = struct.unpack_from(">II", png, 16)
+    assert 0 < width <= image_size.max_width
+    assert 0 < height <= image_size.max_height
 
 
 def test_set_viewport(driver, pages):
