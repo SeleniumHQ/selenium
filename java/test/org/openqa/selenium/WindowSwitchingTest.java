@@ -285,11 +285,16 @@ class WindowSwitchingTest extends JupiterTestBase {
     executeScriptNullable("window.open('about:blank')");
     wait.until(windowHandleCountToBe(3));
 
-    // Follow the handle list this browser returns, so the alert is scanned before the match.
+    // The shared window stays open, so the name goes on a later handle that this test closes.
     List<String> handles = new ArrayList<>(driver.getWindowHandles());
     String blocked = handles.get(0);
-    String named = handles.get(handles.size() - 1);
-    assertThat(named).isNotEqualTo(blocked);
+    String named = null;
+    for (int i = 1; i < handles.size(); i++) {
+      if (!mainWindow.equals(handles.get(i))) {
+        named = handles.get(i);
+      }
+    }
+    assertThat(named).isNotNull().isNotEqualTo(blocked);
 
     try {
       driver.switchTo().window(named);
