@@ -20,7 +20,7 @@ from __future__ import annotations
 from hashlib import md5 as md5_hash
 from typing import TYPE_CHECKING
 
-from selenium.common.exceptions import InvalidSelectorException, NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.command import Command
 
@@ -83,17 +83,7 @@ class ShadowRoot:
                 raise NoSuchElementException(f"Cannot locate relative element with: {by.root}")
             return elements[0]
 
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = f'[id="{value}"]'
-        elif by == By.CLASS_NAME:
-            if value and any(char.isspace() for char in value.strip()):
-                raise InvalidSelectorException("Compound class names are not allowed.")
-            by = By.CSS_SELECTOR
-            value = f".{value}"
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = f'[name="{value}"]'
+        by, value = self.session.locator_converter.convert(by, value)
 
         return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
 
@@ -123,17 +113,7 @@ class ShadowRoot:
         if isinstance(by, RelativeBy):
             return self.session._find_elements_relative(by, root=self)
 
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = f'[id="{value}"]'
-        elif by == By.CLASS_NAME:
-            if value and any(char.isspace() for char in value.strip()):
-                raise InvalidSelectorException("Compound class names are not allowed.")
-            by = By.CSS_SELECTOR
-            value = f".{value}"
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = f'[name="{value}"]'
+        by, value = self.session.locator_converter.convert(by, value)
 
         return self._execute(Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
 
