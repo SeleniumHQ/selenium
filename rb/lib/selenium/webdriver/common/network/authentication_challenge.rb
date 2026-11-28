@@ -46,11 +46,9 @@ module Selenium
           original.request.url
         end
 
-        # @deprecated Use #url.
+        # TODO: deprecate in favor of #original once it is public
         # @return [Hash] the request that was challenged, keyed by its wire names
         def request
-          WebDriver.logger.deprecate('AuthenticationChallenge#request', '#url', id: :network_auth_request,
-                                                                                reference: REFERENCE)
           original.request.as_json
         end
 

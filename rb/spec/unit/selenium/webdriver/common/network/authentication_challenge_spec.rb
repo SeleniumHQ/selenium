@@ -33,11 +33,9 @@ module Selenium
         expect(challenge).to have_attributes(id: 'request-1', url: 'https://example.com/secure')
       end
 
-      it 'deprecates the request hash, which still reads as it did' do
-        request = nil
-
-        expect { request = challenge.request }.to have_deprecated(:network_auth_request)
-        expect(request).to include('request' => 'request-1', 'url' => 'https://example.com/secure', 'method' => 'GET')
+      it 'reads the request hash as it did' do
+        expect(challenge.request).to include('request' => 'request-1', 'url' => 'https://example.com/secure',
+                                             'method' => 'GET')
       end
 
       it 'deprecates a positional username and password, still answering with them' do
