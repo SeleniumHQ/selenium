@@ -29,9 +29,8 @@ module Selenium
         described_class.new(typed('network.authRequired', auth_required(url: 'https://example.com/secure')))
       end
 
-      it 'reads the request that was challenged, and the event as the browser sent it' do
+      it 'reads the request that was challenged' do
         expect(challenge).to have_attributes(id: 'request-1', url: 'https://example.com/secure')
-        expect(challenge.original.response.auth_challenges.map(&:realm)).to eq(['test'])
       end
 
       it 'deprecates the request hash, which still reads as it did' do

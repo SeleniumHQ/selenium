@@ -30,12 +30,6 @@ module Selenium
         # @return [Hash, nil] the continueWithAuth arguments a handler answered with, or nil while none has
         attr_reader :answer
 
-        # The event as the browser sent it, with everything it carries, such as the realm in
-        # original.response.auth_challenges. Its fields follow the WebDriver BiDi spec, not the deprecation policy.
-        # @return [BiDi::Protocol::Network::AuthRequiredParameters]
-        # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-        attr_reader :original
-
         # @api private
         def initialize(original)
           @original = original
@@ -52,12 +46,11 @@ module Selenium
           original.request.url
         end
 
-        # @deprecated Use #url, or #original for the rest of the request.
+        # @deprecated Use #url.
         # @return [Hash] the request that was challenged, keyed by its wire names
         def request
-          WebDriver.logger.deprecate('AuthenticationChallenge#request',
-                                     '#url, or #original for the rest of the request',
-                                     id: :network_auth_request, reference: REFERENCE)
+          WebDriver.logger.deprecate('AuthenticationChallenge#request', '#url', id: :network_auth_request,
+                                                                                reference: REFERENCE)
           original.request.as_json
         end
 
@@ -89,6 +82,9 @@ module Selenium
         end
 
         private
+
+        # TODO: make public once the request and response handlers settle what the unmodified event looks like
+        attr_reader :original
 
         def answer_with(**answer)
           raise Error::WebDriverError, 'the challenge was already answered; a handler answers it once' if @answer

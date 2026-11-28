@@ -26,8 +26,6 @@ module Selenium
 
         attr_reader answer: Hash[Symbol, untyped]?
 
-        attr_reader original: BiDi::Protocol::Network::AuthRequiredParameters
-
         def initialize: (BiDi::Protocol::Network::AuthRequiredParameters original) -> void
 
         def id: () -> String
@@ -43,6 +41,8 @@ module Selenium
         def cancel: () -> nil
 
         private
+
+        attr_reader original: BiDi::Protocol::Network::AuthRequiredParameters
 
         def answer_with: (**untyped answer) -> nil
       end
