@@ -74,6 +74,7 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -1408,16 +1409,18 @@ public class RemoteWebDriver
         execute(DriverCommand.SWITCH_TO_WINDOW(windowHandleOrName));
         return RemoteWebDriver.this;
       } catch (NoSuchWindowException nsw) {
-        // simulate search by name
+        // Not a handle. Look for a window whose window.name matches.
         String original = getWindowHandle();
         for (String handle : getWindowHandles()) {
           try {
             execute(DriverCommand.SWITCH_TO_WINDOW(handle));
             if (windowHandleOrName.equals(executeScript("return window.name"))) {
-              return RemoteWebDriver.this; // found by name
+              return RemoteWebDriver.this;
             }
-          } catch (NoSuchWindowException nswe) {
-            // swallow
+          } catch (NoSuchWindowException ignored) {
+            // Closed between listing the handles and switching to this one.
+          } catch (UnhandledAlertException ignored) {
+            // This window cannot be read. A later handle may still match.
           }
         }
         execute(DriverCommand.SWITCH_TO_WINDOW(original));
