@@ -76,9 +76,11 @@ module Selenium
         expect(wire({hostname: '[::1]'})).to eq([{'type' => 'pattern', 'hostname' => '[::1]'}])
       end
 
-      it 'refuses a colon after a bracketed IPv6 hostname' do
-        expect { described_class.build({hostname: '[::1]:443'}) }
-          .to raise_error(ArgumentError, /hostname .* cannot contain ":"/)
+      it 'refuses a colon outside closed IPv6 brackets' do
+        ['[::1]:443', '[::1:443', '[example.com:8080'].each do |hostname|
+          expect { described_class.build({hostname: hostname}) }
+            .to raise_error(ArgumentError, /hostname .* cannot contain ":"/)
+        end
       end
 
       it 'refuses a glob, since the remote end reserves its characters' do

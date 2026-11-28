@@ -71,7 +71,7 @@ module Selenium
             end
 
             invalid = checked[INVALID.fetch(key)]
-            invalid ||= checked.gsub(/\[[^\]]*\]?/, '')[':'] if key == :hostname
+            invalid ||= checked.gsub(/\[[^\]]*\]/, '')[':'] if key == :hostname
             raise ArgumentError, "URL pattern #{key} #{value.inspect} cannot contain #{invalid.inspect}" if invalid
 
             note_glob(value) if key == :pathname && checked.include?('[')
