@@ -236,6 +236,7 @@ module Selenium
 
       # Filters were only sent with a pattern_type, so without one they match every request
       def legacy_url_patterns(filter, pattern_type, url_patterns)
+        filter = filter.flatten
         return url_patterns if filter.empty? && pattern_type.nil?
 
         check_legacy_url_patterns(filter, pattern_type, url_patterns)

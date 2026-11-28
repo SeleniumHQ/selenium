@@ -65,10 +65,13 @@ module Selenium
           expect(intercepts).to eq([{'phases' => ['authRequired']}])
         end
 
-        it 'sends positional filters with the string pattern type as pattern strings' do
-          expect { network.add_authentication_handler('user', 'pass', 'https://example.com/a', pattern_type: :string) }
+        it 'sends positional filters with the string pattern type as pattern strings, a list among them' do
+          urls = ['https://example.com/a', 'https://example.com/b']
+
+          expect { network.add_authentication_handler('user', 'pass', urls, pattern_type: :string) }
             .to have_deprecated(%i[network_url_filters network_auth_credentials])
-          expect(intercepts.first['urlPatterns']).to eq([{'type' => 'string', 'pattern' => 'https://example.com/a'}])
+          expect(intercepts.first['urlPatterns'])
+            .to eq(urls.map { |url| {'type' => 'string', 'pattern' => url} })
         end
 
         it 'sends positional filters with the url pattern type as URL components' do
