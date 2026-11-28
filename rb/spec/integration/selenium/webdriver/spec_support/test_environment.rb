@@ -42,6 +42,7 @@ module Selenium
           @driver_instance = nil
           @local_drivers = []
           @local_drivers_lock = Mutex.new
+          @safari_pids = {}.compare_by_identity
           @remote_server = nil
           pin_driver_path
           ENV['SE_MANAGER_PATH'] = runfiles_path('SE_MANAGER_PATH') if ENV.key?('SE_MANAGER_PATH')
@@ -100,6 +101,7 @@ module Selenium
         rescue StandardError
           # good riddance
         ensure
+          stop_safari(@safari_pids.delete(@driver_instance))
           @driver_instance = nil
         end
 
@@ -108,6 +110,8 @@ module Selenium
             instance.quit
           rescue StandardError
             # good riddance
+          ensure
+            stop_safari(@safari_pids.delete(instance))
           end
           @local_drivers.clear
         end
@@ -234,7 +238,9 @@ module Selenium
           @safari_pairing_attempts ||= 0
 
           opts = {options: build_options(**), listener: listener, http_client: http_client, service: service}.compact
+          running_safari = running_safari_pids
           instance = new_driver_instance(**opts)
+          @safari_pids[instance] = running_safari_pids - running_safari
           @safari_pairing_attempts = 0
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           instance
@@ -371,6 +377,25 @@ module Selenium
           return unless ENV.key?('SE_DEBUG') && browser.to_s.start_with?('safari')
 
           {'HOME' => Dir.home(ENV.fetch('USER'))}
+        end
+
+        # Ending a session leaves the Safari app running, and every new session launches another one
+        def running_safari_pids
+          return [] unless browser_family == :safari && ENV['WD_REMOTE_URL'].nil?
+
+          app = browser == :safari_preview ? 'Safari Technology Preview' : 'Safari'
+          IO.popen(%w[ps -axo pid=,args=], &:readlines).filter_map do |line|
+            pid, args = line.strip.split(' ', 2)
+            pid.to_i if args&.match?(%r{/MacOS/#{app} -.*--automation})
+          end
+        end
+
+        def stop_safari(pids)
+          pids&.each do |pid|
+            Process.kill('TERM', pid)
+          rescue Errno::ESRCH
+            nil
+          end
         end
 
         def chrome_options(args: [], **opts)
