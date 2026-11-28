@@ -18,6 +18,7 @@
 # under the License.
 
 require_relative 'spec_helper'
+require 'selenium/webdriver/bidi/protocol'
 
 module Selenium
   module WebDriver
@@ -27,71 +28,79 @@ module Selenium
       let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
       let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
-      it 'adds an auth handler' do
+      # The request and response handler examples still count Network#callbacks, which is deprecated
+      before do
+        allow(WebDriver.logger).to receive(:deprecate).and_call_original
+        allow(WebDriver.logger).to receive(:deprecate).with('Network#callbacks', any_args)
+      end
+
+      it 'answers a challenge with credentials' do
         driver = local_driver(web_socket_url: true)
-        network = driver.network
-        network.add_authentication_handler(username, password)
+        driver.network.add_authentication(username: username, password: password)
+
         driver.navigate.to url_for('basicAuth')
+
         expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-        expect(network.callbacks.count).to be 1
       end
 
-      it 'adds an auth handler with a filter' do
+      it 'answers a challenge from a handler for the URLs it applies to' do
         driver = local_driver(web_socket_url: true)
-        network = driver.network
-        network.add_authentication_handler(username, password, url_for('basicAuth'))
+        driver.network.add_authentication_handler(url_patterns: url_for('basicAuth')) do |challenge|
+          challenge.authenticate(username: username, password: password)
+        end
+
         driver.navigate.to url_for('basicAuth')
+
         expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-        expect(network.callbacks.count).to be 1
       end
 
-      it 'adds an auth handler with multiple filters' do
+      it 'cancels a challenge' do
         driver = local_driver(web_socket_url: true)
-        network = driver.network
-        network.add_authentication_handler(username, password, url_for('basicAuth'), url_for('formPage.html'))
+        driver.network.add_authentication_handler(&:cancel)
+
         driver.navigate.to url_for('basicAuth')
-        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-        expect(network.callbacks.count).to be 1
+
+        expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
       end
 
-      it 'adds an auth handler with a pattern type' do
+      it 'cancels a challenge whose handler raises, and raises it on the next command' do
         driver = local_driver(web_socket_url: true)
-        network = driver.network
-        network.add_authentication_handler(username, password, url_for('basicAuth'), pattern_type: :url)
+        driver.network.add_authentication_handler { raise ArgumentError, 'handler failed' }
+
         driver.navigate.to url_for('basicAuth')
-        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-        expect(network.callbacks.count).to be 1
+
+        expect { driver.find_element(tag_name: 'pre') }.to raise_error(ArgumentError, 'handler failed')
+        expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
       end
 
-      it 'removes an auth handler' do
+      it 'answers a challenge only in the window a handler is scoped to' do
         driver = local_driver(web_socket_url: true)
-        network = driver.network
-        id = network.add_authentication_handler(username, password)
-        network.remove_handler(id)
-        expect(network.callbacks.count).to be 0
-      end
+        scoped = driver.window_handle
+        driver.network.add_authentication_handler(&:cancel)
+        driver.network.add_authentication(username: username, password: password, window_handle: scoped)
 
-      it 'clears all auth handlers' do
-        driver = local_driver(web_socket_url: true)
-        network = driver.network
-        2.times { network.add_authentication_handler(username, password) }
-        network.clear_handlers
-        expect(network.callbacks.count).to be 0
-      end
-
-      it 'continues without auth' do
-        driver = local_driver(web_socket_url: true)
-        network = driver.network
-        network.add_authentication_handler(&:skip)
-        expect { driver.navigate.to url_for('basicAuth') }.to raise_error(Error::WebDriverError)
-      end
-
-      it 'cancels auth' do
-        driver = local_driver(web_socket_url: true)
-        network = driver.network
-        network.add_authentication_handler(&:cancel)
+        driver.switch_to.new_window(:tab)
         driver.navigate.to url_for('basicAuth')
         expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
+
+        driver.switch_to.window(scoped)
+        driver.navigate.to url_for('basicAuth')
+        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+      end
+
+      it 'answers a challenge only in the user context a handler is scoped to' do
+        driver = local_driver(web_socket_url: true)
+        user_context = BiDi::Protocol::Browser.new(driver).create_user_context.user_context
+        tab = BiDi::Protocol::BrowsingContext.new(driver).create(type: :tab, user_context: user_context).context
+        driver.network.add_authentication_handler(&:cancel)
+        driver.network.add_authentication(username: username, password: password, user_context: user_context)
+
+        driver.navigate.to url_for('basicAuth')
+        expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
+
+        driver.switch_to.window(tab)
+        driver.navigate.to url_for('basicAuth')
+        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
       end
 
       it 'adds a request handler' do

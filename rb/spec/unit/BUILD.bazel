@@ -14,6 +14,16 @@ rb_library(
     ],
 )
 
+rb_library(
+    name = "network_spec_support",
+    testonly = True,
+    srcs = ["selenium/webdriver/common/network/network_spec_support.rb"],
+    deps = [
+        "//rb/lib/selenium/webdriver:bidi",
+        "//rb/lib/selenium/webdriver:common",
+    ],
+)
+
 rb_test(
     name = "unit",
     size = "small",
@@ -23,6 +33,7 @@ rb_test(
     tags = ["unit"],
     visibility = ["//rb:__subpackages__"],
     deps = [
+        ":network_spec_support",
         ":spec_helper",
         "//rb/lib:selenium-webdriver",
         "//rb/lib/selenium:devtools",

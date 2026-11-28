@@ -19,30 +19,35 @@
 module Selenium
   module WebDriver
     class Network
+      REFERENCE: String
+
       @network: BiDi::Network
 
       @callbacks: Hash[Integer, Hash[String, String]]
 
-      attr_reader callbacks: Hash[Integer, Hash[String, String]]
+      @registry: HandlerRegistry
 
-      def initialize: (Remote::Bridge bridge) -> void
+      def initialize: (untyped bridge) -> void
 
       def network: () -> BiDi::Network
 
       def bidi: () -> BiDi::Network
 
-      # Delegated methods from BiDi::Network
-      def continue_with_auth: (*untyped) -> untyped
+      def callbacks: () -> Hash[untyped, Hash[String, String]]
 
-      def continue_with_request: (*untyped) -> untyped
-
-      def continue_with_response: (*untyped) -> untyped
-
-      def remove_handler: (Integer id) -> void
+      def remove_handler: (untyped id) -> void
 
       def clear_handlers: () -> void
 
-      def add_authentication_handler: (?String? username, ?String? password, *String filter, ?pattern_type: Symbol?) { (?) -> untyped } -> Integer
+      def continue_with_auth: (String request_id, String username, String password) -> untyped
+
+      def add_authentication_handler: (?String? username, ?String? password, *String filter, ?url_patterns: untyped, ?pattern_type: Symbol?, ?window_handle: String?, ?user_context: String?) ?{ (AuthenticationChallenge) -> untyped } -> Object
+
+      def add_authentication: (username: String, password: String, ?url_patterns: untyped, ?window_handle: String?, ?user_context: String?) -> Object
+
+      def remove_authentication_handler: (Object handle) -> nil
+
+      def clear_authentication_handlers: () -> nil
 
       def add_request_handler: (*String filter, ?pattern_type: Symbol?) ?{ (untyped) -> untyped } -> Integer
 
@@ -50,7 +55,17 @@ module Selenium
 
       private
 
+      def initialize_legacy: (untyped bridge) -> void
+
       def deprecate_network_accessor: (String old) -> BiDi::Network
+
+      def legacy_url_patterns: (Array[String] filter, Symbol? pattern_type, untyped url_patterns) -> untyped
+
+      def check_legacy_url_patterns: (Array[String] filter, Symbol? pattern_type, untyped url_patterns) -> void
+
+      def url_components: (String url) -> Hash[Symbol, String]
+
+      def legacy_authentication_handler: (String? username, String? password, Array[String] filter, Symbol? pattern_type, url_patterns: untyped, window_handle: String?, user_context: String?) ?{ (AuthenticationChallenge) -> untyped } -> Object
 
       def add_handler: (Symbol event_type, String phase, untyped intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> Integer
     end
