@@ -30,6 +30,17 @@ def _escape_css(value):
     escaped = _SPECIAL_CHARS.sub(r"\\\1", value)
     # CSS drops a backslash followed by a newline, so newlines need hex escapes instead.
     escaped = escaped.replace("\\\n", "\\a ").replace("\\\r", "\\d ").replace("\\\f", "\\c ")
+    # Other controls are not identifier code points. A space ends the escape when the next
+    # character is a hex digit, so that digit is not swallowed.
+    parts = []
+    for index, char in enumerate(escaped):
+        code = ord(char)
+        if char not in _CSS_WHITESPACE and (code < 0x20 or code == 0x7F):
+            nxt = escaped[index + 1] if index + 1 < len(escaped) else ""
+            parts.append(f"\\{code:x}{' ' if nxt in '0123456789abcdefABCDEF' else ''}")
+        else:
+            parts.append(char)
+    escaped = "".join(parts)
     # CSS only requires the leading-digit escape for ASCII 0-9; non-ASCII Unicode digits
     # (e.g. Arabic-Indic, fullwidth) are already valid identifier-start code points and must
     # be left untouched, or they collide with the escape for a different ASCII digit.

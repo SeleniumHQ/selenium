@@ -70,6 +70,14 @@ def test_line_break_in_an_id_is_hex_escaped(raw, expected):
     assert value == expected
 
 
+def test_id_with_a_control_character_keeps_a_following_hex_digit():
+    _, with_hex_digit = _convert(By.ID, "\x01a")
+    _, without_hex_digit = _convert(By.ID, "\x01g")
+
+    assert with_hex_digit == "#\\1 a"
+    assert without_hex_digit == "#\\1g"
+
+
 def test_empty_id_stays_an_attribute_selector():
     by, value = _convert(By.ID, "")
 
