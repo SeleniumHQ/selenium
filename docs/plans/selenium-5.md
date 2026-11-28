@@ -35,6 +35,11 @@ authentication.
 The cross-binding API for pinned scripts (pin / unpin / execute) and for console-message,
 JavaScript-error, and DOM-mutation handlers.
 
+### Alert handling API — _ADR pending_
+
+The cross-binding API for adding and removing alert handlers on `driver.alerts`, and how
+the existing Alert API and `unhandledPromptBehavior` behave in a BiDi session.
+
 ### Selenium Manager released API — _ADR pending_
 
 Formalize the interface and behaviors required to drop the Beta label and release independently of
@@ -69,5 +74,4 @@ A high-level API for managing browsing contexts — for example exposing them as
 
 ### Capability mapping
 
-High-level APIs over individual BiDi capability modules — permissions, storage, emulation, user
-prompts.
+High-level APIs over individual BiDi capability modules — permissions, storage, emulation.
