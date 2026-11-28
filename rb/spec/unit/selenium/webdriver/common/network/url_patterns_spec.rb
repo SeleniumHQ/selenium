@@ -82,10 +82,19 @@ module Selenium
         expect { described_class.build({pathname: '/orders/{id}'}) }.to raise_error(ArgumentError, /reserves/)
       end
 
-      it 'forwards glob-like characters the remote end accepts' do
-        patterns = %w[https://example.com/a? https://example.com/[a] https://example.com/a+b https://example.com/:id]
+      it 'forwards glob syntax the remote end accepts, noting it is not a wildcard' do
+        patterns = %w[https://example.com/a? https://example.com/file?.txt https://example.com/[ab]]
 
-        expect(wire(patterns).map { |pattern| pattern['pattern'] }).to eq(patterns)
+        patterns.each do |pattern|
+          expect { expect(wire(pattern).first['pattern']).to eq(pattern) }.to have_info(:network_url_pattern_glob)
+        end
+        expect { wire({pathname: '/[ab]'}) }.to have_info(:network_url_pattern_glob)
+      end
+
+      it 'notes nothing for a query string, an IPv6 host or other characters the remote end accepts' do
+        patterns = %w[https://example.com/search?q=1 https://[::1]/ https://example.com/a+b https://example.com/:id]
+
+        expect { wire(patterns) }.not_to have_info(:network_url_pattern_glob)
       end
 
       it 'forwards an escaped reserved character unchanged' do

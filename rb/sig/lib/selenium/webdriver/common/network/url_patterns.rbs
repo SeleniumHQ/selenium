@@ -36,6 +36,8 @@ module Selenium
         private def self.validate_component: (Symbol key, String value) -> void
 
         private def self.unescaped: (String value) -> String
+
+        private def self.note_glob: (String value) -> void
       end
     end
   end

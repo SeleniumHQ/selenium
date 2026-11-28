@@ -46,9 +46,12 @@ module Selenium
           private
 
           def string(pattern)
-            unescaped(pattern)
+            checked = unescaped(pattern)
             raise ArgumentError, "URL pattern #{pattern.inspect} is not an absolute URL" unless pattern.match?(SCHEME)
 
+            without_host = checked.sub(%r{//\[[^\]]*\]}, '//')
+            query = without_host.split('?', 2)[1]
+            note_glob(pattern) if without_host.include?('[') || (query && !query.include?('='))
             BiDi::Protocol::Network::UrlPatternString.new(pattern: pattern)
           end
 
@@ -70,6 +73,14 @@ module Selenium
             invalid = checked[INVALID.fetch(key)]
             invalid ||= checked[':'] if key == :hostname && !checked.start_with?('[')
             raise ArgumentError, "URL pattern #{key} #{value.inspect} cannot contain #{invalid.inspect}" if invalid
+
+            note_glob(value) if key == :pathname && checked.include?('[')
+          end
+
+          # Glob syntax such as ? or [abc] is valid in a URL, so it reaches the remote end, which reads it literally
+          def note_glob(value)
+            WebDriver.logger.info("URL pattern #{value.inspect} looks like a glob, but URL patterns have no " \
+                                  'wildcards; it is matched as the URL it spells out', id: :network_url_pattern_glob)
           end
 
           # @return [String] the value with escaped characters masked, since they match literally
