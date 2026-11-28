@@ -151,3 +151,34 @@ fn grid_cache_fallback_ignores_other_files_test() {
         "the cache lookup returned a file that is not a Grid jar"
     );
 }
+
+#[test]
+fn grid_cache_fallback_prefers_newest_version_test() {
+    let tmp = tempdir().unwrap();
+    let cache = tmp.path().to_path_buf();
+    // A lexicographic sort ranks 4.9.0 above 4.54.0, so the fallback must
+    // compare the version numbers and return the newest jar.
+    for version in ["4.9.0", "4.54.0"] {
+        let jar_dir = cache.join("grid").join(version);
+        fs::create_dir_all(&jar_dir).unwrap();
+        fs::write(
+            jar_dir.join(format!("selenium-server-{version}.jar")),
+            b"fake jar",
+        )
+        .unwrap();
+    }
+
+    let mut manager = GridManager::new("4.54.0".to_string()).unwrap();
+    manager.set_cache_path(cache.to_str().unwrap().to_string());
+
+    let found = manager.find_best_driver_from_cache().unwrap();
+    assert!(found.is_some(), "the cached Grid jar was not found");
+    assert!(
+        found
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .contains("selenium-server-4.54.0.jar"),
+        "the offline fallback returned an older Grid jar"
+    );
+}
