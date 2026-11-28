@@ -26,8 +26,8 @@ class EdgeRemoteConnection(ChromiumRemoteConnection):
 
     def __init__(
         self,
-        remote_server_addr: str,
-        keep_alive: bool = True,
+        remote_server_addr: str | None = None,
+        keep_alive: bool | None = None,
         ignore_proxy: bool = False,
         client_config: ClientConfig | None = None,
     ) -> None:

@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import copy
 import functools
 import logging
 import string
@@ -27,7 +28,6 @@ from urllib.parse import unquote, urlparse
 import urllib3
 
 from selenium import __version__
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote import utils
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
@@ -164,14 +164,6 @@ class RemoteConnection:
     """
 
     browser_name: str | None = None
-    # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
-    import os
-    import socket
-
-    import certifi
-
-    _timeout = socket.getdefaulttimeout()
-    _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
     _client_config: ClientConfig
 
     system = sys.platform
@@ -186,76 +178,20 @@ class RemoteConnection:
     def client_config(self):
         return self._client_config
 
-    @classmethod
-    def get_timeout(cls):
-        """Returns timeout value in seconds for all http requests made to the Remote Connection.
-
-        Returns:
-            Timeout value in seconds for all http requests made to the
-            Remote Connection
-        """
-        warnings.warn(
-            "get_timeout() in RemoteConnection is deprecated, get timeout from client_config instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls._client_config.timeout
-
-    @classmethod
-    def set_timeout(cls, timeout):
-        """Override the default timeout.
-
-        Args:
-            timeout: timeout value for http requests in seconds
-        """
-        warnings.warn(
-            "set_timeout() in RemoteConnection is deprecated, set timeout in client_config instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        cls._client_config.timeout = timeout
-
-    @classmethod
-    def reset_timeout(cls):
-        """Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT."""
-        warnings.warn(
-            "reset_timeout() in RemoteConnection is deprecated, use reset_timeout() in client_config instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        cls._client_config.reset_timeout()
-
-    @classmethod
-    def get_certificate_bundle_path(cls):
-        """Returns paths of the .pem encoded certificate to verify connection to command executor.
-
-        Returns:
-            Paths of the .pem encoded certificate to verify connection to
-            command executor. Defaults to certifi.where() or
-            REQUESTS_CA_BUNDLE env variable if set.
-        """
-        warnings.warn(
-            "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from client_config instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls._client_config.ca_certs
-
-    @classmethod
-    def set_certificate_bundle_path(cls, path):
-        """Set the path to the certificate bundle for verifying command executor connection.
-
-        Can also be set to None to disable certificate validation.
-
-        Args:
-            path: path of a .pem encoded certificate chain.
-        """
-        warnings.warn(
-            "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs in client_config instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        cls._client_config.ca_certs = path
+    @staticmethod
+    def _resolve_client_config(
+        remote_server_addr: str | None, keep_alive: bool | None, client_config: ClientConfig | None
+    ) -> ClientConfig:
+        if client_config is None:
+            if remote_server_addr is None:
+                raise TypeError("either remote_server_addr or client_config is required")
+            return ClientConfig(remote_server_addr=remote_server_addr, keep_alive=keep_alive is not False, timeout=120)
+        client_config = copy.copy(client_config)
+        if remote_server_addr:
+            client_config.remote_server_addr = remote_server_addr
+        if keep_alive is not None:
+            client_config.keep_alive = keep_alive
+        return client_config
 
     @_classorinstancemethod
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
@@ -329,31 +265,8 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(
-        self,
-        remote_server_addr: str | None = None,
-        keep_alive: bool = True,
-        ignore_proxy: bool = False,
-        ignore_certificates: bool | None = False,
-        init_args_for_pool_manager: dict | None = None,
-        client_config: ClientConfig | None = None,
-    ):
-        if client_config:
-            self._client_config = client_config
-        elif remote_server_addr:
-            self._client_config = ClientConfig(
-                remote_server_addr=remote_server_addr,
-                keep_alive=keep_alive,
-                ignore_certificates=ignore_certificates,
-                init_args_for_pool_manager=init_args_for_pool_manager,
-            )
-        else:
-            raise WebDriverException("Must provide either 'remote_server_addr' or 'client_config'")
-
-        # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
-        RemoteConnection._timeout = self._client_config.timeout
-        RemoteConnection._ca_certs = self._client_config.ca_certs
-        RemoteConnection._client_config = self._client_config
+    def __init__(self, client_config: ClientConfig, ignore_proxy: bool = False):
+        self._client_config = client_config
         # Resolve this connection's headers once into instance state instead of mutating the
         # shared class attributes (which leaked one connection's headers, auth included, onto
         # every other one). A client_config value replaces the class-level default, matching
@@ -361,34 +274,6 @@ class RemoteConnection:
         # the _classorinstancemethod descriptor.
         self.user_agent = self._client_config.user_agent or type(self).user_agent
         self.extra_headers = dict(self._client_config.extra_headers or type(self).extra_headers or {}) or None
-
-        if remote_server_addr:
-            warnings.warn(
-                "setting remote_server_addr in RemoteConnection() is deprecated, set in client_config instead",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-
-        if not keep_alive:
-            warnings.warn(
-                "setting keep_alive in RemoteConnection() is deprecated, set in client_config instead",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-
-        if ignore_certificates:
-            warnings.warn(
-                "setting ignore_certificates in RemoteConnection() is deprecated, set in client_config instead",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-
-        if init_args_for_pool_manager:
-            warnings.warn(
-                "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in client_config instead",
-                DeprecationWarning,
-                stacklevel=2,
-            )
 
         if ignore_proxy:
             self._proxy_url = None

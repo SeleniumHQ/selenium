@@ -30,7 +30,8 @@ class WebDriver(LocalWebDriver):
         self,
         options: Options | None = None,
         service: Service | None = None,
-        keep_alive: bool = True,
+        keep_alive: bool | None = None,
+        client_config: ClientConfig | None = None,
     ) -> None:
         """Creates a new instance of the Ie driver.
 
@@ -39,15 +40,18 @@ class WebDriver(LocalWebDriver):
         Args:
             options: Instance of Options.
             service: Service object for handling the browser driver if you need to pass extra details.
-            keep_alive: Whether to configure RemoteConnection to use HTTP keep-alive.
+            keep_alive: (Deprecated) Set keep_alive on a ClientConfig passed as client_config instead.
+            client_config: Custom client configuration to use. Defaults to None.
         """
+        if keep_alive is not None:
+            self._warn_keep_alive_deprecated()
         self.service = service or Service()
         self.options = options or Options()
 
         self.service.path = self.service.env_path() or DriverFinder(self.service, self.options).get_driver_path()
         self.service.start()
 
-        client_config = ClientConfig(remote_server_addr=self.service.service_url, keep_alive=keep_alive, timeout=120)
+        client_config = RemoteConnection._resolve_client_config(self.service.service_url, keep_alive, client_config)
         executor = RemoteConnection(
             ignore_proxy=self.options._ignore_local_proxy,
             client_config=client_config,

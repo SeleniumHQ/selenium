@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import warnings
+
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
@@ -29,6 +31,14 @@ class LocalWebDriver(RemoteWebDriver):
         if cls is LocalWebDriver:
             raise TypeError(f"Only children of '{cls.__name__}' may be instantiated")
         return object.__new__(cls)
+
+    @staticmethod
+    def _warn_keep_alive_deprecated(stacklevel: int = 2) -> None:
+        warnings.warn(
+            "keep_alive is deprecated, set keep_alive on a ClientConfig and pass it as client_config instead",
+            DeprecationWarning,
+            stacklevel=stacklevel + 1,
+        )
 
     def quit(self) -> None:
         """Closes the browser and shuts down the driver executable."""
