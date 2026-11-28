@@ -18,6 +18,7 @@
 """Mirror of ``../bidi/browsing_context_tests.py`` using the generated ``_bidi`` commands, not the ``driver`` facade."""
 
 import base64
+from pathlib import Path
 
 import pytest
 
@@ -443,6 +444,21 @@ def test_print_page(driver, pages):
     assert len(print_result) > 0
     # Valid PDF starts with JVBERi (base64 of %PDF)
     assert "JVBERi" in print_result
+
+
+@pytest.mark.xfail_chrome(reason="Chrome does not support browsingContext.startScreencast")
+@pytest.mark.xfail_edge(reason="Edge does not support browsingContext.startScreencast")
+@pytest.mark.xfail_safari(reason="Safari does not implement browsingContext.startScreencast")
+def test_screencast_respects_destination_folder(driver, pages, tmp_path):
+    bc = BrowsingContext(driver)
+    driver.get(pages.url("simpleTest.html"))
+
+    recording = bc.start_screencast(context=driver.current_window_handle, destination_folder=str(tmp_path))
+    stopped = bc.stop_screencast(screencast=recording.screencast)
+
+    path = Path(stopped.path)
+    assert path.parent.resolve() == tmp_path.resolve()
+    assert path.is_file()
 
 
 def test_navigate_back_in_browser_history(driver, pages):
