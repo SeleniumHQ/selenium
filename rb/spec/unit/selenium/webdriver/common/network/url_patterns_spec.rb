@@ -76,6 +76,11 @@ module Selenium
         expect(wire({hostname: '[::1]'})).to eq([{'type' => 'pattern', 'hostname' => '[::1]'}])
       end
 
+      it 'refuses a colon after a bracketed IPv6 hostname' do
+        expect { described_class.build({hostname: '[::1]:443'}) }
+          .to raise_error(ArgumentError, /hostname .* cannot contain ":"/)
+      end
+
       it 'refuses a glob, since the remote end reserves its characters' do
         expect { described_class.build('https://*.example.com/') }
           .to raise_error(ArgumentError, /"\*", which WebDriver BiDi reserves/)
