@@ -18,6 +18,7 @@
 # under the License.
 
 require_relative 'spec_helper'
+require 'selenium/webdriver/bidi/protocol'
 
 module Selenium
   module WebDriver
@@ -70,6 +71,36 @@ module Selenium
 
         expect { driver.find_element(tag_name: 'pre') }.to raise_error(ArgumentError, 'handler failed')
         expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
+      end
+
+      it 'answers a challenge only in the window a handler is scoped to' do
+        driver = local_driver(web_socket_url: true)
+        scoped = driver.window_handle
+        driver.network.add_authentication_handler(&:cancel)
+        driver.network.add_authentication(username: username, password: password, window_handle: scoped)
+
+        driver.switch_to.new_window(:tab)
+        driver.navigate.to url_for('basicAuth')
+        expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
+
+        driver.switch_to.window(scoped)
+        driver.navigate.to url_for('basicAuth')
+        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+      end
+
+      it 'answers a challenge only in the user context a handler is scoped to' do
+        driver = local_driver(web_socket_url: true)
+        user_context = BiDi::Protocol::Browser.new(driver).create_user_context.user_context
+        tab = BiDi::Protocol::BrowsingContext.new(driver).create(type: :tab, user_context: user_context).context
+        driver.network.add_authentication_handler(&:cancel)
+        driver.network.add_authentication(username: username, password: password, user_context: user_context)
+
+        driver.navigate.to url_for('basicAuth')
+        expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
+
+        driver.switch_to.window(tab)
+        driver.navigate.to url_for('basicAuth')
+        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
       end
 
       it 'adds a request handler' do
